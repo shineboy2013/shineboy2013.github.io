@@ -51,6 +51,110 @@
     <header>
       
   
+    <h1 class="title"><a href="/2017/12/11/lee-309/">LeetCode 309 Best Time to Buy and Sell Stock with Cooldown</a></h1>
+  
+
+      
+        <time datetime="2017-12-12T04:24:30.810Z">2017-12-11</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/" target="_blank" rel="noopener">LeetCode 309 Best Time to Buy and Sell Stock with Cooldown</a></strong></p>
+<p>Say you have an array for which the <em>i</em><sup>th</sup> element is the price of a given stock on day <em>i</em>.</p>
+<p>Design an algorithm to find the maximum profit. You may complete as many transactions as you like (ie, buy one and sell one share of the stock multiple times) with the following restrictions:</p>
+<ul>
+<li>You may not engage in multiple transactions at the same time (ie, you must sell the stock before you buy again).</li>
+<li>After you sell your stock, you cannot buy stock on next day. (ie, cooldown 1 day)</li>
+</ul>
+<p><strong>Example:</strong>  </p>
+<pre>
+prices = [1, 2, 3, 0, 2]
+maxProfit = 3
+transactions = [buy, sell, cooldown, buy, sell]
+</pre>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个数组，第i个元素代表某只股票在第i天的价格。 设计一个算法计算最大收益。你可以完成多次交易（多次买入、卖出同一只股票），需要满足下列限制：<br>你不可以在同一时间参与多个交易（在买入股票之前必须卖出）。<br>在卖出股票之后，你不可以在第二天马上买入。（需要一天的冷却（CD）时间）。<strong>也就是卖出后过两天才能买入。</strong></p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>因为有限制条件，所以没有特别方法，只能计算所有结果，也就是用动态规划。动态规划首先是写出递归式（数学归纳法）。</p>
+<ol>
+<li>定义f(n)为第n日卖出股票（一定要卖出，不能持有）的利润，加强了命题。</li>
+<li>递归式如下图，f(n)只能由f(n-1)卖出后立刻买入（相当于n-1时候不卖出）或者f(n-3)卖出n-1时候买入两种情况。<br><img src="/images/L309.png" alt=""><br>现在可以写出递归式：<br><img src="/images/L309-2.png" alt=""><br>F(x)=max{f(1),…,f(n)}求加强命题最大值即为本题解。<br>这里考虑到负数，方便程序实现，否则，f(n)的前3个值计算就不能放入循环而要特别处理了。</li>
+</ol>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>数组为空或者1个</li>
+<li>负数组的实现方法</li>
+</ol>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxProfit</span><span class="params">(<span class="keyword">int</span>[] prices)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> sell[] = <span class="keyword">new</span> <span class="keyword">int</span>[prices.length];</span><br><span class="line">	<span class="keyword">int</span> max = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;prices.length;i++)&#123;</span><br><span class="line">		sell[i] = Math.max(f(i-<span class="number">3</span>, sell), f(i-<span class="number">1</span>, sell))+ prices[i]-prices[i-<span class="number">1</span>];</span><br><span class="line">		<span class="keyword">if</span>(sell[i]&gt;max)</span><br><span class="line">			max = sell[i];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> max;		</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">f</span><span class="params">(<span class="keyword">int</span> i, <span class="keyword">int</span>[] r)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(i&lt;<span class="number">1</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		<span class="keyword">return</span> r[i];</span><br></pre></td></tr></table></figure>
+<p>这个实现有个错误就是忽略了一种重要的情况：f(n-4),…,f(1)的情况。看以下例子：[6,1,6,4,3,0,2]</p>
+<table>
+<thead>
+<tr>
+<th>Index</th>
+<th style="text-align:center">0</th>
+<th style="text-align:center">1</th>
+<th style="text-align:center">2</th>
+<th style="text-align:center">3</th>
+<th style="text-align:center">4</th>
+<th style="text-align:center">5</th>
+<th style="text-align:center">6</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>price</td>
+<td style="text-align:center">6</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">6</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">3</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">2</td>
+</tr>
+<tr>
+<td>f(n)</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">-5</td>
+<td style="text-align:center">5</td>
+<td style="text-align:center">3</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">5</td>
+</tr>
+</tbody>
+</table>
+<p>按照上面算法结果为5，但是很容易看出来1-&gt;6, 0-&gt;2结果是7。问题出在最后一个f(6)=max{f(3),f(5)}+2=max{3,2}+2。很明显，第3天卖出获利为3并不是最佳，第二天卖出获利为5才是最佳，我们忽略了f(n-3)之前的所有情况。解决方案是再创建一个数组维护前n天最大获利值。<br>定义g(n)为前n日卖出股票（不一定要第n天卖出）的利润。g(n)=max{f(1),…,f(n)}。修改递归式为，把f(n-3)改为g(n-3)：<br><img src="/images/L309-3.png" alt=""></p>
+<h3 id="Java代码：-1"><a href="#Java代码：-1" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxProfit2</span><span class="params">(<span class="keyword">int</span>[] prices)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> sell[] = <span class="keyword">new</span> <span class="keyword">int</span>[prices.length];</span><br><span class="line">	<span class="keyword">int</span> preSell[] = <span class="keyword">new</span> <span class="keyword">int</span>[prices.length];</span><br><span class="line">	<span class="keyword">int</span> max = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;prices.length;i++)&#123;</span><br><span class="line">		sell[i] = Math.max(g(i-<span class="number">3</span>, preSell), f(i-<span class="number">1</span>, sell))+ prices[i]-prices[i-<span class="number">1</span>];</span><br><span class="line">		<span class="keyword">if</span>(sell[i]&gt;max)</span><br><span class="line">			max = sell[i];</span><br><span class="line">		</span><br><span class="line">		preSell[i] = Math.max(preSell[i-<span class="number">1</span>], sell[i]);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> max;		</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">f</span><span class="params">(<span class="keyword">int</span> i, <span class="keyword">int</span>[] r)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(i&lt;<span class="number">1</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		<span class="keyword">return</span> r[i];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">g</span><span class="params">(<span class="keyword">int</span> i, <span class="keyword">int</span>[] g)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(i&lt;<span class="number">1</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		<span class="keyword">return</span> g[i];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，n为数组长度，空间复杂度<code>O(n)</code>。</p>
+<p>由于此题目，f(n)只与前三个状态有关f(n-1), f(n-2)(虽然没直接关系，但程序实现需要记录),g(n-3)。四个状态可以用三个变量<br>推进，如sell=Math.max(preSell, sell)，同一个变量旧状态更新到新状态，所以可以避免维护数组开销。</p>
+<h3 id="Java代码：-2"><a href="#Java代码：-2" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxProfit</span><span class="params">(<span class="keyword">int</span>[] prices)</span></span>&#123;</span><br><span class="line">	<span class="comment">//f(n-3), f(n-2), f(n-1)</span></span><br><span class="line">	<span class="keyword">int</span> preSell=<span class="number">0</span>, sell_1=<span class="number">0</span>, sell = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> max = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;prices.length;i++)&#123;</span><br><span class="line">		<span class="keyword">int</span> tmp = sell;</span><br><span class="line">		sell = Math.max(preSell, sell)+ prices[i]-prices[i-<span class="number">1</span>];</span><br><span class="line">		<span class="keyword">if</span>(sell&gt;max)</span><br><span class="line">			max = sell;</span><br><span class="line">		</span><br><span class="line">		preSell = Math.max(preSell, sell_1);</span><br><span class="line">		sell_1 = tmp;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> max;		</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，n为数组长度，空间复杂度<code>O(1)</code>。本题有更简单解法但比较难想出。</p>
+<h3 id="最后注意事项："><a href="#最后注意事项：" class="headerlink" title="最后注意事项："></a><strong>最后注意事项：</strong></h3><ol>
+<li>数组为空或者1个</li>
+<li>三种情况f(n-1),f(n-3),g(n-3)可以得到f(n)</li>
+<li>DP流程，定义函数（是否加强）、递归式、空间优化。</li>
+</ol>
+<h3 id="相关题目："><a href="#相关题目：" class="headerlink" title="相关题目："></a><strong>相关题目：</strong></h3><p><a href="https://shineboy2013.github.io/2017/11/27/lee-121/" target="_blank" rel="noopener">LeetCode 121 Best Time to Buy and Sell Stock</a><br><a href="https://shineboy2013.github.io/2017/11/28/lee-122/" target="_blank" rel="noopener">LeetCode 122 Best Time to Buy and Sell Stock II</a><br><a href="https://shineboy2013.github.io/2017/12/11/lee-309/" target="_blank" rel="noopener">LeetCode 309 Best Time to Buy and Sell Stock with Cooldown</a></p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2017/12/04/lee-310/">LeetCode 310 Minimum Height Trees</a></h1>
   
 
@@ -91,7 +195,7 @@
 <p>(2) The height of a rooted tree is the number of edges on the longest downward path between the root and a leaf.</p>
 <h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>对于一棵无向树，我们可以选择它的任意节点作为根。得到的结果就是有根树。在所有可能的有根树中，高度最小的称为最小高度树（MHT）。<br>给定一个无向图，编写函数找出所有的最小高度树，并返回其根标号的列表。</p>
 <h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>此题本质上求最长路径上的中间1-2个节点。由于根节点不确定，从叶节点出发，层层剥离，这就是拓扑排序(inDegree数组)。而且需要知道最后一层的1-2个节点，所以考虑用按层遍历BFS（两数组）。见KB。</p>
-<ol>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
 <li>由于最后一层可能是1-2个节点，所以要用一个变量把最后一层记录下来。</li>
 <li>还有一点要注意的是这是无向图，所以入度=1而不是0时候即入队列。</li>
 </ol>
@@ -212,7 +316,7 @@
 <p><img src="/images/L122.png" alt=""></p>
 <h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxProfit</span><span class="params">(<span class="keyword">int</span>[] prices)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(prices.length==<span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> profit = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;prices.length;i++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(prices[i-<span class="number">1</span>]&lt;prices[i])</span><br><span class="line">			profit += prices[i] - prices[i-<span class="number">1</span>];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> profit;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，n为字符串长度，空间复杂度<code>O(1)</code>。</p>
-<h3 id="相关题目："><a href="#相关题目：" class="headerlink" title="相关题目："></a><strong>相关题目：</strong></h3><p><a href="https://shineboy2013.github.io/2017/11/27/lee-121/" target="_blank" rel="noopener">LeetCode 121 Best Time to Buy and Sell Stock</a><br><a href="https://shineboy2013.github.io/2017/11/28/lee-122/" target="_blank" rel="noopener">LeetCode 122 Best Time to Buy and Sell Stock II</a></p>
+<h3 id="相关题目："><a href="#相关题目：" class="headerlink" title="相关题目："></a><strong>相关题目：</strong></h3><p><a href="https://shineboy2013.github.io/2017/11/27/lee-121/" target="_blank" rel="noopener">LeetCode 121 Best Time to Buy and Sell Stock</a><br><a href="https://shineboy2013.github.io/2017/11/28/lee-122/" target="_blank" rel="noopener">LeetCode 122 Best Time to Buy and Sell Stock II</a><br><a href="https://shineboy2013.github.io/2017/12/11/lee-309/" target="_blank" rel="noopener">LeetCode 309 Best Time to Buy and Sell Stock with Cooldown</a></p>
 
       
     </div>
@@ -265,7 +369,7 @@ In this case, no transaction is done, i.e. max profit = 0.
 <p><img src="/images/L121.png" alt=""></p>
 <h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxProfit</span><span class="params">(<span class="keyword">int</span>[] prices)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(prices.length==<span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> min = prices[<span class="number">0</span>];</span><br><span class="line">	<span class="keyword">int</span> curProfit = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;prices.length;i++)&#123;</span><br><span class="line">		<span class="keyword">int</span> todayProfit = prices[i]-min;</span><br><span class="line">		<span class="keyword">if</span>(todayProfit&gt;curProfit)</span><br><span class="line">			curProfit = todayProfit;</span><br><span class="line">		<span class="keyword">if</span>(min&gt;prices[i])</span><br><span class="line">			min = prices[i];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> curProfit;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，n为字符串长度，空间复杂度<code>O(1)</code>。</p>
-<h3 id="相关题目："><a href="#相关题目：" class="headerlink" title="相关题目："></a><strong>相关题目：</strong></h3><p><a href="https://shineboy2013.github.io/2017/11/27/lee-121/" target="_blank" rel="noopener">LeetCode 121 Best Time to Buy and Sell Stock</a><br><a href="https://shineboy2013.github.io/2017/11/28/lee-122/" target="_blank" rel="noopener">LeetCode 122 Best Time to Buy and Sell Stock II</a></p>
+<h3 id="相关题目："><a href="#相关题目：" class="headerlink" title="相关题目："></a><strong>相关题目：</strong></h3><p><a href="https://shineboy2013.github.io/2017/11/27/lee-121/" target="_blank" rel="noopener">LeetCode 121 Best Time to Buy and Sell Stock</a><br><a href="https://shineboy2013.github.io/2017/11/28/lee-122/" target="_blank" rel="noopener">LeetCode 122 Best Time to Buy and Sell Stock II</a><br><a href="https://shineboy2013.github.io/2017/12/11/lee-309/" target="_blank" rel="noopener">LeetCode 309 Best Time to Buy and Sell Stock with Cooldown</a></p>
 
       
     </div>
@@ -315,6 +419,11 @@ In this case, no transaction is done, i.e. max profit = 0.
 <td>122</td>
 <td style="text-align:left"><a href="https://shineboy2013.github.io/2017/11/28/lee-122/" target="_blank" rel="noopener">Best Time to Buy and Sell Stock II</a></td>
 <td style="text-align:left">Easy</td>
+</tr>
+<tr>
+<td>309</td>
+<td style="text-align:left">[Best Time to Buy and Sell Stock with Cooldown]</td>
+<td style="text-align:left">Medium</td>
 </tr>
 <tr>
 <td>310</td>
@@ -596,48 +705,11 @@ Output: "s'teL ekat edoCteeL tsetnoc"
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2017/11/02/hello-world/">Hello World</a></h1>
-  
-
-      
-        <time datetime="2017-11-02T11:43:32.503Z">2017-11-02</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
+  
+    <a href="/page/2/" class="alignright next">Next</a>
   
   <div class="clearfix"></div>
 </nav></div></div>
@@ -655,6 +727,10 @@ Output: "s'teL ekat edoCteeL tsetnoc"
   <ul class="entry">
     
       <li>
+        <a href="/2017/12/11/lee-309/">LeetCode 309 Best Time to Buy and Sell Stock with Cooldown</a>
+      </li>
+    
+      <li>
         <a href="/2017/12/04/lee-310/">LeetCode 310 Minimum Height Trees</a>
       </li>
     
@@ -670,10 +746,6 @@ Output: "s'teL ekat edoCteeL tsetnoc"
         <a href="/2017/11/28/lee-122/">LeetCode 122 Best Time to Buy and Sell Stock II</a>
       </li>
     
-      <li>
-        <a href="/2017/11/27/lee-121/">LeetCode 121 Best Time to Buy and Sell Stock</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -684,7 +756,7 @@ Output: "s'teL ekat edoCteeL tsetnoc"
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Breadth-first-Search/" style="font-size: 10px;">Breadth-first Search</a> <a href="/tags/Dynamic-Programming/" style="font-size: 10px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 10px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 10px;">Greedy</a> <a href="/tags/Knowledge-Base/" style="font-size: 20px;">Knowledge Base</a> <a href="/tags/Math/" style="font-size: 10px;">Math</a> <a href="/tags/String/" style="font-size: 10px;">String</a>
+    <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Breadth-first-Search/" style="font-size: 10px;">Breadth-first Search</a> <a href="/tags/Dynamic-Programming/" style="font-size: 15px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 10px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 10px;">Greedy</a> <a href="/tags/Knowledge-Base/" style="font-size: 20px;">Knowledge Base</a> <a href="/tags/Math/" style="font-size: 10px;">Math</a> <a href="/tags/String/" style="font-size: 10px;">String</a>
   </div>
 </div>
 
@@ -697,24 +769,7 @@ Output: "s'teL ekat edoCteeL tsetnoc"
   
 </div>
 <div class="clearfix"></div></footer>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 
 
 
