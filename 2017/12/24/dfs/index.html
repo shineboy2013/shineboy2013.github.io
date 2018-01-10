@@ -6,14 +6,8 @@
   <title>DFS › Jiajie&#39;s blog</title>
   <meta name="author" content="KK Shum">
   
-  <meta name="description" content="算法思路：
-图用邻接表为输入，思路递归实现, 还要一个机制记录节点访问过没有，可以用HashSet，同时它作为结果存储BFS访问结果。
-BFS多用于找最短路径
-DFS多用于快速发现底部节点和路劲问题（如路径和）。
-BFS优缺点：
-同一层的所有节点都会加入队列，所以耗用大量空间
-仅能非递归实现
-相比D">
+  <meta name="description" content="算法思路：图用邻接表为输入，思路递归实现, 还要一个机制记录节点访问过没有，可以用HashSet，同时它作为结果存储BFS访问结果。BFS多用于找最短路径DFS多用于快速发现底部节点和路劲问题（如路径和）。
+BFS优缺点：同一层的所有节点都会加入队列，所以耗用大量空间仅能非递归实现相比DFS较快，空">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -68,30 +62,17 @@ BFS优缺点：
     </header>
     <div class="entry">
       
-        <h3><strong>算法思路：</strong></h3>
-<p>图用邻接表为输入，思路递归实现, 还要一个机制记录节点访问过没有，可以用HashSet，同时它作为结果存储BFS访问结果。<br>
-<strong>BFS多用于找最短路径</strong>
-<strong>DFS多用于快速发现底部节点和路劲问题（如路径和）。</strong></p>
-<p>BFS优缺点：
-同一层的所有节点都会加入队列，所以耗用大量空间
-仅能非递归实现
-相比DFS较快，空间换时间
-适合广度大的图</p>
-<p>DFS优缺点：
-无论是系统栈还是用户栈保存的节点数都只是树的深度，所以空间耗用小
-有递归和非递归实现
-由于有大量栈操作（特别是递归实现时候的系统调用），执行速度较BFS慢
-适合深度大的图</p>
-<h3><strong>算法步骤：</strong></h3>
-<ol>
+        <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>图用邻接表为输入，思路递归实现, 还要一个机制记录节点访问过没有，可以用HashSet，同时它作为结果存储BFS访问结果。<br><strong>BFS多用于找最短路径</strong><br><strong>DFS多用于快速发现底部节点和路劲问题（如路径和）。</strong></p>
+<p>BFS优缺点：<br>同一层的所有节点都会加入队列，所以耗用大量空间<br>仅能非递归实现<br>相比DFS较快，空间换时间<br>适合广度大的图</p>
+<p>DFS优缺点：<br>无论是系统栈还是用户栈保存的节点数都只是树的深度，所以空间耗用小<br>有递归和非递归实现<br>由于有大量栈操作（特别是递归实现时候的系统调用），执行速度较BFS慢<br>适合深度大的图</p>
+<h3 id="算法步骤："><a href="#算法步骤：" class="headerlink" title="算法步骤："></a><strong>算法步骤：</strong></h3><ol>
 <li>不合法情况（已访问、越界、trivial情况等）返回。</li>
 <li>标记为已访问。</li>
 <li>递归访问相邻节点。</li>
+<li>DFS路径尽量记录在数组中而非ArrayList中，路径(图)再DFS后要恢复为原状态L332。</li>
 </ol>
-<h3><strong>Java代码：</strong></h3>
-<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * graph: 邻接表</span></span><br><span class="line"><span class="comment"> * visited: 记录已访问节点，避免重复访问</span></span><br><span class="line"><span class="comment"> * start: DFS的根节点</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">dfs</span><span class="params">(HashMap&lt;Integer, LinkedList&lt;Integer&gt;&gt; graph, HashSet&lt;Integer&gt; visited, <span class="keyword">int</span> start)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(visited.contains(start))&#123;</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	visited.add(start);</span><br><span class="line">	System.out.print(start+<span class="string">","</span>);</span><br><span class="line">	<span class="keyword">for</span>(Integer child : graph.get(start))&#123;</span><br><span class="line">		dfs(graph, visited, child);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>时间复杂度为<code>O(n)</code>，h为树的高度，空间复杂度<code>O(h)</code>，如果用系统栈，可理解其为O(1)。</p>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * graph: 邻接表</span></span><br><span class="line"><span class="comment"> * visited: 记录已访问节点，避免重复访问</span></span><br><span class="line"><span class="comment"> * start: DFS的根节点</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">dfs</span><span class="params">(HashMap&lt;Integer, LinkedList&lt;Integer&gt;&gt; graph, HashSet&lt;Integer&gt; visited, <span class="keyword">int</span> start)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(visited.contains(start))&#123;</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	visited.add(start);</span><br><span class="line">	System.out.print(start+<span class="string">","</span>);</span><br><span class="line">	<span class="keyword">for</span>(Integer child : graph.get(start))&#123;</span><br><span class="line">		dfs(graph, visited, child);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，h为树的高度，空间复杂度<code>O(h)</code>，如果用系统栈，可理解其为O(1)。</p>
 
       
     </div>
@@ -149,6 +130,10 @@ BFS优缺点：
   <ul class="entry">
     
       <li>
+        <a href="/2018/01/09/lee-332/">LeetCode 332 Reconstruct Itinerary</a>
+      </li>
+    
+      <li>
         <a href="/2017/12/31/lee-347/">LeetCode 347 Top K Frequent Elements</a>
       </li>
     
@@ -164,10 +149,6 @@ BFS优缺点：
         <a href="/2017/12/31/lee-316/">LeetCode 316 Remove Duplicate Letters</a>
       </li>
     
-      <li>
-        <a href="/2017/12/28/lee-312/">LeetCode 312 Burst Balloons</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -178,7 +159,7 @@ BFS优缺点：
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Array/" style="font-size: 16px;">Array</a> <a href="/tags/Binary-Search/" style="font-size: 12px;">Binary Search</a> <a href="/tags/Breadth-first-Search/" style="font-size: 12px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 14px;">Depth-first Search</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 10px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 16px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 10px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 14px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 10px;">Heap</a> <a href="/tags/Knowledge-Base/" style="font-size: 18px;">Knowledge Base</a> <a href="/tags/Math/" style="font-size: 10px;">Math</a> <a href="/tags/Sort/" style="font-size: 12px;">Sort</a> <a href="/tags/Stack/" style="font-size: 10px;">Stack</a> <a href="/tags/String/" style="font-size: 10px;">String</a> <a href="/tags/Tree/" style="font-size: 12px;">Tree</a> <a href="/tags/Two-Pointers/" style="font-size: 12px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 10px;">Union Find</a>
+    <a href="/tags/Array/" style="font-size: 16px;">Array</a> <a href="/tags/Binary-Search/" style="font-size: 12px;">Binary Search</a> <a href="/tags/Breadth-first-Search/" style="font-size: 12px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 16px;">Depth-first Search</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 10px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 16px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 12px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 14px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 10px;">Heap</a> <a href="/tags/Knowledge-Base/" style="font-size: 18px;">Knowledge Base</a> <a href="/tags/Math/" style="font-size: 10px;">Math</a> <a href="/tags/Sort/" style="font-size: 12px;">Sort</a> <a href="/tags/Stack/" style="font-size: 10px;">Stack</a> <a href="/tags/String/" style="font-size: 10px;">String</a> <a href="/tags/Tree/" style="font-size: 12px;">Tree</a> <a href="/tags/Two-Pointers/" style="font-size: 12px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 10px;">Union Find</a>
   </div>
 </div>
 
