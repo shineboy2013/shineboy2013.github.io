@@ -1,0 +1,199 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+  
+  <title>LeetCode 658 Find K Closest Elements › Jiajie&#39;s blog</title>
+  <meta name="author" content="KK Shum">
+  
+  <meta name="description" content="LeetCode 658 Find K Closest Elements
+Given a sorted array, two integers k and x, find the k closest elements to x in the array. The result should also">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="LeetCode 658 Find K Closest Elements"/>
+  <meta property="og:site_name" content="Jiajie&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="Jiajie&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]--><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+</head>
+
+
+<body>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><header id="header"><div class="meta inner">
+  <h1><a href="/">Jiajie&#39;s blog</a></h1>
+  <h2><a href="/">每天积累多一些</a></h2>
+  <nav id="main-nav">
+    <ul>
+      
+      <li><a href="/about">About</a></li>
+      
+      <li><a href="/archives">Archives</a></li>
+      
+      <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+</div>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title">LeetCode 658 Find K Closest Elements</h1>
+  
+
+      
+        <time datetime="2018-01-29T03:26:02.137Z">2018-01-28</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/find-k-closest-elements" target="_blank" rel="noopener">LeetCode 658 Find K Closest Elements</a></strong></p>
+<p>Given a sorted array, two integers <code>k</code> and <code>x</code>, find the <code>k</code> closest elements to <code>x</code> in the array. The result should also be sorted in ascending order. If there is a tie, the smaller elements are always preferred.</p>
+<p><strong>Example 1:</strong>  </p>
+<pre><b>Input:</b> [1,2,3,4,5], k=4, x=3
+<b>Output:</b> [1,2,3,4]
+</pre>
+
+<p><strong>Example 2:</strong>  </p>
+<pre><b>Input:</b> [1,2,3,4,5], k=4, x=-1
+<b>Output:</b> [1,2,3,4]
+</pre>
+
+<p><strong>Note:</strong>  </p>
+<ol>
+<li>The value k is positive and will always be smaller than the length of the sorted array.</li>
+<li>Length of the given array is positive and will not exceed 10<sup>4</sup></li>
+<li>Absolute value of elements in the array and x will not exceed 10<sup>4</sup></li>
+</ol>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个排序数组，两个整数k和x，求数组中距离x最近的k个数字。结果应该有序，距离相同时优先选择较小的数字。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><ol>
+<li>进阶二分法找出第一个大于等于key值的元素。</li>
+<li>左右两指针搜索k个元素。</li>
+</ol>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>指针不能越界</li>
+<li>根据题意，与key距离一样时，取较小元素。</li>
+</ol>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;Integer&gt; <span class="title">findClosestElements</span><span class="params">(<span class="keyword">int</span>[] arr, <span class="keyword">int</span> k, <span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> upperIdx = firstEqualOrGreater(arr, x);</span><br><span class="line">	<span class="keyword">int</span> lowerIdx = upperIdx-<span class="number">1</span>;</span><br><span class="line">	List result = <span class="keyword">new</span> ArrayList();</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=k;i&gt;<span class="number">0</span>;i--)&#123;</span><br><span class="line">		<span class="keyword">if</span>(lowerIdx&lt;<span class="number">0</span>)</span><br><span class="line">			result.add(arr[upperIdx++]);</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(upperIdx&gt;=arr.length)</span><br><span class="line">			result.add(arr[lowerIdx--]);</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(x-arr[lowerIdx]&lt;=arr[upperIdx]-x)</span><br><span class="line">			result.add(arr[lowerIdx--]);</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			result.add(arr[upperIdx++]);</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	Collections.sort(result);</span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">firstEqualOrGreater</span><span class="params">(<span class="keyword">int</span>[] a, <span class="keyword">int</span> key)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> lo = <span class="number">0</span>, hi = a.length-<span class="number">1</span>;</span><br><span class="line">	<span class="keyword">while</span>(lo&lt;=hi)&#123;</span><br><span class="line">		<span class="keyword">int</span> mid =  lo + (hi - lo) / <span class="number">2</span>;</span><br><span class="line">		<span class="keyword">if</span>(a[mid]&lt;key)</span><br><span class="line">			lo = mid+<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			hi = mid-<span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> lo;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(logn+k)</code>，空间复杂度<code>O(1)</code>。</p>
+
+      
+    </div>
+      
+      <footer>
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/Binary-Search/">Binary Search</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  
+</section>
+
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="q" value="site:shineboy2013.github.com">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">Recent Posts</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2018/01/29/lee-253/">LeetCode 253 Meeting Rooms II</a>
+      </li>
+    
+      <li>
+        <a href="/2018/01/29/lee-572/">LeetCode 572 Subtree of Another Tree</a>
+      </li>
+    
+      <li>
+        <a href="/2018/01/29/lee-057/">LeetCode 57 Insert Interval</a>
+      </li>
+    
+      <li>
+        <a href="/2018/01/28/lee-056/">LeetCode 56 Merge Intervals</a>
+      </li>
+    
+      <li>
+        <a href="/2018/01/28/lee-503/">LeetCode 503 Next Greater Element II</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">Tag Cloud</h3>
+  <div class="entry">
+    <a href="/tags/Array/" style="font-size: 18.33px;">Array</a> <a href="/tags/Binary-Search/" style="font-size: 13.33px;">Binary Search</a> <a href="/tags/Breadth-first-Search/" style="font-size: 11.67px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 16.67px;">Depth-first Search</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 10px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 18.33px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 11.67px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 11.67px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 13.33px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 10px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 15px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 16.67px;">Knowledge Base</a> <a href="/tags/Math/" style="font-size: 10px;">Math</a> <a href="/tags/Memoization/" style="font-size: 10px;">Memoization</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Sort/" style="font-size: 15px;">Sort</a> <a href="/tags/Stack/" style="font-size: 11.67px;">Stack</a> <a href="/tags/String/" style="font-size: 10px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 13.33px;">Tree</a> <a href="/tags/Two-Pointers/" style="font-size: 11.67px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 10px;">Union Find</a>
+  </div>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2018 KK Shum
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+
+</body>
+</html>
+
