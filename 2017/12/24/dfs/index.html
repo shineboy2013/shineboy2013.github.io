@@ -1,0 +1,181 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+  
+  <title>DFS › Jiajie&#39;s blog</title>
+  <meta name="author" content="KK Shum">
+  
+  <meta name="description" content="算法思路：图用邻接表为输入，思路递归实现, 还要一个机制记录节点访问过没有，可以用HashSet，同时它作为结果存储BFS访问结果。BFS多用于找最短路径DFS多用于快速发现底部节点和具体路劲问题（如路径和或打印路径）。
+BFS优缺点：同一层的所有节点都会加入队列，所以耗用大量空间仅能非递归实现相比">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="DFS"/>
+  <meta property="og:site_name" content="Jiajie&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="Jiajie&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]--><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+</head>
+
+
+<body>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><header id="header"><div class="meta inner">
+  <h1><a href="/">Jiajie&#39;s blog</a></h1>
+  <h2><a href="/">每天积累多一些</a></h2>
+  <nav id="main-nav">
+    <ul>
+      
+      <li><a href="/about">About</a></li>
+      
+      <li><a href="/archives">Archives</a></li>
+      
+      <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+</div>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title">DFS</h1>
+  
+
+      
+        <time datetime="2017-12-25T04:52:56.090Z">2017-12-24</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>图用邻接表为输入，思路递归实现, 还要一个机制记录节点访问过没有，可以用HashSet，同时它作为结果存储BFS访问结果。<br><strong>BFS多用于找最短路径</strong><br><strong>DFS多用于快速发现底部节点和具体路劲问题（如路径和或打印路径）。</strong></p>
+<p>BFS优缺点：<br>同一层的所有节点都会加入队列，所以耗用大量空间<br>仅能非递归实现<br>相比DFS较快，空间换时间<br>适合广度大的图</p>
+<p>DFS优缺点：<br>无论是系统栈还是用户栈保存的节点数都只是树的深度，所以空间耗用小<br>有递归和非递归实现<br>由于有大量栈操作（特别是递归实现时候的系统调用），执行速度较BFS慢<br>适合深度大的图</p>
+<h3 id="算法步骤："><a href="#算法步骤：" class="headerlink" title="算法步骤："></a><strong>算法步骤：</strong></h3><ol>
+<li>不合法情况（已访问、越界、trivial情况等）返回。</li>
+<li>标记为已访问。</li>
+<li>递归访问相邻节点。</li>
+<li>DFS路径尽量记录在数组中而非ArrayList中，路径(图)再DFS后要恢复为原状态L332。</li>
+</ol>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * graph: 邻接表</span></span><br><span class="line"><span class="comment"> * visited: 记录已访问节点，避免重复访问</span></span><br><span class="line"><span class="comment"> * start: DFS的根节点</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">dfs</span><span class="params">(HashMap&lt;Integer, LinkedList&lt;Integer&gt;&gt; graph, HashSet&lt;Integer&gt; visited, <span class="keyword">int</span> start)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(visited.contains(start))&#123;</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	visited.add(start);</span><br><span class="line">	System.out.print(start+<span class="string">","</span>);</span><br><span class="line">	<span class="keyword">for</span>(Integer child : graph.get(start))&#123;</span><br><span class="line">		dfs(graph, visited, child);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，h为树的高度，空间复杂度<code>O(h)</code>，如果用系统栈，可理解其为O(1)。</p>
+
+      
+    </div>
+      
+      <footer>
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/Knowledge-Base/">Knowledge Base</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  
+</section>
+
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="q" value="site:shineboy2013.github.com">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">Recent Posts</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2018/01/31/lee-004/">LeetCode 004 Median of Two Sorted Arrays</a>
+      </li>
+    
+      <li>
+        <a href="/2018/01/30/lee-006/">LeetCode 006 ZigZag Conversion</a>
+      </li>
+    
+      <li>
+        <a href="/2018/01/29/lee-253/">LeetCode 253 Meeting Rooms II</a>
+      </li>
+    
+      <li>
+        <a href="/2018/01/29/lee-572/">LeetCode 572 Subtree of Another Tree</a>
+      </li>
+    
+      <li>
+        <a href="/2018/01/29/lee-057/">LeetCode 57 Insert Interval</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">Tag Cloud</h3>
+  <div class="entry">
+    <a href="/tags/Array/" style="font-size: 18.57px;">Array</a> <a href="/tags/Binary-Search/" style="font-size: 14.29px;">Binary Search</a> <a href="/tags/Breadth-first-Search/" style="font-size: 11.43px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15.71px;">Depth-first Search</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.43px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 17.14px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 11.43px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 11.43px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 12.86px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 10px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 14.29px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 15.71px;">Knowledge Base</a> <a href="/tags/Math/" style="font-size: 10px;">Math</a> <a href="/tags/Memoization/" style="font-size: 10px;">Memoization</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Sort/" style="font-size: 14.29px;">Sort</a> <a href="/tags/Stack/" style="font-size: 11.43px;">Stack</a> <a href="/tags/String/" style="font-size: 11.43px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.86px;">Tree</a> <a href="/tags/Two-Pointers/" style="font-size: 11.43px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 10px;">Union Find</a>
+  </div>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2018 KK Shum
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+
+</body>
+</html>
+
