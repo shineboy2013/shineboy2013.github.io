@@ -1,0 +1,189 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+  
+  <title>LeetCode 054 Spiral Matrix › Jiajie&#39;s blog</title>
+  <meta name="author" content="KK Shum">
+  
+  <meta name="description" content="LeetCode 054 Spiral Matrix
+Given a matrix of m x n elements (m rows, n columns), return all elements of the matrix in spiral order.
+For example,Given ">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="LeetCode 054 Spiral Matrix"/>
+  <meta property="og:site_name" content="Jiajie&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="Jiajie&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]--><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+</head>
+
+
+<body>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><header id="header"><div class="meta inner">
+  <h1><a href="/">Jiajie&#39;s blog</a></h1>
+  <h2><a href="/">每天积累多一些</a></h2>
+  <nav id="main-nav">
+    <ul>
+      
+      <li><a href="/about">About</a></li>
+      
+      <li><a href="/archives">Archives</a></li>
+      
+      <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+</div>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title">LeetCode 054 Spiral Matrix</h1>
+  
+
+      
+        <time datetime="2018-02-23T06:12:22.318Z">2018-02-22</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/spiral-matrix" target="_blank" rel="noopener">LeetCode 054 Spiral Matrix</a></strong></p>
+<p>Given a matrix of <em>m</em> x <em>n</em> elements (<em>m</em> rows, <em>n</em> columns), return all elements of the matrix in spiral order.</p>
+<p>For example,<br>Given the following matrix:</p>
+<pre>[
+ [ 1, 2, 3 ],
+ [ 4, 5, 6 ],
+ [ 7, 8, 9 ]
+]
+</pre>
+
+<p>You should return <code>[1,2,3,6,9,8,7,4,5]</code>.</p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个mxn的矩阵（m行 n列），以螺旋状返回矩阵中的所有元素。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>打印方法主要是以下两种：第一种四边对称打印，实现起来边际情况很多，不推荐。第二种方法是每条边比上一条少一个，用四个指针，top, bottom, left, right<br>来记录四个边界，每打印完一条边该边界向内扩展。注意有些回路不是完整比如[1,2]或上面例子中5就不是完整回路，此情况，注意判断top和bottom以及left和<br>right关系即可。四指针法可以进一步升级到两指针法甚至一个指针法，其实都是大同小异。<br><img src="/images/L054.png" alt=""></p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><p>注意不是所有矩阵都有完整回路。</p>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">spiral2</span><span class="params">(<span class="keyword">int</span>[][] a)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> rowTop = <span class="number">0</span>, rowBottom = a.length-<span class="number">1</span>, colLeft = <span class="number">0</span>, colRight = a[<span class="number">0</span>].length-<span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">while</span>(rowTop&lt;=rowBottom &amp;&amp; colLeft&lt;=colRight)&#123;</span><br><span class="line">		<span class="comment">//topRow</span></span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=colLeft;i&lt;=colRight;i++)</span><br><span class="line">			System.out.print(a[rowTop][i]+<span class="string">" "</span>);</span><br><span class="line">		rowTop++;</span><br><span class="line">		<span class="comment">//rightCol</span></span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=rowTop;i&lt;=rowBottom;i++)</span><br><span class="line">			System.out.print(a[i][colRight]+<span class="string">" "</span>);</span><br><span class="line">		colRight--;</span><br><span class="line">		<span class="keyword">if</span>(rowTop&lt;=rowBottom)&#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> i=colRight;i&gt;=colLeft;i--)</span><br><span class="line">				System.out.print(a[rowBottom][i]+<span class="string">" "</span>);</span><br><span class="line">			rowBottom--;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(colLeft&lt;=colRight)&#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> i=rowBottom;i&gt;=rowTop;i--)</span><br><span class="line">				System.out.print(a[i][colLeft]+<span class="string">" "</span>);</span><br><span class="line">			colLeft++;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">spiral3</span><span class="params">(<span class="keyword">int</span>[][] a)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> rowTop = <span class="number">0</span>, colLeft = <span class="number">0</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">while</span>(rowTop&lt;=a.length-rowTop-<span class="number">1</span> &amp;&amp; colLeft&lt;=a[<span class="number">0</span>].length-colLeft-<span class="number">1</span>)&#123;</span><br><span class="line">		<span class="comment">//topRow</span></span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=colLeft;i&lt;=a[<span class="number">0</span>].length-colLeft-<span class="number">1</span>;i++)</span><br><span class="line">			System.out.print(a[rowTop][i]+<span class="string">" "</span>);</span><br><span class="line">		rowTop++;</span><br><span class="line">		<span class="comment">//rightCol</span></span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=rowTop;i&lt;=a.length-rowTop;i++)</span><br><span class="line">			System.out.print(a[i][a[<span class="number">0</span>].length-colLeft-<span class="number">1</span>]+<span class="string">" "</span>);</span><br><span class="line">		<span class="comment">//colRight--;</span></span><br><span class="line">		<span class="keyword">if</span>(rowTop&lt;=a.length-rowTop)&#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> i=a[<span class="number">0</span>].length-colLeft-<span class="number">2</span>;i&gt;=colLeft;i--)</span><br><span class="line">				System.out.print(a[a.length-rowTop][i]+<span class="string">" "</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(colLeft&lt;=a[<span class="number">0</span>].length-colLeft-<span class="number">2</span>)&#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> i=a.length-rowTop-<span class="number">1</span>;i&gt;=rowTop;i--)</span><br><span class="line">				System.out.print(a[i][colLeft]+<span class="string">" "</span>);</span><br><span class="line">			colLeft++;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">spiral4</span><span class="params">(<span class="keyword">int</span>[][] a)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> num = Math.min(a.length, a[<span class="number">0</span>].length);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> st=<span class="number">0</span>;st&lt;(num+<span class="number">1</span>)/<span class="number">2</span>;st++)&#123;</span><br><span class="line">		<span class="comment">//complete edge(top)</span></span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=st;i&lt;a[<span class="number">0</span>].length-st;i++)</span><br><span class="line">			System.out.print(a[st][i]+<span class="string">" "</span>);</span><br><span class="line">		<span class="comment">//complete edge-top (right)</span></span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=st+<span class="number">1</span>;i&lt;a.length-st;i++)</span><br><span class="line">			System.out.print(a[i][a[<span class="number">0</span>].length-<span class="number">1</span>-st]+<span class="string">" "</span>);</span><br><span class="line">		<span class="keyword">if</span>(a[<span class="number">0</span>].length-<span class="number">2</span>-st&gt;st)</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> i=a[<span class="number">0</span>].length-<span class="number">2</span>-st;i&gt;=st;i--)</span><br><span class="line">				System.out.print(a[a.length-st-<span class="number">1</span>][i]+<span class="string">" "</span>);</span><br><span class="line">		<span class="keyword">if</span>(a.length-<span class="number">2</span>-st&gt;st+<span class="number">1</span>)</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> i=a.length-<span class="number">2</span>-st;i&gt;=st+<span class="number">1</span>;i--)</span><br><span class="line">				System.out.print(a[i][st]+<span class="string">" "</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(mn)</code>，空间复杂度<code>O(1)</code>。   </p>
+
+      
+    </div>
+      
+      <footer>
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/Array/">Array</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  
+</section>
+
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="q" value="site:shineboy2013.github.com">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">Recent Posts</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2018/02/22/lee-054/">LeetCode 054 Spiral Matrix</a>
+      </li>
+    
+      <li>
+        <a href="/2018/01/31/lee-004/">LeetCode 004 Median of Two Sorted Arrays</a>
+      </li>
+    
+      <li>
+        <a href="/2018/01/30/lee-006/">LeetCode 006 ZigZag Conversion</a>
+      </li>
+    
+      <li>
+        <a href="/2018/01/29/lee-253/">LeetCode 253 Meeting Rooms II</a>
+      </li>
+    
+      <li>
+        <a href="/2018/01/29/lee-572/">LeetCode 572 Subtree of Another Tree</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">Tag Cloud</h3>
+  <div class="entry">
+    <a href="/tags/Array/" style="font-size: 18.57px;">Array</a> <a href="/tags/Binary-Search/" style="font-size: 14.29px;">Binary Search</a> <a href="/tags/Breadth-first-Search/" style="font-size: 11.43px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15.71px;">Depth-first Search</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.43px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 17.14px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 11.43px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 11.43px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 12.86px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 10px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 14.29px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 15.71px;">Knowledge Base</a> <a href="/tags/Math/" style="font-size: 10px;">Math</a> <a href="/tags/Memoization/" style="font-size: 10px;">Memoization</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Sort/" style="font-size: 14.29px;">Sort</a> <a href="/tags/Stack/" style="font-size: 11.43px;">Stack</a> <a href="/tags/String/" style="font-size: 11.43px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.86px;">Tree</a> <a href="/tags/Two-Pointers/" style="font-size: 11.43px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 10px;">Union Find</a>
+  </div>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2018 KK Shum
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+
+</body>
+</html>
+
