@@ -3,16 +3,18 @@
 <head>
   <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
   
-  <title>DFS › Jiajie&#39;s blog</title>
+  <title>LeetCode 019 Remove Nth Node From End of List › Jiajie&#39;s blog</title>
   <meta name="author" content="KK Shum">
   
-  <meta name="description" content="算法思路：图用邻接表为输入，思路递归实现, 还要一个机制记录节点访问过没有，可以用HashSet，同时它作为结果存储BFS访问结果。BFS多用于找最短路径DFS多用于快速发现底部节点和具体路劲问题（如路径和或打印路径）。
-BFS优缺点：同一层的所有节点都会加入队列，所以耗用大量空间仅能非递归实现相比">
+  <meta name="description" content="LeetCode 019 Remove Nth Node From End of List
+Given a linked list, remove the nth node from the end of list and return its head.
+For example,
+   Given">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="DFS"/>
+  <meta property="og:title" content="LeetCode 019 Remove Nth Node From End of List"/>
   <meta property="og:site_name" content="Jiajie&#39;s blog"/>
 
   
@@ -53,26 +55,34 @@ BFS优缺点：同一层的所有节点都会加入队列，所以耗用大量�
     <header>
       
   
-    <h1 class="title">DFS</h1>
+    <h1 class="title">LeetCode 019 Remove Nth Node From End of List</h1>
   
 
       
-        <time datetime="2017-12-25T04:52:56.090Z">2017-12-24</time>
+        <time datetime="2018-03-18T03:35:41.221Z">2018-03-17</time>
       
     </header>
     <div class="entry">
       
-        <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>图用邻接表为输入，思路递归实现, 还要一个机制记录节点访问过没有，可以用HashSet，同时它作为结果存储BFS访问结果。<br><strong>BFS多用于找最短路径</strong><br><strong>DFS多用于快速发现底部节点和具体路劲问题（如路径和或打印路径）。</strong></p>
-<p>BFS优缺点：<br>同一层的所有节点都会加入队列，所以耗用大量空间<br>仅能非递归实现<br>相比DFS较快，空间换时间<br>适合广度大的图</p>
-<p>DFS优缺点：<br>无论是系统栈还是用户栈保存的节点数都只是树的深度，所以空间耗用小<br>有递归和非递归实现<br>由于有大量栈操作（特别是递归实现时候的系统调用），执行速度较BFS慢<br>适合深度大的图</p>
-<h3 id="算法步骤："><a href="#算法步骤：" class="headerlink" title="算法步骤："></a><strong>算法步骤：</strong></h3><ol>
-<li>不合法情况（已访问、越界、trivial情况等）返回。</li>
-<li>标记为已访问。</li>
-<li>递归访问相邻节点。</li>
-<li>DFS路径尽量记录在数组中而非ArrayList中，路径(图)再DFS后要恢复为原状态L332。</li>
+        <p><strong><a href="https://leetcode.com/problems/remove-nth-node-from-end-of-list" target="_blank" rel="noopener">LeetCode 019 Remove Nth Node From End of List</a></strong></p>
+<p>Given a linked list, remove the <em>n</em><sup>th</sup> node from the end of list and return its head.</p>
+<p>For example,</p>
+<pre>   Given linked list: 1->2->3->4->5, and n = 2.
+
+   After removing the second node from the end, the linked list becomes 1->2->3->5.
+</pre>
+
+<p><strong>Note:</strong><br>Given <em>n</em> will always be valid.<br>Try to do this in one pass.</p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>删除一个单链表末尾开始算起的第n个结点，然后返回该单链表。 例如：<br>输入: 1-&gt;2-&gt;3-&gt;4-&gt;5 其中n=2；<br>输出： 1-&gt;2-&gt;3-&gt;5;<br>n一定合法，只能遍历一次链表。  </p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是经典题。两指针法。距离为N的两指针，当前指针到末尾，后指针即是要删除的节点。头部插入fake节点，类似于mergeIntervals L56末尾插入一个空节点避免特别化处理。</p>
+<ol>
+<li>快指针从fake节点开始先走n步</li>
+<li>慢指针开始一起和快指针同步走，直到快指针到最后一个（next为空）</li>
+<li>此时慢指针是要删除指针的上一个，删除操作是可以的。</li>
 </ol>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * graph: 邻接表</span></span><br><span class="line"><span class="comment"> * visited: 记录已访问节点，避免重复访问</span></span><br><span class="line"><span class="comment"> * start: DFS的根节点</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">dfs</span><span class="params">(HashMap&lt;Integer, LinkedList&lt;Integer&gt;&gt; graph, HashSet&lt;Integer&gt; visited, <span class="keyword">int</span> start)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(visited.contains(start))&#123;</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	visited.add(start);</span><br><span class="line">	System.out.print(start+<span class="string">","</span>);</span><br><span class="line">	<span class="keyword">for</span>(Integer child : graph.get(start))&#123;</span><br><span class="line">		dfs(graph, visited, child);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，h为树的高度，空间复杂度<code>O(h)</code>，如果用系统栈，可理解其为O(1)。</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><p>因为头指针也可能被删除，如只有一个节点的链表，n=1。删除操作在待删除节点的上一个节点上操作，所以引入假头节点prehead。 </p>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ListNode <span class="title">removeNthFromEnd</span><span class="params">(ListNode head, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">	ListNode prehead = <span class="keyword">new</span> ListNode(-<span class="number">1</span>);</span><br><span class="line">	prehead.next = head;</span><br><span class="line">	</span><br><span class="line">	ListNode slow = prehead, fast = prehead;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++)</span><br><span class="line">		fast = fast.next;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">while</span>(fast.next != <span class="keyword">null</span>)&#123;</span><br><span class="line">		fast = fast.next;</span><br><span class="line">		slow = slow.next;</span><br><span class="line">	&#125;</span><br><span class="line">	deleteNode(slow);</span><br><span class="line">	<span class="keyword">return</span> prehead.next;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">deleteNode</span><span class="params">(ListNode p)</span></span>&#123;</span><br><span class="line">	p.next = p.next.next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>。   </p>
 
       
     </div>
@@ -82,7 +92,7 @@ BFS优缺点：同一层的所有节点都会加入队列，所以耗用大量�
         
   
   <div class="tags">
-    <a href="/tags/Knowledge-Base/">Knowledge Base</a>
+    <a href="/tags/Two-Pointers/">Two Pointers</a>, <a href="/tags/Linked-List/">Linked List</a>, <a href="/tags/Classic/">Classic</a>
   </div>
 
         
