@@ -51,11 +51,58 @@
     <header>
       
   
+    <h1 class="title"><a href="/2018/01/30/lee-006/">LeetCode 006 ZigZag Conversion</a></h1>
+  
+
+      
+        <time datetime="2018-01-31T06:11:31.903Z">2018-01-30</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/zigzag-conversion" target="_blank" rel="noopener">LeetCode 006 ZigZag Conversion</a></strong></p>
+<p>The string <code>&quot;PAYPALISHIRING&quot;</code> is written in a zigzag pattern on a given number of rows like this: (you may want to display this pattern in a fixed font for better legibility)</p>
+<pre>P   A   H   N
+A P L S I I G
+Y   I   R
+</pre>
+
+<p>And then read line by line: <code>&quot;PAHNAPLSIIGYIR&quot;</code></p>
+<p>Write the code that will take a string and make this conversion given a number of rows:</p>
+<pre>string convert(string text, int nRows);</pre>
+
+<p><code>convert(&quot;PAYPALISHIRING&quot;, 3)</code> should return <code>&quot;PAHNAPLSIIGYIR&quot;</code>.</p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定字符串按如上的“Z”字锯齿形进行按行重排。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是一个周期性的字符串。周期是竖+折（不含首节点）。<br><img src="/images/L006.png" alt=""><br>首节点和竖的最后一点在每周期只会出现一次，其他点会出现两次。<br>T=2&times;numRows-2(因为不含竖节点最后一点+折线上的最后一点属于另一个周期)。nT是有几个周期，即使不完成的周期也算一个。<br>按行遍历（实质是周期上的每个点），再按周期遍历，非顶点有两个需加入：j&times;T+i,(j+1)&times;T-i。由于周期可能不完成，只要写一个API检查边界且加入字符即可。</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><p>一个字符的字符串。此时T=0.直接返回原字符串。</p>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">convert2</span><span class="params">(String s, <span class="keyword">int</span> numRows)</span> </span>&#123;</span><br><span class="line">	StringBuffer sb = <span class="keyword">new</span> StringBuffer();</span><br><span class="line">	<span class="keyword">int</span> T = numRows*<span class="number">2</span>-<span class="number">2</span>;</span><br><span class="line">	<span class="keyword">if</span>(T==<span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> s;</span><br><span class="line">	<span class="keyword">int</span> nT = (<span class="keyword">int</span>)Math.ceil((s.length()+<span class="number">0.0</span>)/T);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;numRows;i++)&#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;nT;j++)&#123;</span><br><span class="line">			<span class="keyword">if</span>(i==<span class="number">0</span> || i==numRows-<span class="number">1</span>)</span><br><span class="line">				sb.append(addChar(s, j*T+i));</span><br><span class="line">			<span class="keyword">else</span>&#123;</span><br><span class="line">				sb.append(addChar(s, j*T+i));</span><br><span class="line">				sb.append(addChar(s, (j+<span class="number">1</span>)*T-i));</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> sb.toString();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">addChar</span><span class="params">(String s, <span class="keyword">int</span> index)</span></span>&#123;</span><br><span class="line">	String a = <span class="string">""</span>;</span><br><span class="line">	<span class="keyword">if</span>(index&lt;s.length())</span><br><span class="line">		<span class="keyword">return</span> s.substring(index, index+<span class="number">1</span>);</span><br><span class="line">	<span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>。</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2018/01/29/lee-253/">LeetCode 253 Meeting Rooms II</a></h1>
   
 
       
-        <time datetime="2018-01-30T06:07:55.170Z">2018-01-29</time>
+        <time datetime="2018-01-30T06:07:55.171Z">2018-01-29</time>
       
     </header>
     <div class="entry">
@@ -103,7 +150,7 @@
   
 
       
-        <time datetime="2018-01-29T09:33:24.224Z">2018-01-29</time>
+        <time datetime="2018-01-29T09:33:24.225Z">2018-01-29</time>
       
     </header>
     <div class="entry">
@@ -579,62 +626,6 @@ Explanation: The array cannot be partitioned into equal sum subsets.
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2018/01/09/lee-332/">LeetCode 332 Reconstruct Itinerary</a></h1>
-  
-
-      
-        <time datetime="2018-01-10T06:17:56.450Z">2018-01-09</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/reconstruct-itinerary" target="_blank" rel="noopener">LeetCode 332 Reconstruct Itinerary</a></strong></p>
-<p>Given a list of airline tickets represented by pairs of departure and arrival airports <code>[from, to]</code>, reconstruct the itinerary in order. All of the tickets belong to a man who departs from <code>JFK</code>. Thus, the itinerary must begin with <code>JFK</code>.</p>
-<p><strong>Note:</strong>  </p>
-<ol>
-<li>If there are multiple valid itineraries, you should return the itinerary that has the smallest lexical order when read as a single string. For example, the itinerary <code>[&quot;JFK&quot;, &quot;LGA&quot;]</code> has a smaller lexical order than <code>[&quot;JFK&quot;, &quot;LGB&quot;]</code>.</li>
-<li>All airports are represented by three capital letters (IATA code).</li>
-<li>You may assume all tickets form at least one valid itinerary.</li>
-</ol>
-<p><strong>Example 1:</strong><br><code>tickets</code> = <code>[[&quot;MUC&quot;, &quot;LHR&quot;], [&quot;JFK&quot;, &quot;MUC&quot;], [&quot;SFO&quot;, &quot;SJC&quot;], [&quot;LHR&quot;, &quot;SFO&quot;]]</code><br>Return <code>[&quot;JFK&quot;, &quot;MUC&quot;, &quot;LHR&quot;, &quot;SFO&quot;, &quot;SJC&quot;]</code>.  </p>
-<p><strong>Example 2:</strong><br><code>tickets</code> = <code>[[&quot;JFK&quot;,&quot;SFO&quot;],[&quot;JFK&quot;,&quot;ATL&quot;],[&quot;SFO&quot;,&quot;ATL&quot;],[&quot;ATL&quot;,&quot;JFK&quot;],[&quot;ATL&quot;,&quot;SFO&quot;]]</code><br>Return <code>[&quot;JFK&quot;,&quot;ATL&quot;,&quot;JFK&quot;,&quot;SFO&quot;,&quot;ATL&quot;,&quot;SFO&quot;]</code>.<br>Another possible reconstruction is <code>[&quot;JFK&quot;,&quot;SFO&quot;,&quot;ATL&quot;,&quot;JFK&quot;,&quot;ATL&quot;,&quot;SFO&quot;]</code>. But it is larger in lexical order.</p>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一组机票，用出发机场和到达机场[from, to]来表示，重建行程的顺序。所有的机票都属于一个从JFK（肯尼迪国际机场）出发的旅客。因此，行程必须从JFK开始。</p>
-<p>注意：</p>
-<p>如果存在多重有效的行程，你应当返回字典序最小的那个。例如，行程[“JFK”, “LGA”]的字典序比[“JFK”, “LGB”]要小。<br>所有的机场用3个大写字母表示（IATA编码）。<br>你可以假设所有的机票均至少包含一条有效的行程。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这条题实质是记录DFS路径的题目，且对儿子节点的选择是有顺序的。值得注意的是并不是所有路径都是可形成回路，所以需要DFS搜索。<br>既然是要记录路径就需要用数组保存结果，而有顺序则表示要排序。</p>
-<ol>
-<li>建图，用邻接表来表示HashMap<string, linkedlist<string="">&gt; graph</string,></li>
-<li>对每个节点的邻节点LinkList进行排序</li>
-<li>从JFK开始dfs。1)终止条件为所有ticket都遍历了(达成回路)或者不能够遍历完。2)路径存在数组中。 3)通过删除节点表示已访问DFS该节点后图要恢复成原状态。</li>
-</ol>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>终止条件为所有ticket都遍历了(达成完整路)或者不能够遍历完Dfs API含ticketLeft。如{“JFK”,”KUL”},{“JFK”,”NRT”},{“NRT”,”JFK”}，虽然KUL在NRT前，但KUL不能组成回路。</li>
-<li>DFS路径尽量存在数组中，否则用ArrayList中就要先add再remove。</li>
-<li>通过删除节点表示已访问DFS该节点后图要恢复成原状态。</li>
-</ol>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;String&gt; <span class="title">findItinerary</span><span class="params">(String[][] tickets)</span> </span>&#123;</span><br><span class="line">	HashMap&lt;String, LinkedList&lt;String&gt;&gt; graph = <span class="keyword">new</span> HashMap&lt;String, LinkedList&lt;String&gt;&gt;();</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;tickets.length;i++)&#123;</span><br><span class="line">		LinkedList&lt;String&gt; neighbor = graph.get(tickets[i][<span class="number">0</span>]);</span><br><span class="line">		<span class="keyword">if</span>(neighbor==<span class="keyword">null</span>)</span><br><span class="line">			neighbor = <span class="keyword">new</span> LinkedList&lt;String&gt;();</span><br><span class="line">		neighbor.add(tickets[i][<span class="number">1</span>]);</span><br><span class="line">		graph.put(tickets[i][<span class="number">0</span>], neighbor);</span><br><span class="line">	&#125;</span><br><span class="line">	Iterator&lt;String&gt; it = graph.keySet().iterator();</span><br><span class="line">	<span class="keyword">while</span>(it.hasNext())&#123;</span><br><span class="line">		String key = it.next();</span><br><span class="line">		LinkedList&lt;String&gt; neighbor = graph.get(key);</span><br><span class="line">		Collections.sort(neighbor);</span><br><span class="line">		graph.put(key, neighbor);</span><br><span class="line">	&#125;</span><br><span class="line">	String[] re = <span class="keyword">new</span> String[tickets.length+<span class="number">1</span>];</span><br><span class="line">	String cur = <span class="string">"JFK"</span>;</span><br><span class="line">	re[<span class="number">0</span>] = cur;</span><br><span class="line">	isDFS(graph,cur,tickets.length,tickets.length,re);</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">new</span> ArrayList&lt;String&gt;(Arrays.asList(re));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isDFS</span><span class="params">(HashMap&lt;String, LinkedList&lt;String&gt;&gt; graph, String departCity</span></span></span><br><span class="line"><span class="function"><span class="params">		,<span class="keyword">int</span> ticketLeft, <span class="keyword">int</span> ticketNum, String[] re)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(ticketLeft==<span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;    	</span><br><span class="line">	LinkedList&lt;String&gt; desCity = graph.get(departCity);</span><br><span class="line">	<span class="keyword">if</span>(desCity==<span class="keyword">null</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;desCity.size();i++)&#123;</span><br><span class="line">		String cur = desCity.get(i);</span><br><span class="line">		re[ticketNum-ticketLeft+<span class="number">1</span>] = cur;</span><br><span class="line">		desCity.remove(i);</span><br><span class="line">		graph.put(departCity, desCity);</span><br><span class="line">		<span class="keyword">if</span>(isDFS(graph,cur,ticketLeft-<span class="number">1</span>,ticketNum,re))</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">true</span>;;</span><br><span class="line">		desCity.add(i,cur);</span><br><span class="line">		graph.put(departCity, desCity);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>。    </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -659,6 +650,10 @@ Explanation: The array cannot be partitioned into equal sum subsets.
   <ul class="entry">
     
       <li>
+        <a href="/2018/06/14/lee-155/">LeetCode 155 Min Stack</a>
+      </li>
+    
+      <li>
         <a href="/2018/05/07/lee-128/">LeetCode 128 Longest Consecutive Sequence</a>
       </li>
     
@@ -674,10 +669,6 @@ Explanation: The array cannot be partitioned into equal sum subsets.
         <a href="/2018/04/30/lee-273/">LeetCode 273 Integer to English Words</a>
       </li>
     
-      <li>
-        <a href="/2018/04/30/lee-493/">LeetCode 493 Reverse Pairs</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -688,7 +679,7 @@ Explanation: The array cannot be partitioned into equal sum subsets.
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Array/" style="font-size: 18.57px;">Array</a> <a href="/tags/Binary-Indexed-Tree/" style="font-size: 10px;">Binary Indexed Tree</a> <a href="/tags/Binary-Search/" style="font-size: 14.29px;">Binary Search</a> <a href="/tags/Binary-Search-Tree/" style="font-size: 10px;">Binary Search Tree</a> <a href="/tags/Breadth-first-Search/" style="font-size: 11.43px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15.71px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.43px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12.86px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 17.14px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 11.43px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 11.43px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 15.71px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 10px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 17.14px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 15.71px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 10px;">Linked List</a> <a href="/tags/Math/" style="font-size: 11.43px;">Math</a> <a href="/tags/Memoization/" style="font-size: 10px;">Memoization</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10px;">Segment Tree</a> <a href="/tags/Sort/" style="font-size: 14.29px;">Sort</a> <a href="/tags/Stack/" style="font-size: 11.43px;">Stack</a> <a href="/tags/String/" style="font-size: 12.86px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.86px;">Tree</a> <a href="/tags/Two-Pointers/" style="font-size: 12.86px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 11.43px;">Union Find</a>
+    <a href="/tags/Array/" style="font-size: 18.75px;">Array</a> <a href="/tags/Binary-Indexed-Tree/" style="font-size: 10px;">Binary Indexed Tree</a> <a href="/tags/Binary-Search/" style="font-size: 13.75px;">Binary Search</a> <a href="/tags/Binary-Search-Tree/" style="font-size: 10px;">Binary Search Tree</a> <a href="/tags/Breadth-first-Search/" style="font-size: 11.25px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 12.5px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12.5px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 16.25px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 11.25px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 11.25px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 15px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 10px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 17.5px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 15px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 10px;">Linked List</a> <a href="/tags/Math/" style="font-size: 11.25px;">Math</a> <a href="/tags/Memoization/" style="font-size: 10px;">Memoization</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10px;">Segment Tree</a> <a href="/tags/Sort/" style="font-size: 13.75px;">Sort</a> <a href="/tags/Stack/" style="font-size: 12.5px;">Stack</a> <a href="/tags/String/" style="font-size: 12.5px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.5px;">Tree</a> <a href="/tags/Two-Pointers/" style="font-size: 12.5px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 11.25px;">Union Find</a>
   </div>
 </div>
 

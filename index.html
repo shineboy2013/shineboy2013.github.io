@@ -51,11 +51,77 @@
     <header>
       
   
+    <h1 class="title"><a href="/2018/06/14/lee-155/">LeetCode 155 Min Stack</a></h1>
+  
+
+      
+        <time datetime="2018-06-14T07:12:02.826Z">2018-06-14</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/min-stack" target="_blank" rel="noopener">LeetCode 155 Min Stack</a></strong></p>
+<p>Design a stack that supports push, pop, top, and retrieving the minimum element in constant time.</p>
+<ul>
+<li>push(x) – Push element x onto stack.</li>
+<li>pop() – Removes the element on top of the stack.</li>
+<li>top() – Get the top element.</li>
+<li>getMin() – Retrieve the minimum element in the stack.</li>
+</ul>
+<p><strong>Example:</strong>  </p>
+<pre>MinStack minStack = new MinStack();
+minStack.push(-2);
+minStack.push(0);
+minStack.push(-3);
+minStack.getMin();   --> Returns -3.
+minStack.pop();
+minStack.top();      --> Returns 0.
+minStack.getMin();   --> Returns -2.
+</pre>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>设计一个栈，支持在常数时间内push，pop，top，和取最小值。</p>
+<p>push(x) – 元素x压入栈<br>pop() – 弹出栈顶元素<br>top() – 获取栈顶元素<br>getMin() – 获取栈中的最小值</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是考察Algorithm和data structure的经典问题。用stack即可实现push，top，pop。难点在于O(1)内实现getMin。看一个例子，<br>按以下顺序加入stack     5, 3, 6, 8, 2<br>最小值                 5, 3, 3, 3, 2<br>可以看出来，最小值是动态变化的，所以需要动态处理，由于存储的方式与stack一致，所以可以考虑再用一个stack来存最小值。<br>如果不用额外stack改用Node，将make_pair(x, curMin)一起压入栈stack<node<int,int>&gt;中，额外空间复杂度O(n)。 见算法2。<br>稍改进空间复杂度，最小值只存变化的值，也就是5,3,2，当最小值变化时再存入最小栈。出栈时候，若出栈元素等于最小栈中的元素，<br>最小栈的元素也要出栈。</node<int,int></p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>当前最小元素可能相等。相等元素也要入最小栈，如5,3,6,3，最小栈为5,3,3。x &lt;= minS.peek()一定要取等于。</li>
+<li>考虑栈为空时，执行pop和peek的操作。这里存在一个decision point，设计原则与stack的操作一致，也就是暴露出exception。</li>
+</ol>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MinStack</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	 <span class="comment">/** initialize your data structure here. */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MinStack</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        s = <span class="keyword">new</span> Stack&lt;&gt;();</span><br><span class="line">        minS = <span class="keyword">new</span> Stack&lt;&gt;();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">push</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">        s.push(x);</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span>(minS.isEmpty() || x &lt;= minS.peek())</span><br><span class="line">        	minS.push(x);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">pop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> top = s.pop();</span><br><span class="line">        <span class="keyword">if</span>(top == minS.peek())</span><br><span class="line">        	minS.pop();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">top</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> s.peek();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getMin</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> minS.peek();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    Stack&lt;Integer&gt; s;</span><br><span class="line">    Stack&lt;Integer&gt; minS;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(1)</code>，空间复杂度<code>O(n)</code>。</p>
+<p>算法2也是可以通过leetcode测试的，虽然空间复杂度比上述差。<br><a href="https://dotblogs.com.tw/tsanmmmm2000/2017/05/19/leetcode-practice-min-stack" target="_blank" rel="noopener">存储每个新加值对应的min，更加浪费空间</a>**</p>
+<h3 id="Follow-up"><a href="#Follow-up" class="headerlink" title="Follow-up:"></a><strong>Follow-up:</strong></h3><p>如果用O(1)额外空间，怎么改进算法？  </p>
+<h3 id="考点"><a href="#考点" class="headerlink" title="考点:"></a><strong>考点:</strong></h3><ol>
+<li>先不考虑getMin，用什么数据结构实现push, pop, top</li>
+<li>暴力法可以实现getMin，怎么实现O(1)。用什么数据结构实现存储min，额外用一个stack</li>
+<li>元素可能相等</li>
+<li>考虑栈为空时，执行pop和peek的操作</li>
+</ol>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2018/05/07/lee-128/">LeetCode 128 Longest Consecutive Sequence</a></h1>
   
 
       
-        <time datetime="2018-05-08T06:57:44.774Z">2018-05-07</time>
+        <time datetime="2018-05-08T06:57:44.775Z">2018-05-07</time>
       
     </header>
     <div class="entry">
@@ -235,7 +301,7 @@
   
 
       
-        <time datetime="2018-04-30T22:45:07.445Z">2018-04-30</time>
+        <time datetime="2018-04-30T22:45:07.446Z">2018-04-30</time>
       
     </header>
     <div class="entry">
@@ -271,7 +337,7 @@
   
 
       
-        <time datetime="2018-03-18T03:35:41.221Z">2018-03-17</time>
+        <time datetime="2018-03-18T03:35:41.222Z">2018-03-17</time>
       
     </header>
     <div class="entry">
@@ -320,7 +386,7 @@
   
 
       
-        <time datetime="2018-03-13T07:57:39.085Z">2018-03-13</time>
+        <time datetime="2018-03-13T07:57:39.086Z">2018-03-13</time>
       
     </header>
     <div class="entry">
@@ -374,7 +440,7 @@ return [0, 1].
   
 
       
-        <time datetime="2018-02-23T06:12:22.318Z">2018-02-22</time>
+        <time datetime="2018-02-23T06:12:22.319Z">2018-02-22</time>
       
     </header>
     <div class="entry">
@@ -473,53 +539,6 @@ The median is (2 + 3)/2 = 2.5
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2018/01/30/lee-006/">LeetCode 006 ZigZag Conversion</a></h1>
-  
-
-      
-        <time datetime="2018-01-31T06:11:31.902Z">2018-01-30</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/zigzag-conversion" target="_blank" rel="noopener">LeetCode 006 ZigZag Conversion</a></strong></p>
-<p>The string <code>&quot;PAYPALISHIRING&quot;</code> is written in a zigzag pattern on a given number of rows like this: (you may want to display this pattern in a fixed font for better legibility)</p>
-<pre>P   A   H   N
-A P L S I I G
-Y   I   R
-</pre>
-
-<p>And then read line by line: <code>&quot;PAHNAPLSIIGYIR&quot;</code></p>
-<p>Write the code that will take a string and make this conversion given a number of rows:</p>
-<pre>string convert(string text, int nRows);</pre>
-
-<p><code>convert(&quot;PAYPALISHIRING&quot;, 3)</code> should return <code>&quot;PAHNAPLSIIGYIR&quot;</code>.</p>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定字符串按如上的“Z”字锯齿形进行按行重排。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是一个周期性的字符串。周期是竖+折（不含首节点）。<br><img src="/images/L006.png" alt=""><br>首节点和竖的最后一点在每周期只会出现一次，其他点会出现两次。<br>T=2&times;numRows-2(因为不含竖节点最后一点+折线上的最后一点属于另一个周期)。nT是有几个周期，即使不完成的周期也算一个。<br>按行遍历（实质是周期上的每个点），再按周期遍历，非顶点有两个需加入：j&times;T+i,(j+1)&times;T-i。由于周期可能不完成，只要写一个API检查边界且加入字符即可。</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><p>一个字符的字符串。此时T=0.直接返回原字符串。</p>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">convert2</span><span class="params">(String s, <span class="keyword">int</span> numRows)</span> </span>&#123;</span><br><span class="line">	StringBuffer sb = <span class="keyword">new</span> StringBuffer();</span><br><span class="line">	<span class="keyword">int</span> T = numRows*<span class="number">2</span>-<span class="number">2</span>;</span><br><span class="line">	<span class="keyword">if</span>(T==<span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> s;</span><br><span class="line">	<span class="keyword">int</span> nT = (<span class="keyword">int</span>)Math.ceil((s.length()+<span class="number">0.0</span>)/T);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;numRows;i++)&#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;nT;j++)&#123;</span><br><span class="line">			<span class="keyword">if</span>(i==<span class="number">0</span> || i==numRows-<span class="number">1</span>)</span><br><span class="line">				sb.append(addChar(s, j*T+i));</span><br><span class="line">			<span class="keyword">else</span>&#123;</span><br><span class="line">				sb.append(addChar(s, j*T+i));</span><br><span class="line">				sb.append(addChar(s, (j+<span class="number">1</span>)*T-i));</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> sb.toString();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">addChar</span><span class="params">(String s, <span class="keyword">int</span> index)</span></span>&#123;</span><br><span class="line">	String a = <span class="string">""</span>;</span><br><span class="line">	<span class="keyword">if</span>(index&lt;s.length())</span><br><span class="line">		<span class="keyword">return</span> s.substring(index, index+<span class="number">1</span>);</span><br><span class="line">	<span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>。</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -542,6 +561,10 @@ Y   I   R
   <ul class="entry">
     
       <li>
+        <a href="/2018/06/14/lee-155/">LeetCode 155 Min Stack</a>
+      </li>
+    
+      <li>
         <a href="/2018/05/07/lee-128/">LeetCode 128 Longest Consecutive Sequence</a>
       </li>
     
@@ -557,10 +580,6 @@ Y   I   R
         <a href="/2018/04/30/lee-273/">LeetCode 273 Integer to English Words</a>
       </li>
     
-      <li>
-        <a href="/2018/04/30/lee-493/">LeetCode 493 Reverse Pairs</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -571,7 +590,7 @@ Y   I   R
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Array/" style="font-size: 18.57px;">Array</a> <a href="/tags/Binary-Indexed-Tree/" style="font-size: 10px;">Binary Indexed Tree</a> <a href="/tags/Binary-Search/" style="font-size: 14.29px;">Binary Search</a> <a href="/tags/Binary-Search-Tree/" style="font-size: 10px;">Binary Search Tree</a> <a href="/tags/Breadth-first-Search/" style="font-size: 11.43px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15.71px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.43px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12.86px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 17.14px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 11.43px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 11.43px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 15.71px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 10px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 17.14px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 15.71px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 10px;">Linked List</a> <a href="/tags/Math/" style="font-size: 11.43px;">Math</a> <a href="/tags/Memoization/" style="font-size: 10px;">Memoization</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10px;">Segment Tree</a> <a href="/tags/Sort/" style="font-size: 14.29px;">Sort</a> <a href="/tags/Stack/" style="font-size: 11.43px;">Stack</a> <a href="/tags/String/" style="font-size: 12.86px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.86px;">Tree</a> <a href="/tags/Two-Pointers/" style="font-size: 12.86px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 11.43px;">Union Find</a>
+    <a href="/tags/Array/" style="font-size: 18.75px;">Array</a> <a href="/tags/Binary-Indexed-Tree/" style="font-size: 10px;">Binary Indexed Tree</a> <a href="/tags/Binary-Search/" style="font-size: 13.75px;">Binary Search</a> <a href="/tags/Binary-Search-Tree/" style="font-size: 10px;">Binary Search Tree</a> <a href="/tags/Breadth-first-Search/" style="font-size: 11.25px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 12.5px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12.5px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 16.25px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 11.25px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 11.25px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 15px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 10px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 17.5px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 15px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 10px;">Linked List</a> <a href="/tags/Math/" style="font-size: 11.25px;">Math</a> <a href="/tags/Memoization/" style="font-size: 10px;">Memoization</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10px;">Segment Tree</a> <a href="/tags/Sort/" style="font-size: 13.75px;">Sort</a> <a href="/tags/Stack/" style="font-size: 12.5px;">Stack</a> <a href="/tags/String/" style="font-size: 12.5px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.5px;">Tree</a> <a href="/tags/Two-Pointers/" style="font-size: 12.5px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 11.25px;">Union Find</a>
   </div>
 </div>
 
