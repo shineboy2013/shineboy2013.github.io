@@ -51,6 +51,47 @@
     <header>
       
   
+    <h1 class="title"><a href="/2018/06/17/design-distributed-id/">Design Distributed ID Generator</a></h1>
+  
+
+      
+        <time datetime="2018-06-18T06:16:29.341Z">2018-06-17</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>生成唯一ID如用户ID，订单ID。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>基本思路是将所有网站映射到一个整数。<br>三大核心需求：</p>
+<ol>
+<li>全局唯一(unique)</li>
+<li>按照时间粗略有序(sortable by time)。按时间查询是普遍的请求，如得到最新的1000个用户。</li>
+<li>尽可能短。省空间，查询要更有效率。</li>
+</ol>
+<h3 id="UUID："><a href="#UUID：" class="headerlink" title="UUID："></a><strong>UUID：</strong></h3><p>UUID是一类算法的统称，具体有不同的实现。UUID的有点是每台机器可以独立产生ID，理论上保证<br>不会重复，所以天然是分布式的，缺点是生成的ID太长，不仅占用内存，而且索引查询效率低。<br>4个字节表示的Unix timestamp,<br>3个字节表示的机器的ID<br>2个字节表示的进程ID<br>3个字节表示的计数器</p>
+<h3 id="多机器分别自增："><a href="#多机器分别自增：" class="headerlink" title="多机器分别自增："></a><strong>多机器分别自增：</strong></h3><p>假设用8台MySQL服务器协同工作，第一台MySQL初始值是1，每次自增8，第二台MySQL初始值是2，<br>每次自增8，依次类推。前面用一个 round-robin load balancer 挡着，每来一个请求，由<br>round-robin balancer 随机地将请求发给8台MySQL中的任意一个，然后返回一个ID。<br>load balance可以确保请求平均分配到不同的机器，所以粗略有序，缺点是加机器要re-hash这些Id<br>且顺序不够稳定。</p>
+<h3 id="Twitter-Snowflake："><a href="#Twitter-Snowflake：" class="headerlink" title="Twitter Snowflake："></a><strong>Twitter Snowflake：</strong></h3><p>原理与UUID基本一样。也是时间戳+机器id+自增序号。时间戳保证有序。<br><img src="/images/design-distributed-id.png" alt="">  </p>
+<p><a href="https://soulmachine.gitbooks.io/system-design/content/cn/tinyurl.html" target="_blank" rel="noopener">https://soulmachine.gitbooks.io/system-design/content/cn/tinyurl.html</a><br><a href="https://segmentfault.com/a/1190000006140476" target="_blank" rel="noopener">https://segmentfault.com/a/1190000006140476</a></p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2018/06/14/lee-155/">LeetCode 155 Min Stack</a></h1>
   
 
@@ -249,13 +290,64 @@ minStack.getMin();   --> Returns -2.
     <div class="entry">
       
         <h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>长URL变成短URL方便传输和阅读，特别是很多社交网站对字数有限制如Twitter。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>整数乘法注意越界</li>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>基本思路是将所有网站映射到一个整数。</p>
+<h3 id="短网址长度："><a href="#短网址长度：" class="headerlink" title="短网址长度："></a><strong>短网址长度：</strong></h3><p>短网址若只含数字，也就是十进制整数还是不够短。可以考虑加入大小写字母，总共有26x2+10=62，也就是一个62进制数。<br>网站总数是45亿个，62^7就远远大于45亿，7位就够。<br>若long表示的64位整数，log62(2^64-1)=11，大约是对应11位。  </p>
+<table>
+<thead>
+<tr>
+<th>网站</th>
+<th style="text-align:left">十进制</th>
+<th style="text-align:left">62进制</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>amazon.com</td>
+<td style="text-align:left">0854</td>
+<td style="text-align:left">a5G</td>
+</tr>
+</tbody>
+</table>
+<h3 id="存储方法："><a href="#存储方法：" class="headerlink" title="存储方法："></a><strong>存储方法：</strong></h3><p>写操作：长网址到短网址<br>读操作：短网址到长网址<br>读操作远远大于写操作，所以key（或primary key）选在短网址， value在长网址。<br>每个新的长网址，对应一个短网址还是多个？考虑一下几点：</p>
+<ol>
+<li>若对应一个短网址，必须再产生一个unique key在长网址上来决定该长网址对应的短网址是否存在。大大降低写操作速度。  </li>
+<li>长网址虽然一样，但可以带不同的header, user agent，从而知道进入该长网址的入口（其他网站），短网址商的盈利来源。<br>所以长网址对应多个短网址，Google Maps就采取这个设计。    </li>
 </ol>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>k为最长路径长度，时间复杂度为<code>O(k<em>n</em><sup>2</sup>)</code>，空间复杂度<code>O(<em>n</em><sup>2</sup>)</code>。   </p>
-<p><a href="https://soulmachine.gitbooks.io/system-design/content/cn/tinyurl.html" target="_blank" rel="noopener">https://soulmachine.gitbooks.io/system-design/content/cn/tinyurl.html</a><br><a href="https://segmentfault.com/a/1190000006140476" target="_blank" rel="noopener">https://segmentfault.com/a/1190000006140476</a></p>
-<p>怎么知道长url已经存在，index on long url</p>
+<table>
+<thead>
+<tr>
+<th>网站</th>
+<th style="text-align:left">十进制</th>
+<th style="text-align:left">62进制</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>amazon.com</td>
+<td style="text-align:left">0854</td>
+<td style="text-align:left">a5G</td>
+</tr>
+<tr>
+<td>amazon.com</td>
+<td style="text-align:left">17922</td>
+<td style="text-align:left">bYd</td>
+</tr>
+</tbody>
+</table>
+<p>数据库选择可以是关系型数据库SQL Server，或者KV数据库如Redis，dynamoDB。可以详细讨论关系型数据库与No SQL的区别。<br>此题目用No sql比较好，因为从分布性考虑和是否需要复杂的Join操作来考虑，No sql有明显优势。</p>
+<h3 id="计算短网址："><a href="#计算短网址：" class="headerlink" title="计算短网址："></a><strong>计算短网址：</strong></h3><p>另一个核心问题就是如何计算短网址，具体而言是怎么从URL转化为一个十进制整数。有几个方案：  </p>
+<ol>
+<li>最简单的是维护一个最大值，每个新的请求，对此值加1。缺点是分布式系统中，维护单一最大值（所有机器中）大大降低性能。</li>
+<li>取URL的hash值得到64位整数再取前7位，但会有冲突。</li>
+<li><a href="https://shineboy2013.github.io/2018/06/18/design-distributed-id/" target="_blank" rel="noopener">参考分布式发号器</a>  </li>
+</ol>
+<h3 id="DDOS："><a href="#DDOS：" class="headerlink" title="DDOS："></a><strong>DDOS：</strong></h3><p>这是一个细节考虑，若黑客大量发请求，耗尽所有ID怎么办？</p>
+<ol>
+<li>限制IP单日请求总数，超过直接拒绝。</li>
+<li>限制长网址的单一性。限制IP还不够，因为用proxy provider服务可以绕过这个限制。用Redis来cache长网址到短网址的一日数据，<br>然后LRU淘汰旧的数据。这样如果此URL的请求超过一定数量，比如100次，就返回最新的短网址。<br>长网址-&gt;次数+短URL</li>
+</ol>
+<h3 id="301还是302："><a href="#301还是302：" class="headerlink" title="301还是302："></a><strong>301还是302：</strong></h3><p>301是永久重定向，302是临时重定向。如果用了301， Google，百度等搜索引擎，搜索的时候会直接展示真实地址，那我们就无法统计<br>到短地址被点击的次数了，也无法收集用户的Cookie, User Agent等信息。这是短网址商的盈利来源。  </p>
+<h3 id="Ref："><a href="#Ref：" class="headerlink" title="Ref："></a><strong>Ref：</strong></h3><p><a href="https://soulmachine.gitbooks.io/system-design/content/cn/tinyurl.html" target="_blank" rel="noopener">https://soulmachine.gitbooks.io/system-design/content/cn/tinyurl.html</a><br><a href="https://segmentfault.com/a/1190000006140476" target="_blank" rel="noopener">https://segmentfault.com/a/1190000006140476</a>  </p>
 
       
     </div>
@@ -495,66 +587,6 @@ return [0, 1].
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2018/01/31/lee-004/">LeetCode 004 Median of Two Sorted Arrays</a></h1>
-  
-
-      
-        <time datetime="2018-02-01T03:24:53.428Z">2018-01-31</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/median-of-two-sorted-arrays" target="_blank" rel="noopener">LeetCode 004 Median of Two Sorted Arrays</a></strong></p>
-<p>There are two sorted arrays <strong>nums1</strong> and <strong>nums2</strong> of size m and n respectively.</p>
-<p>Find the median of the two sorted arrays. The overall run time complexity should be O(log (m+n)).</p>
-<p><strong>Example 1:</strong>  </p>
-<pre>nums1 = [1, 3]
-nums2 = [2]
-
-The median is 2.0
-</pre>
-
-<p><strong>Example 2:</strong>  </p>
-<pre>nums1 = [1, 2]
-nums2 = [3, 4]
-
-The median is (2 + 3)/2 = 2.5
-</pre>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求两个有序数组中的中位数。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>题目要求log(m+n)复杂度，也就提示要对数组总长做二分法。因为要同时处理两个数组所以考虑用递归版二分法。因奇偶中位数有1-2个，<br>所以加强命题为求两有序数组的第k个数(k&gt;=1)。<br>对k的值进行二分k/2，先尝试num1数组的第k/2个数和num2数组的第k/2个数。若它们相等，表示它们即为第k个数。若它们不等，不妨假设<br>aKey&lt;bKey，这样表示第k个数一定不会是aKey，因为即使比bKey小的数均小于aKey的话（有k/2-1个），总共有k/2-1+k/2-1=k-2个数小于<br>aKey，也就是aKey为第k-1个数，不可能为第k个数，它只可能出现是bKey或者在num1中比aKey大的数。既然aKey不是解，比aKey小的数<br>更不可能是解。所以，可以抛掉num1[0, k/2]这部分，转而求num1[k/2+1,nums.length-1]以及nums2的第k-k/2个数，抛掉部分会影响结果<br>吗？答案是否定的。比如<br>1 2 3 4<br>0 6 7 8<br>k=4，比较2和6,2&lt;6抛掉1 2，转求[3,4],[0,6,7,8]的第2个数，答案仍为3，不影响结果，因为前k/2个数即使有些在nums2也不会影响<br>最后结果，求的是第k个。<br>1 2 9 9<br>0 6 7 8<br>第k=4数可能出现在num1[k/2+1,nums.length-1]=3或num2=6（下面例子），所以保留部分是正确的。<br>主要思路是<strong>每次递归抛掉k/2个数，数组规模减少k/2，k变成k-k/2</strong>, API为left, left2表示新数组的左边界以及k。<br>递归终止条件为</p>
-<ol>
-<li>left越界，归结为求另一数组[left..]的第k个数  </li>
-<li>k为1时候，是基本情况，表示求两数组的第1个数，只要返回左端的最小值即可。  </li>
-</ol>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>中位数有1-2两个。</li>
-<li>off by 1的问题。若API中的k定义为第k个数k&gt;=1，若总长len=5，中位数为第len/2+1=3个数。所以在递归函数中，数组下标用到k时<br>都要-1。抛掉[left, left+k/2-1],递归[left+k/2..]。</li>
-<li>若nums中left+k/2-1越界，不碰nums，右移left2，因为nums不能右移那么多。</li>
-</ol>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">findMedianSortedArrays</span><span class="params">(<span class="keyword">int</span>[] num1, <span class="keyword">int</span>[] num2)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> len = num1.length+num2.length;</span><br><span class="line">	<span class="keyword">if</span>(len%<span class="number">2</span>==<span class="number">1</span>)</span><br><span class="line">		<span class="keyword">return</span> findKth(num1,num2,<span class="number">0</span>,<span class="number">0</span>,len/<span class="number">2</span>+<span class="number">1</span>);</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">return</span> (findKth(num1,num2,<span class="number">0</span>,<span class="number">0</span>,len/<span class="number">2</span>)+findKth(num1,num2,<span class="number">0</span>,<span class="number">0</span>,len/<span class="number">2</span>+<span class="number">1</span>))/<span class="number">2.0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">findKth</span><span class="params">(<span class="keyword">int</span>[] num1, <span class="keyword">int</span>[] num2, <span class="keyword">int</span> left, <span class="keyword">int</span> left2, <span class="keyword">int</span> k)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(left&gt;=num1.length)</span><br><span class="line">		<span class="keyword">return</span> num2[left2+k-<span class="number">1</span>];</span><br><span class="line">	<span class="keyword">if</span>(left2&gt;=num2.length)</span><br><span class="line">		<span class="keyword">return</span> num1[left+k-<span class="number">1</span>];</span><br><span class="line">	<span class="keyword">if</span>(k==<span class="number">1</span>)</span><br><span class="line">		<span class="keyword">return</span> Math.min(num1[left], num2[left2]);;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">int</span> aKey = left+k/<span class="number">2</span>-<span class="number">1</span>&lt;num1.length?num1[left+k/<span class="number">2</span>-<span class="number">1</span>]:Integer.MAX_VALUE;</span><br><span class="line">	<span class="keyword">int</span> bKey = left2+k/<span class="number">2</span>-<span class="number">1</span>&lt;num2.length?num2[left2+k/<span class="number">2</span>-<span class="number">1</span>]:Integer.MAX_VALUE;</span><br><span class="line">	<span class="keyword">if</span>(aKey&lt;bKey)</span><br><span class="line">		<span class="keyword">return</span> findKth(num1,num2,left+k/<span class="number">2</span>,left2,k-k/<span class="number">2</span>);</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		<span class="keyword">return</span> findKth(num1,num2,left,left2+k/<span class="number">2</span>, k-k/<span class="number">2</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>假设两数组总长度为N，k为中位数即N/2，每次抛掉k/2也就是子问题规模为N-k/2=N-N/4=3N/4. f(N)=f(3N/4)+1.<br>利用master理论b=4/3, a=1, f(n)=1代入时间复杂度为<code>O(log(m+n))</code>，空间复杂度<code>O(1)</code>。</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -577,6 +609,10 @@ The median is (2 + 3)/2 = 2.5
   <ul class="entry">
     
       <li>
+        <a href="/2018/06/17/design-distributed-id/">Design Distributed ID Generator</a>
+      </li>
+    
+      <li>
         <a href="/2018/06/14/lee-155/">LeetCode 155 Min Stack</a>
       </li>
     
@@ -592,10 +628,6 @@ The median is (2 + 3)/2 = 2.5
         <a href="/2018/04/30/design-tiny-url/">Design Tiny URL</a>
       </li>
     
-      <li>
-        <a href="/2018/04/30/lee-273/">LeetCode 273 Integer to English Words</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -606,7 +638,7 @@ The median is (2 + 3)/2 = 2.5
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Array/" style="font-size: 18.75px;">Array</a> <a href="/tags/Binary-Indexed-Tree/" style="font-size: 10px;">Binary Indexed Tree</a> <a href="/tags/Binary-Search/" style="font-size: 13.75px;">Binary Search</a> <a href="/tags/Binary-Search-Tree/" style="font-size: 10px;">Binary Search Tree</a> <a href="/tags/Breadth-first-Search/" style="font-size: 11.25px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 12.5px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12.5px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 16.25px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 11.25px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 11.25px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 15px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 10px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 17.5px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 15px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 10px;">Linked List</a> <a href="/tags/Math/" style="font-size: 11.25px;">Math</a> <a href="/tags/Memoization/" style="font-size: 10px;">Memoization</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10px;">Segment Tree</a> <a href="/tags/Sort/" style="font-size: 13.75px;">Sort</a> <a href="/tags/Stack/" style="font-size: 12.5px;">Stack</a> <a href="/tags/String/" style="font-size: 12.5px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.5px;">Tree</a> <a href="/tags/Two-Pointers/" style="font-size: 12.5px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 11.25px;">Union Find</a>
+    <a href="/tags/Array/" style="font-size: 18.75px;">Array</a> <a href="/tags/Binary-Indexed-Tree/" style="font-size: 10px;">Binary Indexed Tree</a> <a href="/tags/Binary-Search/" style="font-size: 13.75px;">Binary Search</a> <a href="/tags/Binary-Search-Tree/" style="font-size: 10px;">Binary Search Tree</a> <a href="/tags/Breadth-first-Search/" style="font-size: 11.25px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 13.75px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12.5px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 16.25px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 11.25px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 11.25px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 15px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 10px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 17.5px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 15px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 10px;">Linked List</a> <a href="/tags/Math/" style="font-size: 11.25px;">Math</a> <a href="/tags/Memoization/" style="font-size: 10px;">Memoization</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10px;">Segment Tree</a> <a href="/tags/Sort/" style="font-size: 13.75px;">Sort</a> <a href="/tags/Stack/" style="font-size: 12.5px;">Stack</a> <a href="/tags/String/" style="font-size: 12.5px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.5px;">Tree</a> <a href="/tags/Two-Pointers/" style="font-size: 12.5px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 11.25px;">Union Find</a>
   </div>
 </div>
 
