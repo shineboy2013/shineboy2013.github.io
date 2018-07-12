@@ -1,0 +1,189 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+  
+  <title>LeetCode 042 Trapping Rain Water › Jiajie&#39;s blog</title>
+  <meta name="author" content="KK Shum">
+  
+  <meta name="description" content="LeetCode 042 Trapping Rain Water
+Given n non-negative integers representing an elevation map where the width of each bar is 1, compute how much water ">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="LeetCode 042 Trapping Rain Water"/>
+  <meta property="og:site_name" content="Jiajie&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="Jiajie&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]--><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+</head>
+
+
+<body>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><header id="header"><div class="meta inner">
+  <h1><a href="/">Jiajie&#39;s blog</a></h1>
+  <h2><a href="/">每天积累多一些</a></h2>
+  <nav id="main-nav">
+    <ul>
+      
+      <li><a href="/about">About</a></li>
+      
+      <li><a href="/archives">Archives</a></li>
+      
+      <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+</div>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title">LeetCode 042 Trapping Rain Water</h1>
+  
+
+      
+        <time datetime="2018-07-12T07:19:43.024Z">2018-07-12</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/trapping-rain-water" target="_blank" rel="noopener">LeetCode 042 Trapping Rain Water</a></strong></p>
+<p>Given <em>n</em> non-negative integers representing an elevation map where the width of each bar is 1, compute how much water it is able to trap after raining.</p>
+<p><img src="http://www.leetcode.com/static/images/problemset/rainwatertrap.png" alt=""><br><small>The above elevation map is represented by array [0,1,0,2,1,0,1,3,2,1,2,1]. In this case, 6 units of rain water (blue section) are being trapped. <strong>Thanks Marcos</strong> for contributing this image!</small></p>
+<p><strong>Example:</strong></p>
+<pre>**Input:** [0,1,0,2,1,0,1,3,2,1,2,1]
+**Output:** 6</pre>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给出 n 个非负整数，代表一张X轴上每个区域宽度为 1 的海拔图, 计算这个海拔图最多能接住多少（面积）雨水。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>画图解题。<br>比较直观的方法是找低谷，只有低谷才可以藏水。用一个递减栈来存所有呈递减趋势的下标，而当上升时就计算藏水量。<br><img src="/images/L042.png" alt=""><br>从图可以看出，坐标4为最低点，下一个坐标为5，此时4,3,2一个个出栈从而计算新底部对应的藏水增量（横向）。<br>注意，粉红色水量是为了向左补齐，因为它没有相应的递减下标对应，否则会少计算水量。此时1和5在栈中，形成递减栈，<br>遍历到下标12的时候，5出栈时，就会计算白色部分(1到11)藏水增量。  </p>
+<p>解题步骤：</p>
+<ol>
+<li>遍历数组</li>
+<li>若比上一个高度递增，出栈直至栈中下标对应高度大于当前高度（保持递减栈）。每次出栈，用上一轮的高度作为底部计算高度差<br>乘以下标距离即为横向藏水增量，更新底部进入下一次出栈。  </li>
+<li>出栈完成后，向左补齐，用当前高度计算藏水增量。</li>
+<li>加入下标到栈中</li>
+</ol>
+<hr>
+<h3 id="算法II解题思路："><a href="#算法II解题思路：" class="headerlink" title="算法II解题思路："></a><strong>算法II解题思路：</strong></h3><p>算法I主要从面考虑，现在我们从点来考虑。下标4的水量取决于向左最大值（下标0）和向右最大值（下标12）中的较小值。<br>问题转化为求每个点的向左向右最大值。数组从左到右扫描，把当前最大值存入leftHeight中，这是向左最大值。<br><img src="/images/L042-2.png" alt=""><br>同理，数组从又到左扫描，得到向右最大值。对每个点取向左向右最大值的较小者，从而计算水量。此法实现起来简单很多。  </p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><p><a href="http://bangbingsyb.blogspot.com/2014/11/leetcode-trapping-rain-water.html" target="_blank" rel="noopener">http://bangbingsyb.blogspot.com/2014/11/leetcode-trapping-rain-water.html</a></p>
+
+      
+    </div>
+      
+      <footer>
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/Array/">Array</a>, <a href="/tags/Two-Pointers/">Two Pointers</a>, <a href="/tags/Stack/">Stack</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  
+</section>
+
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="q" value="site:shineboy2013.github.com">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">Recent Posts</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2018/07/12/lee-042/">LeetCode 042 Trapping Rain Water</a>
+      </li>
+    
+      <li>
+        <a href="/2018/06/17/design-distributed-id/">Design Distributed ID Generator</a>
+      </li>
+    
+      <li>
+        <a href="/2018/06/14/lee-155/">LeetCode 155 Min Stack</a>
+      </li>
+    
+      <li>
+        <a href="/2018/05/07/lee-128/">LeetCode 128 Longest Consecutive Sequence</a>
+      </li>
+    
+      <li>
+        <a href="/2018/05/01/design-chime/">Design Chime</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">Tag Cloud</h3>
+  <div class="entry">
+    <a href="/tags/Array/" style="font-size: 18.75px;">Array</a> <a href="/tags/Binary-Indexed-Tree/" style="font-size: 10px;">Binary Indexed Tree</a> <a href="/tags/Binary-Search/" style="font-size: 13.75px;">Binary Search</a> <a href="/tags/Binary-Search-Tree/" style="font-size: 10px;">Binary Search Tree</a> <a href="/tags/Breadth-first-Search/" style="font-size: 11.25px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 13.75px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12.5px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 16.25px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 11.25px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 11.25px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 15px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 10px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 17.5px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 15px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 10px;">Linked List</a> <a href="/tags/Math/" style="font-size: 11.25px;">Math</a> <a href="/tags/Memoization/" style="font-size: 10px;">Memoization</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10px;">Segment Tree</a> <a href="/tags/Sort/" style="font-size: 13.75px;">Sort</a> <a href="/tags/Stack/" style="font-size: 13.75px;">Stack</a> <a href="/tags/String/" style="font-size: 12.5px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.5px;">Tree</a> <a href="/tags/Two-Pointers/" style="font-size: 13.75px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 11.25px;">Union Find</a>
+  </div>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2018 KK Shum
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+
+</body>
+</html>
+
