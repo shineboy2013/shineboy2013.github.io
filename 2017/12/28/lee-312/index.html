@@ -65,52 +65,30 @@ Given n balloons, indexed from 0 to n-1. Each balloon is painted with a number o
         <p><strong><a href="https://leetcode.com/problems/burst-balloons" target="_blank" rel="noopener">LeetCode 312 Burst Balloons</a></strong></p>
 <p>Given <code>n</code> balloons, indexed from <code>0</code> to <code>n-1</code>. Each balloon is painted with a number on it represented by array <code>nums</code>. You are asked to burst all the balloons. If the you burst balloon <code>i</code> you will get <code>nums[left] * nums[i] * nums[right]</code> coins. Here <code>left</code> and <code>right</code> are adjacent indices of <code>i</code>. After the burst, the <code>left</code> and <code>right</code> then becomes adjacent.</p>
 <p>Find the maximum coins you can collect by bursting the balloons wisely.</p>
-<p><strong>Note:</strong><br>
-(1) You may imagine <code>nums[-1] = nums[n] = 1</code>. They are not real therefore you can not burst them.<br>
-(2) 0 ≤ <code>n</code> ≤ 500, 0 ≤ <code>nums[i]</code> ≤ 100</p>
+<p><strong>Note:</strong><br>(1) You may imagine <code>nums[-1] = nums[n] = 1</code>. They are not real therefore you can not burst them.<br>(2) 0 ≤ <code>n</code> ≤ 500, 0 ≤ <code>nums[i]</code> ≤ 100</p>
 <p><strong>Example:</strong></p>
 <p>Given <code>[3, 1, 5, 8]</code></p>
 <p>Return <code>167</code></p>
-<p>&lt;pre&gt;    nums = [3,1,5,8] --&gt; [3,5,8] --&gt;   [3,8]   --&gt;  [8]  --&gt; []
-coins =  3<em>1</em>5      +  3<em>5</em>8    +  1<em>3</em>8      + 1<em>8</em>1   = 167
-&lt;/pre&gt;</p>
-<h3><strong>题目大意：</strong></h3>
-<p>给定n个气球，下标为0到n-1。每个气球上都标有一个数字，用数组nums表示。你被要求扎破所有气球。扎破第i个气球可以获得nums[left] × nums[i] × nums[right]枚硬币。这里left和right是与i相邻的下标。扎破气球以后，left和right就变成相邻的了。
-寻找最优策略下可以获得的硬币数。</p>
-<p>注意：
-(1) 你可以假设nums[-1] = nums[n] = 1. 它们并非真实的因此不能扎破。
-(2) 0 ≤ n ≤ 500, 0 ≤ nums[i] ≤ 100</p>
-<h3><strong>解题思路：</strong></h3>
-<ol>
-<li>此题遍历所有可能性，所以考虑用DP</li>
-<li>因为一个参数不足以描述问题，因为并不能固定nums左端或右端，所以考虑二元DP，左右边界为参数。DP流程一：定义函数f(i,j)为nums[i..j]之间的最大硬币数。</li>
-<li>下一步写递归式，由于这是二元DP，参考Floyd和矩阵链乘法算法，一遍要定义一个k，二分法得到两个子问题的解f(i,k)和f(k,j)，求解它们的关系是难点。先写几个例子培养下思路：<br>
-2,3,4<br>
-f([2,4])=2×3×4同时消去了3变成[2,4],再写一个<br>
-2,3,4,5,6,7,8<br>
-k=5, 数组变成[2,5,8]所以我们定义中忽略了一个重要事实，修改为f(i,j)为nums[i..j]之间的最大硬币数<strong>及其它们之间的元素已经消去。</strong><br>
-这样的话，关系就很明朗了，只要消去5就可以得到f([2,8])，k的定义要可以清晰了：最后一个消去的元素。<br>
-<strong>f(i,j)=max{f(i,m)+ nums[i]×nums[m]×nums[j] +f(m,j)}, i&lt;m&lt;j，m为整数</strong></li>
-<li>我们还要试试nums为单元素和双元素情况下是否适用。比如单元素5，根据题目意思首先前后补1<br>
-1,5,1 -&gt; f(1,5)+1×5×1+f(5,1)=5这是正确的因为f(x,y)默认为0.<br>
-1,5,3,1, k=5, f(1,5)+1×5×1+f(5,1)=0+5+(5×3×1)=20 | k=3, f(1,3)+1×3×1+f(3,1)=(1×5×3)+3+0=18.所以也是正确，且f(x,y)默认为0没问题。</li>
-<li>遍历顺序。一开始我用i,j,m三重循环，但结果不对。主要因为这个计算过程与演算过程不一致，我们刚才的演算过程是先计算所有i和j之间的值。例如，<br>
-1,                      5,                               3,          1<br>
-i                          j<br>
-i                  j<br>
-    i              j<br>
-在第二次循环的时候f(i,j)已经计算出来很显然是不对的。</li>
+<pre>    nums = [3,1,5,8] --> [3,5,8] -->   [3,8]   -->  [8]  --> []
+   coins =  3*1*5      +  3*5*8    +  1*3*8      + 1*8*1   = 167
+</pre>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定n个气球，下标为0到n-1。每个气球上都标有一个数字，用数组nums表示。你被要求扎破所有气球。扎破第i个气球可以获得nums[left] &times; nums[i] &times; nums[right]枚硬币。这里left和right是与i相邻的下标。扎破气球以后，left和right就变成相邻的了。<br>寻找最优策略下可以获得的硬币数。</p>
+<p>注意：<br>(1) 你可以假设nums[-1] = nums[n] = 1. 它们并非真实的因此不能扎破。<br>(2) 0 ≤ n ≤ 500, 0 ≤ nums[i] ≤ 100</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><ol>
+<li>此题遍历所有可能性，所以考虑用DP  </li>
+<li>因为一个参数不足以描述问题，因为并不能固定nums左端或右端，所以考虑二元DP，左右边界为参数。DP流程一：定义函数f(i,j)为nums[i..j]之间的最大硬币数。  </li>
+<li>下一步写递归式，由于这是二元DP，参考Floyd和矩阵链乘法算法，一遍要定义一个k，二分法得到两个子问题的解f(i,k)和f(k,j)，求解它们的关系是难点。先写几个例子培养下思路：<br> 2,3,4<br> f([2,4])=2&times;3&times;4同时消去了3变成[2,4],再写一个<br> 2,3,4,5,6,7,8<br> k=5, 数组变成[2,5,8]所以我们定义中忽略了一个重要事实，修改为f(i,j)为nums[i..j]之间的最大硬币数<strong>及其它们之间的元素已经消去。</strong><br> 这样的话，关系就很明朗了，只要消去5就可以得到f([2,8])，k的定义要可以清晰了：最后一个消去的元素。<br> <strong>f(i,j)=max{f(i,m)+ nums[i]&times;nums[m]&times;nums[j] +f(m,j)}, i&lt;m&lt;j，m为整数</strong>  </li>
+<li>我们还要试试nums为单元素和双元素情况下是否适用。比如单元素5，根据题目意思首先前后补1<br>1,5,1 -&gt; f(1,5)+1&times;5&times;1+f(5,1)=5这是正确的因为f(x,y)默认为0.<br>1,5,3,1, k=5, f(1,5)+1&times;5&times;1+f(5,1)=0+5+(5&times;3&times;1)=20 | k=3, f(1,3)+1&times;3&times;1+f(3,1)=(1&times;5&times;3)+3+0=18.所以也是正确，且f(x,y)默认为0没问题。  </li>
+<li>遍历顺序。一开始我用i,j,m三重循环，但结果不对。主要因为这个计算过程与演算过程不一致，我们刚才的演算过程是先计算所有i和j之间的值。例如，<br>1,                      5,                               3,          1<br>i &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                   j<br>i &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;       j<br>&nbsp;&nbsp;&nbsp;&nbsp;i &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;       j<br>在第二次循环的时候f(i,j)已经计算出来很显然是不对的。</li>
 </ol>
-<h3><strong>注意事项：</strong></h3>
-<ol>
-<li>二元DP([i,j],k的递归式)+二分法。 二元DP中k的引入参考Floyd按步长计算。</li>
-<li>原数组前后补1，这样巧妙地让递归式适用于一个元素的情况，避免特别处理。</li>
-<li>便利顺序也类似于Floyd，先k(步长且至少为2)，再遍历矩阵i和j。<strong>特别注意i&lt;n-k</strong>而不是i&lt;n</li>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>二元DP([i,j],k的递归式)+二分法。 二元DP中k的引入参考Floyd按步长计算。  </li>
+<li>原数组前后补1，这样巧妙地让递归式适用于一个元素的情况，避免特别处理。  </li>
+<li>便利顺序也类似于Floyd，先k(步长且至少为2)，再遍历矩阵i和j。<strong>特别注意i&lt;n-k</strong>而不是i&lt;n  </li>
 </ol>
-<h3><strong>Java代码：</strong></h3>
-<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxCoins</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> n = nums.length+<span class="number">2</span>;</span><br><span class="line">	<span class="keyword">int</span>[] coins = <span class="keyword">new</span> <span class="keyword">int</span>[n];</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums.length;i++)</span><br><span class="line">		coins[i+<span class="number">1</span>]=nums[i];</span><br><span class="line">	coins[<span class="number">0</span>] = coins[n-<span class="number">1</span>] = <span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">int</span>[][] dp = <span class="keyword">new</span> <span class="keyword">int</span>[n][n];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> k=<span class="number">2</span>;k&lt;n;k++)</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n - k;i++)&#123;</span><br><span class="line">			<span class="keyword">int</span> j = i+k;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> m=i+<span class="number">1</span>;m&lt;j;m++)</span><br><span class="line">				dp[i][j] = Math.max(dp[i][j], dp[i][m]+coins[i]*coins[m]*coins[j] + dp[m][j]);</span><br><span class="line">				</span><br><span class="line">		&#125;</span><br><span class="line">	<span class="keyword">return</span> dp[<span class="number">0</span>][n-<span class="number">1</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>三重循环，时间复杂度为&lt;code&gt;O(n&lt;sup&gt;3&lt;/sup&gt;)&lt;/code&gt;，空间复杂度&lt;code&gt;O(n&lt;sup&gt;2&lt;/sup&gt;)&lt;/code&gt;。</p>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxCoins</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> n = nums.length+<span class="number">2</span>;</span><br><span class="line">	<span class="keyword">int</span>[] coins = <span class="keyword">new</span> <span class="keyword">int</span>[n];</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums.length;i++)</span><br><span class="line">		coins[i+<span class="number">1</span>]=nums[i];</span><br><span class="line">	coins[<span class="number">0</span>] = coins[n-<span class="number">1</span>] = <span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">int</span>[][] dp = <span class="keyword">new</span> <span class="keyword">int</span>[n][n];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> k=<span class="number">2</span>;k&lt;n;k++)</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n - k;i++)&#123;</span><br><span class="line">			<span class="keyword">int</span> j = i+k;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> m=i+<span class="number">1</span>;m&lt;j;m++)</span><br><span class="line">				dp[i][j] = Math.max(dp[i][j], dp[i][m]+coins[i]*coins[m]*coins[j] + dp[m][j]);</span><br><span class="line">				</span><br><span class="line">		&#125;</span><br><span class="line">	<span class="keyword">return</span> dp[<span class="number">0</span>][n-<span class="number">1</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>三重循环，时间复杂度为<code>O(n<sup>3</sup>)</code>，空间复杂度<code>O(n<sup>2</sup>)</code>。</p>
 
       
     </div>
@@ -120,7 +98,7 @@ i                  j<br>
         
   
   <div class="tags">
-    <a href="/tags/Divide-and-Conquer/">Divide and Conquer</a>, <a href="/tags/Classic/">Classic</a>, <a href="/tags/Dynamic-Programming/">Dynamic Programming</a>
+    <a href="/tags/Classic/">Classic</a>, <a href="/tags/Divide-and-Conquer/">Divide and Conquer</a>, <a href="/tags/Dynamic-Programming/">Dynamic Programming</a>
   </div>
 
         
