@@ -1,0 +1,199 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+  
+  <title>LeetCode 540 Single Element in a Sorted Array › Jiajie&#39;s blog</title>
+  <meta name="author" content="KK Shum">
+  
+  <meta name="description" content="LeetCode 540 Single Element in a Sorted Array
+Given a sorted array consisting of only integers where every element appears twice except for one elemen">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="LeetCode 540 Single Element in a Sorted Array"/>
+  <meta property="og:site_name" content="Jiajie&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="Jiajie&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]--><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+</head>
+
+
+<body>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><header id="header"><div class="meta inner">
+  <h1><a href="/">Jiajie&#39;s blog</a></h1>
+  <h2><a href="/">每天积累多一些</a></h2>
+  <nav id="main-nav">
+    <ul>
+      
+      <li><a href="/about">About</a></li>
+      
+      <li><a href="/archives">Archives</a></li>
+      
+      <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+</div>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title">LeetCode 540 Single Element in a Sorted Array</h1>
+  
+
+      
+        <time datetime="2019-02-26T08:35:31.937Z">2019-02-26</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/single-element-in-a-sorted-array" target="_blank" rel="noopener">LeetCode 540 Single Element in a Sorted Array</a></strong></p>
+<p>Given a sorted array consisting of only integers where every element appears twice except for one element which appears once. Find this single element that appears only once.</p>
+<p><strong>Example 1:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> [1,1,2,3,3,4,4,8,8]
+<strong>Output:</strong> 2
+&lt;/pre&gt;</p>
+<p><strong>Example 2:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> [3,3,7,7,10,11,11]
+<strong>Output:</strong> 10
+&lt;/pre&gt;</p>
+<p><strong>Note:</strong> Your solution should run in O(log n) time and O(1) space.</p>
+<h3><strong>题目大意：</strong></h3>
+<p>一个有序数组中，每个数字都出现了两次，只有一个数字出现了一次，求出现一次的数字。</p>
+<h3><strong>解题思路：</strong></h3>
+<p>这是A公司的题目。类似于L136。此题数组有序且要求O(n)时间，所以考虑用二分法。由于没有输入tgt，有点似算法文档中用二分法求峰值，<br>
+就是用相邻两个数做二分法。考虑一个结论，若数组为偶数个数，就一定不存在只出现一次的元素。所以必须考虑奇偶位，若下标mid为偶数，其后一位与其相等，<br>
+就一定在右半边搜索left=mid+2(不会是mid和mid+1)，如第二个例子，因为mid左边个数为偶数，利用结论可知不会在左边。同理与后一位不等，搜左边right=mid<br>
+(可能为mid)。注意边界。若mid为奇数，mid前面有奇数个，mid包括自己的后面有偶数个，所以mid和mid+1上的数相等，就应在左半搜，所以与偶数位的情况正好相反，<br>
+但是边界不同，产生了4个if语句。<br>
+法二：改进一下，若mid为奇数位，就mid--归结为偶数位的情况，这样if变成两个。</p>
+<h3><strong>注意事项：</strong></h3>
+<ol>
+<li>边界也就是mid的赋值，写出例子来理解。</li>
+</ol>
+<h3><strong>Java代码：</strong></h3>
+<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">singleNonDuplicate</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> N = nums.length;</span><br><span class="line">	<span class="keyword">int</span> left = <span class="number">0</span>, right = N - <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">while</span> (left &lt; right) &#123;</span><br><span class="line">		<span class="keyword">int</span> mid = (right - left) / <span class="number">2</span> + left;</span><br><span class="line">		<span class="keyword">boolean</span> isEven = <span class="keyword">true</span>;</span><br><span class="line">		<span class="keyword">if</span> (mid % <span class="number">2</span> == <span class="number">1</span>) isEven = <span class="keyword">false</span>;</span><br><span class="line">		<span class="keyword">if</span> ((isEven &amp;&amp; nums[mid] != nums[mid + <span class="number">1</span>]) )</span><br><span class="line">			right = mid;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (isEven &amp;&amp; nums[mid] == nums[mid + <span class="number">1</span>])</span><br><span class="line">			left = mid + <span class="number">2</span>;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (!isEven &amp;&amp; nums[mid] == nums[mid + <span class="number">1</span>])</span><br><span class="line">			right = mid-<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			left = mid + <span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> nums[left];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">singleNonDuplicate2</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">	  <span class="keyword">int</span> N = nums.length;</span><br><span class="line">	  <span class="keyword">int</span> left = <span class="number">0</span>, right = N - <span class="number">1</span>;</span><br><span class="line">	  <span class="keyword">while</span> (left &lt; right) &#123;</span><br><span class="line">		  <span class="keyword">int</span> mid = (right - left) / <span class="number">2</span> + left;</span><br><span class="line">		  <span class="keyword">if</span> (mid % <span class="number">2</span> == <span class="number">1</span>) mid--;</span><br><span class="line">		  <span class="keyword">if</span> (nums[mid] != nums[mid + <span class="number">1</span>])</span><br><span class="line">			  right = mid;</span><br><span class="line">		  <span class="keyword">else</span></span><br><span class="line">			  left = mid + <span class="number">2</span>;</span><br><span class="line">	  &#125;</span><br><span class="line">	  <span class="keyword">return</span> nums[left];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3><strong>算法分析：</strong></h3>
+<p>时间复杂度为<code>O(logn)</code>，空间复杂度<code>O(1)</code>。</p>
+
+      
+    </div>
+      
+      <footer>
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/Interviewer/">Interviewer</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  
+</section>
+
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="q" value="site:shineboy2013.github.com">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">Recent Posts</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2019/02/26/lee-540/">LeetCode 540 Single Element in a Sorted Array</a>
+      </li>
+    
+      <li>
+        <a href="/2018/07/12/lee-042/">LeetCode 042 Trapping Rain Water</a>
+      </li>
+    
+      <li>
+        <a href="/2018/06/17/design-distributed-id/">Design Distributed ID Generator</a>
+      </li>
+    
+      <li>
+        <a href="/2018/06/14/lee-155/">LeetCode 155 Min Stack</a>
+      </li>
+    
+      <li>
+        <a href="/2018/05/07/lee-128/">LeetCode 128 Longest Consecutive Sequence</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">Tag Cloud</h3>
+  <div class="entry">
+    <a href="/tags/Array/" style="font-size: 18.75px;">Array</a> <a href="/tags/Binary-Indexed-Tree/" style="font-size: 10px;">Binary Indexed Tree</a> <a href="/tags/Binary-Search/" style="font-size: 13.75px;">Binary Search</a> <a href="/tags/Binary-Search-Tree/" style="font-size: 10px;">Binary Search Tree</a> <a href="/tags/Breadth-first-Search/" style="font-size: 11.25px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 13.75px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12.5px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 16.25px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 11.25px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 11.25px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 15px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 10px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 17.5px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 15px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 10px;">Linked List</a> <a href="/tags/Math/" style="font-size: 11.25px;">Math</a> <a href="/tags/Memoization/" style="font-size: 10px;">Memoization</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10px;">Segment Tree</a> <a href="/tags/Sort/" style="font-size: 13.75px;">Sort</a> <a href="/tags/Stack/" style="font-size: 13.75px;">Stack</a> <a href="/tags/String/" style="font-size: 12.5px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.5px;">Tree</a> <a href="/tags/Two-Pointers/" style="font-size: 13.75px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 11.25px;">Union Find</a>
+  </div>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2019 KK Shum
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+
+</body>
+</html>
+
