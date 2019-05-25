@@ -62,39 +62,26 @@
       
         <p><strong><a href="https://leetcode.com/problems/single-element-in-a-sorted-array" target="_blank" rel="noopener">LeetCode 540 Single Element in a Sorted Array</a></strong></p>
 <p>Given a sorted array consisting of only integers where every element appears twice except for one element which appears once. Find this single element that appears only once.</p>
-<p><strong>Example 1:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> [1,1,2,3,3,4,4,8,8]
-<strong>Output:</strong> 2
-&lt;/pre&gt;</p>
-<p><strong>Example 2:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> [3,3,7,7,10,11,11]
-<strong>Output:</strong> 10
-&lt;/pre&gt;</p>
+<p><strong>Example 1:</strong>  </p>
+<pre>**Input:** [1,1,2,3,3,4,4,8,8]
+**Output:** 2
+</pre>
+
+<p><strong>Example 2:</strong>  </p>
+<pre>**Input:** [3,3,7,7,10,11,11]
+**Output:** 10
+</pre>
+
 <p><strong>Note:</strong> Your solution should run in O(log n) time and O(1) space.</p>
-<h3><strong>题目大意：</strong></h3>
-<p>一个有序数组中，每个数字都出现了两次，只有一个数字出现了一次，求出现一次的数字。</p>
-<h3><strong>解题思路：</strong></h3>
-<p>这是A公司Problem solving的题目。类似于L136。此题数组有序且要求O(logn)时间，所以考虑用二分法。由于没有输入tgt，有点似<br>
-算法文档中用二分法求峰值，就是用相邻两个数做二分法。考虑一个结论，若数组为偶数个数，就一定不存在只出现一次的元素。<br>
-所以必须考虑奇偶位，若下标mid为偶数，其后一位与其相等，就一定在右半边搜索left=mid+2(不会是mid和mid+1)，如第二个<br>
-例子，因为mid左边个数为偶数，利用结论可知不会在左边。同理与后一位不等，搜左边right=mid(可能为mid)。注意边界。<br>
-若mid为奇数，mid前面有奇数个，mid包括自己的后面有偶数个，所以mid和mid+1上的数相等，就应在左半搜，所以与偶数位的<br>
-情况正好相反，但是边界不同，产生了4个if语句。<br>
-法二：改进一下，若mid为奇数位，就mid--归结为偶数位的情况，这样if变成两个。</p>
-<h3><strong>注意事项：</strong></h3>
-<ol>
-<li>边界也就是mid的赋值，写出例子来理解。</li>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>一个有序数组中，每个数字都出现了两次，只有一个数字出现了一次，求出现一次的数字。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是A公司Problem solving的题目。类似于L136。此题数组有序且要求O(logn)时间，所以考虑用二分法。由于没有输入tgt，有点似<br>算法文档中用二分法求峰值，就是用相邻两个数做二分法。考虑一个结论，若数组为偶数个数，就一定不存在只出现一次的元素。<br>所以必须考虑奇偶位，若下标mid为偶数，其后一位与其相等，就一定在右半边搜索left=mid+2(不会是mid和mid+1)，如第二个<br>例子，因为mid左边个数为偶数，利用结论可知不会在左边。同理与后一位不等，搜左边right=mid(可能为mid)。注意边界。<br>若mid为奇数，mid前面有奇数个，mid包括自己的后面有偶数个，所以mid和mid+1上的数相等，就应在左半搜，所以与偶数位的<br>情况正好相反，但是边界不同，产生了4个if语句。<br>法二：改进一下，若mid为奇数位，就mid–归结为偶数位的情况，这样if变成两个。  </p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>边界也就是mid的赋值，写出例子来理解。  </li>
 </ol>
-<h3><strong>Java代码：</strong></h3>
-<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">singleNonDuplicate</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> N = nums.length;</span><br><span class="line">	<span class="keyword">int</span> left = <span class="number">0</span>, right = N - <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">while</span> (left &lt; right) &#123;</span><br><span class="line">		<span class="keyword">int</span> mid = (right - left) / <span class="number">2</span> + left;</span><br><span class="line">		<span class="keyword">boolean</span> isEven = <span class="keyword">true</span>;</span><br><span class="line">		<span class="keyword">if</span> (mid % <span class="number">2</span> == <span class="number">1</span>) isEven = <span class="keyword">false</span>;</span><br><span class="line">		<span class="keyword">if</span> ((isEven &amp;&amp; nums[mid] != nums[mid + <span class="number">1</span>]) )</span><br><span class="line">			right = mid;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (isEven &amp;&amp; nums[mid] == nums[mid + <span class="number">1</span>])</span><br><span class="line">			left = mid + <span class="number">2</span>;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (!isEven &amp;&amp; nums[mid] == nums[mid + <span class="number">1</span>])</span><br><span class="line">			right = mid-<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			left = mid + <span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> nums[left];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">singleNonDuplicate2</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">	  <span class="keyword">int</span> N = nums.length;</span><br><span class="line">	  <span class="keyword">int</span> left = <span class="number">0</span>, right = N - <span class="number">1</span>;</span><br><span class="line">	  <span class="keyword">while</span> (left &lt; right) &#123;</span><br><span class="line">		  <span class="keyword">int</span> mid = (right - left) / <span class="number">2</span> + left;</span><br><span class="line">		  <span class="keyword">if</span> (mid % <span class="number">2</span> == <span class="number">1</span>) mid--;</span><br><span class="line">		  <span class="keyword">if</span> (nums[mid] != nums[mid + <span class="number">1</span>])</span><br><span class="line">			  right = mid;</span><br><span class="line">		  <span class="keyword">else</span></span><br><span class="line">			  left = mid + <span class="number">2</span>;</span><br><span class="line">	  &#125;</span><br><span class="line">	  <span class="keyword">return</span> nums[left];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>时间复杂度为<code>O(logn)</code>，空间复杂度<code>O(1)</code>。</p>
-<h3><strong>Follow-up:</strong></h3>
-<p>首先问L316 Given a non-empty array of integers, every element appears twice except for one. Find that single one.
-XOR解法，不用实现。
-Follow up问题是L260 Given an array of numbers nums, in which exactly two elements appear only once and all the other elements appear exactly twice. Find the two elements that appear only once.
-分三步。若只有一个数出现1次，只要把所有数异或^即可(相同数异或=0)。如果有两个此数，异或结果是这两数不同的位。只要选为1且最低位(或任意为1的位)lowBit=a-(a&amp;(a-1))。再扫所有数，根据它们在lowBit上=0和=1分组异或num1, num2，最后分组异或后它们为所求</p>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">singleNonDuplicate</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> N = nums.length;</span><br><span class="line">	<span class="keyword">int</span> left = <span class="number">0</span>, right = N - <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">while</span> (left &lt; right) &#123;</span><br><span class="line">		<span class="keyword">int</span> mid = (right - left) / <span class="number">2</span> + left;</span><br><span class="line">		<span class="keyword">boolean</span> isEven = <span class="keyword">true</span>;</span><br><span class="line">		<span class="keyword">if</span> (mid % <span class="number">2</span> == <span class="number">1</span>) isEven = <span class="keyword">false</span>;</span><br><span class="line">		<span class="keyword">if</span> ((isEven &amp;&amp; nums[mid] != nums[mid + <span class="number">1</span>]) )</span><br><span class="line">			right = mid;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (isEven &amp;&amp; nums[mid] == nums[mid + <span class="number">1</span>])</span><br><span class="line">			left = mid + <span class="number">2</span>;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (!isEven &amp;&amp; nums[mid] == nums[mid + <span class="number">1</span>])</span><br><span class="line">			right = mid-<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			left = mid + <span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> nums[left];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">singleNonDuplicate2</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">	  <span class="keyword">int</span> N = nums.length;</span><br><span class="line">	  <span class="keyword">int</span> left = <span class="number">0</span>, right = N - <span class="number">1</span>;</span><br><span class="line">	  <span class="keyword">while</span> (left &lt; right) &#123;</span><br><span class="line">		  <span class="keyword">int</span> mid = (right - left) / <span class="number">2</span> + left;</span><br><span class="line">		  <span class="keyword">if</span> (mid % <span class="number">2</span> == <span class="number">1</span>) mid--;</span><br><span class="line">		  <span class="keyword">if</span> (nums[mid] != nums[mid + <span class="number">1</span>])</span><br><span class="line">			  right = mid;</span><br><span class="line">		  <span class="keyword">else</span></span><br><span class="line">			  left = mid + <span class="number">2</span>;</span><br><span class="line">	  &#125;</span><br><span class="line">	  <span class="keyword">return</span> nums[left];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(logn)</code>，空间复杂度<code>O(1)</code>。  </p>
+<h3 id="Follow-up"><a href="#Follow-up" class="headerlink" title="Follow-up:"></a><strong>Follow-up:</strong></h3><p>首先问L316 Given a non-empty array of integers, every element appears twice except for one. Find that single one.<br>XOR解法，不用实现。<br>Follow up问题是L260 Given an array of numbers nums, in which exactly two elements appear only once and all the other elements appear exactly twice. Find the two elements that appear only once.<br>分三步。若只有一个数出现1次，只要把所有数异或^即可(相同数异或=0)。如果有两个此数，异或结果是这两数不同的位。只要选为1且最低位(或任意为1的位)lowBit=a-(a&amp;(a-1))。再扫所有数，根据它们在lowBit上=0和=1分组异或num1, num2，最后分组异或后它们为所求</p>
 
       
     </div>
@@ -127,36 +114,22 @@ Follow up问题是L260 Given an array of numbers nums, in which exactly two elem
       
         <p><strong><a href="https://leetcode.com/problems/trapping-rain-water" target="_blank" rel="noopener">LeetCode 042 Trapping Rain Water</a></strong></p>
 <p>Given <em>n</em> non-negative integers representing an elevation map where the width of each bar is 1, compute how much water it is able to trap after raining.</p>
-<p><img src="http://www.leetcode.com/static/images/problemset/rainwatertrap.png" alt=""><br>
-&lt;small&gt;The above elevation map is represented by array [0,1,0,2,1,0,1,3,2,1,2,1]. In this case, 6 units of rain water (blue section) are being trapped. <strong>Thanks Marcos</strong> for contributing this image!&lt;/small&gt;</p>
+<p><img src="http://www.leetcode.com/static/images/problemset/rainwatertrap.png" alt=""><br><small>The above elevation map is represented by array [0,1,0,2,1,0,1,3,2,1,2,1]. In this case, 6 units of rain water (blue section) are being trapped. <strong>Thanks Marcos</strong> for contributing this image!</small></p>
 <p><strong>Example:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> [0,1,0,2,1,0,1,3,2,1,2,1]
-<strong>Output:</strong> 6&lt;/pre&gt;</p>
-<h3><strong>题目大意：</strong></h3>
-<p>给出 n 个非负整数，代表一张X轴上每个区域宽度为 1 的海拔图, 计算这个海拔图最多能接住多少（面积）雨水。</p>
-<h3><strong>解题思路：</strong></h3>
-<p>画图解题。
-比较直观的方法是找低谷，只有低谷才可以藏水。用一个递减栈来存所有呈递减趋势的下标，而当上升时就计算藏水量。<br>
-<img src="/images/L042.png" alt=""><br>
-从图可以看出，坐标4为最低点，下一个坐标为5，此时4,3,2一个个出栈从而计算新底部对应的藏水增量（横向）。<br>
-注意，粉红色水量是为了向左补齐，因为它没有相应的递减下标对应，否则会少计算水量。此时1和5在栈中，形成递减栈，<br>
-遍历到下标12的时候，5出栈时，就会计算白色部分(1到11)藏水增量。</p>
-<h3><strong>解题步骤：</strong></h3>
-<ol>
+<pre>**Input:** [0,1,0,2,1,0,1,3,2,1,2,1]
+**Output:** 6</pre>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给出 n 个非负整数，代表一张X轴上每个区域宽度为 1 的海拔图, 计算这个海拔图最多能接住多少（面积）雨水。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>画图解题。<br>比较直观的方法是找低谷，只有低谷才可以藏水。用一个递减栈来存所有呈递减趋势的下标，而当上升时就计算藏水量。<br><img src="/images/L042.png" alt=""><br>从图可以看出，坐标4为最低点，下一个坐标为5，此时4,3,2一个个出栈从而计算新底部对应的藏水增量（横向）。<br>注意，粉红色水量是为了向左补齐，因为它没有相应的递减下标对应，否则会少计算水量。此时1和5在栈中，形成递减栈，<br>遍历到下标12的时候，5出栈时，就会计算白色部分(1到11)藏水增量。  </p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><ol>
 <li>遍历数组</li>
-<li>若比上一个高度递增，出栈直至栈中下标对应高度大于当前高度（保持递减栈）。每次出栈，用上一轮的高度作为底部计算高度差<br>
-乘以下标距离即为横向藏水增量，更新底部进入下一次出栈。</li>
+<li>若比上一个高度递增，出栈直至栈中下标对应高度大于当前高度（保持递减栈）。每次出栈，用上一轮的高度作为底部计算高度差<br>乘以下标距离即为横向藏水增量，更新底部进入下一次出栈。  </li>
 <li>出栈完成后，向左补齐，用当前高度计算藏水增量。</li>
 <li>加入下标到栈中</li>
 </ol>
 <hr>
-<h3><strong>算法II解题思路：</strong></h3>
-<p>算法I主要从面考虑，现在我们从点来考虑。下标4的水量取决于向左最大值（下标0）和向右最大值（下标12）中的较小值。<br>
-问题转化为求每个点的向左向右最大值。数组从左到右扫描，把当前最大值存入leftHeight中，这是向左最大值。<br>
-<img src="/images/L042-2.png" alt="">
-同理，数组从又到左扫描，得到向右最大值。对每个点取向左向右最大值的较小者，从而计算水量。此法实现起来简单很多。</p>
-<h3><strong>Ref：</strong></h3>
-<p>http://bangbingsyb.blogspot.com/2014/11/leetcode-trapping-rain-water.html</p>
+<h3 id="算法II解题思路："><a href="#算法II解题思路：" class="headerlink" title="算法II解题思路："></a><strong>算法II解题思路：</strong></h3><p>算法I主要从面考虑，现在我们从点来考虑。下标4的水量取决于向左最大值（下标0）和向右最大值（下标12）中的较小值。<br>问题转化为求每个点的向左向右最大值。数组从左到右扫描，把当前最大值存入leftHeight中，这是向左最大值。<br><img src="/images/L042-2.png" alt=""><br>同理，数组从又到左扫描，得到向右最大值。对每个点取向左向右最大值的较小者，从而计算水量。此法实现起来简单很多。  </p>
+<h3 id="Ref："><a href="#Ref：" class="headerlink" title="Ref："></a><strong>Ref：</strong></h3><p><a href="http://bangbingsyb.blogspot.com/2014/11/leetcode-trapping-rain-water.html" target="_blank" rel="noopener">http://bangbingsyb.blogspot.com/2014/11/leetcode-trapping-rain-water.html</a></p>
 
       
     </div>
@@ -187,32 +160,16 @@ Follow up问题是L260 Given an array of numbers nums, in which exactly two elem
     </header>
     <div class="entry">
       
-        <h3><strong>题目大意：</strong></h3>
-<p>生成唯一ID如用户ID，订单ID。</p>
-<h3><strong>解题思路：</strong></h3>
-<p>基本思路是将所有网站映射到一个整数。
-三大核心需求：</p>
+        <h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>生成唯一ID如用户ID，订单ID。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>基本思路是将所有网站映射到一个整数。<br>三大核心需求：</p>
 <ol>
 <li>全局唯一(unique)</li>
 <li>按照时间粗略有序(sortable by time)。按时间查询是普遍的请求，如得到最新的1000个用户。</li>
 <li>尽可能短。省空间，查询要更有效率。</li>
 </ol>
-<h3><strong>UUID：</strong></h3>
-<p>UUID是一类算法的统称，具体有不同的实现。UUID的有点是每台机器可以独立产生ID，理论上保证<br>
-不会重复，所以天然是分布式的，缺点是生成的ID太长，不仅占用内存，而且索引查询效率低。
-4个字节表示的Unix timestamp,
-3个字节表示的机器的ID
-2个字节表示的进程ID
-3个字节表示的计数器</p>
-<h3><strong>多机器分别自增：</strong></h3>
-<p>假设用8台MySQL服务器协同工作，第一台MySQL初始值是1，每次自增8，第二台MySQL初始值是2，<br>
-每次自增8，依次类推。前面用一个 round-robin load balancer 挡着，每来一个请求，由<br>
-round-robin balancer 随机地将请求发给8台MySQL中的任意一个，然后返回一个ID。<br>
-load balance可以确保请求平均分配到不同的机器，所以粗略有序，缺点是加机器要re-hash这些Id<br>
-且顺序不够稳定。</p>
-<h3><strong>Twitter Snowflake：</strong></h3>
-<p>原理与UUID基本一样。也是时间戳+机器id+自增序号。时间戳保证有序。<br>
-<img src="/images/design-distributed-id.png" alt=""></p>
+<h3 id="UUID："><a href="#UUID：" class="headerlink" title="UUID："></a><strong>UUID：</strong></h3><p>UUID是一类算法的统称，具体有不同的实现。UUID的有点是每台机器可以独立产生ID，理论上保证<br>不会重复，所以天然是分布式的，缺点是生成的ID太长，不仅占用内存，而且索引查询效率低。<br>4个字节表示的Unix timestamp,<br>3个字节表示的机器的ID<br>2个字节表示的进程ID<br>3个字节表示的计数器</p>
+<h3 id="多机器分别自增："><a href="#多机器分别自增：" class="headerlink" title="多机器分别自增："></a><strong>多机器分别自增：</strong></h3><p>假设用8台MySQL服务器协同工作，第一台MySQL初始值是1，每次自增8，第二台MySQL初始值是2，<br>每次自增8，依次类推。前面用一个 round-robin load balancer 挡着，每来一个请求，由<br>round-robin balancer 随机地将请求发给8台MySQL中的任意一个，然后返回一个ID。<br>load balance可以确保请求平均分配到不同的机器，所以粗略有序，缺点是加机器要re-hash这些Id<br>且顺序不够稳定。</p>
+<h3 id="Twitter-Snowflake："><a href="#Twitter-Snowflake：" class="headerlink" title="Twitter Snowflake："></a><strong>Twitter Snowflake：</strong></h3><p>原理与UUID基本一样。也是时间戳+机器id+自增序号。时间戳保证有序。<br><img src="/images/design-distributed-id.png" alt="">  </p>
 
       
     </div>
@@ -246,82 +203,50 @@ load balance可以确保请求平均分配到不同的机器，所以粗略有�
         <p><strong><a href="https://leetcode.com/problems/min-stack" target="_blank" rel="noopener">LeetCode 155 Min Stack</a></strong></p>
 <p>Design a stack that supports push, pop, top, and retrieving the minimum element in constant time.</p>
 <ul>
-<li>push(x) -- Push element x onto stack.</li>
-<li>pop() -- Removes the element on top of the stack.</li>
-<li>top() -- Get the top element.</li>
-<li>getMin() -- Retrieve the minimum element in the stack.</li>
+<li>push(x) – Push element x onto stack.</li>
+<li>pop() – Removes the element on top of the stack.</li>
+<li>top() – Get the top element.</li>
+<li>getMin() – Retrieve the minimum element in the stack.</li>
 </ul>
-<p><strong>Example:</strong></p>
-<p>&lt;pre&gt;MinStack minStack = new MinStack();
+<p><strong>Example:</strong>  </p>
+<pre>MinStack minStack = new MinStack();
 minStack.push(-2);
 minStack.push(0);
 minStack.push(-3);
-minStack.getMin();   --&gt; Returns -3.
+minStack.getMin();   --> Returns -3.
 minStack.pop();
-minStack.top();      --&gt; Returns 0.
-minStack.getMin();   --&gt; Returns -2.
-&lt;/pre&gt;</p>
-<h3><strong>题目大意：</strong></h3>
-<p>设计一个栈，支持在常数时间内push，pop，top，和取最小值。</p>
-<p>push(x) -- 元素x压入栈
-pop() -- 弹出栈顶元素
-top() -- 获取栈顶元素
-getMin() -- 获取栈中的最小值</p>
-<h3><strong>解题思路：</strong></h3>
-<p>这是考察Algorithm和data structure的经典问题。用stack即可实现push，top，pop。难点在于O(1)内实现getMin。看一个例子，<br>
-按以下顺序加入stack     5, 3, 6, 8, 2<br>
-最小值                 5, 3, 3, 3, 2<br>
-可以看出来，最小值是动态变化的，所以需要动态处理，由于存储的方式与stack一致，所以可以考虑再用一个stack来存最小值。
-如果不用额外stack改用Node，将make_pair(x, curMin)一起压入栈stack&lt;Node&lt;int,int&gt;&gt;中，额外空间复杂度O(n)。 见算法2。<br>
-稍改进空间复杂度，最小值只存变化的值，也就是5,3,2，当最小值变化时再存入最小栈。出栈时候，若出栈元素等于最小栈中的元素，<br>
-最小栈的元素也要出栈。</p>
-<h3><strong>注意事项：</strong></h3>
-<ol>
+minStack.top();      --> Returns 0.
+minStack.getMin();   --> Returns -2.
+</pre>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>设计一个栈，支持在常数时间内push，pop，top，和取最小值。</p>
+<p>push(x) – 元素x压入栈<br>pop() – 弹出栈顶元素<br>top() – 获取栈顶元素<br>getMin() – 获取栈中的最小值</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是考察Algorithm和data structure的经典问题。用stack即可实现push，top，pop。难点在于O(1)内实现getMin。看一个例子，<br>按以下顺序加入stack     5, 3, 6, 8, 2<br>最小值                 5, 3, 3, 3, 2<br>可以看出来，最小值是动态变化的，所以需要动态处理，由于存储的方式与stack一致，所以可以考虑再用一个stack来存最小值。<br>如果不用额外stack改用Node，将make_pair(x, curMin)一起压入栈stack<node<int,int>&gt;中，额外空间复杂度O(n)。 见算法2。<br>稍改进空间复杂度，最小值只存变化的值，也就是5,3,2，当最小值变化时再存入最小栈。出栈时候，若出栈元素等于最小栈中的元素，<br>最小栈的元素也要出栈。</node<int,int></p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
 <li>当前最小元素可能相等。相等元素也要入最小栈，如5,3,6,3，最小栈为5,3,3。x &lt;= minS.peek()一定要取等于。</li>
 <li>考虑栈为空时，执行pop和peek的操作。这里存在一个decision point，设计原则与stack的操作一致，也就是暴露出exception。</li>
 </ol>
-<h3><strong>Java代码：</strong></h3>
-<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MinStack</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	 <span class="comment">/** initialize your data structure here. */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MinStack</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        s = <span class="keyword">new</span> Stack&lt;&gt;();</span><br><span class="line">        minS = <span class="keyword">new</span> Stack&lt;&gt;();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">push</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">        s.push(x);</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span>(minS.isEmpty() || x &lt;= minS.peek())</span><br><span class="line">        	minS.push(x);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">pop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> top = s.pop();</span><br><span class="line">        <span class="keyword">if</span>(top == minS.peek())</span><br><span class="line">        	minS.pop();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">top</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> s.peek();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getMin</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> minS.peek();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    Stack&lt;Integer&gt; s;</span><br><span class="line">    Stack&lt;Integer&gt; minS;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>时间复杂度为<code>O(1)</code>，空间复杂度<code>O(n)</code>。</p>
-<p>算法2也是可以通过leetcode测试的，虽然空间复杂度比上述差。
-<a href="https://dotblogs.com.tw/tsanmmmm2000/2017/05/19/leetcode-practice-min-stack" target="_blank" rel="noopener">存储每个新加值对应的min，更加浪费空间</a></p>
-<h3><strong>Follow-up:</strong></h3>
-<p>如果用O(1)额外空间，怎么改进算法？</p>
-<p>先考虑最简单的情况，用一个min来记录当前最小值，它可以满足最小值不需更新的情况：
-x表示要加入的值，m表示最小值的变量，y是真正加入栈的值
-x 1 5 3
-m 1 1 1
-y 1 5 3
-可以看出无论入栈出栈，最小值均为1.</p>
-<p>比较难的是最小值需要更新时，如下一个要加入0，最小值要更新m=0，但0不能入栈，前一个最小值1的信息就丢失了，所以要设计一个计算y方法(push)满足</p>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MinStack</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	 <span class="comment">/** initialize your data structure here. */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MinStack</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        s = <span class="keyword">new</span> Stack&lt;&gt;();</span><br><span class="line">        minS = <span class="keyword">new</span> Stack&lt;&gt;();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">push</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">        s.push(x);</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span>(minS.isEmpty() || x &lt;= minS.peek())</span><br><span class="line">        	minS.push(x);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">pop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> top = s.pop();</span><br><span class="line">        <span class="keyword">if</span>(top == minS.peek())</span><br><span class="line">        	minS.pop();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">top</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> s.peek();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getMin</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> minS.peek();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    Stack&lt;Integer&gt; s;</span><br><span class="line">    Stack&lt;Integer&gt; minS;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(1)</code>，空间复杂度<code>O(n)</code>。</p>
+<p>算法2也是可以通过leetcode测试的，虽然空间复杂度比上述差。<br><a href="https://dotblogs.com.tw/tsanmmmm2000/2017/05/19/leetcode-practice-min-stack" target="_blank" rel="noopener">存储每个新加值对应的min，更加浪费空间</a></p>
+<h3 id="Follow-up"><a href="#Follow-up" class="headerlink" title="Follow-up:"></a><strong>Follow-up:</strong></h3><p>如果用O(1)额外空间，怎么改进算法？ </p>
+<p>先考虑最简单的情况，用一个min来记录当前最小值，它可以满足最小值不需更新的情况：<br>x表示要加入的值，m表示最小值的变量，y是真正加入栈的值<br>x 1 5 3<br>m 1 1 1<br>y 1 5 3<br>可以看出无论入栈出栈，最小值均为1.  </p>
+<p>比较难的是最小值需要更新时，如下一个要加入0，最小值要更新m=0，但0不能入栈，前一个最小值1的信息就丢失了，所以要设计一个计算y方法(push)满足  </p>
 <ol>
-<li>含有前一个最小值的的信息。x1&lt;m0.</li>
+<li>含有前一个最小值的的信息。x1&lt;m0.  </li>
 <li>y&lt;m, 因为最小值不更新的时候y值永远大于等于m，必须区分开来，从而知道怎么pop，也就是还原入栈值（最小值）。y1&lt;m1=x1.</li>
 </ol>
-<p>以下解释如何推出y的计算方式，以及push和pop的方法：
-<img src="/images/L155.png" alt=""></p>
-<p>以下例子解释Push
-x 1 5 3 0 6
-m 1 1 1 0 0
-y 1 5 3 -1 6</p>
-<p>以下例子解释Pop
-x 6 0 3 5 1
-m 0 0 1 1 1
-y 6 -1 3 5 1
-可以看出真正入栈值可以是原数或者是计算值，取决它与最小值的关系。</p>
-<h3><strong>注意事项：</strong></h3>
-<ol>
+<p>以下解释如何推出y的计算方式，以及push和pop的方法：<br><img src="/images/L155.png" alt="">  </p>
+<p>以下例子解释Push<br>x 1 5 3 0 6<br>m 1 1 1 0 0<br>y 1 5 3 -1 6</p>
+<p>以下例子解释Pop<br>x 6 0 3 5 1<br>m 0 0 1 1 1<br>y 6 -1 3 5 1<br>可以看出真正入栈值可以是原数或者是计算值，取决它与最小值的关系。</p>
+<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
 <li>当前最小元素可能相等。相等元素不用更新最小值，也就是新值直接入栈。</li>
 <li>以上递推式的初始条件为：第一个元素是直接加入栈且等于m，无论何种情况都不需任何计算。push时候注意当栈为空，m值为第一个元素的值。</li>
 <li>数据溢出。涉及int的加减乘除法，都要预先将其转化为long，否则会溢出。</li>
 </ol>
-<h3><strong>Java代码：</strong></h3>
-<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MinStack</span> </span>&#123;</span><br><span class="line">     <span class="function"><span class="keyword">public</span> <span class="title">MinStack</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        s = <span class="keyword">new</span> Stack&lt;&gt;();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">push</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">    	<span class="keyword">if</span> (s.isEmpty())</span><br><span class="line">    		m = x;</span><br><span class="line">    	</span><br><span class="line">    	<span class="keyword">long</span> xx = (<span class="keyword">long</span>)x;</span><br><span class="line">    	<span class="keyword">if</span> (x &gt;= m)</span><br><span class="line">    		s.push(xx);</span><br><span class="line">    	<span class="keyword">else</span> &#123;</span><br><span class="line">    		s.push(<span class="number">2</span>*xx-m);</span><br><span class="line">    		m = x;</span><br><span class="line">    	&#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">pop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">long</span> top = s.pop();</span><br><span class="line">        <span class="keyword">if</span>(top &lt; m)     </span><br><span class="line">        	m = <span class="number">2</span>*m - top;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">top</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> (<span class="keyword">int</span>)(s.peek() &gt;= m? s.peek() : m);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getMin</span><span class="params">()</span> </span>&#123; </span><br><span class="line">        <span class="keyword">return</span> (<span class="keyword">int</span>)m;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    Stack&lt;Long&gt; s;</span><br><span class="line">    <span class="keyword">long</span> m = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>时间复杂度为<code>O(1)</code>，空间复杂度<code>O(1)</code>。</p>
-<h3><strong>考点:</strong></h3>
-<ol>
+<h3 id="Java代码：-1"><a href="#Java代码：-1" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MinStack</span> </span>&#123;</span><br><span class="line">     <span class="function"><span class="keyword">public</span> <span class="title">MinStack</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        s = <span class="keyword">new</span> Stack&lt;&gt;();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">push</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">    	<span class="keyword">if</span> (s.isEmpty())</span><br><span class="line">    		m = x;</span><br><span class="line">    	</span><br><span class="line">    	<span class="keyword">long</span> xx = (<span class="keyword">long</span>)x;</span><br><span class="line">    	<span class="keyword">if</span> (x &gt;= m)</span><br><span class="line">    		s.push(xx);</span><br><span class="line">    	<span class="keyword">else</span> &#123;</span><br><span class="line">    		s.push(<span class="number">2</span>*xx-m);</span><br><span class="line">    		m = x;</span><br><span class="line">    	&#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">pop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">long</span> top = s.pop();</span><br><span class="line">        <span class="keyword">if</span>(top &lt; m)     </span><br><span class="line">        	m = <span class="number">2</span>*m - top;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">top</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> (<span class="keyword">int</span>)(s.peek() &gt;= m? s.peek() : m);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getMin</span><span class="params">()</span> </span>&#123; </span><br><span class="line">        <span class="keyword">return</span> (<span class="keyword">int</span>)m;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    Stack&lt;Long&gt; s;</span><br><span class="line">    <span class="keyword">long</span> m = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(1)</code>，空间复杂度<code>O(1)</code>。</p>
+<h3 id="考点"><a href="#考点" class="headerlink" title="考点:"></a><strong>考点:</strong></h3><ol>
 <li>先不考虑getMin，用什么数据结构实现push, pop, top</li>
 <li>暴力法可以实现getMin，怎么实现O(1)。用什么数据结构实现存储min，额外用一个stack</li>
 <li>元素可能相等</li>
@@ -361,25 +286,18 @@ y 6 -1 3 5 1
 <p>Given an unsorted array of integers, find the length of the longest consecutive elements sequence.</p>
 <p>Your algorithm should run in O(<em>n</em>) complexity.</p>
 <p><strong>Example:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> [100, 4, 200, 1, 3, 2]
-<strong>Output:</strong> 4
-<strong>Explanation:</strong> The longest consecutive elements sequence is <code>[1, 2, 3, 4]</code>. Therefore its length is 4.
-&lt;/pre&gt;</p>
-<h3><strong>题目大意：</strong></h3>
-<p>给出一个未排序的整数数组，找出最长的连续元素序列的长度。<br>
-如： 给出[100, 4, 200, 1, 3, 2]，最长的连续元素序列是[1, 2, 3, 4]。返回它的长度：4。</p>
-<h3><strong>解题思路：</strong></h3>
-<p>这是连通问题，如果用排序方法，很容易，但时间复杂度为O(nlogn)。考虑改进，因为连通集，容易想到HashMap，把每个元素加入到其中，<br>
-然后对每个元素进行相邻查找。相邻查找就是以此元素为中心，向上向下在Map查找，从而得到此元素的最大连续序列长度。查找过的元素<br>
-在Map中删除，以免重复计算。</p>
-<h3><strong>注意事项：</strong></h3>
-<ol>
+<pre>**Input:** [100, 4, 200, 1, 3, 2]
+**Output:** 4
+**Explanation:** The longest consecutive elements sequence is `[1, 2, 3, 4]`. Therefore its length is 4.
+</pre>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给出一个未排序的整数数组，找出最长的连续元素序列的长度。<br>如： 给出[100, 4, 200, 1, 3, 2]，最长的连续元素序列是[1, 2, 3, 4]。返回它的长度：4。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是连通问题，如果用排序方法，很容易，但时间复杂度为O(nlogn)。考虑改进，因为连通集，容易想到HashMap，把每个元素加入到其中，<br>然后对每个元素进行相邻查找。相邻查找就是以此元素为中心，向上向下在Map查找，从而得到此元素的最大连续序列长度。查找过的元素<br>在Map中删除，以免重复计算。</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
 <li>Java中在for循环中不能修改hashSet，所以只能用HashMap且value存boolean替代。HashMap表示此Map还是否含有该元素。</li>
 </ol>
-<h3><strong>Java代码：</strong></h3>
-<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">longestConsecutive</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> result = <span class="number">0</span>;</span><br><span class="line">	HashMap&lt;Integer,Boolean&gt; hm = <span class="keyword">new</span> HashMap&lt;Integer,Boolean&gt;();</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i : nums)</span><br><span class="line">		hm.put(i, <span class="keyword">true</span>);</span><br><span class="line">	</span><br><span class="line">	Iterator it = hm.keySet().iterator();</span><br><span class="line">	<span class="keyword">while</span>(it.hasNext())&#123;</span><br><span class="line">		<span class="keyword">int</span> key = (<span class="keyword">int</span>)it.next();</span><br><span class="line">		<span class="keyword">int</span> i = key+<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">int</span> count = <span class="number">1</span>;</span><br><span class="line">		<span class="keyword">while</span>(hm.containsKey(i) &amp;&amp; hm.get(i))&#123;</span><br><span class="line">			count++;</span><br><span class="line">			hm.put(i, <span class="keyword">false</span>);</span><br><span class="line">			i++;</span><br><span class="line">		&#125;</span><br><span class="line">		i = key-<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">while</span>(hm.containsKey(i) &amp;&amp; hm.get(i))&#123;</span><br><span class="line">			count++;</span><br><span class="line">			hm.put(i, <span class="keyword">false</span>);</span><br><span class="line">			i--;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(count&gt;result)</span><br><span class="line">			result = count;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line">		</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>。</p>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">longestConsecutive</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> result = <span class="number">0</span>;</span><br><span class="line">	HashMap&lt;Integer,Boolean&gt; hm = <span class="keyword">new</span> HashMap&lt;Integer,Boolean&gt;();</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i : nums)</span><br><span class="line">		hm.put(i, <span class="keyword">true</span>);</span><br><span class="line">	</span><br><span class="line">	Iterator it = hm.keySet().iterator();</span><br><span class="line">	<span class="keyword">while</span>(it.hasNext())&#123;</span><br><span class="line">		<span class="keyword">int</span> key = (<span class="keyword">int</span>)it.next();</span><br><span class="line">		<span class="keyword">int</span> i = key+<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">int</span> count = <span class="number">1</span>;</span><br><span class="line">		<span class="keyword">while</span>(hm.containsKey(i) &amp;&amp; hm.get(i))&#123;</span><br><span class="line">			count++;</span><br><span class="line">			hm.put(i, <span class="keyword">false</span>);</span><br><span class="line">			i++;</span><br><span class="line">		&#125;</span><br><span class="line">		i = key-<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">while</span>(hm.containsKey(i) &amp;&amp; hm.get(i))&#123;</span><br><span class="line">			count++;</span><br><span class="line">			hm.put(i, <span class="keyword">false</span>);</span><br><span class="line">			i--;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(count&gt;result)</span><br><span class="line">			result = count;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line">		</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>。</p>
 
       
     </div>
@@ -410,17 +328,14 @@ y 6 -1 3 5 1
     </header>
     <div class="entry">
       
-        <h3><strong>题目大意：</strong></h3>
-<p>Design a chatting application like Chime</p>
-<h3><strong>了解用户需求：</strong></h3>
-<p>通过不断和面试官沟通，了解用户角度的需求。把这些需求逐一列举在白板上。面试者一开始会刻意只说出1-2点。面试者通过联系实际，不够构想<br>
-一些需求，若得到确认就要写入。</p>
+        <h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>Design a chatting application like Chime  </p>
+<h3 id="了解用户需求："><a href="#了解用户需求：" class="headerlink" title="了解用户需求："></a><strong>了解用户需求：</strong></h3><p>通过不断和面试官沟通，了解用户角度的需求。把这些需求逐一列举在白板上。面试者一开始会刻意只说出1-2点。面试者通过联系实际，不够构想<br>一些需求，若得到确认就要写入。</p>
 <ol>
 <li>用户可以单对单相互聊天(one-on-one chat)</li>
 <li>用户可以群聊(group chat)</li>
 <li>用户可登陆</li>
 <li>用户可以添加好友(sending)，接受好友(accepting)，拒绝添加(rejecting). 好友相互添加(mutual)，不支持两人分别添加。</li>
-<li>用户更新状态为offline, available, busy, don't disturb，还有个性化签名</li>
+<li>用户更新状态为offline, available, busy, don’t disturb，还有个性化签名</li>
 </ol>
 <p>面试者通过重新排序user life cycle更有助于理解和记忆</p>
 <ol>
@@ -428,29 +343,16 @@ y 6 -1 3 5 1
 <li>用户可以添加好友(sending)，接受好友(accepting)，拒绝添加(rejecting)</li>
 <li>用户可以单对单相互聊天(one-on-one chat)</li>
 <li>用户可以群聊(group chat)</li>
-<li>用户更新状态为offline, available, busy, don't disturb，还有个性化签名</li>
+<li>用户更新状态为offline, available, busy, don’t disturb，还有个性化签名</li>
 </ol>
-<p>本面试不支持以下use cases
-音频会议，视频会议，文件传输</p>
-<h3><strong>Block/Component diagram：</strong></h3>
-<p>最简单的设计就是一系列的clients，一系列的servers，还有存储系统。
-<img src="/images/chime.png" alt=""><br>
-存储系统可以选择SQL或者No SQL。No SQL就会更加scalable.这里可以讨论它们之间的pros和cons。
-传输协议(client-server)可用Java中的Socket和ServerSocket对象，它们建立一个TCP连接，用IO Stream传输。
-服务器端用多个服务器避免single point of failure。server端的memory会存一些用户状态等数据（当然它也会被持久化），这表示它需要<br>
-replicate一些数据减少不同机器之间的lookup时间。</p>
+<p>本面试不支持以下use cases<br>音频会议，视频会议，文件传输</p>
+<h3 id="Block-Component-diagram："><a href="#Block-Component-diagram：" class="headerlink" title="Block/Component diagram："></a><strong>Block/Component diagram：</strong></h3><p>最简单的设计就是一系列的clients，一系列的servers，还有存储系统。<br><img src="/images/chime.png" alt=""><br>存储系统可以选择SQL或者No SQL。No SQL就会更加scalable.这里可以讨论它们之间的pros和cons。<br>传输协议(client-server)可用Java中的Socket和ServerSocket对象，它们建立一个TCP连接，用IO Stream传输。<br>服务器端用多个服务器避免single point of failure。server端的memory会存一些用户状态等数据（当然它也会被持久化），这表示它需要<br>    replicate一些数据减少不同机器之间的lookup时间。</p>
 <p>这些大概讨论一下即可，本design主要针对OOD。</p>
-<h3><strong>Class diagram：</strong></h3>
-<p>从User开始写fields和key methods，因为需求就是针对用户，比较直观。当参数含有多个属性时，就应该考虑产生一个新的class，如Message，<br>
-因为Message不只内容String还有发送时间甚至styling等。 还有注意每个类是否存在状态(如UserStatus)，如果有，就要考虑用enum。</p>
-<h3><strong>Java代码：</strong></h3>
-<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line">User:</span><br><span class="line">   <span class="keyword">int</span> id;</span><br><span class="line">   String fullName;</span><br><span class="line">   String alias;</span><br><span class="line">   List&lt;User&gt; friends;</span><br><span class="line">   List&lt;GroupChat&gt; gChats;</span><br><span class="line">   List&lt;PrivateChat&gt; pChats;</span><br><span class="line">   UserStatus s;</span><br><span class="line">   </span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">sign</span><span class="params">()</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">signout</span><span class="params">()</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">sendFriend</span><span class="params">(FriendRequest r)</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">acceptFriend</span><span class="params">(FriendRequest r)</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">rejectFriend</span><span class="params">(FriendRequest r)</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">setUserStatus</span><span class="params">(UserStatus s)</span></span>;</span><br><span class="line">   <span class="function">PrivateChat <span class="title">createConversation</span><span class="params">(User b)</span></span>;</span><br><span class="line">   <span class="function">GroupChat <span class="title">createConversation</span><span class="params">(List&lt;User&gt; c)</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">sendMessage</span><span class="params">(PrivateChat s, String msg)</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">sendMessage</span><span class="params">(GroupChat s, String msg)</span></span>;</span><br><span class="line"></span><br><span class="line">Conversation:</span><br><span class="line">   <span class="keyword">int</span> id;</span><br><span class="line">   List&lt;User&gt; users;</span><br><span class="line">   List&lt;Message&gt; messages;</span><br><span class="line">   </span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">addMessage</span><span class="params">(Message msg)</span></span>;</span><br><span class="line">   </span><br><span class="line">PrivateChat extends Conversation:</span><br><span class="line">   PrivateChat(User user, User user2);</span><br><span class="line"></span><br><span class="line">GroupChat extends Conversation:</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">addUser</span><span class="params">(User u)</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">removeUser</span><span class="params">(User u)</span></span>;</span><br><span class="line">   </span><br><span class="line">Message:</span><br><span class="line">   <span class="keyword">int</span> id;</span><br><span class="line">   Date timestamp;</span><br><span class="line">   User user;<span class="comment">//I would like to know who sent this msg</span></span><br><span class="line">   String content;</span><br><span class="line"></span><br><span class="line">FriendRequest:</span><br><span class="line">   User from;</span><br><span class="line">   User to;</span><br><span class="line">   Date timestamp;</span><br><span class="line">   RequestStatus Status;</span><br><span class="line"></span><br><span class="line">UserStatus:</span><br><span class="line">   String message;</span><br><span class="line">   UserStatusType type;</span><br><span class="line"></span><br><span class="line"><span class="keyword">enum</span> RequestStatus:</span><br><span class="line">   ACCEPTED, REJECTED, PENDING</span><br><span class="line"> </span><br><span class="line"><span class="keyword">enum</span> UserStatusType:</span><br><span class="line">   offline, available, busy, DONT_disturb</span><br><span class="line"></span><br><span class="line"><span class="comment">//这个类最为复杂，主要是维护用户关系和用户状态以及对应的数据库读写。这里有几个隐形需求。。可以根据alias搜索用户，  </span></span><br><span class="line"><span class="comment">//如果用户offline，即使是好友也不能发信息。它是singleton。</span></span><br><span class="line">UserManager:</span><br><span class="line">   HashMap&lt;String, User&gt; usersByAlias;</span><br><span class="line">   <span class="comment">//User类需要含有UserManager，查看要发送信息的对象是否在线，若不在线，不能发出信息。</span></span><br><span class="line">   HashMap&lt;Integer, User&gt; onlineUsers;</span><br><span class="line">   </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> UserManager <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">       <span class="keyword">if</span> (instance==<span class="keyword">null</span>) instance = <span class="keyword">new</span> UserManager();</span><br><span class="line">	   <span class="keyword">return</span> instance;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="comment">//用observer模式，User调用UserManager这个接口来更新onlineUsers</span></span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">signInUser</span><span class="params">(String alias)</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">signOutUser</span><span class="params">(String alias)</span></span>;</span><br><span class="line">   <span class="comment">//User to的acceptFriend会调用这个函数来更新User a和User b的friend list同时更新FriendRequest的状态。</span></span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">approveRequest</span><span class="params">(FriendRequest f)</span></span>;</span><br></pre></td></tr></table></figure></p>
+<h3 id="Class-diagram："><a href="#Class-diagram：" class="headerlink" title="Class diagram："></a><strong>Class diagram：</strong></h3><p>从User开始写fields和key methods，因为需求就是针对用户，比较直观。当参数含有多个属性时，就应该考虑产生一个新的class，如Message，<br>因为Message不只内容String还有发送时间甚至styling等。 还有注意每个类是否存在状态(如UserStatus)，如果有，就要考虑用enum。</p>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line">User:</span><br><span class="line">   <span class="keyword">int</span> id;</span><br><span class="line">   String fullName;</span><br><span class="line">   String alias;</span><br><span class="line">   List&lt;User&gt; friends;</span><br><span class="line">   List&lt;GroupChat&gt; gChats;</span><br><span class="line">   List&lt;PrivateChat&gt; pChats;</span><br><span class="line">   UserStatus s;</span><br><span class="line">   </span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">sign</span><span class="params">()</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">signout</span><span class="params">()</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">sendFriend</span><span class="params">(FriendRequest r)</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">acceptFriend</span><span class="params">(FriendRequest r)</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">rejectFriend</span><span class="params">(FriendRequest r)</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">setUserStatus</span><span class="params">(UserStatus s)</span></span>;</span><br><span class="line">   <span class="function">PrivateChat <span class="title">createConversation</span><span class="params">(User b)</span></span>;</span><br><span class="line">   <span class="function">GroupChat <span class="title">createConversation</span><span class="params">(List&lt;User&gt; c)</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">sendMessage</span><span class="params">(PrivateChat s, String msg)</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">sendMessage</span><span class="params">(GroupChat s, String msg)</span></span>;</span><br><span class="line"></span><br><span class="line">Conversation:</span><br><span class="line">   <span class="keyword">int</span> id;</span><br><span class="line">   List&lt;User&gt; users;</span><br><span class="line">   List&lt;Message&gt; messages;</span><br><span class="line">   </span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">addMessage</span><span class="params">(Message msg)</span></span>;</span><br><span class="line">   </span><br><span class="line">PrivateChat extends Conversation:</span><br><span class="line">   PrivateChat(User user, User user2);</span><br><span class="line"></span><br><span class="line">GroupChat extends Conversation:</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">addUser</span><span class="params">(User u)</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">removeUser</span><span class="params">(User u)</span></span>;</span><br><span class="line">   </span><br><span class="line">Message:</span><br><span class="line">   <span class="keyword">int</span> id;</span><br><span class="line">   Date timestamp;</span><br><span class="line">   User user;<span class="comment">//I would like to know who sent this msg</span></span><br><span class="line">   String content;</span><br><span class="line"></span><br><span class="line">FriendRequest:</span><br><span class="line">   User from;</span><br><span class="line">   User to;</span><br><span class="line">   Date timestamp;</span><br><span class="line">   RequestStatus Status;</span><br><span class="line"></span><br><span class="line">UserStatus:</span><br><span class="line">   String message;</span><br><span class="line">   UserStatusType type;</span><br><span class="line"></span><br><span class="line"><span class="keyword">enum</span> RequestStatus:</span><br><span class="line">   ACCEPTED, REJECTED, PENDING</span><br><span class="line"> </span><br><span class="line"><span class="keyword">enum</span> UserStatusType:</span><br><span class="line">   offline, available, busy, DONT_disturb</span><br><span class="line"></span><br><span class="line"><span class="comment">//这个类最为复杂，主要是维护用户关系和用户状态以及对应的数据库读写。这里有几个隐形需求。。可以根据alias搜索用户，  </span></span><br><span class="line"><span class="comment">//如果用户offline，即使是好友也不能发信息。它是singleton。</span></span><br><span class="line">UserManager:</span><br><span class="line">   HashMap&lt;String, User&gt; usersByAlias;</span><br><span class="line">   <span class="comment">//User类需要含有UserManager，查看要发送信息的对象是否在线，若不在线，不能发出信息。</span></span><br><span class="line">   HashMap&lt;Integer, User&gt; onlineUsers;</span><br><span class="line">   </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> UserManager <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">       <span class="keyword">if</span> (instance==<span class="keyword">null</span>) instance = <span class="keyword">new</span> UserManager();</span><br><span class="line">	   <span class="keyword">return</span> instance;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="comment">//用observer模式，User调用UserManager这个接口来更新onlineUsers</span></span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">signInUser</span><span class="params">(String alias)</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">signOutUser</span><span class="params">(String alias)</span></span>;</span><br><span class="line">   <span class="comment">//User to的acceptFriend会调用这个函数来更新User a和User b的friend list同时更新FriendRequest的状态。</span></span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">approveRequest</span><span class="params">(FriendRequest f)</span></span>;</span><br></pre></td></tr></table></figure>
 <p>具体实现可以选择approveRequest或者某用户发信息怎么令group chat的其他用户收到该信息sendMessage(GroupChat s, String msg)。</p>
-<p>void sendMessage(GroupChat s, String msg){
-List&lt;User&gt; users = s.getUsers();
-}</p>
-<h3><strong>扩展问题：</strong></h3>
-<ol>
+<p>void sendMessage(GroupChat s, String msg){<br>    List<user> users = s.getUsers();<br>}</user></p>
+<h3 id="扩展问题："><a href="#扩展问题：" class="headerlink" title="扩展问题："></a><strong>扩展问题：</strong></h3><ol>
 <li>怎么知道某用户真的在线</li>
 <li>怎么处理内存和数据冲突的信息</li>
 <li>怎么让server scale</li>
@@ -486,14 +388,9 @@ List&lt;User&gt; users = s.getUsers();
     </header>
     <div class="entry">
       
-        <h3><strong>题目大意：</strong></h3>
-<p>长URL变成短URL方便传输和阅读，特别是很多社交网站对字数有限制如Twitter。</p>
-<h3><strong>解题思路：</strong></h3>
-<p>基本思路是将所有网站映射到一个整数。</p>
-<h3><strong>短网址长度：</strong></h3>
-<p>短网址若只含数字，也就是十进制整数还是不够短。可以考虑加入大小写字母，总共有26x2+10=62，也就是一个62进制数。<br>
-网站总数是45亿个，62^7就远远大于45亿，7位就够。<br>
-若long表示的64位整数，log62(2^64-1)=11，大约是对应11位。</p>
+        <h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>长URL变成短URL方便传输和阅读，特别是很多社交网站对字数有限制如Twitter。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>基本思路是将所有网站映射到一个整数。</p>
+<h3 id="短网址长度："><a href="#短网址长度：" class="headerlink" title="短网址长度："></a><strong>短网址长度：</strong></h3><p>短网址若只含数字，也就是十进制整数还是不够短。可以考虑加入大小写字母，总共有26x2+10=62，也就是一个62进制数。<br>网站总数是45亿个，62^7就远远大于45亿，7位就够。<br>若long表示的64位整数，log62(2^64-1)=11，大约是对应11位。  </p>
 <table>
 <thead>
 <tr>
@@ -510,15 +407,10 @@ List&lt;User&gt; users = s.getUsers();
 </tr>
 </tbody>
 </table>
-<h3><strong>存储方法：</strong></h3>
-<p>写操作：长网址到短网址<br>
-读操作：短网址到长网址<br>
-读操作远远大于写操作，所以key（或primary key）选在短网址， value在长网址。<br>
-每个新的长网址，对应一个短网址还是多个？考虑一下几点：</p>
+<h3 id="存储方法："><a href="#存储方法：" class="headerlink" title="存储方法："></a><strong>存储方法：</strong></h3><p>写操作：长网址到短网址<br>读操作：短网址到长网址<br>读操作远远大于写操作，所以key（或primary key）选在短网址， value在长网址。<br>每个新的长网址，对应一个短网址还是多个？考虑一下几点：</p>
 <ol>
-<li>若对应一个短网址，必须再产生一个unique key在长网址上来决定该长网址对应的短网址是否存在。大大降低写操作速度。</li>
-<li>长网址虽然一样，但可以带不同的header, user agent，从而知道进入该长网址的入口（其他网站），短网址商的盈利来源。<br>
-所以长网址对应多个短网址，Google Maps就采取这个设计。</li>
+<li>若对应一个短网址，必须再产生一个unique key在长网址上来决定该长网址对应的短网址是否存在。大大降低写操作速度。  </li>
+<li>长网址虽然一样，但可以带不同的header, user agent，从而知道进入该长网址的入口（其他网站），短网址商的盈利来源。<br>所以长网址对应多个短网址，Google Maps就采取这个设计。    </li>
 </ol>
 <table>
 <thead>
@@ -541,34 +433,21 @@ List&lt;User&gt; users = s.getUsers();
 </tr>
 </tbody>
 </table>
-<p>数据库选择可以是关系型数据库SQL Server，或者KV数据库如Redis，dynamoDB。可以详细讨论关系型数据库与No SQL的区别。<br>
-此题目用No sql比较好，因为从分布性考虑和是否需要复杂的Join操作来考虑，No sql有明显优势。</p>
-<h3><strong>计算短网址：</strong></h3>
-<p>另一个核心问题就是如何计算短网址，具体而言是怎么从URL转化为一个十进制整数。有几个方案：</p>
+<p>数据库选择可以是关系型数据库SQL Server，或者KV数据库如Redis，dynamoDB。可以详细讨论关系型数据库与No SQL的区别。<br>此题目用No sql比较好，因为从分布性考虑和是否需要复杂的Join操作来考虑，No sql有明显优势。</p>
+<h3 id="计算短网址："><a href="#计算短网址：" class="headerlink" title="计算短网址："></a><strong>计算短网址：</strong></h3><p>另一个核心问题就是如何计算短网址，具体而言是怎么从URL转化为一个十进制整数。有几个方案：  </p>
 <ol>
 <li>最简单的是维护一个最大值，每个新的请求，对此值加1。缺点是分布式系统中，维护单一最大值（所有机器中）大大降低性能。</li>
 <li>取URL的hash值得到64位整数再取前7位，但会有冲突。</li>
-<li><a href="https://shineboy2013.github.io/2018/06/18/design-distributed-id/" target="_blank" rel="noopener">参考分布式发号器</a></li>
+<li><a href="https://shineboy2013.github.io/2018/06/18/design-distributed-id/" target="_blank" rel="noopener">参考分布式发号器</a>  </li>
 </ol>
-<p>十进制到62进制用短除法来做，
-<img src="/images/design-tiny-url.png" alt=""><br>
-796%62=52， (796-52)/62=12.
-12%62=12, (12-12)/62=0.
-结果为(12)(52) = cP</p>
-<h3><strong>DDOS：</strong></h3>
-<p>这是一个细节考虑，若黑客大量发请求，耗尽所有ID怎么办？</p>
+<p>十进制到62进制用短除法来做，<br><img src="/images/design-tiny-url.png" alt=""><br>796%62=52， (796-52)/62=12.<br>12%62=12, (12-12)/62=0.<br>结果为(12)(52) = cP</p>
+<h3 id="DDOS："><a href="#DDOS：" class="headerlink" title="DDOS："></a><strong>DDOS：</strong></h3><p>这是一个细节考虑，若黑客大量发请求，耗尽所有ID怎么办？</p>
 <ol>
 <li>限制IP单日请求总数，超过直接拒绝。</li>
-<li>限制长网址的单一性。限制IP还不够，因为用proxy provider服务可以绕过这个限制。用Redis来cache长网址到短网址的一日数据，<br>
-然后LRU淘汰旧的数据。这样如果此URL的请求超过一定数量，比如100次，就返回最新的短网址。
-长网址-&gt;次数+短URL</li>
+<li>限制长网址的单一性。限制IP还不够，因为用proxy provider服务可以绕过这个限制。用Redis来cache长网址到短网址的一日数据，<br>然后LRU淘汰旧的数据。这样如果此URL的请求超过一定数量，比如100次，就返回最新的短网址。<br>长网址-&gt;次数+短URL</li>
 </ol>
-<h3><strong>301还是302：</strong></h3>
-<p>301是永久重定向，302是临时重定向。如果用了301， Google，百度等搜索引擎，搜索的时候会直接展示真实地址，那我们就无法统计<br>
-到短地址被点击的次数了，也无法收集用户的Cookie, User Agent等信息。这是短网址商的盈利来源。</p>
-<h3><strong>Ref：</strong></h3>
-<p><a href="https://soulmachine.gitbooks.io/system-design/content/cn/tinyurl.html" target="_blank" rel="noopener">https://soulmachine.gitbooks.io/system-design/content/cn/tinyurl.html</a><br>
-<a href="https://segmentfault.com/a/1190000006140476" target="_blank" rel="noopener">https://segmentfault.com/a/1190000006140476</a></p>
+<h3 id="301还是302："><a href="#301还是302：" class="headerlink" title="301还是302："></a><strong>301还是302：</strong></h3><p>301是永久重定向，302是临时重定向。如果用了301， Google，百度等搜索引擎，搜索的时候会直接展示真实地址，那我们就无法统计<br>到短地址被点击的次数了，也无法收集用户的Cookie, User Agent等信息。这是短网址商的盈利来源。  </p>
+<h3 id="Ref："><a href="#Ref：" class="headerlink" title="Ref："></a><strong>Ref：</strong></h3><p><a href="https://soulmachine.gitbooks.io/system-design/content/cn/tinyurl.html" target="_blank" rel="noopener">https://soulmachine.gitbooks.io/system-design/content/cn/tinyurl.html</a><br><a href="https://segmentfault.com/a/1190000006140476" target="_blank" rel="noopener">https://segmentfault.com/a/1190000006140476</a>  </p>
 
       
     </div>
@@ -600,54 +479,43 @@ List&lt;User&gt; users = s.getUsers();
     <div class="entry">
       
         <p><strong><a href="https://leetcode.com/problems/integer-to-english-words" target="_blank" rel="noopener">LeetCode 273 Integer to English Words</a></strong></p>
-<p>Convert a non-negative integer to its english words representation. Given input is guaranteed to be less than 2&lt;sup&gt;31&lt;/sup&gt; - 1.</p>
+<p>Convert a non-negative integer to its english words representation. Given input is guaranteed to be less than 2<sup>31</sup> - 1.</p>
 <p><strong>Example 1:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> 123
-<strong>Output:</strong> &quot;One Hundred Twenty Three&quot;
-&lt;/pre&gt;</p>
+<pre>**Input:** 123
+**Output:** "One Hundred Twenty Three"
+</pre>
+
 <p><strong>Example 2:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> 12345
-<strong>Output:</strong> &quot;Twelve Thousand Three Hundred Forty Five&quot;&lt;/pre&gt;</p>
+<pre>**Input:** 12345
+**Output:** "Twelve Thousand Three Hundred Forty Five"</pre>
+
 <p><strong>Example 3:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> 1234567
-<strong>Output:</strong> &quot;One Million Two Hundred Thirty Four Thousand Five Hundred Sixty Seven&quot;
-&lt;/pre&gt;</p>
+<pre>**Input:** 1234567
+**Output:** "One Million Two Hundred Thirty Four Thousand Five Hundred Sixty Seven"
+</pre>
+
 <p><strong>Example 4:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> 1234567891
-<strong>Output:</strong> &quot;One Billion Two Hundred Thirty Four Million Five Hundred Sixty Seven Thousand Eight Hundred Ninety One&quot;
-&lt;/pre&gt;</p>
-<h3><strong>题目大意：</strong></h3>
-<p>这是将非负整数转化为其英文单词表示。给定输入确保小于 2 ^ 31 - 1</p>
-<h3><strong>解题思路：</strong></h3>
-<p>这是logical and maintainable的经典题。按照英语的习惯，每三位是一组，所以实现的时候，也是按千为分组，有一个方法去处理一千<br>
-内的数。一千以内也分为三种情况，20以内，几十，其他。20以内和几十都是特殊情况的单词，所以可以放入数组或HashMap，数组比较<br>
-好，因为可以直接用索引读出。大于一千的数，可以用递归来做，从人的习惯，从低位到高位，每三位加一个逗号分隔。所以同样，算法<br>
-也是从低位开始，若千位内的数大于0，加入Thousand, Million等，每三位调用千位方法，再递归。<br>
-group的引入作为递归的层次来决定Thousand还是Million。
-由于从低位递归，所以倒着做，要reverse地加入到结果，最终结果再reverse回来。</p>
-<h3><strong>注意事项：</strong></h3>
-<ol>
+<pre>**Input:** 1234567891
+**Output:** "One Billion Two Hundred Thirty Four Million Five Hundred Sixty Seven Thousand Eight Hundred Ninety One"
+</pre>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>这是将非负整数转化为其英文单词表示。给定输入确保小于 2 ^ 31 - 1</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是logical and maintainable的经典题。按照英语的习惯，每三位是一组，所以实现的时候，也是按千为分组，有一个方法去处理一千<br>内的数。一千以内也分为三种情况，20以内，几十，其他。20以内和几十都是特殊情况的单词，所以可以放入数组或HashMap，数组比较<br>好，因为可以直接用索引读出。大于一千的数，可以用递归来做，从人的习惯，从低位到高位，每三位加一个逗号分隔。所以同样，算法<br>也是从低位开始，若千位内的数大于0，加入Thousand, Million等，每三位调用千位方法，再递归。<br>group的引入作为递归的层次来决定Thousand还是Million。<br>由于从低位递归，所以倒着做，要reverse地加入到结果，最终结果再reverse回来。  </p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
 <li>空格总加在新数前面，也就是append前先加空格</li>
 <li>低3位大于0才加Thousand, Million等词，也就是低三位在1-999之间，若为0如1 million。</li>
 </ol>
-<h3><strong>Java代码：</strong></h3>
-<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> String[] lows = &#123;<span class="string">""</span>, <span class="string">"One"</span>, <span class="string">"Two"</span>, <span class="string">"Three"</span>, <span class="string">"Four"</span>, <span class="string">"Five"</span>, <span class="string">"Six"</span>, <span class="string">"Seven"</span>, <span class="string">"Eight"</span>, <span class="string">"Nine"</span>, <span class="string">"Ten"</span>, </span><br><span class="line">   <span class="string">"Eleven"</span>, <span class="string">"Twelve"</span>,<span class="string">"Thirteen"</span>, <span class="string">"Fourteen"</span>,<span class="string">"Fifteen"</span>,<span class="string">"Sixteen"</span>,<span class="string">"Seventeen"</span>,<span class="string">"Eighteen"</span>, <span class="string">"Nineteen"</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> String[] tens = &#123;<span class="string">""</span>, <span class="string">""</span>, <span class="string">"Twenty"</span>, <span class="string">"Thirty"</span>, <span class="string">"Forty"</span>, <span class="string">"Fifty"</span>, <span class="string">"Sixty"</span>, <span class="string">"Seventy"</span>, <span class="string">"Eighty"</span>, <span class="string">"Ninety"</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">numberToWords</span><span class="params">(<span class="keyword">int</span> number)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(number == <span class="number">0</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"Zero"</span>;	</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	StringBuilder result = <span class="keyword">new</span> StringBuilder();</span><br><span class="line"></span><br><span class="line">	translateThreeR(number, result, <span class="number">0</span>);</span><br><span class="line">	<span class="keyword">return</span> result.reverse().toString().trim();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">translateThreeR</span><span class="params">(<span class="keyword">int</span> number, StringBuilder result, <span class="keyword">int</span> group)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> lower = number % <span class="number">1000</span>;</span><br><span class="line">	<span class="keyword">int</span> thousands = number / <span class="number">1000</span>;     </span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (group == <span class="number">1</span> &amp;&amp; lower &gt; <span class="number">0</span>)</span><br><span class="line">		result.append(reverse(<span class="string">" Thousand"</span>));</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (group==<span class="number">2</span> &amp;&amp; lower &gt; <span class="number">0</span>)</span><br><span class="line">		result.append(reverse(<span class="string">" Million"</span>));</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (group==<span class="number">3</span> &amp;&amp; lower &gt; <span class="number">0</span>)</span><br><span class="line">		result.append(reverse(<span class="string">" Billion"</span>));</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(lower&gt;<span class="number">0</span>)</span><br><span class="line">		result.append(reverse(translateThree(lower)));</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(thousands &gt;= <span class="number">1</span>) &#123;</span><br><span class="line">		translateThreeR(thousands, result, ++group);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">translateThree</span><span class="params">(<span class="keyword">int</span> number)</span> </span>&#123;</span><br><span class="line">	StringBuilder result = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">	<span class="keyword">if</span>(number &gt; <span class="number">99</span>) &#123;</span><br><span class="line">		result.append(<span class="string">" "</span>+lows[number / <span class="number">100</span>]);</span><br><span class="line">		result.append(<span class="string">" Hundred"</span>);</span><br><span class="line">		number = number % <span class="number">100</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span>(number &gt; <span class="number">19</span>) &#123;</span><br><span class="line">		result.append(<span class="string">" "</span>);</span><br><span class="line">		result.append(tens[number/<span class="number">10</span>]);</span><br><span class="line">		number = number % <span class="number">10</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Remainder is under 20</span></span><br><span class="line">	result.append(<span class="string">" "</span>+lows[number]);</span><br><span class="line">	<span class="keyword">return</span> <span class="string">" "</span>+result.toString().trim();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">reverse</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> (<span class="keyword">new</span> StringBuilder()).append(s).reverse().toString();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>n为位数，时间复杂度为O(n)，空间复杂度O(1)。</p>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> String[] lows = &#123;<span class="string">""</span>, <span class="string">"One"</span>, <span class="string">"Two"</span>, <span class="string">"Three"</span>, <span class="string">"Four"</span>, <span class="string">"Five"</span>, <span class="string">"Six"</span>, <span class="string">"Seven"</span>, <span class="string">"Eight"</span>, <span class="string">"Nine"</span>, <span class="string">"Ten"</span>, </span><br><span class="line">   <span class="string">"Eleven"</span>, <span class="string">"Twelve"</span>,<span class="string">"Thirteen"</span>, <span class="string">"Fourteen"</span>,<span class="string">"Fifteen"</span>,<span class="string">"Sixteen"</span>,<span class="string">"Seventeen"</span>,<span class="string">"Eighteen"</span>, <span class="string">"Nineteen"</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> String[] tens = &#123;<span class="string">""</span>, <span class="string">""</span>, <span class="string">"Twenty"</span>, <span class="string">"Thirty"</span>, <span class="string">"Forty"</span>, <span class="string">"Fifty"</span>, <span class="string">"Sixty"</span>, <span class="string">"Seventy"</span>, <span class="string">"Eighty"</span>, <span class="string">"Ninety"</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">numberToWords</span><span class="params">(<span class="keyword">int</span> number)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(number == <span class="number">0</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"Zero"</span>;	</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	StringBuilder result = <span class="keyword">new</span> StringBuilder();</span><br><span class="line"></span><br><span class="line">	translateThreeR(number, result, <span class="number">0</span>);</span><br><span class="line">	<span class="keyword">return</span> result.reverse().toString().trim();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">translateThreeR</span><span class="params">(<span class="keyword">int</span> number, StringBuilder result, <span class="keyword">int</span> group)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> lower = number % <span class="number">1000</span>;</span><br><span class="line">	<span class="keyword">int</span> thousands = number / <span class="number">1000</span>;     </span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (group == <span class="number">1</span> &amp;&amp; lower &gt; <span class="number">0</span>)</span><br><span class="line">		result.append(reverse(<span class="string">" Thousand"</span>));</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (group==<span class="number">2</span> &amp;&amp; lower &gt; <span class="number">0</span>)</span><br><span class="line">		result.append(reverse(<span class="string">" Million"</span>));</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (group==<span class="number">3</span> &amp;&amp; lower &gt; <span class="number">0</span>)</span><br><span class="line">		result.append(reverse(<span class="string">" Billion"</span>));</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(lower&gt;<span class="number">0</span>)</span><br><span class="line">		result.append(reverse(translateThree(lower)));</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(thousands &gt;= <span class="number">1</span>) &#123;</span><br><span class="line">		translateThreeR(thousands, result, ++group);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">translateThree</span><span class="params">(<span class="keyword">int</span> number)</span> </span>&#123;</span><br><span class="line">	StringBuilder result = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">	<span class="keyword">if</span>(number &gt; <span class="number">99</span>) &#123;</span><br><span class="line">		result.append(<span class="string">" "</span>+lows[number / <span class="number">100</span>]);</span><br><span class="line">		result.append(<span class="string">" Hundred"</span>);</span><br><span class="line">		number = number % <span class="number">100</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span>(number &gt; <span class="number">19</span>) &#123;</span><br><span class="line">		result.append(<span class="string">" "</span>);</span><br><span class="line">		result.append(tens[number/<span class="number">10</span>]);</span><br><span class="line">		number = number % <span class="number">10</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Remainder is under 20</span></span><br><span class="line">	result.append(<span class="string">" "</span>+lows[number]);</span><br><span class="line">	<span class="keyword">return</span> <span class="string">" "</span>+result.toString().trim();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">reverse</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> (<span class="keyword">new</span> StringBuilder()).append(s).reverse().toString();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>n为位数，时间复杂度为O(n)，空间复杂度O(1)。  </p>
 <hr>
-<h3><strong>算法II解题思路：</strong></h3>
-<p>上述方法是按千位递归的。下面的方法是按20以下，100以下，百位，千位...递归，递归的颗粒度更小，程序更简单。</p>
-<h3><strong>注意事项：</strong></h3>
-<ol>
-<li>空格总加在新数前面，只需要加在有返回值的时候，也就是tens和lows中，其他如numberToWordsR(number/1000)<br>
-可能返回空值，此时不在前面加空格。</li>
+<h3 id="算法II解题思路："><a href="#算法II解题思路：" class="headerlink" title="算法II解题思路："></a><strong>算法II解题思路：</strong></h3><p>上述方法是按千位递归的。下面的方法是按20以下，100以下，百位，千位…递归，递归的颗粒度更小，程序更简单。</p>
+<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>空格总加在新数前面，只需要加在有返回值的时候，也就是tens和lows中，其他如numberToWordsR(number/1000)<br>可能返回空值，此时不在前面加空格。</li>
 <li>在递归中，num为0要单独列出，因为0表示此位不存在，也就是无返回值。</li>
 <li>在入口方法中，若num为0，则返回Zero，要单独列出。</li>
 </ol>
-<h3><strong>Java代码：</strong></h3>
-<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">numberToWords</span><span class="params">(<span class="keyword">int</span> number)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (number == <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"Zero"</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">return</span> numberToWordsR(number).trim();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">numberToWordsR</span><span class="params">(<span class="keyword">int</span> number)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(number == <span class="number">0</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">""</span>;</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> (number &lt; <span class="number">20</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">" "</span> + lows[number];</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> (number &lt; <span class="number">100</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">" "</span> + tens[number / <span class="number">10</span>] + numberToWordsR(number % <span class="number">10</span>);</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> (number &lt; <span class="number">1000</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">" "</span> + lows[number / <span class="number">100</span>] + <span class="string">" Hundred"</span> + numberToWordsR(number % <span class="number">100</span>);</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> (number &lt; <span class="number">1000000</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> numberToWordsR(number / <span class="number">1000</span>) + <span class="string">" Thousand"</span> + numberToWordsR(number % <span class="number">1000</span>);</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> (number &lt; <span class="number">1000000000</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> numberToWordsR(number / <span class="number">1000000</span>) + <span class="string">" Million"</span> + numberToWordsR(number % <span class="number">1000000</span>);</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> numberToWordsR(number / <span class="number">1000000000</span>) + <span class="string">" Billion"</span> + numberToWordsR(number % <span class="number">1000000000</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3><strong>Follow-up：</strong></h3>
-<p>integer, minus, decimals, internationlization(localization)。</p>
+<h3 id="Java代码：-1"><a href="#Java代码：-1" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">numberToWords</span><span class="params">(<span class="keyword">int</span> number)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (number == <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"Zero"</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">return</span> numberToWordsR(number).trim();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">numberToWordsR</span><span class="params">(<span class="keyword">int</span> number)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(number == <span class="number">0</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">""</span>;</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> (number &lt; <span class="number">20</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">" "</span> + lows[number];</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> (number &lt; <span class="number">100</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">" "</span> + tens[number / <span class="number">10</span>] + numberToWordsR(number % <span class="number">10</span>);</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> (number &lt; <span class="number">1000</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">" "</span> + lows[number / <span class="number">100</span>] + <span class="string">" Hundred"</span> + numberToWordsR(number % <span class="number">100</span>);</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> (number &lt; <span class="number">1000000</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> numberToWordsR(number / <span class="number">1000</span>) + <span class="string">" Thousand"</span> + numberToWordsR(number % <span class="number">1000</span>);</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> (number &lt; <span class="number">1000000000</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> numberToWordsR(number / <span class="number">1000000</span>) + <span class="string">" Million"</span> + numberToWordsR(number % <span class="number">1000000</span>);</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> numberToWordsR(number / <span class="number">1000000000</span>) + <span class="string">" Billion"</span> + numberToWordsR(number % <span class="number">1000000000</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Follow-up："><a href="#Follow-up：" class="headerlink" title="Follow-up："></a><strong>Follow-up：</strong></h3><p>integer, minus, decimals, internationlization(localization)。  </p>
 
       
     </div>
@@ -679,16 +547,11 @@ group的引入作为递归的层次来决定Thousand还是Million。
     <div class="entry">
       
         <p><strong><a href="https://leetcode.com/problems/reverse-pairs" target="_blank" rel="noopener">LeetCode 493 Reverse Pairs</a></strong></p>
-<h3><strong>题目大意：</strong></h3>
-<h3><strong>解题思路：</strong></h3>
-<h3><strong>注意事项：</strong></h3>
-<ol>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
 <li>整数乘法注意越界</li>
 </ol>
-<h3><strong>Java代码：</strong></h3>
-<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>k为最长路径长度，时间复杂度为&lt;code&gt;O(k_n_&lt;sup&gt;2&lt;/sup&gt;)&lt;/code&gt;，空间复杂度&lt;code&gt;O(<em>n</em>&lt;sup&gt;2&lt;/sup&gt;)&lt;/code&gt;。</p>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>k为最长路径长度，时间复杂度为<code>O(k<em>n</em><sup>2</sup>)</code>，空间复杂度<code>O(<em>n</em><sup>2</sup>)</code>。   </p>
 
       
     </div>
@@ -720,32 +583,24 @@ group的引入作为递归的层次来决定Thousand还是Million。
     <div class="entry">
       
         <p><strong><a href="https://leetcode.com/problems/remove-nth-node-from-end-of-list" target="_blank" rel="noopener">LeetCode 019 Remove Nth Node From End of List</a></strong></p>
-<p>Given a linked list, remove the <em>n</em>&lt;sup&gt;th&lt;/sup&gt; node from the end of list and return its head.</p>
+<p>Given a linked list, remove the <em>n</em><sup>th</sup> node from the end of list and return its head.</p>
 <p>For example,</p>
-<p>&lt;pre&gt;   Given linked list: 1-&gt;2-&gt;3-&gt;4-&gt;5, and n = 2.</p>
-<p>After removing the second node from the end, the linked list becomes 1-&gt;2-&gt;3-&gt;5.
-&lt;/pre&gt;</p>
-<p><strong>Note:</strong><br>
-Given <em>n</em> will always be valid.<br>
-Try to do this in one pass.</p>
-<h3><strong>题目大意：</strong></h3>
-<p>删除一个单链表末尾开始算起的第n个结点，然后返回该单链表。 例如：<br>
-输入: 1-&gt;2-&gt;3-&gt;4-&gt;5 其中n=2；<br>
-输出： 1-&gt;2-&gt;3-&gt;5;<br>
-n一定合法，只能遍历一次链表。</p>
-<h3><strong>解题思路：</strong></h3>
-<p>这是经典题。两指针法。距离为N的两指针，当前指针到末尾，后指针即是要删除的节点。头部插入fake节点，类似于mergeIntervals L56末尾插入一个空节点避免特别化处理。</p>
+<pre>   Given linked list: 1->2->3->4->5, and n = 2.
+
+   After removing the second node from the end, the linked list becomes 1->2->3->5.
+</pre>
+
+<p><strong>Note:</strong><br>Given <em>n</em> will always be valid.<br>Try to do this in one pass.</p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>删除一个单链表末尾开始算起的第n个结点，然后返回该单链表。 例如：<br>输入: 1-&gt;2-&gt;3-&gt;4-&gt;5 其中n=2；<br>输出： 1-&gt;2-&gt;3-&gt;5;<br>n一定合法，只能遍历一次链表。  </p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是经典题。两指针法。距离为N的两指针，当前指针到末尾，后指针即是要删除的节点。头部插入fake节点，类似于mergeIntervals L56末尾插入一个空节点避免特别化处理。</p>
 <ol>
 <li>快指针从fake节点开始先走n步</li>
 <li>慢指针开始一起和快指针同步走，直到快指针到最后一个（next为空）</li>
 <li>此时慢指针是要删除指针的上一个，删除操作是可以的。</li>
 </ol>
-<h3><strong>注意事项：</strong></h3>
-<p>因为头指针也可能被删除，如只有一个节点的链表，n=1。删除操作在待删除节点的上一个节点上操作，所以引入假头节点prehead。</p>
-<h3><strong>Java代码：</strong></h3>
-<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ListNode <span class="title">removeNthFromEnd</span><span class="params">(ListNode head, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">	ListNode prehead = <span class="keyword">new</span> ListNode(-<span class="number">1</span>);</span><br><span class="line">	prehead.next = head;</span><br><span class="line">	</span><br><span class="line">	ListNode slow = prehead, fast = prehead;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++)</span><br><span class="line">		fast = fast.next;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">while</span>(fast.next != <span class="keyword">null</span>)&#123;</span><br><span class="line">		fast = fast.next;</span><br><span class="line">		slow = slow.next;</span><br><span class="line">	&#125;</span><br><span class="line">	deleteNode(slow);</span><br><span class="line">	<span class="keyword">return</span> prehead.next;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">deleteNode</span><span class="params">(ListNode p)</span></span>&#123;</span><br><span class="line">	p.next = p.next.next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>时间复杂度为&lt;code&gt;O(n)&lt;/code&gt;，空间复杂度&lt;code&gt;O(1)&lt;/code&gt;。</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><p>因为头指针也可能被删除，如只有一个节点的链表，n=1。删除操作在待删除节点的上一个节点上操作，所以引入假头节点prehead。 </p>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ListNode <span class="title">removeNthFromEnd</span><span class="params">(ListNode head, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">	ListNode prehead = <span class="keyword">new</span> ListNode(-<span class="number">1</span>);</span><br><span class="line">	prehead.next = head;</span><br><span class="line">	</span><br><span class="line">	ListNode slow = prehead, fast = prehead;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++)</span><br><span class="line">		fast = fast.next;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">while</span>(fast.next != <span class="keyword">null</span>)&#123;</span><br><span class="line">		fast = fast.next;</span><br><span class="line">		slow = slow.next;</span><br><span class="line">	&#125;</span><br><span class="line">	deleteNode(slow);</span><br><span class="line">	<span class="keyword">return</span> prehead.next;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">deleteNode</span><span class="params">(ListNode p)</span></span>&#123;</span><br><span class="line">	p.next = p.next.next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>。   </p>
 
       
     </div>
