@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://shineboy2013.github.com/"/>
-  <updated>2019-03-23T07:52:07.794Z</updated>
+  <updated>2020-03-09T02:01:42.064Z</updated>
   <id>https://shineboy2013.github.com/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>LeetCode 248 Strobogrammatic Number III</title>
+    <link href="https://shineboy2013.github.com/2020/03/08/lee-248/"/>
+    <id>https://shineboy2013.github.com/2020/03/08/lee-248/</id>
+    <published>2020-03-09T01:39:06.644Z</published>
+    <updated>2020-03-09T02:01:42.064Z</updated>
+    
+    <content type="html"><![CDATA[<p><strong><a href="https://leetcode.com/problems/strobogrammatic-number-iii/" target="_blank" rel="noopener">LeetCode 248 Strobogrammatic Number III</a></strong></p><p>A strobogrammatic number is a number that looks the same when rotated 180 degrees (looked at upside down).<br>Write a function to count the total strobogrammatic numbers that exist in the range of low &lt;= num &lt;= high.</p><p><strong>Example:</strong> </p><pre>**Input: low = "50", high = "100"**Output:** 3 Explanation: 69, 88, and 96 are three strobogrammatic numbers.</pre><p><strong>Note:</strong> Because the range might be a large number, the lowand high numbers are represented as string.</p><h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求某范围的旋转数的个数。旋转数是这个数旋转180度还是一样，如0, 1, 8， 还含两位的如69， 96. </p><h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是M公司的题目。类似于L351安卓解码种数，数字间有关系，求[m, n]范围间种数。用DFS将每一位填上合法位，此题区别是<br>需要它有对称性，所以DFS从中间向两边。API为f(res, low, high, map), res为当前结果字符串，map为旋转数的映射关系，<br>终止条件为res超过high，若在范围内，结果+1，也就是先将自己加入到结果中，然后两边加入旋转字符，进入下一轮递归，<br>累加到结果中。  </p><p>注意: 与上题一样，和最左位不能为0除了0自己本身。</p><h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol><li>奇偶位。对称中心既可以是奇数位也可以是偶数位。  </li><li>最左位为0，不合法如0880，但0本身除外。  </li></ol><h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">strobogrammaticInRange</span><span class="params">(String low, String high)</span> </span>&#123;</span><br><span class="line">Map&lt;String, String&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">map.put(<span class="string">"6"</span>, <span class="string">"9"</span>);</span><br><span class="line">map.put(<span class="string">"9"</span>, <span class="string">"6"</span>);</span><br><span class="line">map.put(<span class="string">"1"</span>, <span class="string">"1"</span>);</span><br><span class="line">map.put(<span class="string">"8"</span>, <span class="string">"8"</span>);</span><br><span class="line">map.put(<span class="string">"0"</span>, <span class="string">"0"</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> result = <span class="number">0</span>;</span><br><span class="line">result += dfs(<span class="string">""</span>, low, high, map);</span><br><span class="line">result += dfs(<span class="string">"1"</span>, low, high, map);</span><br><span class="line">result += dfs(<span class="string">"0"</span>, low, high, map);</span><br><span class="line">result += dfs(<span class="string">"8"</span>, low, high, map);</span><br><span class="line"><span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">dfs</span><span class="params">(String res, String low, String high, Map&lt;String, String&gt; map)</span> </span>&#123;</span><br><span class="line"><span class="keyword">if</span>(res.length() &gt; high.length() || (res.length() == high.length() &amp;&amp; res.compareTo(high) &gt; <span class="number">0</span>)) </span><br><span class="line"><span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"><span class="keyword">int</span> result = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">if</span>((res.length() == low.length() &amp;&amp; res.compareTo(low) &gt;= <span class="number">0</span>)  || res.length() &gt; low.length()) </span><br><span class="line">result = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">if</span>(res.length() &gt; <span class="number">1</span> &amp;&amp; res.charAt(<span class="number">0</span>) == <span class="string">'0'</span>)</span><br><span class="line">result = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (Map.Entry&lt;String, String&gt; entry : map.entrySet()) &#123;</span><br><span class="line">result += dfs(entry.getKey() + res + entry.getValue(), low, high, map);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(# of results)</code>，空间复杂度<code>O(lengh(high))</code>。  </p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;&lt;strong&gt;&lt;a href=&quot;https://leetcode.com/problems/strobogrammatic-number-iii/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;LeetCode 248 Strobogrammatic N
+      
+    
+    </summary>
+    
+    
+      <category term="Classic" scheme="https://shineboy2013.github.com/tags/Classic/"/>
+    
+      <category term="Depth-first Search" scheme="https://shineboy2013.github.com/tags/Depth-first-Search/"/>
+    
+  </entry>
   
   <entry>
     <title>LeetCode 540 Single Element in a Sorted Array</title>
@@ -114,9 +139,9 @@
     
       <category term="Interviewer" scheme="https://shineboy2013.github.com/tags/Interviewer/"/>
     
-      <category term="Stack" scheme="https://shineboy2013.github.com/tags/Stack/"/>
-    
       <category term="Classic" scheme="https://shineboy2013.github.com/tags/Classic/"/>
+    
+      <category term="Stack" scheme="https://shineboy2013.github.com/tags/Stack/"/>
     
   </entry>
   
@@ -388,9 +413,9 @@
     <link href="https://shineboy2013.github.com/2018/01/29/lee-253/"/>
     <id>https://shineboy2013.github.com/2018/01/29/lee-253/</id>
     <published>2018-01-30T06:07:55.171Z</published>
-    <updated>2018-07-12T08:57:27.660Z</updated>
+    <updated>2019-07-30T07:27:59.759Z</updated>
     
-    <content type="html"><![CDATA[<p><strong><a href="https://leetcode.com/problems/meeting-rooms-ii/" target="_blank" rel="noopener">LeetCode 253 Meeting Rooms II</a></strong></p><p>Given an array of meeting time intervals consisting of start and end times <code>[[s1,e1],[s2,e2],...]</code> (si &lt; ei), find the minimum number of conference rooms required.</p><p>For example,<br>Given <code>[[0, 30],[5, 10],[15, 20]]</code>,<br>return <code>2</code>.</p><h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>输入[[0, 30],[5, 10],[15, 20]]表示每个会议的开始结束时间，求最少需要多少会议室能够安排所有的会议。</p><h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>基于merging interval题目，首先按start排序。并且merge条件是start大于上一个会议的end。</p><ol><li>写几个例子感受一下。<br><img src="/images/L253.png" alt=""><br>有两个重叠的会议，现在插入新的会议。是否再需要一个会议室取决于该新会议的开始时间大于这两个目前会议的终止时间的最小值。<br>所以思路是用End time min-heap维护目前会议End time。若新会议start time大于堆顶元素，入栈且activeMeeting++，否则循环地出栈且activeMeeting–。<br>这过程activeMeeting的最大值即所求。</li><li>证明解与具体间隔无关，只与end time的值有关。<br><img src="/images/L253-2.png" alt=""></li><li>基于1和2，对end time进行排序，题解只与start-end的相对顺序有关。既然这样，我们可以把所有start，end一起排序，也就是按时间轴排列，排成一个2n大小的数组，<br>遇到start，activeMeeting++，遇到end，activeMeeting–。 这过程activeMeeting的最大值即所求。<br>当然，上述方法直观，但实现起来需要建立一个class Node{value, startOrEnd}。本质上等价于对排序后的start数组和排序后的end数组进行<strong>合并排序</strong>。<br>合并排序的结果等价于时间轴上两个数组的统一排序。当然，不需要剩余部分的合并排序，因为这部分不会增加activeMeeting的值。</li></ol><p>解题步骤：</p><ol><li>排序start</li><li>排序end</li><li>合并排序，start小就activeMeeting++，否则activeMeeting–。求activeMeeting的最大值。</li></ol><h3 id="Ref："><a href="#Ref：" class="headerlink" title="Ref："></a><strong>Ref：</strong></h3><p><a href="http://blog.csdn.net/jmspan/article/details/51093343" target="_blank" rel="noopener">http://blog.csdn.net/jmspan/article/details/51093343</a></p>]]></content>
+    <content type="html"><![CDATA[<p><strong><a href="https://leetcode.com/problems/meeting-rooms-ii/" target="_blank" rel="noopener">LeetCode 253 Meeting Rooms II</a></strong></p><p>Given an array of meeting time intervals consisting of start and end times <code>[[s1,e1],[s2,e2],...]</code> (si &lt; ei), find the minimum number of conference rooms required.</p><p>For example,<br>Given <code>[[0, 30],[5, 10],[15, 20]]</code>,<br>return <code>2</code>.</p><h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>输入[[0, 30],[5, 10],[15, 20]]表示每个会议的开始结束时间，求最少需要多少会议室能够安排所有的会议。</p><h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>基于merging interval题目，首先按start排序。并且merge条件是start小于上一个会议的end。</p><ol><li>写几个例子感受一下。<br><img src="/images/L253.png" alt=""><br>有两个重叠的会议，现在插入新的会议。是否再需要一个会议室取决于该新会议的开始时间小于这两个目前会议的终止时间的最小值。<br>所以思路是用End time min-heap维护目前会议End time。若新会议start time小于堆顶元素，入栈且activeMeeting++，否则循环地出栈且activeMeeting–直到<br>start time小于堆顶。<br>这过程activeMeeting的最大值即所求。</li><li>证明解与具体间隔无关，只与end time的值有关。<br><img src="/images/L253-2.png" alt=""></li><li>基于1和2，对end time进行排序，题解只与start-end的相对顺序有关。既然这样，我们可以把所有start，end一起排序，也就是按时间轴排列，排成一个2n大小的数组，<br>遇到start，activeMeeting++，遇到end，activeMeeting–。 这过程activeMeeting的最大值即所求。<br>当然，上述方法直观，但实现起来需要建立一个class Node{value, startOrEnd}。本质上等价于对排序后的start数组和排序后的end数组进行<strong>合并排序</strong>。<br>合并排序的结果等价于时间轴上两个数组的统一排序。当然，不需要剩余部分的合并排序，因为这部分不会增加activeMeeting的值。</li></ol><p>解题步骤：</p><ol><li>排序start</li><li>排序end</li><li>合并排序，start小就activeMeeting++，否则activeMeeting–。求activeMeeting的最大值。</li></ol><h3 id="Ref："><a href="#Ref：" class="headerlink" title="Ref："></a><strong>Ref：</strong></h3><p><a href="http://blog.csdn.net/jmspan/article/details/51093343" target="_blank" rel="noopener">http://blog.csdn.net/jmspan/article/details/51093343</a></p>]]></content>
     
     <summary type="html">
     
@@ -504,32 +529,9 @@
     
       <category term="Interviewer" scheme="https://shineboy2013.github.com/tags/Interviewer/"/>
     
-      <category term="Stack" scheme="https://shineboy2013.github.com/tags/Stack/"/>
-    
       <category term="Classic" scheme="https://shineboy2013.github.com/tags/Classic/"/>
     
-  </entry>
-  
-  <entry>
-    <title>LeetCode 658 Find K Closest Elements</title>
-    <link href="https://shineboy2013.github.com/2018/01/28/lee-658/"/>
-    <id>https://shineboy2013.github.com/2018/01/28/lee-658/</id>
-    <published>2018-01-29T03:26:02.137Z</published>
-    <updated>2018-01-29T09:58:33.869Z</updated>
-    
-    <content type="html"><![CDATA[<p><strong><a href="https://leetcode.com/problems/find-k-closest-elements" target="_blank" rel="noopener">LeetCode 658 Find K Closest Elements</a></strong></p><p>Given a sorted array, two integers <code>k</code> and <code>x</code>, find the <code>k</code> closest elements to <code>x</code> in the array. The result should also be sorted in ascending order. If there is a tie, the smaller elements are always preferred.</p><p><strong>Example 1:</strong>  </p><pre><b>Input:</b> [1,2,3,4,5], k=4, x=3<b>Output:</b> [1,2,3,4]</pre><p><strong>Example 2:</strong>  </p><pre><b>Input:</b> [1,2,3,4,5], k=4, x=-1<b>Output:</b> [1,2,3,4]</pre><p><strong>Note:</strong>  </p><ol><li>The value k is positive and will always be smaller than the length of the sorted array.</li><li>Length of the given array is positive and will not exceed 10<sup>4</sup></li><li>Absolute value of elements in the array and x will not exceed 10<sup>4</sup></li></ol><h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个排序数组，两个整数k和x，求数组中距离x最近的k个数字。结果应该有序，距离相同时优先选择较小的数字。</p><h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><ol><li>进阶二分法找出第一个大于等于key值的元素。</li><li>左右两指针搜索k个元素。</li></ol><h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol><li>指针不能越界</li><li>根据题意，与key距离一样时，取较小元素。</li></ol><h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;Integer&gt; <span class="title">findClosestElements</span><span class="params">(<span class="keyword">int</span>[] arr, <span class="keyword">int</span> k, <span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line"><span class="keyword">int</span> upperIdx = firstEqualOrGreater(arr, x);</span><br><span class="line"><span class="keyword">int</span> lowerIdx = upperIdx-<span class="number">1</span>;</span><br><span class="line">List result = <span class="keyword">new</span> ArrayList();</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i=k;i&gt;<span class="number">0</span>;i--)&#123;</span><br><span class="line"><span class="keyword">if</span>(lowerIdx&lt;<span class="number">0</span>)</span><br><span class="line">result.add(arr[upperIdx++]);</span><br><span class="line"><span class="keyword">else</span> <span class="keyword">if</span>(upperIdx&gt;=arr.length)</span><br><span class="line">result.add(arr[lowerIdx--]);</span><br><span class="line"><span class="keyword">else</span> <span class="keyword">if</span>(x-arr[lowerIdx]&lt;=arr[upperIdx]-x)</span><br><span class="line">result.add(arr[lowerIdx--]);</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">result.add(arr[upperIdx++]);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">Collections.sort(result);</span><br><span class="line"><span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">firstEqualOrGreater</span><span class="params">(<span class="keyword">int</span>[] a, <span class="keyword">int</span> key)</span></span>&#123;</span><br><span class="line"><span class="keyword">int</span> lo = <span class="number">0</span>, hi = a.length-<span class="number">1</span>;</span><br><span class="line"><span class="keyword">while</span>(lo&lt;=hi)&#123;</span><br><span class="line"><span class="keyword">int</span> mid =  lo + (hi - lo) / <span class="number">2</span>;</span><br><span class="line"><span class="keyword">if</span>(a[mid]&lt;key)</span><br><span class="line">lo = mid+<span class="number">1</span>;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">hi = mid-<span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> lo;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(logn+k)</code>，空间复杂度<code>O(1)</code>。</p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;&lt;strong&gt;&lt;a href=&quot;https://leetcode.com/problems/find-k-closest-elements&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;LeetCode 658 Find K Closest Elemen
-      
-    
-    </summary>
-    
-    
-      <category term="Binary Search" scheme="https://shineboy2013.github.com/tags/Binary-Search/"/>
+      <category term="Stack" scheme="https://shineboy2013.github.com/tags/Stack/"/>
     
   </entry>
   
