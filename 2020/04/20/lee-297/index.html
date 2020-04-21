@@ -1,0 +1,217 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+  
+  <title>LeetCode 297 Serialize and Deserialize Binary Tree › Jiajie&#39;s blog</title>
+  <meta name="author" content="KK Shum">
+  
+  <meta name="description" content="LeetCode 297 Serialize and Deserialize Binary Tree
+Serialization is the process of converting a data structure or object into a sequence of bits so th">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="LeetCode 297 Serialize and Deserialize Binary Tree"/>
+  <meta property="og:site_name" content="Jiajie&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="Jiajie&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]--><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+</head>
+
+
+<body>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><header id="header"><div class="meta inner">
+  <h1><a href="/">Jiajie&#39;s blog</a></h1>
+  <h2><a href="/">每天积累多一些</a></h2>
+  <nav id="main-nav">
+    <ul>
+      
+      <li><a href="/about">About</a></li>
+      
+      <li><a href="/archives">Archives</a></li>
+      
+      <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+</div>
+<div class="clearfix"></div>
+
+	<script data-ad-client="ca-pub-3350210696528821" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  </header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title">LeetCode 297 Serialize and Deserialize Binary Tree</h1>
+  
+
+      
+        <time datetime="2020-04-20T18:36:09.608Z">2020-04-20</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/serialize-and-deserialize-binary-tree/" target="_blank" rel="noopener">LeetCode 297 Serialize and Deserialize Binary Tree</a></strong></p>
+<p>Serialization is the process of converting a data structure or object into a sequence of bits so that it can be stored in a file or memory buffer, or transmitted across a network connection link to be reconstructed later in the same or another computer environment.</p>
+<p>Design an algorithm to serialize and deserialize a binary tree. There is no restriction on how your serialization/deserialization algorithm should work. You just need to ensure that a binary tree can be serialized to a string and this string can be deserialized to the original tree structure.</p>
+<p><strong>Example: </strong></p>
+<pre>You may serialize the following tree:
+
+    1
+   / \
+  2   3
+     / \
+    4   5
+
+as `"[1,2,3,null,null,4,5]"`
+</pre>
+
+<p><strong>Clarification:</strong> The above format is the same as <a href="/faq/#binary-tree">how LeetCode serializes a binary tree</a>. You do not necessarily need to follow this format, so please be creative and come up with different approaches yourself.</p>
+<p><strong>Note: </strong>Do not use class member/global/static variables to store states. Your serialize and deserialize algorithms should be stateless.</p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>序列化和反序列化二叉树。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>BFS可以涉及三重循环</p>
+<ol>
+<li>q不为空  </li>
+<li>是否按层遍历  </li>
+<li>是否为图  </li>
+</ol>
+<p>这题不需要按层遍历，所以不用第二重。而且只是二叉树，不用第三重循环。</p>
+<p>编码方式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">	      1</span><br><span class="line">	    /   \</span><br><span class="line">	   #     3</span><br><span class="line">	        /  \</span><br><span class="line">	       2   #</span><br><span class="line">	      / \</span><br><span class="line">	     #   #</span><br><span class="line">=&gt; 1,#,3,2,#,#,#</span><br></pre></td></tr></table></figure></p>
+<h3 id="BFS解题步骤："><a href="#BFS解题步骤：" class="headerlink" title="BFS解题步骤："></a><strong>BFS解题步骤：</strong></h3><p>serialize:  </p>
+<ol>
+<li>建queue，然后首节点入列</li>
+<li>进入q的非空循环，队首出列，分别加入左右子树。由于左右子树可能为空，所以队首为空时continue<br>且val加入到结果字符串<br>乘以下标距离即为横向藏水增量，更新底部进入下一次出栈。  </li>
+<li>用#代替null且删去末尾的#和，  </li>
+</ol>
+<p>deserialize:<br>这方法难实现点。用两个指针来代表遍历上一层和该层节点们。q出列的节点是上一层节点head，而idx指向的是<br>该层节点。这样head.left = Node(tokens[idx])就建立了它们的关系。两指针分别向后一位。每轮循环父指针<br>向后一位，而idx向后两位，因为有左右儿子。</p>
+<ol>
+<li>建queue，然后首节点入列</li>
+<li>进入q的非空循环，队首出列，分别生成非空左右子树，且建立父子关系。idx走两步，非空儿子加入q。  </li>
+</ol>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>字符串相等判断用equals，不用==。  </li>
+<li>deserialize中循环条件要加入idx &lt; tokens.length因为serialize末尾#已经删除。  </li>
+</ol>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">serialize2</span><span class="params">(TreeNode root)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(root == <span class="keyword">null</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"&#123;&#125;"</span>;</span><br><span class="line"></span><br><span class="line">	StringBuilder sb = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">	Queue&lt;TreeNode&gt; q = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">	q.add(root);</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty()) &#123;		</span><br><span class="line">		TreeNode n = q.poll();</span><br><span class="line">		sb.append(n == <span class="keyword">null</span> ? <span class="string">"null"</span> : n.val);</span><br><span class="line">		sb.append(<span class="string">","</span>);</span><br><span class="line">		<span class="keyword">if</span>(n == <span class="keyword">null</span>)</span><br><span class="line">			<span class="keyword">continue</span>;</span><br><span class="line">		q.add(n.left);</span><br><span class="line">		q.add(n.right);</span><br><span class="line">	&#125;</span><br><span class="line">	String res = sb.toString().replaceAll(<span class="string">"null"</span>, <span class="string">"#"</span>);</span><br><span class="line">	<span class="keyword">int</span> endIdx = res.length() - <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">while</span>(res.charAt(endIdx) == <span class="string">','</span> || res.charAt(endIdx) == <span class="string">'#'</span>)</span><br><span class="line">		endIdx--;</span><br><span class="line">	<span class="keyword">return</span> <span class="string">"&#123;"</span> + res.substring(<span class="number">0</span>, endIdx + <span class="number">1</span>) + <span class="string">"&#125;"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> TreeNode <span class="title">deserialize2</span><span class="params">(String data)</span> </span>&#123;</span><br><span class="line">	String str = data.substring(<span class="number">1</span>, data.length() - <span class="number">1</span>);</span><br><span class="line">	<span class="keyword">if</span>(<span class="string">""</span>.equals(str))</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">	</span><br><span class="line">	String[] tokens = str.split(<span class="string">","</span>);</span><br><span class="line">	<span class="keyword">int</span> idx = <span class="number">1</span>;</span><br><span class="line">	Queue&lt;TreeNode&gt; q = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">	TreeNode root = <span class="keyword">new</span> TreeNode(Integer.parseInt(tokens[<span class="number">0</span>]));</span><br><span class="line">	q.offer(root);</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty() &amp;&amp; idx &lt; tokens.length) &#123;</span><br><span class="line">		TreeNode head = q.poll();</span><br><span class="line">		<span class="keyword">if</span>(head == <span class="keyword">null</span>)</span><br><span class="line">			<span class="keyword">continue</span>;</span><br><span class="line">		head.left = generateChildNode(idx++, tokens, q);</span><br><span class="line">		head.right = generateChildNode(idx++, tokens, q);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">TreeNode <span class="title">generateChildNode</span><span class="params">(<span class="keyword">int</span> idx, String[] tokens, Queue&lt;TreeNode&gt; q)</span> </span>&#123;</span><br><span class="line">	TreeNode root = <span class="keyword">null</span>;</span><br><span class="line">	<span class="keyword">if</span>(idx &lt; tokens.length &amp;&amp; !<span class="string">"#"</span>.equals(tokens[idx])) &#123;</span><br><span class="line">		root = <span class="keyword">new</span> TreeNode(Integer.parseInt(tokens[idx]));</span><br><span class="line">		q.offer(root);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="DFS算法II解题思路："><a href="#DFS算法II解题思路：" class="headerlink" title="DFS算法II解题思路："></a><strong>DFS算法II解题思路：</strong></h3><p>DFS的serialize很简单，但deserialize比较难。有点类似于前序遍历的递归版，需要维护一个指针p来记录<br>已处理的字符串。  </p>
+<p>编码方式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">    1</span><br><span class="line">  2   3</span><br><span class="line">5  6</span><br><span class="line">=&gt; 1,2,5,#,#,6,#,#,3,#,#</span><br></pre></td></tr></table></figure></p>
+<h3 id="Java代码：-1"><a href="#Java代码：-1" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">serialize</span><span class="params">(TreeNode root)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(root==<span class="keyword">null</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"#"</span>;</span><br><span class="line">	String rootStr = root.val+<span class="string">""</span>;</span><br><span class="line">	String lStr = serialize(root.left);</span><br><span class="line">	String rStr = serialize(root.right);</span><br><span class="line">	<span class="keyword">return</span> rootStr+<span class="string">","</span>+lStr+<span class="string">","</span>+rStr;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> TreeNode <span class="title">deserialize</span><span class="params">(String data)</span></span>&#123;</span><br><span class="line">	p = <span class="number">0</span>;</span><br><span class="line">	items = <span class="keyword">null</span>;</span><br><span class="line">	<span class="keyword">return</span> deserializeR(data);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> TreeNode <span class="title">deserializeR</span><span class="params">(String data)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(data==<span class="keyword">null</span>||data.length()==<span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">	<span class="keyword">if</span>(p&gt;=data.length())</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">	String curVal = getNext(data);</span><br><span class="line">	<span class="keyword">if</span>(curVal.equals(<span class="string">"#"</span>))</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">	</span><br><span class="line">	TreeNode newRoot = <span class="keyword">new</span> TreeNode(Integer.parseInt(curVal));</span><br><span class="line">	newRoot.left = deserializeR(data);</span><br><span class="line">	newRoot.right = deserializeR(data);</span><br><span class="line">	<span class="keyword">return</span> newRoot;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">int</span> p=<span class="number">0</span>;</span><br><span class="line">String[] items = <span class="keyword">null</span>;</span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">getNext</span><span class="params">(String s)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(items==<span class="keyword">null</span>)</span><br><span class="line">		items = s.split(<span class="string">","</span>);</span><br><span class="line">	<span class="keyword">return</span> items[p++];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+      
+      <footer>
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/Classic/">Classic</a>, <a href="/tags/Depth-first-Search/">Depth-first Search</a>, <a href="/tags/Breadth-first-Search/">Breadth-first Search</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  
+</section>
+
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="q" value="site:shineboy2013.github.com">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">Recent Posts</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2020/04/20/lee-1197/">LeetCode 1197 Minimum Knight Moves</a>
+      </li>
+    
+      <li>
+        <a href="/2020/04/20/lee-127/">LeetCode 127 Word Ladder</a>
+      </li>
+    
+      <li>
+        <a href="/2020/04/20/lee-297/">LeetCode 297 Serialize and Deserialize Binary Tree</a>
+      </li>
+    
+      <li>
+        <a href="/2020/04/19/lee-133/">LeetCode 133 Clone Graph</a>
+      </li>
+    
+      <li>
+        <a href="/2020/03/08/lee-248/">LeetCode 248 Strobogrammatic Number III</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">Tag Cloud</h3>
+  <div class="entry">
+    <a href="/tags/Array/" style="font-size: 18.89px;">Array</a> <a href="/tags/Binary-Indexed-Tree/" style="font-size: 10px;">Binary Indexed Tree</a> <a href="/tags/Binary-Search/" style="font-size: 13.33px;">Binary Search</a> <a href="/tags/Binary-Search-Tree/" style="font-size: 10px;">Binary Search Tree</a> <a href="/tags/Breadth-first-Search/" style="font-size: 15.56px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 16.67px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 13.33px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12.22px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 15.56px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 11.11px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 11.11px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 14.44px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 10px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 17.78px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 14.44px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 10px;">Linked List</a> <a href="/tags/Math/" style="font-size: 11.11px;">Math</a> <a href="/tags/Memoization/" style="font-size: 10px;">Memoization</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10px;">Segment Tree</a> <a href="/tags/Sort/" style="font-size: 13.33px;">Sort</a> <a href="/tags/Stack/" style="font-size: 13.33px;">Stack</a> <a href="/tags/String/" style="font-size: 12.22px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.22px;">Tree</a> <a href="/tags/Two-Pointers/" style="font-size: 13.33px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 11.11px;">Union Find</a>
+  </div>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2020 KK Shum
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+
+</body>
+</html>
+
