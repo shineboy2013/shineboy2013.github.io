@@ -3,16 +3,22 @@
 <head>
   <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
   
-  <title>LeetCode 112 Path Sum › Jiajie&#39;s blog</title>
+  <title>BST的非递归中序遍历 › Jiajie&#39;s blog</title>
   <meta name="author" content="KK Shum">
   
-  <meta name="description" content="LeetCode 112 Path Sum
-Given a binary tree and a sum, determine if the tree has a root-to-leaf path such that adding up all the values along the path e">
+  <meta name="description" content="算法思路：
+首先初始化将root的所有左儿子加入到stack。
+开始循环，取出节点，判断其右儿子不为空，因为左儿子已经访问过。  
+若右子树不为空，跟初始化一样，将右子树的所有左儿子加入到栈中。  
+用到两个指针node和n，分别指向出栈节点和遍历所有左儿子节点。  
+
+应用：
+BST的关于Iter">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="LeetCode 112 Path Sum"/>
+  <meta property="og:title" content="BST的非递归中序遍历"/>
   <meta property="og:site_name" content="Jiajie&#39;s blog"/>
 
   
@@ -55,41 +61,27 @@ Given a binary tree and a sum, determine if the tree has a root-to-leaf path suc
     <header>
       
   
-    <h1 class="title">LeetCode 112 Path Sum</h1>
+    <h1 class="title">BST的非递归中序遍历</h1>
   
 
       
-        <time datetime="2017-12-14T06:08:39.112Z">2017-12-13</time>
+        <time datetime="2020-04-26T18:52:08.235Z">2020-04-26</time>
       
     </header>
     <div class="entry">
       
-        <p><strong><a href="https://leetcode.com/problems/path-sum/" target="_blank" rel="noopener">LeetCode 112 Path Sum</a></strong></p>
-<p>Given a binary tree and a sum, determine if the tree has a root-to-leaf path such that adding up all the values along the path equals the given sum.</p>
-<p>For example:<br>Given the below binary tree and <code>sum = 22</code>,</p>
-<pre>              
-              5
-             / \
-            4   8
-           /   / \
-          11  13  4
-         /  \      \
-        7    2      1
-</pre>
-
-<p>return true, as there exist a root-to-leaf path <code>5-&gt;4-&gt;11-&gt;2</code> which sum is 22.</p>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个二叉树root和一个和sum，决定这个树是否存在一条从根到叶子的路径使得沿路所有节点的和等于给定的sum。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>DFS搜索，二叉树的题。步骤主要是考虑</p>
-<ol>
-<li>空指针</li>
-<li>一个node情况或多个node情况（可合并）</li>
+        <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><ol>
+<li>首先初始化将root的所有左儿子加入到stack。</li>
+<li>开始循环，取出节点，判断其右儿子不为空，因为左儿子已经访问过。  </li>
+<li>若右子树不为空，跟初始化一样，将右子树的所有左儿子加入到栈中。  </li>
+<li>用到两个指针node和n，分别指向出栈节点和遍历所有左儿子节点。  </li>
 </ol>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>叶子节点是不含左儿子和右儿子</li>
+<h3 id="应用："><a href="#应用：" class="headerlink" title="应用："></a><strong>应用：</strong></h3><ol>
+<li>BST的关于Iterator的题目<a href="https://shineboy2013.github.io/2020/04/26/lee-173/" target="_blank" rel="noopener">Leetcode 173</a></li>
+<li>不需要遍历所有节点而需要遍历某些节点的题目如求某target最接近N个节点。<a href="https://shineboy2013.github.io/2020/04/26/lee-272/" target="_blank" rel="noopener">Leetcode 272</a></li>
 </ol>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">hasPathSum</span><span class="params">(TreeNode root, <span class="keyword">int</span> sum)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(root == <span class="keyword">null</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	<span class="keyword">if</span>(root.left==<span class="keyword">null</span> &amp;&amp; root.right==<span class="keyword">null</span> &amp;&amp; root.val==sum)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">	<span class="keyword">return</span> hasPathSum(root.left, sum-root.val) || hasPathSum(root.right, sum-root.val);        </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>两种方法时间复杂度为<code>O(n)</code>，n为节点数。空间复杂度为<code>O(h)</code>，h为二叉树高度。</p>
-<h3 id="相关题目："><a href="#相关题目：" class="headerlink" title="相关题目："></a><strong>相关题目：</strong></h3><p>LeetCode 112 Path Sum<br>LeetCode 124 Binary Tree Maximum Path Sum</p>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">iterativeInorder</span><span class="params">(BinaryNode p)</span> </span>&#123;  </span><br><span class="line">	Stack&lt;BinaryNode&gt; stack = <span class="keyword">new</span> Stack&lt;BinaryNode&gt;();  </span><br><span class="line">	BinaryNode head = p;</span><br><span class="line">	<span class="keyword">while</span>(head != <span class="keyword">null</span>) &#123;</span><br><span class="line">		stack.push(head);</span><br><span class="line">		head = head.left;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	BinaryNode node = <span class="keyword">null</span>;</span><br><span class="line">	<span class="keyword">while</span> (stack.size() &gt; <span class="number">0</span>) &#123;  </span><br><span class="line">		node = stack.pop();</span><br><span class="line">		System.out.print(node.data);</span><br><span class="line">		<span class="keyword">if</span>(node.right != <span class="keyword">null</span>) &#123;</span><br><span class="line">			BinaryNode n = node.right; </span><br><span class="line">			<span class="keyword">while</span>(n != <span class="keyword">null</span>) &#123;</span><br><span class="line">				stack.push(n);</span><br><span class="line">				n = n.left;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，n为字符串长度，空间复杂度<code>O(logn)</code>，最差为<code>O(n)</code>。</p>
 
       
     </div>
@@ -99,7 +91,7 @@ Given a binary tree and a sum, determine if the tree has a root-to-leaf path suc
         
   
   <div class="tags">
-    <a href="/tags/Classic/">Classic</a>, <a href="/tags/Tree/">Tree</a>, <a href="/tags/Depth-first-Search/">Depth-first Search</a>
+    <a href="/tags/Knowledge-Base/">Knowledge Base</a>
   </div>
 
         
