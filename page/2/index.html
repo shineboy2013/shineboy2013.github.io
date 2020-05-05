@@ -53,6 +53,60 @@
     <header>
       
   
+    <h1 class="title"><a href="/2020/04/20/lee-127/">LeetCode 127 Word Ladder</a></h1>
+  
+
+      
+        <time datetime="2020-04-20T22:08:38.780Z">2020-04-20</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/word-ladder/" target="_blank" rel="noopener">LeetCode 127 Word Ladder</a></strong></p>
+<div><br><br>Given two words (<em>beginWord</em> and <em>endWord</em>), and a dictionary’s word list, find the length of shortest transformation sequence from <em>beginWord</em> to <em>endWord</em>, such that:<br><br>1.  Only one letter can be changed at a time.<br>2.  Each transformed word must exist in the word list.<br><br><strong>Note:</strong><br><br><em>   Return 0 if there is no such transformation sequence.
+</em>   All words have the same length.<br><em>   All words contain only lowercase alphabetic characters.
+</em>   You may assume no duplicates in the word list.<br><em>   You may assume <em>beginWord</em> and <em>endWord</em> are non-empty and are not the same.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong><br>beginWord = “hit”,<br>endWord = “cog”,<br>wordList = [“hot”,”dot”,”dog”,”lot”,”log”,”cog”]<br><br><strong>Output:</strong> 5<br><br><strong>Explanation:</strong> As one shortest transformation is “hit” -&gt; “hot” -&gt; “dot” -&gt; “dog” -&gt; “cog”,<br>return its length 5.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong><br>beginWord = “hit”<br>endWord = “cog”<br>wordList = [“hot”,”dot”,”dog”,”lot”,”log”]<br><br><strong>Output:</strong> 0<br><br><em>*Explanation:</em></pre></em> The endWord “cog” is not in wordList, therefore no possibletransformation.<br><br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个字典和两个单词。每次变换一个字母的得到新单词且该词要在字典中。求最少变换次数。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这题是最短路径题，第一时间想到BFS。这是一条典型的单源最短路径问题。  </p>
+<ol>
+<li>这是图，所以要有visited记录是否重复访问。</li>
+<li>字典的实现两个作用： 快速查找，以及记录距离可以省下一轮循环。总共两重循环。  </li>
+<li>getNextWords的实现。通过变换每位上字母，比较巧妙。    </li>
+</ol>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>这题是最短路径题，第一时间想到BFS。这是一条典型的单源最短路径问题。  </p>
+<ol>
+<li>建字典。  </li>
+<li>BFS访问。  </li>
+<li>求所有距离为1的相邻单词getNextWords。    </li>
+</ol>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>getNextWords的实现不含自己。  </li>
+<li>注意题目条件，开始词和终结词不一定在字典中，要将它们加入去。  </li>
+</ol>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">ladderLength</span><span class="params">(String beginWord, String endWord, List&lt;String&gt; wordList)</span> </span>&#123;</span><br><span class="line">	<span class="comment">// This is a dict and also keeps track of distance</span></span><br><span class="line">	Map&lt;String, Integer&gt; dict = getDict(wordList);</span><br><span class="line">	<span class="comment">// Make sure endWord is in the dict and can be the next word </span></span><br><span class="line">	<span class="comment">//dict.put(endWord, 0);</span></span><br><span class="line">	dict.put(beginWord, <span class="number">1</span>);</span><br><span class="line">	</span><br><span class="line">	Set&lt;String&gt; visited = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">	Queue&lt;String&gt; q = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">	q.offer(beginWord);</span><br><span class="line">	visited.add(beginWord);</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty()) &#123;</span><br><span class="line">		String word = q.poll();</span><br><span class="line">		<span class="keyword">if</span>(endWord.equals(word))</span><br><span class="line">			<span class="keyword">return</span> dict.get(word);</span><br><span class="line">		</span><br><span class="line">		List&lt;String&gt; nextWords = getNextWords(word, dict);</span><br><span class="line">		<span class="keyword">for</span>(String s : nextWords) &#123;</span><br><span class="line">			<span class="keyword">if</span>(visited.contains(s))</span><br><span class="line">				<span class="keyword">continue</span>;</span><br><span class="line">			</span><br><span class="line">			q.offer(s);</span><br><span class="line">			visited.add(s);</span><br><span class="line">			dict.put(s, dict.get(word) + <span class="number">1</span>);</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Map&lt;String, Integer&gt; <span class="title">getDict</span><span class="params">(List&lt;String&gt; wordList)</span> </span>&#123;</span><br><span class="line">	Map&lt;String, Integer&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">	<span class="keyword">for</span>(String word : wordList) &#123;</span><br><span class="line">		map.put(word, <span class="number">0</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> map;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">List&lt;String&gt; <span class="title">getNextWords</span><span class="params">(String word, Map&lt;String, Integer&gt; dict)</span> </span>&#123;</span><br><span class="line">	List&lt;String&gt; result = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; word.length(); i++) &#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">26</span>; j++) &#123; </span><br><span class="line">			<span class="keyword">char</span> newChar = (<span class="keyword">char</span>)(<span class="string">'a'</span> + j);</span><br><span class="line">			<span class="keyword">if</span>(word.charAt(i) == newChar) <span class="comment">// exclude itself</span></span><br><span class="line">				<span class="keyword">continue</span>;</span><br><span class="line">			String newWord = word.substring(<span class="number">0</span>, i) + </span><br><span class="line">					newChar + word.substring(i + <span class="number">1</span>, word.length());</span><br><span class="line">			<span class="keyword">if</span>(dict.containsKey(newWord))</span><br><span class="line">				result.add(newWord);</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>getNextWords是L<em>26</em>L=<code>O(<em>L</em><sup>2</sup>)</code><br>时间复杂度为<code>O(n*<em>L</em><sup>2</sup>)</code>，空间复杂度<code>O(n)</code>。  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2020/04/20/lee-297/">LeetCode 297 Serialize and Deserialize Binary Tree</a></h1>
   
 
@@ -596,102 +650,6 @@ minStack.getMin();   --> Returns -2.
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2018/04/30/design-tiny-url/">Design Tiny URL</a></h1>
-  
-
-      
-        <time datetime="2018-04-30T22:56:55.681Z">2018-04-30</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>长URL变成短URL方便传输和阅读，特别是很多社交网站对字数有限制如Twitter。</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><ol>
-<li>沟通清楚需要，用户数（都会很大）</li>
-<li>数据量估计。如火车售票系统，估计西雅图总人口，高峰乘坐人数。</li>
-<li>先完成一个功能。如buy ticket。画图，每个部件high level细节包括数据库的schema和组件间的API接口。</li>
-<li>自觉加上优化，如cache，master-slave数据库,LB等等。不要等面试官提醒</li>
-<li>完成一个功能后，再画图扩展到其他功能。 </li>
-</ol>
-<h3 id="短网址长度："><a href="#短网址长度：" class="headerlink" title="短网址长度："></a><strong>短网址长度：</strong></h3><p>短网址若只含数字，也就是十进制整数还是不够短。可以考虑加入大小写字母，总共有26x2+10=62，也就是一个62进制数。<br>网站总数是45亿个，62^7就远远大于45亿，7位就够。<br>若long表示的64位整数，log62(2^64-1)=11，大约是对应11位。  </p>
-<table>
-<thead>
-<tr>
-<th>网站</th>
-<th style="text-align:left">十进制</th>
-<th style="text-align:left">62进制</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>amazon.com</td>
-<td style="text-align:left">0854</td>
-<td style="text-align:left">a5G</td>
-</tr>
-</tbody>
-</table>
-<h3 id="存储方法："><a href="#存储方法：" class="headerlink" title="存储方法："></a><strong>存储方法：</strong></h3><p>写操作：长网址到短网址<br>读操作：短网址到长网址<br>读操作远远大于写操作，所以key（或primary key）选在短网址， value在长网址。<br>每个新的长网址，对应一个短网址还是多个？考虑一下几点：</p>
-<ol>
-<li>若对应一个短网址，必须再产生一个unique key在长网址上来决定该长网址对应的短网址是否存在。大大降低写操作速度。  </li>
-<li>长网址虽然一样，但可以带不同的header, user agent，从而知道进入该长网址的入口（其他网站），短网址商的盈利来源。<br>所以长网址对应多个短网址，Google Maps就采取这个设计。    </li>
-</ol>
-<table>
-<thead>
-<tr>
-<th>网站</th>
-<th style="text-align:left">十进制</th>
-<th style="text-align:left">62进制</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>amazon.com</td>
-<td style="text-align:left">0854</td>
-<td style="text-align:left">a5G</td>
-</tr>
-<tr>
-<td>amazon.com</td>
-<td style="text-align:left">17922</td>
-<td style="text-align:left">bYd</td>
-</tr>
-</tbody>
-</table>
-<p>数据库选择可以是关系型数据库SQL Server，或者KV数据库如Redis，dynamoDB。可以详细讨论关系型数据库与No SQL的区别。<br>此题目用No sql比较好，因为从分布性考虑和是否需要复杂的Join操作来考虑，No sql有明显优势。</p>
-<h3 id="计算短网址："><a href="#计算短网址：" class="headerlink" title="计算短网址："></a><strong>计算短网址：</strong></h3><p>另一个核心问题就是如何计算短网址，具体而言是怎么从URL转化为一个十进制整数。有几个方案：  </p>
-<ol>
-<li>最简单的是维护一个最大值，每个新的请求，对此值加1。缺点是分布式系统中，维护单一最大值（所有机器中）大大降低性能。</li>
-<li>取URL的hash值得到64位整数再取前7位，但会有冲突。</li>
-<li><a href="https://shineboy2013.github.io/2018/06/18/design-distributed-id/" target="_blank" rel="noopener">参考分布式发号器</a>  </li>
-</ol>
-<p>十进制到62进制用短除法来做，<br><img src="/images/design-tiny-url.png" alt=""><br>796%62=52， (796-52)/62=12.<br>12%62=12, (12-12)/62=0.<br>结果为(12)(52) = cP</p>
-<h3 id="DDOS："><a href="#DDOS：" class="headerlink" title="DDOS："></a><strong>DDOS：</strong></h3><p>这是一个细节考虑，若黑客大量发请求，耗尽所有ID怎么办？</p>
-<ol>
-<li>限制IP单日请求总数，超过直接拒绝。</li>
-<li>限制长网址的单一性。限制IP还不够，因为用proxy provider服务可以绕过这个限制。用Redis来cache长网址到短网址的一日数据，<br>然后LRU淘汰旧的数据。这样如果此URL的请求超过一定数量，比如100次，就返回最新的短网址。<br>长网址-&gt;次数+短URL</li>
-</ol>
-<h3 id="301还是302："><a href="#301还是302：" class="headerlink" title="301还是302："></a><strong>301还是302：</strong></h3><p>301是永久重定向，302是临时重定向。如果用了301， Google，百度等搜索引擎，搜索的时候会直接展示真实地址，那我们就无法统计<br>到短地址被点击的次数了，也无法收集用户的Cookie, User Agent等信息。这是短网址商的盈利来源。  </p>
-<h3 id="Ref："><a href="#Ref：" class="headerlink" title="Ref："></a><strong>Ref：</strong></h3><p><a href="https://soulmachine.gitbooks.io/system-design/content/cn/tinyurl.html" target="_blank" rel="noopener">https://soulmachine.gitbooks.io/system-design/content/cn/tinyurl.html</a><br><a href="https://segmentfault.com/a/1190000006140476" target="_blank" rel="noopener">https://segmentfault.com/a/1190000006140476</a>  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -716,6 +674,10 @@ minStack.getMin();   --> Returns -2.
   <ul class="entry">
     
       <li>
+        <a href="/2020/05/04/lee-146/">LeetCode 146 LRU Cache</a>
+      </li>
+    
+      <li>
         <a href="/2020/05/03/lee-126/">LeetCode 126 Word Ladder II</a>
       </li>
     
@@ -731,10 +693,6 @@ minStack.getMin();   --> Returns -2.
         <a href="/2020/04/26/quick-sort/">快速排序</a>
       </li>
     
-      <li>
-        <a href="/2020/04/26/bst-iterative/">BST的非递归中序遍历</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -745,7 +703,7 @@ minStack.getMin();   --> Returns -2.
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Array/" style="font-size: 19px;">Array</a> <a href="/tags/Binary-Indexed-Tree/" style="font-size: 10px;">Binary Indexed Tree</a> <a href="/tags/Binary-Search/" style="font-size: 13px;">Binary Search</a> <a href="/tags/Binary-Search-Tree/" style="font-size: 10px;">Binary Search Tree</a> <a href="/tags/Breadth-first-Search/" style="font-size: 16px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 17px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 13px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 15px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 11px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 11px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 14px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 10px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 17px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 18px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 10px;">Linked List</a> <a href="/tags/Math/" style="font-size: 11px;">Math</a> <a href="/tags/Memoization/" style="font-size: 10px;">Memoization</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10px;">Segment Tree</a> <a href="/tags/Sort/" style="font-size: 13px;">Sort</a> <a href="/tags/Stack/" style="font-size: 15px;">Stack</a> <a href="/tags/String/" style="font-size: 12px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12px;">Tree</a> <a href="/tags/Two-Pointers/" style="font-size: 13px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 11px;">Union Find</a>
+    <a href="/tags/Array/" style="font-size: 18.89px;">Array</a> <a href="/tags/Binary-Indexed-Tree/" style="font-size: 10px;">Binary Indexed Tree</a> <a href="/tags/Binary-Search/" style="font-size: 13.33px;">Binary Search</a> <a href="/tags/Binary-Search-Tree/" style="font-size: 10px;">Binary Search Tree</a> <a href="/tags/Breadth-first-Search/" style="font-size: 15.56px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 16.67px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 13.33px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12.22px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 14.44px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 11.11px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 11.11px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 14.44px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 10px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 16.67px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 17.78px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 11.11px;">Linked List</a> <a href="/tags/Math/" style="font-size: 11.11px;">Math</a> <a href="/tags/Memoization/" style="font-size: 10px;">Memoization</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10px;">Segment Tree</a> <a href="/tags/Sort/" style="font-size: 13.33px;">Sort</a> <a href="/tags/Stack/" style="font-size: 14.44px;">Stack</a> <a href="/tags/String/" style="font-size: 12.22px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.22px;">Tree</a> <a href="/tags/Two-Pointers/" style="font-size: 13.33px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 11.11px;">Union Find</a>
   </div>
 </div>
 
