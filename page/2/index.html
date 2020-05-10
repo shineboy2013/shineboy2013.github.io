@@ -53,6 +53,213 @@
     <header>
       
   
+    <h1 class="title"><a href="/2020/04/26/lee-272/">LeetCode 272 Closest Binary Search Tree Value II</a></h1>
+  
+
+      
+        <time datetime="2020-04-26T18:31:21.211Z">2020-04-26</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/closest-binary-search-tree-value-ii/" target="_blank" rel="noopener">LeetCode 272 Closest Binary Search Tree Value II</a></strong></p>
+<p>Given a non-empty binary search tree and a target value, find <em>k</em> values in the BST that are closest to the target.</p>
+<p>Note:</p>
+<ul>
+<li>Given target value is a floating point.</li>
+<li>You may assume <em>k</em> is always valid, that is: <em>k</em>≤ total nodes.</li>
+<li>You are guaranteed to have only one unique set of <em>k</em> values in the BST that are closest to the target.</li>
+</ul>
+<p>Example:</p>
+<pre>Input: root = [4,2,5,1,3], target = 3.714286, and _k_ = 2
+
+    4
+   / \
+  2   5
+ / \
+1   3
+
+Output: [4,3]</pre>
+
+<p>Follow up:<br>Assume that the BST is balanced, could you solve it in less than <em>O</em>(<em>n</em>) runtime (where <em>n</em> = total nodes)?</p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>找BST中给定目标的最接近的k个值。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>首先观察得到最接近的节点一定在二叉树的搜索路径上的节点的其中一个。这样可以分成两组<br>前驱节点和后驱节点（比target大），加入到两个stack中，由BST的iterator可以知道这两个<br>stack的越靠近栈首就越接近target，所以出栈的一定是最接近target的。只要比较两栈首元素<br>即可。如果某个节点出栈要找其儿子节点填充。找前驱节点和后驱节点的方法是相反的。这里可<br>参照KB的BST非递归中序遍历。    </p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>target - preOrder.peek().val &lt; postOrder.peek().val - target的条件前<br>记得加上!preOrder.isEmpty()</li>
+</ol>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line">public List&lt;Integer&gt; closestKValues(TreeNode root, double target, int k) &#123;</span><br><span class="line">	List&lt;Integer&gt; res = new ArrayList&lt;&gt;();</span><br><span class="line">	if(root == null)</span><br><span class="line">		return res;</span><br><span class="line">	Stack&lt;TreeNode&gt; preOrder = new Stack&lt;&gt;();</span><br><span class="line">	Stack&lt;TreeNode&gt; postOrder = new Stack&lt;&gt;();</span><br><span class="line">	findTargetAndPopulateStacks(preOrder, postOrder, root, target);</span><br><span class="line">	</span><br><span class="line">	while(k-- &gt; 0) &#123;</span><br><span class="line">		if(postOrder.isEmpty() || (!preOrder.isEmpty() &amp;&amp; </span><br><span class="line">				target - preOrder.peek().val &lt; postOrder.peek().val - target))</span><br><span class="line">			getPredecessor(preOrder, res);</span><br><span class="line">		else </span><br><span class="line">			getSuccessor(postOrder, res);</span><br><span class="line">	&#125;</span><br><span class="line">	return res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void findTargetAndPopulateStacks(Stack&lt;TreeNode&gt; preOrder, Stack&lt;TreeNode&gt; postOrder, </span><br><span class="line">		TreeNode root, double target) &#123;</span><br><span class="line">	TreeNode node = root;</span><br><span class="line">	while(node != null) &#123;</span><br><span class="line">		if(node.val &lt; target) &#123; </span><br><span class="line">			preOrder.push(node);</span><br><span class="line">			node = node.right;</span><br><span class="line">		&#125;</span><br><span class="line">		else &#123;</span><br><span class="line">			postOrder.push(node);</span><br><span class="line">			node = node.left;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void getSuccessor(Stack&lt;TreeNode&gt; postOrder, List&lt;Integer&gt; res) &#123;</span><br><span class="line">	TreeNode node = postOrder.pop();</span><br><span class="line">	res.add(node.val);</span><br><span class="line">	if(node.right != null) &#123;</span><br><span class="line">		TreeNode n = node.right;</span><br><span class="line">		while(n != null) &#123;</span><br><span class="line">			postOrder.push(n);</span><br><span class="line">			n = n.left;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void getPredecessor(Stack&lt;TreeNode&gt; preOrder, List&lt;Integer&gt; res) &#123;</span><br><span class="line">	TreeNode node = preOrder.pop();</span><br><span class="line">	res.add(node.val);</span><br><span class="line">	if(node.left != null) &#123;</span><br><span class="line">		TreeNode n = node.left;</span><br><span class="line">		while(n != null) &#123;</span><br><span class="line">			preOrder.push(n);</span><br><span class="line">			n = n.right;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为O(k + logn)，空间复杂度O(logn)。  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2020/04/26/lee-173/">LeetCode 173 Binary Search Tree Iterator</a></h1>
+  
+
+      
+        <time datetime="2020-04-26T07:02:25.769Z">2020-04-26</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/binary-search-tree-iterator/" target="_blank" rel="noopener">LeetCode 173 Binary Search Tree Iterator</a></strong></p>
+<div><br><br>Implement an iterator over a binary search tree (BST). Your iterator will be initialized with the root node of a BST.<br><br>Calling <code>next()</code> will return the next smallest number in the BST.<br><br><strong>Example:</strong><br><br><strong><img src="https://assets.leetcode.com/uploads/2018/12/25/bst-tree.png" alt=""></strong><br><br><pre>BSTIterator iterator = new BSTIterator(root);<br>iterator.next();    // return 3<br>iterator.next();    // return 7<br>iterator.hasNext(); // return true<br>iterator.next();    // return 9<br>iterator.hasNext(); // return true<br>iterator.next();    // return 15<br>iterator.hasNext(); // return true<br>iterator.next();    // return 20<br>iterator.hasNext(); // return false<br></pre><br><br><strong>Note:</strong><br><br><em>   <code>next()</code> and <code>hasNext()</code> should run in average O(1) time and uses O(<em>h</em>) memory, where <em>h</em> is the height of the tree.
+</em>   You may assume that <code>next()</code> call will always be valid, that is, there will be at least a next smallest number in the BST when <code>next()</code> is called.<br><br></div>
+
+
+<h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>参照KB中BST的非递归中序遍历。将其分拆为初始化以及去掉stack不为空的循环分别为所求。 </p>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">Stack&lt;TreeNode&gt; s = <span class="keyword">new</span> Stack&lt;&gt;();</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">L173BinarySearchTreeIterator</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">	TreeNode head = root;</span><br><span class="line">	<span class="keyword">while</span>(head != <span class="keyword">null</span>) &#123;</span><br><span class="line">		s.push(head);</span><br><span class="line">		head = head.left;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Recommended</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">next2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	TreeNode node = s.pop(); </span><br><span class="line">	<span class="keyword">if</span>(node.right != <span class="keyword">null</span>) &#123;<span class="comment">// left node has been visited</span></span><br><span class="line">		TreeNode n = node.right; </span><br><span class="line">		<span class="keyword">while</span>(n != <span class="keyword">null</span>) &#123;</span><br><span class="line">			s.push(n);</span><br><span class="line">			n = n.left;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> node.val;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/** <span class="doctag">@return</span> whether we have a next smallest number */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">hasNext</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> !s.isEmpty();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>next的平均时间复杂度(amortized complexity)为<code>O(1)</code>，n为字符串长度，空间复杂度<code>O(logn)</code>。</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2020/04/21/binary-search/">Binary Search</a></h1>
+  
+
+      
+        <time datetime="2020-04-22T00:28:02.383Z">2020-04-21</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><ol>
+<li>循环条件start + 1 &lt; end。 当跳出循环时，start和end的关系只能是相等或相邻。<br>相等是若数组只有一个元素，没有进入循环时出现。当进入过循环，一定是相邻。</li>
+<li>跳出循环后比较start和end的关系从而判断答案。  </li>
+</ol>
+<p>这可以满足二分法找first position或者last position, peak element的题目。<br>first position中若等于target，end = mid，因为要在左半部分找，相反last<br>position在右半部分找，所以start = mid。</p>
+<h3 id="应用："><a href="#应用：" class="headerlink" title="应用："></a><strong>应用：</strong></h3><ol>
+<li>有序数组找目标</li>
+<li>没给定目标情况下，找峰值</li>
+<li>没给定目标情况下，求数值，如求根号</li>
+</ol>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">lastPosition</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(nums == <span class="keyword">null</span> || nums.length == <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">int</span> start = <span class="number">0</span>, end = nums.length - <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">while</span>(start + <span class="number">1</span> &lt; end) &#123;</span><br><span class="line">		<span class="keyword">int</span> mid = start + (end - start) / <span class="number">2</span>;</span><br><span class="line">		<span class="keyword">if</span>(nums[mid] &lt; target)</span><br><span class="line">			start = mid;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(nums[mid] == target) </span><br><span class="line">		<span class="comment">// Depends on the target on the right side or left side. For fist pos, use end = mid</span></span><br><span class="line">			start = mid; </span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			end = mid;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(nums[end] == target)</span><br><span class="line">		<span class="keyword">return</span> end;</span><br><span class="line">	<span class="keyword">if</span>(nums[start] == target)</span><br><span class="line">		<span class="keyword">return</span> start;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(logn)</code>，空间复杂度<code>O(1)</code>。</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2020/04/20/lee-1197/">LeetCode 1197 Minimum Knight Moves</a></h1>
+  
+
+      
+        <time datetime="2020-04-21T02:01:15.387Z">2020-04-20</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/minimum-knight-moves/" target="_blank" rel="noopener">LeetCode 1197 Minimum Knight Moves</a></strong></p>
+<p>In an infinite chess board with coordinates from <code>-infinity</code> to <code>+infinity</code>, you have a knight at square <code>[0, 0]</code>.</p>
+<p>A knight has 8 possible moves it can make, as illustrated below. Each move is two squares in a cardinal direction, then one square in an orthogonal direction.</p>
+<p><img src="https://assets.leetcode.com/uploads/2018/10/12/knight.png" alt=""></p>
+<p>Return the minimum number of steps needed to move the knight to the square <code>[x, y]</code>.  It is guaranteed the answer exists.</p>
+<p>Example 1:</p>
+<pre>Input: x = 2, y = 1
+Output: 1
+Explanation: [0, 0] → [2, 1]
+</pre>
+
+<p>Example 2:</p>
+<pre>Input: x = 5, y = 5
+Output: 4
+Explanation: [0, 0] → [2, 1] → [4, 2] → [3, 4] → [5, 5]
+</pre>
+
+<p>Constraints:</p>
+<ul>
+<li><code>|x| + |y| &lt;= 300</code></li>
+</ul>
+<p>Because x and y are constrained to be in range[-300, 300], we can use BFS to find the minimum steps needed to reach target(x, y). Furthermore, we can only consider the case that x &gt;=0 &amp;&amp; y &gt;=0 since the chess board is symmetric.  The bfs implementation is pretty straightforward. There are two important points you need to be careful with.</p>
+<ol>
+<li>Pruning. We can limit the search dimension within 310 * 310. Any moves that lead to a position that is outside this box will not yield an optimal result.</li>
+</ol>
+<p>2. Initially, you used a Set of type int[] to track visited positions. This caused TLE because you didn’t overwrite the hashCode and equals methods for int[]. As a result, Set uses the default hashCode and equals method when checking if an element is already in the set. For equals(), The default implementation provided by the JDK is based on memory location — two objects are equal if and only if they are stored in the same memory address. For a comprehensive reading, refer to <a href="https://dzone.com/articles/working-with-hashcode-and-equals-in-java" target="_blank" rel="noopener">https://dzone.com/articles/working-with-hashcode-and-equals-in-java</a></p>
+<p>O(x * y) runtime and space</p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>象棋一样，走日字到达目标点的最小次数。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这题是最短路径题，第一时间想到BFS。</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>这题是最短路径题，第一时间想到BFS。这是一条典型的单源最短路径问题。  </p>
+<ol>
+<li>建距离map。  </li>
+<li>BFS访问。  </li>
+</ol>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li><strong>用map记录距离一定要将首节点加入到map中，否则求距离时候会NPE。</strong>  </li>
+<li>visited我一开始实现用HashSet但因为没有实现equals导致LTE，改成矩阵即可。  </li>
+</ol>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span>[] directX = <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;<span class="number">1</span>, <span class="number">1</span>,-<span class="number">1</span>,-<span class="number">1</span>,<span class="number">2</span>,<span class="number">2</span>,-<span class="number">2</span>,-<span class="number">2</span>&#125;;</span><br><span class="line"><span class="keyword">int</span>[] directY = <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;<span class="number">2</span>,-<span class="number">2</span>,<span class="number">2</span>,-<span class="number">2</span>,<span class="number">1</span>,-<span class="number">1</span>,<span class="number">1</span>,-<span class="number">1</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">shortestPath</span><span class="params">(<span class="keyword">boolean</span>[][] grid, Point source, Point destination)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(grid == <span class="keyword">null</span> || grid.length == <span class="number">0</span> || grid[<span class="number">0</span>].length == <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	Queue&lt;Point&gt; q = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">	Map&lt;Point, Integer&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">	map.put(source, <span class="number">0</span>); <span class="comment">// remember</span></span><br><span class="line">	<span class="keyword">boolean</span>[][] visited = <span class="keyword">new</span> <span class="keyword">boolean</span>[grid.length][grid[<span class="number">0</span>].length];</span><br><span class="line">	q.offer(source);</span><br><span class="line">	visited[source.x][source.y] = <span class="keyword">true</span>; <span class="comment">// use hashSet is wrong.</span></span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty()) &#123;</span><br><span class="line">		Point p = q.poll();</span><br><span class="line">		<span class="keyword">if</span>(p.x == destination.x &amp;&amp; p.y == destination.y)</span><br><span class="line">			<span class="keyword">return</span> map.get(p);</span><br><span class="line">		<span class="keyword">for</span>(Point neighbor : getNeighbors(p)) &#123;</span><br><span class="line">			<span class="keyword">if</span>(!isValid(grid, neighbor) || visited[neighbor.x][neighbor.y])</span><br><span class="line">				<span class="keyword">continue</span>;</span><br><span class="line">			q.offer(neighbor);</span><br><span class="line">			visited[neighbor.x][neighbor.y] = <span class="keyword">true</span>;</span><br><span class="line">			map.put(neighbor, map.get(p) + <span class="number">1</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">List&lt;Point&gt; <span class="title">getNeighbors</span><span class="params">(Point point)</span> </span>&#123;</span><br><span class="line">	List&lt;Point&gt; result = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">8</span>; i++) &#123;</span><br><span class="line">		result.add(<span class="keyword">new</span> Point(point.x + directX[i], point.y + directY[i]));</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">isValid</span><span class="params">(<span class="keyword">boolean</span>[][] grid, Point point)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(point.x &gt;= <span class="number">0</span> &amp;&amp; point.x &lt; grid.length &amp;&amp; point.y &gt;= <span class="number">0</span> &amp;&amp; point.y &lt; grid[<span class="number">0</span>].length </span><br><span class="line">			&amp;&amp; !grid[point.x][point.y])</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为棋盘大小<code>O(n*m)</code>，空间复杂度<code>O(n)</code>。  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2020/04/20/lee-127/">LeetCode 127 Word Ladder</a></h1>
   
 
@@ -422,234 +629,6 @@ Explanation: 69, 88, and 96 are three strobogrammatic numbers.
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2018/06/17/design-distributed-id/">Design Distributed ID Generator</a></h1>
-  
-
-      
-        <time datetime="2018-06-18T06:16:29.341Z">2018-06-17</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>生成唯一ID如用户ID，订单ID。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>基本思路是将所有网站映射到一个整数。<br>三大核心需求：</p>
-<ol>
-<li>全局唯一(unique)</li>
-<li>按照时间粗略有序(sortable by time)。按时间查询是普遍的请求，如得到最新的1000个用户。</li>
-<li>尽可能短。省空间，查询要更有效率。</li>
-</ol>
-<h3 id="UUID："><a href="#UUID：" class="headerlink" title="UUID："></a><strong>UUID：</strong></h3><p>UUID是一类算法的统称，具体有不同的实现。UUID的有点是每台机器可以独立产生ID，理论上保证<br>不会重复，所以天然是分布式的，缺点是生成的ID太长，不仅占用内存，而且索引查询效率低。<br>4个字节表示的Unix timestamp,<br>3个字节表示的机器的ID<br>2个字节表示的进程ID<br>3个字节表示的计数器</p>
-<h3 id="多机器分别自增："><a href="#多机器分别自增：" class="headerlink" title="多机器分别自增："></a><strong>多机器分别自增：</strong></h3><p>假设用8台MySQL服务器协同工作，第一台MySQL初始值是1，每次自增8，第二台MySQL初始值是2，<br>每次自增8，依次类推。前面用一个 round-robin load balancer 挡着，每来一个请求，由<br>round-robin balancer 随机地将请求发给8台MySQL中的任意一个，然后返回一个ID。<br>load balance可以确保请求平均分配到不同的机器，所以粗略有序，缺点是加机器要re-hash这些Id<br>且顺序不够稳定。</p>
-<h3 id="Twitter-Snowflake："><a href="#Twitter-Snowflake：" class="headerlink" title="Twitter Snowflake："></a><strong>Twitter Snowflake：</strong></h3><p>原理与UUID基本一样。也是时间戳+机器id+自增序号。时间戳保证有序。<br><img src="/images/design-distributed-id.png" alt="">  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2018/06/14/lee-155/">LeetCode 155 Min Stack</a></h1>
-  
-
-      
-        <time datetime="2018-06-14T07:12:02.826Z">2018-06-14</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/min-stack" target="_blank" rel="noopener">LeetCode 155 Min Stack</a></strong></p>
-<p>Design a stack that supports push, pop, top, and retrieving the minimum element in constant time.</p>
-<ul>
-<li>push(x) – Push element x onto stack.</li>
-<li>pop() – Removes the element on top of the stack.</li>
-<li>top() – Get the top element.</li>
-<li>getMin() – Retrieve the minimum element in the stack.</li>
-</ul>
-<p><strong>Example:</strong>  </p>
-<pre>MinStack minStack = new MinStack();
-minStack.push(-2);
-minStack.push(0);
-minStack.push(-3);
-minStack.getMin();   --> Returns -3.
-minStack.pop();
-minStack.top();      --> Returns 0.
-minStack.getMin();   --> Returns -2.
-</pre>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>设计一个栈，支持在常数时间内push，pop，top，和取最小值。</p>
-<p>push(x) – 元素x压入栈<br>pop() – 弹出栈顶元素<br>top() – 获取栈顶元素<br>getMin() – 获取栈中的最小值</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是考察Algorithm和data structure的经典问题。用stack即可实现push，top，pop。难点在于O(1)内实现getMin。看一个例子，<br>按以下顺序加入stack     5, 3, 6, 8, 2<br>最小值                 5, 3, 3, 3, 2<br>可以看出来，最小值是动态变化的，所以需要动态处理，由于存储的方式与stack一致，所以可以考虑再用一个stack来存最小值。<br>如果不用额外stack改用Node，将make_pair(x, curMin)一起压入栈stack<node<int,int>&gt;中，额外空间复杂度O(n)。 见算法2。<br>稍改进空间复杂度，最小值只存变化的值，也就是5,3,2，当最小值变化时再存入最小栈。出栈时候，若出栈元素等于最小栈中的元素，<br>最小栈的元素也要出栈。</node<int,int></p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>当前最小元素可能相等。相等元素也要入最小栈，如5,3,6,3，最小栈为5,3,3。x &lt;= minS.peek()一定要取等于。</li>
-<li>考虑栈为空时，执行pop和peek的操作。这里存在一个decision point，设计原则与stack的操作一致，也就是暴露出exception。</li>
-</ol>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MinStack</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	 <span class="comment">/** initialize your data structure here. */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MinStack</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        s = <span class="keyword">new</span> Stack&lt;&gt;();</span><br><span class="line">        minS = <span class="keyword">new</span> Stack&lt;&gt;();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">push</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">        s.push(x);</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span>(minS.isEmpty() || x &lt;= minS.peek())</span><br><span class="line">        	minS.push(x);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">pop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> top = s.pop();</span><br><span class="line">        <span class="keyword">if</span>(top == minS.peek())</span><br><span class="line">        	minS.pop();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">top</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> s.peek();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getMin</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> minS.peek();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    Stack&lt;Integer&gt; s;</span><br><span class="line">    Stack&lt;Integer&gt; minS;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(1)</code>，空间复杂度<code>O(n)</code>。</p>
-<p>算法2也是可以通过leetcode测试的，虽然空间复杂度比上述差。<br><a href="https://dotblogs.com.tw/tsanmmmm2000/2017/05/19/leetcode-practice-min-stack" target="_blank" rel="noopener">存储每个新加值对应的min，更加浪费空间</a></p>
-<h3 id="Follow-up"><a href="#Follow-up" class="headerlink" title="Follow-up:"></a><strong>Follow-up:</strong></h3><p>如果用O(1)额外空间，怎么改进算法？ </p>
-<p>先考虑最简单的情况，用一个min来记录当前最小值，它可以满足最小值不需更新的情况：<br>x表示要加入的值，m表示最小值的变量，y是真正加入栈的值<br>x 1 5 3<br>m 1 1 1<br>y 1 5 3<br>可以看出无论入栈出栈，最小值均为1.  </p>
-<p>比较难的是最小值需要更新时，如下一个要加入0，最小值要更新m=0，但0不能入栈，前一个最小值1的信息就丢失了，所以要设计一个计算y方法(push)满足  </p>
-<ol>
-<li>含有前一个最小值的的信息。x1&lt;m0.  </li>
-<li>y&lt;m, 因为最小值不更新的时候y值永远大于等于m，必须区分开来，从而知道怎么pop，也就是还原入栈值（最小值）。y1&lt;m1=x1.</li>
-</ol>
-<p>以下解释如何推出y的计算方式，以及push和pop的方法：<br><img src="/images/L155.png" alt="">  </p>
-<p>以下例子解释Push<br>x 1 5 3 0 6<br>m 1 1 1 0 0<br>y 1 5 3 -1 6</p>
-<p>以下例子解释Pop<br>x 6 0 3 5 1<br>m 0 0 1 1 1<br>y 6 -1 3 5 1<br>可以看出真正入栈值可以是原数或者是计算值，取决它与最小值的关系。</p>
-<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>当前最小元素可能相等。相等元素不用更新最小值，也就是新值直接入栈。</li>
-<li>以上递推式的初始条件为：第一个元素是直接加入栈且等于m，无论何种情况都不需任何计算。push时候注意当栈为空，m值为第一个元素的值。</li>
-<li>数据溢出。涉及int的加减乘除法，都要预先将其转化为long，否则会溢出。</li>
-</ol>
-<h3 id="Java代码：-1"><a href="#Java代码：-1" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MinStack</span> </span>&#123;</span><br><span class="line">     <span class="function"><span class="keyword">public</span> <span class="title">MinStack</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        s = <span class="keyword">new</span> Stack&lt;&gt;();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">push</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">    	<span class="keyword">if</span> (s.isEmpty())</span><br><span class="line">    		m = x;</span><br><span class="line">    	</span><br><span class="line">    	<span class="keyword">long</span> xx = (<span class="keyword">long</span>)x;</span><br><span class="line">    	<span class="keyword">if</span> (x &gt;= m)</span><br><span class="line">    		s.push(xx);</span><br><span class="line">    	<span class="keyword">else</span> &#123;</span><br><span class="line">    		s.push(<span class="number">2</span>*xx-m);</span><br><span class="line">    		m = x;</span><br><span class="line">    	&#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">pop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">long</span> top = s.pop();</span><br><span class="line">        <span class="keyword">if</span>(top &lt; m)     </span><br><span class="line">        	m = <span class="number">2</span>*m - top;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">top</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> (<span class="keyword">int</span>)(s.peek() &gt;= m? s.peek() : m);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getMin</span><span class="params">()</span> </span>&#123; </span><br><span class="line">        <span class="keyword">return</span> (<span class="keyword">int</span>)m;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    Stack&lt;Long&gt; s;</span><br><span class="line">    <span class="keyword">long</span> m = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(1)</code>，空间复杂度<code>O(1)</code>。</p>
-<h3 id="考点"><a href="#考点" class="headerlink" title="考点:"></a><strong>考点:</strong></h3><ol>
-<li>先不考虑getMin，用什么数据结构实现push, pop, top</li>
-<li>暴力法可以实现getMin，怎么实现O(1)。用什么数据结构实现存储min，额外用一个stack</li>
-<li>元素可能相等</li>
-<li>考虑栈为空时，执行pop和peek的操作</li>
-</ol>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2018/05/07/lee-128/">LeetCode 128 Longest Consecutive Sequence</a></h1>
-  
-
-      
-        <time datetime="2018-05-08T06:57:44.775Z">2018-05-07</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/longest-consecutive-sequence" target="_blank" rel="noopener">LeetCode 128 Longest Consecutive Sequence</a></strong></p>
-<p>Given an unsorted array of integers, find the length of the longest consecutive elements sequence.</p>
-<p>Your algorithm should run in O(<em>n</em>) complexity.</p>
-<p><strong>Example:</strong></p>
-<pre>**Input:** [100, 4, 200, 1, 3, 2]
-**Output:** 4
-**Explanation:** The longest consecutive elements sequence is `[1, 2, 3, 4]`. Therefore its length is 4.
-</pre>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给出一个未排序的整数数组，找出最长的连续元素序列的长度。<br>如： 给出[100, 4, 200, 1, 3, 2]，最长的连续元素序列是[1, 2, 3, 4]。返回它的长度：4。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是连通问题，如果用排序方法，很容易，但时间复杂度为O(nlogn)。考虑改进，因为连通集，容易想到HashMap，把每个元素加入到其中，<br>然后对每个元素进行相邻查找。相邻查找就是以此元素为中心，向上向下在Map查找，从而得到此元素的最大连续序列长度。查找过的元素<br>在Map中删除，以免重复计算。</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>Java中在for循环中不能修改hashSet，所以只能用HashMap且value存boolean替代。HashMap表示此Map还是否含有该元素。</li>
-</ol>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">longestConsecutive</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> result = <span class="number">0</span>;</span><br><span class="line">	HashMap&lt;Integer,Boolean&gt; hm = <span class="keyword">new</span> HashMap&lt;Integer,Boolean&gt;();</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i : nums)</span><br><span class="line">		hm.put(i, <span class="keyword">true</span>);</span><br><span class="line">	</span><br><span class="line">	Iterator it = hm.keySet().iterator();</span><br><span class="line">	<span class="keyword">while</span>(it.hasNext())&#123;</span><br><span class="line">		<span class="keyword">int</span> key = (<span class="keyword">int</span>)it.next();</span><br><span class="line">		<span class="keyword">int</span> i = key+<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">int</span> count = <span class="number">1</span>;</span><br><span class="line">		<span class="keyword">while</span>(hm.containsKey(i) &amp;&amp; hm.get(i))&#123;</span><br><span class="line">			count++;</span><br><span class="line">			hm.put(i, <span class="keyword">false</span>);</span><br><span class="line">			i++;</span><br><span class="line">		&#125;</span><br><span class="line">		i = key-<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">while</span>(hm.containsKey(i) &amp;&amp; hm.get(i))&#123;</span><br><span class="line">			count++;</span><br><span class="line">			hm.put(i, <span class="keyword">false</span>);</span><br><span class="line">			i--;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(count&gt;result)</span><br><span class="line">			result = count;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line">		</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>。</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2018/05/01/design-chime/">Design Chime</a></h1>
-  
-
-      
-        <time datetime="2018-05-02T05:21:57.460Z">2018-05-01</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>Design a chatting application like Chime  </p>
-<h3 id="了解用户需求："><a href="#了解用户需求：" class="headerlink" title="了解用户需求："></a><strong>了解用户需求：</strong></h3><p>通过不断和面试官沟通，了解用户角度的需求。把这些需求逐一列举在白板上。面试者一开始会刻意只说出1-2点。面试者通过联系实际，不够构想<br>一些需求，若得到确认就要写入。</p>
-<ol>
-<li>用户可以单对单相互聊天(one-on-one chat)</li>
-<li>用户可以群聊(group chat)</li>
-<li>用户可登陆</li>
-<li>用户可以添加好友(sending)，接受好友(accepting)，拒绝添加(rejecting). 好友相互添加(mutual)，不支持两人分别添加。</li>
-<li>用户更新状态为offline, available, busy, don’t disturb，还有个性化签名</li>
-</ol>
-<p>面试者通过重新排序user life cycle更有助于理解和记忆</p>
-<ol>
-<li>用户可登陆</li>
-<li>用户可以添加好友(sending)，接受好友(accepting)，拒绝添加(rejecting)</li>
-<li>用户可以单对单相互聊天(one-on-one chat)</li>
-<li>用户可以群聊(group chat)</li>
-<li>用户更新状态为offline, available, busy, don’t disturb，还有个性化签名</li>
-</ol>
-<p>本面试不支持以下use cases<br>音频会议，视频会议，文件传输</p>
-<h3 id="Block-Component-diagram："><a href="#Block-Component-diagram：" class="headerlink" title="Block/Component diagram："></a><strong>Block/Component diagram：</strong></h3><p>最简单的设计就是一系列的clients，一系列的servers，还有存储系统。<br><img src="/images/chime.png" alt=""><br>存储系统可以选择SQL或者No SQL。No SQL就会更加scalable.这里可以讨论它们之间的pros和cons。<br>传输协议(client-server)可用Java中的Socket和ServerSocket对象，它们建立一个TCP连接，用IO Stream传输。<br>服务器端用多个服务器避免single point of failure。server端的memory会存一些用户状态等数据（当然它也会被持久化），这表示它需要<br>    replicate一些数据减少不同机器之间的lookup时间。</p>
-<p>这些大概讨论一下即可，本design主要针对OOD。</p>
-<h3 id="Class-diagram："><a href="#Class-diagram：" class="headerlink" title="Class diagram："></a><strong>Class diagram：</strong></h3><p>从User开始写fields和key methods，因为需求就是针对用户，比较直观。当参数含有多个属性时，就应该考虑产生一个新的class，如Message，<br>因为Message不只内容String还有发送时间甚至styling等。 还有注意每个类是否存在状态(如UserStatus)，如果有，就要考虑用enum。</p>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line">User:</span><br><span class="line">   <span class="keyword">int</span> id;</span><br><span class="line">   String fullName;</span><br><span class="line">   String alias;</span><br><span class="line">   List&lt;User&gt; friends;</span><br><span class="line">   List&lt;GroupChat&gt; gChats;</span><br><span class="line">   List&lt;PrivateChat&gt; pChats;</span><br><span class="line">   UserStatus s;</span><br><span class="line">   </span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">sign</span><span class="params">()</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">signout</span><span class="params">()</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">sendFriend</span><span class="params">(FriendRequest r)</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">acceptFriend</span><span class="params">(FriendRequest r)</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">rejectFriend</span><span class="params">(FriendRequest r)</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">setUserStatus</span><span class="params">(UserStatus s)</span></span>;</span><br><span class="line">   <span class="function">PrivateChat <span class="title">createConversation</span><span class="params">(User b)</span></span>;</span><br><span class="line">   <span class="function">GroupChat <span class="title">createConversation</span><span class="params">(List&lt;User&gt; c)</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">sendMessage</span><span class="params">(PrivateChat s, String msg)</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">sendMessage</span><span class="params">(GroupChat s, String msg)</span></span>;</span><br><span class="line"></span><br><span class="line">Conversation:</span><br><span class="line">   <span class="keyword">int</span> id;</span><br><span class="line">   List&lt;User&gt; users;</span><br><span class="line">   List&lt;Message&gt; messages;</span><br><span class="line">   </span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">addMessage</span><span class="params">(Message msg)</span></span>;</span><br><span class="line">   </span><br><span class="line">PrivateChat extends Conversation:</span><br><span class="line">   PrivateChat(User user, User user2);</span><br><span class="line"></span><br><span class="line">GroupChat extends Conversation:</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">addUser</span><span class="params">(User u)</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">removeUser</span><span class="params">(User u)</span></span>;</span><br><span class="line">   </span><br><span class="line">Message:</span><br><span class="line">   <span class="keyword">int</span> id;</span><br><span class="line">   Date timestamp;</span><br><span class="line">   User user;<span class="comment">//I would like to know who sent this msg</span></span><br><span class="line">   String content;</span><br><span class="line"></span><br><span class="line">FriendRequest:</span><br><span class="line">   User from;</span><br><span class="line">   User to;</span><br><span class="line">   Date timestamp;</span><br><span class="line">   RequestStatus Status;</span><br><span class="line"></span><br><span class="line">UserStatus:</span><br><span class="line">   String message;</span><br><span class="line">   UserStatusType type;</span><br><span class="line"></span><br><span class="line"><span class="keyword">enum</span> RequestStatus:</span><br><span class="line">   ACCEPTED, REJECTED, PENDING</span><br><span class="line"> </span><br><span class="line"><span class="keyword">enum</span> UserStatusType:</span><br><span class="line">   offline, available, busy, DONT_disturb</span><br><span class="line"></span><br><span class="line"><span class="comment">//这个类最为复杂，主要是维护用户关系和用户状态以及对应的数据库读写。这里有几个隐形需求。。可以根据alias搜索用户，  </span></span><br><span class="line"><span class="comment">//如果用户offline，即使是好友也不能发信息。它是singleton。</span></span><br><span class="line">UserManager:</span><br><span class="line">   HashMap&lt;String, User&gt; usersByAlias;</span><br><span class="line">   <span class="comment">//User类需要含有UserManager，查看要发送信息的对象是否在线，若不在线，不能发出信息。</span></span><br><span class="line">   HashMap&lt;Integer, User&gt; onlineUsers;</span><br><span class="line">   </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> UserManager <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">       <span class="keyword">if</span> (instance==<span class="keyword">null</span>) instance = <span class="keyword">new</span> UserManager();</span><br><span class="line">	   <span class="keyword">return</span> instance;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="comment">//用observer模式，User调用UserManager这个接口来更新onlineUsers</span></span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">signInUser</span><span class="params">(String alias)</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">signOutUser</span><span class="params">(String alias)</span></span>;</span><br><span class="line">   <span class="comment">//User to的acceptFriend会调用这个函数来更新User a和User b的friend list同时更新FriendRequest的状态。</span></span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">approveRequest</span><span class="params">(FriendRequest f)</span></span>;</span><br></pre></td></tr></table></figure>
-<p>具体实现可以选择approveRequest或者某用户发信息怎么令group chat的其他用户收到该信息sendMessage(GroupChat s, String msg)。</p>
-<p>void sendMessage(GroupChat s, String msg){<br>    List<user> users = s.getUsers();<br>}</user></p>
-<h3 id="扩展问题："><a href="#扩展问题：" class="headerlink" title="扩展问题："></a><strong>扩展问题：</strong></h3><ol>
-<li>怎么知道某用户真的在线</li>
-<li>怎么处理内存和数据冲突的信息</li>
-<li>怎么让server scale</li>
-<li>怎么防止DDOS攻击</li>
-</ol>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -674,23 +653,23 @@ minStack.getMin();   --> Returns -2.
   <ul class="entry">
     
       <li>
+        <a href="/2020/05/09/memoization/">记忆性搜索</a>
+      </li>
+    
+      <li>
+        <a href="/2020/05/09/lee-140/">LeetCode 140 Word Break II</a>
+      </li>
+    
+      <li>
+        <a href="/2020/05/09/lin-683/">LintCode 683 Word Break III</a>
+      </li>
+    
+      <li>
+        <a href="/2020/05/09/lee-139/">LeetCode 139 Word Break</a>
+      </li>
+    
+      <li>
         <a href="/2020/05/04/lee-146/">LeetCode 146 LRU Cache</a>
-      </li>
-    
-      <li>
-        <a href="/2020/05/03/lee-126/">LeetCode 126 Word Ladder II</a>
-      </li>
-    
-      <li>
-        <a href="/2020/05/03/combination/">组合</a>
-      </li>
-    
-      <li>
-        <a href="/2020/05/03/permutation/">排列</a>
-      </li>
-    
-      <li>
-        <a href="/2020/04/26/quick-sort/">快速排序</a>
       </li>
     
   </ul>
@@ -703,7 +682,7 @@ minStack.getMin();   --> Returns -2.
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Array/" style="font-size: 18.89px;">Array</a> <a href="/tags/Binary-Indexed-Tree/" style="font-size: 10px;">Binary Indexed Tree</a> <a href="/tags/Binary-Search/" style="font-size: 13.33px;">Binary Search</a> <a href="/tags/Binary-Search-Tree/" style="font-size: 10px;">Binary Search Tree</a> <a href="/tags/Breadth-first-Search/" style="font-size: 15.56px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 16.67px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 13.33px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12.22px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 14.44px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 11.11px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 11.11px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 14.44px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 10px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 16.67px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 17.78px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 11.11px;">Linked List</a> <a href="/tags/Math/" style="font-size: 11.11px;">Math</a> <a href="/tags/Memoization/" style="font-size: 10px;">Memoization</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10px;">Segment Tree</a> <a href="/tags/Sort/" style="font-size: 13.33px;">Sort</a> <a href="/tags/Stack/" style="font-size: 14.44px;">Stack</a> <a href="/tags/String/" style="font-size: 12.22px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.22px;">Tree</a> <a href="/tags/Two-Pointers/" style="font-size: 13.33px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 11.11px;">Union Find</a>
+    <a href="/tags/Array/" style="font-size: 18.89px;">Array</a> <a href="/tags/Binary-Indexed-Tree/" style="font-size: 10px;">Binary Indexed Tree</a> <a href="/tags/Binary-Search/" style="font-size: 13.33px;">Binary Search</a> <a href="/tags/Binary-Search-Tree/" style="font-size: 10px;">Binary Search Tree</a> <a href="/tags/Breadth-first-Search/" style="font-size: 15.56px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 17.78px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 13.33px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12.22px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 15.56px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 11.11px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 11.11px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 14.44px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 10px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 16.67px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 18.89px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 11.11px;">Linked List</a> <a href="/tags/Math/" style="font-size: 11.11px;">Math</a> <a href="/tags/Memoization/" style="font-size: 13.33px;">Memoization</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10px;">Segment Tree</a> <a href="/tags/Sort/" style="font-size: 13.33px;">Sort</a> <a href="/tags/Stack/" style="font-size: 14.44px;">Stack</a> <a href="/tags/String/" style="font-size: 12.22px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.22px;">Tree</a> <a href="/tags/Two-Pointers/" style="font-size: 13.33px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 11.11px;">Union Find</a>
   </div>
 </div>
 
