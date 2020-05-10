@@ -53,6 +53,106 @@
     <header>
       
   
+    <h1 class="title"><a href="/2019/02/26/lee-540/">LeetCode 540 Single Element in a Sorted Array</a></h1>
+  
+
+      
+        <time datetime="2019-02-26T08:35:31.937Z">2019-02-26</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/single-element-in-a-sorted-array" target="_blank" rel="noopener">LeetCode 540 Single Element in a Sorted Array</a></strong></p>
+<p>Given a sorted array consisting of only integers where every element appears twice except for one element which appears once. Find this single element that appears only once.</p>
+<p><strong>Example 1:</strong>  </p>
+<pre>**Input:** [1,1,2,3,3,4,4,8,8]
+**Output:** 2
+</pre>
+
+<p><strong>Example 2:</strong>  </p>
+<pre>**Input:** [3,3,7,7,10,11,11]
+**Output:** 10
+</pre>
+
+<p><strong>Note:</strong> Your solution should run in O(log n) time and O(1) space.</p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>一个有序数组中，每个数字都出现了两次，只有一个数字出现了一次，求出现一次的数字。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是A公司Problem solving的题目。类似于L136。此题数组有序且要求O(logn)时间，所以考虑用二分法。由于没有输入tgt，有点似<br>算法文档中用二分法求峰值，就是用相邻两个数做二分法。考虑一个结论，若数组为偶数个数，就一定不存在只出现一次的元素。<br>所以必须考虑奇偶位，若下标mid为偶数，其后一位与其相等，就一定在右半边搜索left=mid+2(不会是mid和mid+1)，如第二个<br>例子，因为mid左边个数为偶数，利用结论可知不会在左边。同理与后一位不等，搜左边right=mid(可能为mid)。注意边界。<br>若mid为奇数，mid前面有奇数个，mid包括自己的后面有偶数个，所以mid和mid+1上的数相等，就应在左半搜，所以与偶数位的<br>情况正好相反，但是边界不同，产生了4个if语句。<br>法二：改进一下，若mid为奇数位，就mid–归结为偶数位的情况，这样if变成两个。  </p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>边界也就是mid的赋值，写出例子来理解。  </li>
+</ol>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">singleNonDuplicate</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> N = nums.length;</span><br><span class="line">	<span class="keyword">int</span> left = <span class="number">0</span>, right = N - <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">while</span> (left &lt; right) &#123;</span><br><span class="line">		<span class="keyword">int</span> mid = (right - left) / <span class="number">2</span> + left;</span><br><span class="line">		<span class="keyword">boolean</span> isEven = <span class="keyword">true</span>;</span><br><span class="line">		<span class="keyword">if</span> (mid % <span class="number">2</span> == <span class="number">1</span>) isEven = <span class="keyword">false</span>;</span><br><span class="line">		<span class="keyword">if</span> ((isEven &amp;&amp; nums[mid] != nums[mid + <span class="number">1</span>]) )</span><br><span class="line">			right = mid;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (isEven &amp;&amp; nums[mid] == nums[mid + <span class="number">1</span>])</span><br><span class="line">			left = mid + <span class="number">2</span>;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (!isEven &amp;&amp; nums[mid] == nums[mid + <span class="number">1</span>])</span><br><span class="line">			right = mid-<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			left = mid + <span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> nums[left];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">singleNonDuplicate2</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">	  <span class="keyword">int</span> N = nums.length;</span><br><span class="line">	  <span class="keyword">int</span> left = <span class="number">0</span>, right = N - <span class="number">1</span>;</span><br><span class="line">	  <span class="keyword">while</span> (left &lt; right) &#123;</span><br><span class="line">		  <span class="keyword">int</span> mid = (right - left) / <span class="number">2</span> + left;</span><br><span class="line">		  <span class="keyword">if</span> (mid % <span class="number">2</span> == <span class="number">1</span>) mid--;</span><br><span class="line">		  <span class="keyword">if</span> (nums[mid] != nums[mid + <span class="number">1</span>])</span><br><span class="line">			  right = mid;</span><br><span class="line">		  <span class="keyword">else</span></span><br><span class="line">			  left = mid + <span class="number">2</span>;</span><br><span class="line">	  &#125;</span><br><span class="line">	  <span class="keyword">return</span> nums[left];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(logn)</code>，空间复杂度<code>O(1)</code>。  </p>
+<h3 id="Follow-up"><a href="#Follow-up" class="headerlink" title="Follow-up:"></a><strong>Follow-up:</strong></h3><p>首先问L316 Given a non-empty array of integers, every element appears twice except for one. Find that single one.<br>XOR解法，不用实现。<br>Follow up问题是L260 Given an array of numbers nums, in which exactly two elements appear only once and all the other elements appear exactly twice. Find the two elements that appear only once.<br>分三步。若只有一个数出现1次，只要把所有数异或^即可(相同数异或=0)。如果有两个此数，异或结果是这两数不同的位。只要选为1且最低位(或任意为1的位)lowBit=a-(a&amp;(a-1))。再扫所有数，根据它们在lowBit上=0和=1分组异或num1, num2，最后分组异或后它们为所求</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2018/07/12/lee-042/">LeetCode 042 Trapping Rain Water</a></h1>
+  
+
+      
+        <time datetime="2018-07-12T07:19:43.024Z">2018-07-12</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/trapping-rain-water" target="_blank" rel="noopener">LeetCode 042 Trapping Rain Water</a></strong></p>
+<p>Given <em>n</em> non-negative integers representing an elevation map where the width of each bar is 1, compute how much water it is able to trap after raining.</p>
+<p><img src="http://www.leetcode.com/static/images/problemset/rainwatertrap.png" alt=""><br><small>The above elevation map is represented by array [0,1,0,2,1,0,1,3,2,1,2,1]. In this case, 6 units of rain water (blue section) are being trapped. <strong>Thanks Marcos</strong> for contributing this image!</small></p>
+<p><strong>Example:</strong></p>
+<pre>**Input:** [0,1,0,2,1,0,1,3,2,1,2,1]
+**Output:** 6</pre>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给出 n 个非负整数，代表一张X轴上每个区域宽度为 1 的海拔图, 计算这个海拔图最多能接住多少（面积）雨水。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>画图解题。<br>比较直观的方法是找低谷，只有低谷才可以藏水。用一个递减栈来存所有呈递减趋势的下标，而当上升时就计算藏水量。<br><img src="/images/L042-3.png" alt=""><br>从图可以看出，栈中有最高的，3,2,1，最矮的已经出栈了。蓝色的bar准备入栈。计算水量是水平计算的。具体而言，<br>右边界是确定的，左边界以及高度都是由此bar相邻的在栈中的bar确定的。如1的水量由bar2的高度和位置确定。<br>同理bar2的水量由bar3确定。特殊之处是计算栈中最后一个将要被新bar踢出栈的bar3时，并没有相邻的bar作参考，<br>导致它需要用新bar作为参考，所以它不能在while中处理，需要特别处理，主要因为它是最后一个，属于edge case。</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><ol>
+<li>遍历数组</li>
+<li>若比上一个高度递增，出栈直至栈中下标对应高度大于当前高度（保持递减栈）。每次出栈，用上一轮的高度作为底部计算高度差<br>乘以下标距离即为横向藏水增量，更新底部进入下一次出栈。  </li>
+<li>出栈完成后，根据新bar计算最后一个bar的水量，用当前高度计算藏水增量。</li>
+<li>加入下标到栈中</li>
+</ol>
+<hr>
+<h3 id="算法II解题思路："><a href="#算法II解题思路：" class="headerlink" title="算法II解题思路："></a><strong>算法II解题思路：</strong></h3><p>算法I主要从面考虑，现在我们从点来考虑。下标4的水量取决于向左最大值（下标0）和向右最大值（下标12）中的较小值。<br>问题转化为求每个点的向左向右最大值。数组从左到右扫描，把当前最大值存入leftHeight中，这是向左最大值。<br><img src="/images/L042-2.png" alt=""><br>同理，数组从又到左扫描，得到向右最大值。对每个点取向左向右最大值的较小者，从而计算水量。此法实现起来简单很多。  </p>
+<h3 id="Ref："><a href="#Ref：" class="headerlink" title="Ref："></a><strong>Ref：</strong></h3><p><a href="http://bangbingsyb.blogspot.com/2014/11/leetcode-trapping-rain-water.html" target="_blank" rel="noopener">http://bangbingsyb.blogspot.com/2014/11/leetcode-trapping-rain-water.html</a></p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2018/06/17/design-distributed-id/">Design Distributed ID Generator</a></h1>
   
 
@@ -525,108 +625,6 @@ minStack.getMin();   --> Returns -2.
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2018/03/13/lee-001/">LeetCode 001 Two Sum</a></h1>
-  
-
-      
-        <time datetime="2018-03-13T07:57:39.086Z">2018-03-13</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/two-sum/" target="_blank" rel="noopener">LeetCode 001 Two Sum</a></strong></p>
-<p>Given an array of integers, return <strong>indices</strong> of the two numbers such that they add up to a specific target.</p>
-<p>You may assume that each input would have <strong><em>exactly</em></strong> one solution, and you may not use the <em>same</em> element twice.</p>
-<p><strong>Example:</strong>  </p>
-<pre>Given nums = [2, 7, 11, 15], target = 9,
-
-Because nums[0] + nums[1] = 2 + 7 = 9,
-return [0, 1].
-</pre>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个整数数组，从中找出两个数的下标，使得它们的和等于一个特定的数字。可以假设题目有唯一解。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><ol>
-<li>最简单的思路是暴力法，两重循环试遍所有组合。</li>
-<li>先排序，再用两指针法，若指针指向的数和小于target则左指针右移，反之亦然。注意，为了保持原数组的下标，要预先保留下标及值对到Node中。</li>
-<li>遍历数组，同时查看target-该数是否在HashMap中，否则加入到HashMap中。</li>
-</ol>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] twoSum0(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target) &#123;</span><br><span class="line">	<span class="keyword">int</span>[] re = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums.length;i++)</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j=i+<span class="number">1</span>;j&lt;nums.length;j++)&#123;</span><br><span class="line">			<span class="keyword">if</span>(nums[i]+nums[j]==target)&#123;</span><br><span class="line">				re[<span class="number">0</span>] = i;</span><br><span class="line">				re[<span class="number">1</span>] = j;</span><br><span class="line">				<span class="keyword">return</span> re;</span><br><span class="line">			&#125;</span><br><span class="line">				</span><br><span class="line">		&#125;</span><br><span class="line">	<span class="keyword">return</span> re;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] twoSum2(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target) &#123;</span><br><span class="line">	Node[] ary = <span class="keyword">new</span> Node[nums.length];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums.length;i++)&#123;</span><br><span class="line">		ary[i] = <span class="keyword">new</span> Node(i, nums[i]);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	Arrays.sort(ary, <span class="keyword">new</span> Comparator&lt;Node&gt;() &#123;</span><br><span class="line">		<span class="meta">@Override</span></span><br><span class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(Node o1, Node o2)</span> </span>&#123;</span><br><span class="line">			<span class="keyword">return</span> o1.value - o2.value;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;);</span><br><span class="line">	<span class="keyword">int</span>[] re = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>];</span><br><span class="line">	<span class="keyword">int</span> start=<span class="number">0</span>, end=nums.length-<span class="number">1</span>;</span><br><span class="line">	<span class="keyword">while</span>(start&lt;end)&#123;</span><br><span class="line">		<span class="keyword">if</span>(ary[start].value+ary[end].value==target)&#123;</span><br><span class="line">			re[<span class="number">0</span>] = ary[start].index;</span><br><span class="line">			re[<span class="number">1</span>] = ary[end].index;</span><br><span class="line">			<span class="keyword">return</span> re;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(ary[start].value+ary[end].value&lt;target)</span><br><span class="line">			start++;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			end--;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> re;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Node</span> </span>&#123;</span><br><span class="line">	Node(<span class="keyword">int</span> i, <span class="keyword">int</span> v)&#123;</span><br><span class="line">		<span class="keyword">this</span>.index = i;</span><br><span class="line">		<span class="keyword">this</span>.value = v;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">int</span> index;</span><br><span class="line">	<span class="keyword">int</span> value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] twoSum(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target) &#123;</span><br><span class="line">	HashMap&lt;Integer,Integer&gt; h  = <span class="keyword">new</span> HashMap&lt;Integer,Integer&gt;();</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">int</span>[] re = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums.length;i++)&#123;</span><br><span class="line">		Integer index = h.get(target-nums[i]);</span><br><span class="line">		<span class="keyword">if</span>(index!=<span class="keyword">null</span>)&#123;</span><br><span class="line">			re[<span class="number">0</span>]=index;</span><br><span class="line">			re[<span class="number">1</span>]=i;</span><br><span class="line">			<span class="keyword">return</span> re;</span><br><span class="line">		&#125;</span><br><span class="line">		h.put(nums[i],i);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> re;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><ol>
-<li>时间复杂度为<code>O(<em>n</em><sup>2</sup>)</code>，空间复杂度<code>O(1)</code>。</li>
-<li>时间复杂度为<code>O(nlogn)</code>，空间复杂度<code>O(n)</code>。</li>
-<li>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>。</li>
-</ol>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2018/02/22/lee-054/">LeetCode 054 Spiral Matrix</a></h1>
-  
-
-      
-        <time datetime="2018-02-23T06:12:22.319Z">2018-02-22</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/spiral-matrix" target="_blank" rel="noopener">LeetCode 054 Spiral Matrix</a></strong></p>
-<p>Given a matrix of <em>m</em> x <em>n</em> elements (<em>m</em> rows, <em>n</em> columns), return all elements of the matrix in spiral order.</p>
-<p>For example,<br>Given the following matrix:</p>
-<pre>[
- [ 1, 2, 3 ],
- [ 4, 5, 6 ],
- [ 7, 8, 9 ]
-]
-</pre>
-
-<p>You should return <code>[1,2,3,6,9,8,7,4,5]</code>.</p>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个mxn的矩阵（m行 n列），以螺旋状返回矩阵中的所有元素。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>打印方法主要是以下两种：第一种四边对称打印，实现起来边际情况很多，不推荐。第二种方法是每条边比上一条少一个，用四个指针，top, bottom, left, right<br>来记录四个边界，每打印完一条边该边界向内扩展。注意有些回路不是完整比如[1,2]或上面例子中5就不是完整回路，此情况，注意判断top和bottom以及left和<br>right关系即可。四指针法可以进一步升级到两指针法甚至一个指针法，其实都是大同小异。<br><img src="/images/L054.png" alt=""></p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><p>注意不是所有矩阵都有完整回路。</p>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">spiral2</span><span class="params">(<span class="keyword">int</span>[][] a)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> rowTop = <span class="number">0</span>, rowBottom = a.length-<span class="number">1</span>, colLeft = <span class="number">0</span>, colRight = a[<span class="number">0</span>].length-<span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">while</span>(rowTop&lt;=rowBottom &amp;&amp; colLeft&lt;=colRight)&#123;</span><br><span class="line">		<span class="comment">//topRow</span></span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=colLeft;i&lt;=colRight;i++)</span><br><span class="line">			System.out.print(a[rowTop][i]+<span class="string">" "</span>);</span><br><span class="line">		rowTop++;</span><br><span class="line">		<span class="comment">//rightCol</span></span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=rowTop;i&lt;=rowBottom;i++)</span><br><span class="line">			System.out.print(a[i][colRight]+<span class="string">" "</span>);</span><br><span class="line">		colRight--;</span><br><span class="line">		<span class="keyword">if</span>(rowTop&lt;=rowBottom)&#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> i=colRight;i&gt;=colLeft;i--)</span><br><span class="line">				System.out.print(a[rowBottom][i]+<span class="string">" "</span>);</span><br><span class="line">			rowBottom--;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(colLeft&lt;=colRight)&#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> i=rowBottom;i&gt;=rowTop;i--)</span><br><span class="line">				System.out.print(a[i][colLeft]+<span class="string">" "</span>);</span><br><span class="line">			colLeft++;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">spiral3</span><span class="params">(<span class="keyword">int</span>[][] a)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> rowTop = <span class="number">0</span>, colLeft = <span class="number">0</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">while</span>(rowTop&lt;=a.length-rowTop-<span class="number">1</span> &amp;&amp; colLeft&lt;=a[<span class="number">0</span>].length-colLeft-<span class="number">1</span>)&#123;</span><br><span class="line">		<span class="comment">//topRow</span></span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=colLeft;i&lt;=a[<span class="number">0</span>].length-colLeft-<span class="number">1</span>;i++)</span><br><span class="line">			System.out.print(a[rowTop][i]+<span class="string">" "</span>);</span><br><span class="line">		rowTop++;</span><br><span class="line">		<span class="comment">//rightCol</span></span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=rowTop;i&lt;=a.length-rowTop;i++)</span><br><span class="line">			System.out.print(a[i][a[<span class="number">0</span>].length-colLeft-<span class="number">1</span>]+<span class="string">" "</span>);</span><br><span class="line">		<span class="comment">//colRight--;</span></span><br><span class="line">		<span class="keyword">if</span>(rowTop&lt;=a.length-rowTop)&#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> i=a[<span class="number">0</span>].length-colLeft-<span class="number">2</span>;i&gt;=colLeft;i--)</span><br><span class="line">				System.out.print(a[a.length-rowTop][i]+<span class="string">" "</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(colLeft&lt;=a[<span class="number">0</span>].length-colLeft-<span class="number">2</span>)&#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> i=a.length-rowTop-<span class="number">1</span>;i&gt;=rowTop;i--)</span><br><span class="line">				System.out.print(a[i][colLeft]+<span class="string">" "</span>);</span><br><span class="line">			colLeft++;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">spiral4</span><span class="params">(<span class="keyword">int</span>[][] a)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> num = Math.min(a.length, a[<span class="number">0</span>].length);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> st=<span class="number">0</span>;st&lt;(num+<span class="number">1</span>)/<span class="number">2</span>;st++)&#123;</span><br><span class="line">		<span class="comment">//complete edge(top)</span></span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=st;i&lt;a[<span class="number">0</span>].length-st;i++)</span><br><span class="line">			System.out.print(a[st][i]+<span class="string">" "</span>);</span><br><span class="line">		<span class="comment">//complete edge-top (right)</span></span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=st+<span class="number">1</span>;i&lt;a.length-st;i++)</span><br><span class="line">			System.out.print(a[i][a[<span class="number">0</span>].length-<span class="number">1</span>-st]+<span class="string">" "</span>);</span><br><span class="line">		<span class="keyword">if</span>(a[<span class="number">0</span>].length-<span class="number">2</span>-st&gt;st)</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> i=a[<span class="number">0</span>].length-<span class="number">2</span>-st;i&gt;=st;i--)</span><br><span class="line">				System.out.print(a[a.length-st-<span class="number">1</span>][i]+<span class="string">" "</span>);</span><br><span class="line">		<span class="keyword">if</span>(a.length-<span class="number">2</span>-st&gt;st+<span class="number">1</span>)</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> i=a.length-<span class="number">2</span>-st;i&gt;=st+<span class="number">1</span>;i--)</span><br><span class="line">				System.out.print(a[i][st]+<span class="string">" "</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(mn)</code>，空间复杂度<code>O(1)</code>。   </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -651,6 +649,14 @@ return [0, 1].
   <ul class="entry">
     
       <li>
+        <a href="/2020/05/10/lee-010/">LeetCode 010 Regular Expression Matching</a>
+      </li>
+    
+      <li>
+        <a href="/2020/05/10/lee-044/">LeetCode 044 Wildcard Matching</a>
+      </li>
+    
+      <li>
         <a href="/2020/05/09/memoization/">记忆性搜索</a>
       </li>
     
@@ -660,14 +666,6 @@ return [0, 1].
     
       <li>
         <a href="/2020/05/09/lin-683/">LintCode 683 Word Break III</a>
-      </li>
-    
-      <li>
-        <a href="/2020/05/09/lee-139/">LeetCode 139 Word Break</a>
-      </li>
-    
-      <li>
-        <a href="/2020/05/04/lee-146/">LeetCode 146 LRU Cache</a>
       </li>
     
   </ul>
@@ -680,7 +678,7 @@ return [0, 1].
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Array/" style="font-size: 18.89px;">Array</a> <a href="/tags/Binary-Indexed-Tree/" style="font-size: 10px;">Binary Indexed Tree</a> <a href="/tags/Binary-Search/" style="font-size: 13.33px;">Binary Search</a> <a href="/tags/Binary-Search-Tree/" style="font-size: 10px;">Binary Search Tree</a> <a href="/tags/Breadth-first-Search/" style="font-size: 15.56px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 17.78px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 13.33px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12.22px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 15.56px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 11.11px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 11.11px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 14.44px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 10px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 16.67px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 18.89px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 11.11px;">Linked List</a> <a href="/tags/Math/" style="font-size: 11.11px;">Math</a> <a href="/tags/Memoization/" style="font-size: 13.33px;">Memoization</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10px;">Segment Tree</a> <a href="/tags/Sort/" style="font-size: 13.33px;">Sort</a> <a href="/tags/Stack/" style="font-size: 14.44px;">Stack</a> <a href="/tags/String/" style="font-size: 12.22px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.22px;">Tree</a> <a href="/tags/Two-Pointers/" style="font-size: 13.33px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 11.11px;">Union Find</a>
+    <a href="/tags/Array/" style="font-size: 18.89px;">Array</a> <a href="/tags/Binary-Indexed-Tree/" style="font-size: 10px;">Binary Indexed Tree</a> <a href="/tags/Binary-Search/" style="font-size: 13.33px;">Binary Search</a> <a href="/tags/Binary-Search-Tree/" style="font-size: 10px;">Binary Search Tree</a> <a href="/tags/Breadth-first-Search/" style="font-size: 15.56px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 17.78px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 13.33px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12.22px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 17.78px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 11.11px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 11.11px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 14.44px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 10px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 16.67px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 18.89px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 11.11px;">Linked List</a> <a href="/tags/Math/" style="font-size: 11.11px;">Math</a> <a href="/tags/Memoization/" style="font-size: 13.33px;">Memoization</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10px;">Segment Tree</a> <a href="/tags/Sort/" style="font-size: 13.33px;">Sort</a> <a href="/tags/Stack/" style="font-size: 14.44px;">Stack</a> <a href="/tags/String/" style="font-size: 12.22px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.22px;">Tree</a> <a href="/tags/Two-Pointers/" style="font-size: 13.33px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 11.11px;">Union Find</a>
   </div>
 </div>
 
