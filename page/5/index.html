@@ -53,6 +53,65 @@
     <header>
       
   
+    <h1 class="title"><a href="/2018/01/28/lee-658/">LeetCode 658 Find K Closest Elements</a></h1>
+  
+
+      
+        <time datetime="2018-01-29T03:26:02.137Z">2018-01-28</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/find-k-closest-elements" target="_blank" rel="noopener">LeetCode 658 Find K Closest Elements</a></strong></p>
+<p>Given a sorted array, two integers <code>k</code> and <code>x</code>, find the <code>k</code> closest elements to <code>x</code> in the array. The result should also be sorted in ascending order. If there is a tie, the smaller elements are always preferred.</p>
+<p><strong>Example 1:</strong>  </p>
+<pre><b>Input:</b> [1,2,3,4,5], k=4, x=3
+<b>Output:</b> [1,2,3,4]
+</pre>
+
+<p><strong>Example 2:</strong>  </p>
+<pre><b>Input:</b> [1,2,3,4,5], k=4, x=-1
+<b>Output:</b> [1,2,3,4]
+</pre>
+
+<p><strong>Note:</strong>  </p>
+<ol>
+<li>The value k is positive and will always be smaller than the length of the sorted array.</li>
+<li>Length of the given array is positive and will not exceed 10<sup>4</sup></li>
+<li>Absolute value of elements in the array and x will not exceed 10<sup>4</sup></li>
+</ol>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个排序数组，两个整数k和x，求数组中距离x最近的k个数字。结果应该有序，距离相同时优先选择较小的数字。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><ol>
+<li>进阶二分法找出第一个大于等于key值的元素。</li>
+<li>左右两指针搜索k个元素。</li>
+</ol>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>指针不能越界</li>
+<li>根据题意，与key距离一样时，取较小元素。</li>
+</ol>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;Integer&gt; <span class="title">findClosestElements</span><span class="params">(<span class="keyword">int</span>[] arr, <span class="keyword">int</span> k, <span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> upperIdx = firstEqualOrGreater(arr, x);</span><br><span class="line">	<span class="keyword">int</span> lowerIdx = upperIdx-<span class="number">1</span>;</span><br><span class="line">	List result = <span class="keyword">new</span> ArrayList();</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=k;i&gt;<span class="number">0</span>;i--)&#123;</span><br><span class="line">		<span class="keyword">if</span>(lowerIdx&lt;<span class="number">0</span>)</span><br><span class="line">			result.add(arr[upperIdx++]);</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(upperIdx&gt;=arr.length)</span><br><span class="line">			result.add(arr[lowerIdx--]);</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(x-arr[lowerIdx]&lt;=arr[upperIdx]-x)</span><br><span class="line">			result.add(arr[lowerIdx--]);</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			result.add(arr[upperIdx++]);</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	Collections.sort(result);</span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">firstEqualOrGreater</span><span class="params">(<span class="keyword">int</span>[] a, <span class="keyword">int</span> key)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> lo = <span class="number">0</span>, hi = a.length-<span class="number">1</span>;</span><br><span class="line">	<span class="keyword">while</span>(lo&lt;=hi)&#123;</span><br><span class="line">		<span class="keyword">int</span> mid =  lo + (hi - lo) / <span class="number">2</span>;</span><br><span class="line">		<span class="keyword">if</span>(a[mid]&lt;key)</span><br><span class="line">			lo = mid+<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			hi = mid-<span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> lo;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(logn+k)</code>，空间复杂度<code>O(1)</code>。</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2018/01/28/lee-698/">LeetCode 698 Partition to K Equal Sum Subsets</a></h1>
   
 
@@ -570,47 +629,6 @@ Explanation: The array cannot be partitioned into equal sum subsets.
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2017/12/24/dfs/">DFS</a></h1>
-  
-
-      
-        <time datetime="2017-12-25T04:52:56.090Z">2017-12-24</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>图用邻接表为输入，思路递归实现, 还要一个机制记录节点访问过没有，可以用HashSet，同时它作为结果存储BFS访问结果。<br><strong>BFS多用于找最短路径</strong><br><strong>DFS多用于快速发现底部节点和具体路劲问题（如路径和或打印路径）。</strong></p>
-<p>BFS优缺点：<br>同一层的所有节点都会加入队列，所以耗用大量空间<br>仅能非递归实现<br>相比DFS较快，空间换时间<br>适合广度大的图</p>
-<p>DFS优缺点：<br>无论是系统栈还是用户栈保存的节点数都只是树的深度，所以空间耗用小<br>有递归和非递归实现<br>由于有大量栈操作（特别是递归实现时候的系统调用），执行速度较BFS慢<br>适合深度大的图</p>
-<h3 id="算法步骤："><a href="#算法步骤：" class="headerlink" title="算法步骤："></a><strong>算法步骤：</strong></h3><ol>
-<li>不合法情况（已访问、越界、trivial情况等）返回。</li>
-<li>标记为已访问。</li>
-<li>递归访问相邻节点。</li>
-<li>DFS路径尽量记录在数组中而非ArrayList中，路径(图)再DFS后要恢复为原状态L332。</li>
-</ol>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * graph: 邻接表</span></span><br><span class="line"><span class="comment"> * visited: 记录已访问节点，避免重复访问</span></span><br><span class="line"><span class="comment"> * start: DFS的根节点</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">dfs</span><span class="params">(HashMap&lt;Integer, LinkedList&lt;Integer&gt;&gt; graph, HashSet&lt;Integer&gt; visited, <span class="keyword">int</span> start)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(visited.contains(start))&#123;</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	visited.add(start);</span><br><span class="line">	System.out.print(start+<span class="string">","</span>);</span><br><span class="line">	<span class="keyword">for</span>(Integer child : graph.get(start))&#123;</span><br><span class="line">		dfs(graph, visited, child);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，h为树的高度，空间复杂度<code>O(h)</code>，如果用系统栈，可理解其为O(1)。</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -635,6 +653,10 @@ Explanation: The array cannot be partitioned into equal sum subsets.
   <ul class="entry">
     
       <li>
+        <a href="/2020/05/10/lee-368/">LeetCode 368 Largest Divisible Subset</a>
+      </li>
+    
+      <li>
         <a href="/2020/05/10/lee-010/">LeetCode 010 Regular Expression Matching</a>
       </li>
     
@@ -650,10 +672,6 @@ Explanation: The array cannot be partitioned into equal sum subsets.
         <a href="/2020/05/09/lee-140/">LeetCode 140 Word Break II</a>
       </li>
     
-      <li>
-        <a href="/2020/05/09/lin-683/">LintCode 683 Word Break III</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -664,7 +682,7 @@ Explanation: The array cannot be partitioned into equal sum subsets.
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Array/" style="font-size: 18.89px;">Array</a> <a href="/tags/Binary-Indexed-Tree/" style="font-size: 10px;">Binary Indexed Tree</a> <a href="/tags/Binary-Search/" style="font-size: 13.33px;">Binary Search</a> <a href="/tags/Binary-Search-Tree/" style="font-size: 10px;">Binary Search Tree</a> <a href="/tags/Breadth-first-Search/" style="font-size: 15.56px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 17.78px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 13.33px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12.22px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 17.78px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 11.11px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 11.11px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 14.44px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 10px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 16.67px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 18.89px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 11.11px;">Linked List</a> <a href="/tags/Math/" style="font-size: 11.11px;">Math</a> <a href="/tags/Memoization/" style="font-size: 13.33px;">Memoization</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10px;">Segment Tree</a> <a href="/tags/Sort/" style="font-size: 13.33px;">Sort</a> <a href="/tags/Stack/" style="font-size: 14.44px;">Stack</a> <a href="/tags/String/" style="font-size: 12.22px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.22px;">Tree</a> <a href="/tags/Two-Pointers/" style="font-size: 13.33px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 11.11px;">Union Find</a>
+    <a href="/tags/Array/" style="font-size: 18.89px;">Array</a> <a href="/tags/Binary-Indexed-Tree/" style="font-size: 10px;">Binary Indexed Tree</a> <a href="/tags/Binary-Search/" style="font-size: 13.33px;">Binary Search</a> <a href="/tags/Binary-Search-Tree/" style="font-size: 10px;">Binary Search Tree</a> <a href="/tags/Breadth-first-Search/" style="font-size: 15.56px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 17.78px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 13.33px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12.22px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 18.89px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 11.11px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 11.11px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 14.44px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 10px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 16.67px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 18.89px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 11.11px;">Linked List</a> <a href="/tags/Math/" style="font-size: 11.11px;">Math</a> <a href="/tags/Memoization/" style="font-size: 13.33px;">Memoization</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10px;">Segment Tree</a> <a href="/tags/Sort/" style="font-size: 13.33px;">Sort</a> <a href="/tags/Stack/" style="font-size: 14.44px;">Stack</a> <a href="/tags/String/" style="font-size: 12.22px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.22px;">Tree</a> <a href="/tags/Two-Pointers/" style="font-size: 13.33px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 11.11px;">Union Find</a>
   </div>
 </div>
 
