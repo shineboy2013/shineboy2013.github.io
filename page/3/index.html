@@ -53,6 +53,135 @@
     <header>
       
   
+    <h1 class="title"><a href="/2020/04/20/lee-127/">LeetCode 127 Word Ladder</a></h1>
+  
+
+      
+        <time datetime="2020-04-20T22:08:38.780Z">2020-04-20</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/word-ladder/" target="_blank" rel="noopener">LeetCode 127 Word Ladder</a></strong></p>
+<div><br><br>Given two words (<em>beginWord</em> and <em>endWord</em>), and a dictionary’s word list, find the length of shortest transformation sequence from <em>beginWord</em> to <em>endWord</em>, such that:<br><br>1.  Only one letter can be changed at a time.<br>2.  Each transformed word must exist in the word list.<br><br><strong>Note:</strong><br><br><em>   Return 0 if there is no such transformation sequence.
+</em>   All words have the same length.<br><em>   All words contain only lowercase alphabetic characters.
+</em>   You may assume no duplicates in the word list.<br><em>   You may assume <em>beginWord</em> and <em>endWord</em> are non-empty and are not the same.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong><br>beginWord = “hit”,<br>endWord = “cog”,<br>wordList = [“hot”,”dot”,”dog”,”lot”,”log”,”cog”]<br><br><strong>Output:</strong> 5<br><br><strong>Explanation:</strong> As one shortest transformation is “hit” -&gt; “hot” -&gt; “dot” -&gt; “dog” -&gt; “cog”,<br>return its length 5.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong><br>beginWord = “hit”<br>endWord = “cog”<br>wordList = [“hot”,”dot”,”dog”,”lot”,”log”]<br><br><strong>Output:</strong> 0<br><br><em>*Explanation:</em></pre></em> The endWord “cog” is not in wordList, therefore no possibletransformation.<br><br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个字典和两个单词。每次变换一个字母的得到新单词且该词要在字典中。求最少变换次数。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这题是最短路径题，第一时间想到BFS。这是一条典型的单源最短路径问题。  </p>
+<ol>
+<li>这是图，所以要有visited记录是否重复访问。</li>
+<li>字典的实现两个作用： 快速查找，以及记录距离可以省下一轮循环。总共两重循环。  </li>
+<li>getNextWords的实现。通过变换每位上字母，比较巧妙。    </li>
+</ol>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>这题是最短路径题，第一时间想到BFS。这是一条典型的单源最短路径问题。  </p>
+<ol>
+<li>建字典。  </li>
+<li>BFS访问。  </li>
+<li>求所有距离为1的相邻单词getNextWords。    </li>
+</ol>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>getNextWords的实现不含自己。  </li>
+<li>注意题目条件，开始词和终结词不一定在字典中，要将它们加入去。  </li>
+</ol>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">ladderLength</span><span class="params">(String beginWord, String endWord, List&lt;String&gt; wordList)</span> </span>&#123;</span><br><span class="line">	<span class="comment">// This is a dict and also keeps track of distance</span></span><br><span class="line">	Map&lt;String, Integer&gt; dict = getDict(wordList);</span><br><span class="line">	<span class="comment">// Make sure endWord is in the dict and can be the next word </span></span><br><span class="line">	<span class="comment">//dict.put(endWord, 0);</span></span><br><span class="line">	dict.put(beginWord, <span class="number">1</span>);</span><br><span class="line">	</span><br><span class="line">	Set&lt;String&gt; visited = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">	Queue&lt;String&gt; q = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">	q.offer(beginWord);</span><br><span class="line">	visited.add(beginWord);</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty()) &#123;</span><br><span class="line">		String word = q.poll();</span><br><span class="line">		<span class="keyword">if</span>(endWord.equals(word))</span><br><span class="line">			<span class="keyword">return</span> dict.get(word);</span><br><span class="line">		</span><br><span class="line">		List&lt;String&gt; nextWords = getNextWords(word, dict);</span><br><span class="line">		<span class="keyword">for</span>(String s : nextWords) &#123;</span><br><span class="line">			<span class="keyword">if</span>(visited.contains(s))</span><br><span class="line">				<span class="keyword">continue</span>;</span><br><span class="line">			</span><br><span class="line">			q.offer(s);</span><br><span class="line">			visited.add(s);</span><br><span class="line">			dict.put(s, dict.get(word) + <span class="number">1</span>);</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Map&lt;String, Integer&gt; <span class="title">getDict</span><span class="params">(List&lt;String&gt; wordList)</span> </span>&#123;</span><br><span class="line">	Map&lt;String, Integer&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">	<span class="keyword">for</span>(String word : wordList) &#123;</span><br><span class="line">		map.put(word, <span class="number">0</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> map;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">List&lt;String&gt; <span class="title">getNextWords</span><span class="params">(String word, Map&lt;String, Integer&gt; dict)</span> </span>&#123;</span><br><span class="line">	List&lt;String&gt; result = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; word.length(); i++) &#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">26</span>; j++) &#123; </span><br><span class="line">			<span class="keyword">char</span> newChar = (<span class="keyword">char</span>)(<span class="string">'a'</span> + j);</span><br><span class="line">			<span class="keyword">if</span>(word.charAt(i) == newChar) <span class="comment">// exclude itself</span></span><br><span class="line">				<span class="keyword">continue</span>;</span><br><span class="line">			String newWord = word.substring(<span class="number">0</span>, i) + </span><br><span class="line">					newChar + word.substring(i + <span class="number">1</span>, word.length());</span><br><span class="line">			<span class="keyword">if</span>(dict.containsKey(newWord))</span><br><span class="line">				result.add(newWord);</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>getNextWords是L<em>26</em>L=<code>O(<em>L</em><sup>2</sup>)</code><br>时间复杂度为<code>O(n*<em>L</em><sup>2</sup>)</code>，空间复杂度<code>O(n)</code>。  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2020/04/20/lee-297/">LeetCode 297 Serialize and Deserialize Binary Tree</a></h1>
+  
+
+      
+        <time datetime="2020-04-20T18:36:09.608Z">2020-04-20</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/serialize-and-deserialize-binary-tree/" target="_blank" rel="noopener">LeetCode 297 Serialize and Deserialize Binary Tree</a></strong></p>
+<p>Serialization is the process of converting a data structure or object into a sequence of bits so that it can be stored in a file or memory buffer, or transmitted across a network connection link to be reconstructed later in the same or another computer environment.</p>
+<p>Design an algorithm to serialize and deserialize a binary tree. There is no restriction on how your serialization/deserialization algorithm should work. You just need to ensure that a binary tree can be serialized to a string and this string can be deserialized to the original tree structure.</p>
+<p><strong>Example: </strong></p>
+<pre>You may serialize the following tree:
+
+    1
+   / \
+  2   3
+     / \
+    4   5
+
+as `"[1,2,3,null,null,4,5]"`
+</pre>
+
+<p><strong>Clarification:</strong> The above format is the same as <a href="/faq/#binary-tree">how LeetCode serializes a binary tree</a>. You do not necessarily need to follow this format, so please be creative and come up with different approaches yourself.</p>
+<p><strong>Note: </strong>Do not use class member/global/static variables to store states. Your serialize and deserialize algorithms should be stateless.</p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>序列化和反序列化二叉树。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>BFS可以涉及三重循环</p>
+<ol>
+<li>q不为空  </li>
+<li>是否按层遍历  </li>
+<li>是否为图  </li>
+</ol>
+<p>这题不需要按层遍历，所以不用第二重。而且只是二叉树，不用第三重循环。</p>
+<p>编码方式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">	      1</span><br><span class="line">	    /   \</span><br><span class="line">	   #     3</span><br><span class="line">	        /  \</span><br><span class="line">	       2   #</span><br><span class="line">	      / \</span><br><span class="line">	     #   #</span><br><span class="line">=&gt; 1,#,3,2,#,#,#</span><br></pre></td></tr></table></figure></p>
+<h3 id="BFS解题步骤："><a href="#BFS解题步骤：" class="headerlink" title="BFS解题步骤："></a><strong>BFS解题步骤：</strong></h3><p>serialize:  </p>
+<ol>
+<li>建queue，然后首节点入列</li>
+<li>进入q的非空循环，队首出列，分别加入左右子树。由于左右子树可能为空，所以队首为空时continue<br>且val加入到结果字符串<br>乘以下标距离即为横向藏水增量，更新底部进入下一次出栈。  </li>
+<li>用#代替null且删去末尾的#和，  </li>
+</ol>
+<p>deserialize:<br>这方法难实现点。用两个指针来代表遍历上一层和该层节点们。q出列的节点是上一层节点head，而idx指向的是<br>该层节点。这样head.left = Node(tokens[idx])就建立了它们的关系。两指针分别向后一位。每轮循环父指针<br>向后一位，而idx向后两位，因为有左右儿子。</p>
+<ol>
+<li>建queue，然后首节点入列</li>
+<li>进入q的非空循环，队首出列，分别生成非空左右子树，且建立父子关系。idx走两步，非空儿子加入q。  </li>
+</ol>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>字符串相等判断用equals，不用==。  </li>
+<li>deserialize中循环条件要加入idx &lt; tokens.length因为serialize末尾#已经删除。  </li>
+</ol>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">serialize2</span><span class="params">(TreeNode root)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(root == <span class="keyword">null</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"&#123;&#125;"</span>;</span><br><span class="line"></span><br><span class="line">	StringBuilder sb = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">	Queue&lt;TreeNode&gt; q = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">	q.add(root);</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty()) &#123;		</span><br><span class="line">		TreeNode n = q.poll();</span><br><span class="line">		sb.append(n == <span class="keyword">null</span> ? <span class="string">"null"</span> : n.val);</span><br><span class="line">		sb.append(<span class="string">","</span>);</span><br><span class="line">		<span class="keyword">if</span>(n == <span class="keyword">null</span>)</span><br><span class="line">			<span class="keyword">continue</span>;</span><br><span class="line">		q.add(n.left);</span><br><span class="line">		q.add(n.right);</span><br><span class="line">	&#125;</span><br><span class="line">	String res = sb.toString().replaceAll(<span class="string">"null"</span>, <span class="string">"#"</span>);</span><br><span class="line">	<span class="keyword">int</span> endIdx = res.length() - <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">while</span>(res.charAt(endIdx) == <span class="string">','</span> || res.charAt(endIdx) == <span class="string">'#'</span>)</span><br><span class="line">		endIdx--;</span><br><span class="line">	<span class="keyword">return</span> <span class="string">"&#123;"</span> + res.substring(<span class="number">0</span>, endIdx + <span class="number">1</span>) + <span class="string">"&#125;"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> TreeNode <span class="title">deserialize2</span><span class="params">(String data)</span> </span>&#123;</span><br><span class="line">	String str = data.substring(<span class="number">1</span>, data.length() - <span class="number">1</span>);</span><br><span class="line">	<span class="keyword">if</span>(<span class="string">""</span>.equals(str))</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">	</span><br><span class="line">	String[] tokens = str.split(<span class="string">","</span>);</span><br><span class="line">	<span class="keyword">int</span> idx = <span class="number">1</span>;</span><br><span class="line">	Queue&lt;TreeNode&gt; q = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">	TreeNode root = <span class="keyword">new</span> TreeNode(Integer.parseInt(tokens[<span class="number">0</span>]));</span><br><span class="line">	q.offer(root);</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty() &amp;&amp; idx &lt; tokens.length) &#123;</span><br><span class="line">		TreeNode head = q.poll();</span><br><span class="line">		<span class="keyword">if</span>(head == <span class="keyword">null</span>)</span><br><span class="line">			<span class="keyword">continue</span>;</span><br><span class="line">		head.left = generateChildNode(idx++, tokens, q);</span><br><span class="line">		head.right = generateChildNode(idx++, tokens, q);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">TreeNode <span class="title">generateChildNode</span><span class="params">(<span class="keyword">int</span> idx, String[] tokens, Queue&lt;TreeNode&gt; q)</span> </span>&#123;</span><br><span class="line">	TreeNode root = <span class="keyword">null</span>;</span><br><span class="line">	<span class="keyword">if</span>(idx &lt; tokens.length &amp;&amp; !<span class="string">"#"</span>.equals(tokens[idx])) &#123;</span><br><span class="line">		root = <span class="keyword">new</span> TreeNode(Integer.parseInt(tokens[idx]));</span><br><span class="line">		q.offer(root);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="DFS算法II解题思路："><a href="#DFS算法II解题思路：" class="headerlink" title="DFS算法II解题思路："></a><strong>DFS算法II解题思路：</strong></h3><p>DFS的serialize很简单，但deserialize比较难。有点类似于前序遍历的递归版，需要维护一个指针p来记录<br>已处理的字符串。  </p>
+<p>编码方式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">    1</span><br><span class="line">  2   3</span><br><span class="line">5  6</span><br><span class="line">=&gt; 1,2,5,#,#,6,#,#,3,#,#</span><br></pre></td></tr></table></figure></p>
+<h3 id="Java代码：-1"><a href="#Java代码：-1" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">serialize</span><span class="params">(TreeNode root)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(root==<span class="keyword">null</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"#"</span>;</span><br><span class="line">	String rootStr = root.val+<span class="string">""</span>;</span><br><span class="line">	String lStr = serialize(root.left);</span><br><span class="line">	String rStr = serialize(root.right);</span><br><span class="line">	<span class="keyword">return</span> rootStr+<span class="string">","</span>+lStr+<span class="string">","</span>+rStr;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> TreeNode <span class="title">deserialize</span><span class="params">(String data)</span></span>&#123;</span><br><span class="line">	p = <span class="number">0</span>;</span><br><span class="line">	items = <span class="keyword">null</span>;</span><br><span class="line">	<span class="keyword">return</span> deserializeR(data);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> TreeNode <span class="title">deserializeR</span><span class="params">(String data)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(data==<span class="keyword">null</span>||data.length()==<span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">	<span class="keyword">if</span>(p&gt;=data.length())</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">	String curVal = getNext(data);</span><br><span class="line">	<span class="keyword">if</span>(curVal.equals(<span class="string">"#"</span>))</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">	</span><br><span class="line">	TreeNode newRoot = <span class="keyword">new</span> TreeNode(Integer.parseInt(curVal));</span><br><span class="line">	newRoot.left = deserializeR(data);</span><br><span class="line">	newRoot.right = deserializeR(data);</span><br><span class="line">	<span class="keyword">return</span> newRoot;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">int</span> p=<span class="number">0</span>;</span><br><span class="line">String[] items = <span class="keyword">null</span>;</span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">getNext</span><span class="params">(String s)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(items==<span class="keyword">null</span>)</span><br><span class="line">		items = s.split(<span class="string">","</span>);</span><br><span class="line">	<span class="keyword">return</span> items[p++];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2020/04/19/lee-133/">LeetCode 133 Clone Graph</a></h1>
   
 
@@ -521,170 +650,6 @@ minStack.getMin();   --> Returns -2.
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2018/04/30/design-tiny-url/">Design Tiny URL</a></h1>
-  
-
-      
-        <time datetime="2018-04-30T22:56:55.681Z">2018-04-30</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>长URL变成短URL方便传输和阅读，特别是很多社交网站对字数有限制如Twitter。</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><ol>
-<li>沟通清楚需要，用户数（都会很大）</li>
-<li>数据量估计。如火车售票系统，估计西雅图总人口，高峰乘坐人数。</li>
-<li>先完成一个功能。如buy ticket。画图，每个部件high level细节包括数据库的schema和组件间的API接口。</li>
-<li>自觉加上优化，如cache，master-slave数据库,LB等等。不要等面试官提醒</li>
-<li>完成一个功能后，再画图扩展到其他功能。 </li>
-</ol>
-<h3 id="短网址长度："><a href="#短网址长度：" class="headerlink" title="短网址长度："></a><strong>短网址长度：</strong></h3><p>短网址若只含数字，也就是十进制整数还是不够短。可以考虑加入大小写字母，总共有26x2+10=62，也就是一个62进制数。<br>网站总数是45亿个，62^7就远远大于45亿，7位就够。<br>若long表示的64位整数，log62(2^64-1)=11，大约是对应11位。  </p>
-<table>
-<thead>
-<tr>
-<th>网站</th>
-<th style="text-align:left">十进制</th>
-<th style="text-align:left">62进制</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>amazon.com</td>
-<td style="text-align:left">0854</td>
-<td style="text-align:left">a5G</td>
-</tr>
-</tbody>
-</table>
-<h3 id="存储方法："><a href="#存储方法：" class="headerlink" title="存储方法："></a><strong>存储方法：</strong></h3><p>写操作：长网址到短网址<br>读操作：短网址到长网址<br>读操作远远大于写操作，所以key（或primary key）选在短网址， value在长网址。<br>每个新的长网址，对应一个短网址还是多个？考虑一下几点：</p>
-<ol>
-<li>若对应一个短网址，必须再产生一个unique key在长网址上来决定该长网址对应的短网址是否存在。大大降低写操作速度。  </li>
-<li>长网址虽然一样，但可以带不同的header, user agent，从而知道进入该长网址的入口（其他网站），短网址商的盈利来源。<br>所以长网址对应多个短网址，Google Maps就采取这个设计。    </li>
-</ol>
-<table>
-<thead>
-<tr>
-<th>网站</th>
-<th style="text-align:left">十进制</th>
-<th style="text-align:left">62进制</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>amazon.com</td>
-<td style="text-align:left">0854</td>
-<td style="text-align:left">a5G</td>
-</tr>
-<tr>
-<td>amazon.com</td>
-<td style="text-align:left">17922</td>
-<td style="text-align:left">bYd</td>
-</tr>
-</tbody>
-</table>
-<p>数据库选择可以是关系型数据库SQL Server，或者KV数据库如Redis，dynamoDB。可以详细讨论关系型数据库与No SQL的区别。<br>此题目用No sql比较好，因为从分布性考虑和是否需要复杂的Join操作来考虑，No sql有明显优势。</p>
-<h3 id="计算短网址："><a href="#计算短网址：" class="headerlink" title="计算短网址："></a><strong>计算短网址：</strong></h3><p>另一个核心问题就是如何计算短网址，具体而言是怎么从URL转化为一个十进制整数。有几个方案：  </p>
-<ol>
-<li>最简单的是维护一个最大值，每个新的请求，对此值加1。缺点是分布式系统中，维护单一最大值（所有机器中）大大降低性能。</li>
-<li>取URL的hash值得到64位整数再取前7位，但会有冲突。</li>
-<li><a href="https://shineboy2013.github.io/2018/06/18/design-distributed-id/" target="_blank" rel="noopener">参考分布式发号器</a>  </li>
-</ol>
-<p>十进制到62进制用短除法来做，<br><img src="/images/design-tiny-url.png" alt=""><br>796%62=52， (796-52)/62=12.<br>12%62=12, (12-12)/62=0.<br>结果为(12)(52) = cP</p>
-<h3 id="DDOS："><a href="#DDOS：" class="headerlink" title="DDOS："></a><strong>DDOS：</strong></h3><p>这是一个细节考虑，若黑客大量发请求，耗尽所有ID怎么办？</p>
-<ol>
-<li>限制IP单日请求总数，超过直接拒绝。</li>
-<li>限制长网址的单一性。限制IP还不够，因为用proxy provider服务可以绕过这个限制。用Redis来cache长网址到短网址的一日数据，<br>然后LRU淘汰旧的数据。这样如果此URL的请求超过一定数量，比如100次，就返回最新的短网址。<br>长网址-&gt;次数+短URL</li>
-</ol>
-<h3 id="301还是302："><a href="#301还是302：" class="headerlink" title="301还是302："></a><strong>301还是302：</strong></h3><p>301是永久重定向，302是临时重定向。如果用了301， Google，百度等搜索引擎，搜索的时候会直接展示真实地址，那我们就无法统计<br>到短地址被点击的次数了，也无法收集用户的Cookie, User Agent等信息。这是短网址商的盈利来源。  </p>
-<h3 id="Ref："><a href="#Ref：" class="headerlink" title="Ref："></a><strong>Ref：</strong></h3><p><a href="https://soulmachine.gitbooks.io/system-design/content/cn/tinyurl.html" target="_blank" rel="noopener">https://soulmachine.gitbooks.io/system-design/content/cn/tinyurl.html</a><br><a href="https://segmentfault.com/a/1190000006140476" target="_blank" rel="noopener">https://segmentfault.com/a/1190000006140476</a>  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2018/04/30/lee-273/">LeetCode 273 Integer to English Words</a></h1>
-  
-
-      
-        <time datetime="2018-04-30T22:53:48.778Z">2018-04-30</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/integer-to-english-words" target="_blank" rel="noopener">LeetCode 273 Integer to English Words</a></strong></p>
-<p>Convert a non-negative integer to its english words representation. Given input is guaranteed to be less than 2<sup>31</sup> - 1.</p>
-<p><strong>Example 1:</strong></p>
-<pre>**Input:** 123
-**Output:** "One Hundred Twenty Three"
-</pre>
-
-<p><strong>Example 2:</strong></p>
-<pre>**Input:** 12345
-**Output:** "Twelve Thousand Three Hundred Forty Five"</pre>
-
-<p><strong>Example 3:</strong></p>
-<pre>**Input:** 1234567
-**Output:** "One Million Two Hundred Thirty Four Thousand Five Hundred Sixty Seven"
-</pre>
-
-<p><strong>Example 4:</strong></p>
-<pre>**Input:** 1234567891
-**Output:** "One Billion Two Hundred Thirty Four Million Five Hundred Sixty Seven Thousand Eight Hundred Ninety One"
-</pre>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>这是将非负整数转化为其英文单词表示。给定输入确保小于 2 ^ 31 - 1</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是logical and maintainable的经典题。按照英语的习惯，每三位是一组，所以实现的时候，也是按千为分组，有一个方法去处理一千<br>内的数。一千以内也分为三种情况，20以内，几十，其他。20以内和几十都是特殊情况的单词，所以可以放入数组或HashMap，数组比较<br>好，因为可以直接用索引读出。大于一千的数，可以用递归来做，从人的习惯，从低位到高位，每三位加一个逗号分隔。所以同样，算法<br>也是从低位开始，若千位内的数大于0，加入Thousand, Million等，每三位调用千位方法，再递归。<br>group的引入作为递归的层次来决定Thousand还是Million。<br>由于从低位递归，所以倒着做，要reverse地加入到结果，最终结果再reverse回来。  </p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>空格总加在新数前面，也就是append前先加空格</li>
-<li>低3位大于0才加Thousand, Million等词，也就是低三位在1-999之间，若为0如1 million。</li>
-</ol>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> String[] lows = &#123;<span class="string">""</span>, <span class="string">"One"</span>, <span class="string">"Two"</span>, <span class="string">"Three"</span>, <span class="string">"Four"</span>, <span class="string">"Five"</span>, <span class="string">"Six"</span>, <span class="string">"Seven"</span>, <span class="string">"Eight"</span>, <span class="string">"Nine"</span>, <span class="string">"Ten"</span>, </span><br><span class="line">   <span class="string">"Eleven"</span>, <span class="string">"Twelve"</span>,<span class="string">"Thirteen"</span>, <span class="string">"Fourteen"</span>,<span class="string">"Fifteen"</span>,<span class="string">"Sixteen"</span>,<span class="string">"Seventeen"</span>,<span class="string">"Eighteen"</span>, <span class="string">"Nineteen"</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> String[] tens = &#123;<span class="string">""</span>, <span class="string">""</span>, <span class="string">"Twenty"</span>, <span class="string">"Thirty"</span>, <span class="string">"Forty"</span>, <span class="string">"Fifty"</span>, <span class="string">"Sixty"</span>, <span class="string">"Seventy"</span>, <span class="string">"Eighty"</span>, <span class="string">"Ninety"</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">numberToWords</span><span class="params">(<span class="keyword">int</span> number)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(number == <span class="number">0</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"Zero"</span>;	</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	StringBuilder result = <span class="keyword">new</span> StringBuilder();</span><br><span class="line"></span><br><span class="line">	translateThreeR(number, result, <span class="number">0</span>);</span><br><span class="line">	<span class="keyword">return</span> result.reverse().toString().trim();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">translateThreeR</span><span class="params">(<span class="keyword">int</span> number, StringBuilder result, <span class="keyword">int</span> group)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> lower = number % <span class="number">1000</span>;</span><br><span class="line">	<span class="keyword">int</span> thousands = number / <span class="number">1000</span>;     </span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (group == <span class="number">1</span> &amp;&amp; lower &gt; <span class="number">0</span>)</span><br><span class="line">		result.append(reverse(<span class="string">" Thousand"</span>));</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (group==<span class="number">2</span> &amp;&amp; lower &gt; <span class="number">0</span>)</span><br><span class="line">		result.append(reverse(<span class="string">" Million"</span>));</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (group==<span class="number">3</span> &amp;&amp; lower &gt; <span class="number">0</span>)</span><br><span class="line">		result.append(reverse(<span class="string">" Billion"</span>));</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(lower&gt;<span class="number">0</span>)</span><br><span class="line">		result.append(reverse(translateThree(lower)));</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(thousands &gt;= <span class="number">1</span>) &#123;</span><br><span class="line">		translateThreeR(thousands, result, ++group);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">translateThree</span><span class="params">(<span class="keyword">int</span> number)</span> </span>&#123;</span><br><span class="line">	StringBuilder result = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">	<span class="keyword">if</span>(number &gt; <span class="number">99</span>) &#123;</span><br><span class="line">		result.append(<span class="string">" "</span>+lows[number / <span class="number">100</span>]);</span><br><span class="line">		result.append(<span class="string">" Hundred"</span>);</span><br><span class="line">		number = number % <span class="number">100</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span>(number &gt; <span class="number">19</span>) &#123;</span><br><span class="line">		result.append(<span class="string">" "</span>);</span><br><span class="line">		result.append(tens[number/<span class="number">10</span>]);</span><br><span class="line">		number = number % <span class="number">10</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Remainder is under 20</span></span><br><span class="line">	result.append(<span class="string">" "</span>+lows[number]);</span><br><span class="line">	<span class="keyword">return</span> <span class="string">" "</span>+result.toString().trim();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">reverse</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> (<span class="keyword">new</span> StringBuilder()).append(s).reverse().toString();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>n为位数，时间复杂度为O(n)，空间复杂度O(1)。  </p>
-<hr>
-<h3 id="算法II解题思路："><a href="#算法II解题思路：" class="headerlink" title="算法II解题思路："></a><strong>算法II解题思路：</strong></h3><p>上述方法是按千位递归的。下面的方法是按20以下，100以下，百位，千位…递归，递归的颗粒度更小，程序更简单。</p>
-<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>空格总加在新数前面，只需要加在有返回值的时候，也就是tens和lows中，其他如numberToWordsR(number/1000)<br>可能返回空值，此时不在前面加空格。</li>
-<li>在递归中，num为0要单独列出，因为0表示此位不存在，也就是无返回值。</li>
-<li>在入口方法中，若num为0，则返回Zero，要单独列出。</li>
-</ol>
-<h3 id="Java代码：-1"><a href="#Java代码：-1" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">numberToWords</span><span class="params">(<span class="keyword">int</span> number)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (number == <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"Zero"</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">return</span> numberToWordsR(number).trim();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">numberToWordsR</span><span class="params">(<span class="keyword">int</span> number)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(number == <span class="number">0</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">""</span>;</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> (number &lt; <span class="number">20</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">" "</span> + lows[number];</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> (number &lt; <span class="number">100</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">" "</span> + tens[number / <span class="number">10</span>] + numberToWordsR(number % <span class="number">10</span>);</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> (number &lt; <span class="number">1000</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">" "</span> + lows[number / <span class="number">100</span>] + <span class="string">" Hundred"</span> + numberToWordsR(number % <span class="number">100</span>);</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> (number &lt; <span class="number">1000000</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> numberToWordsR(number / <span class="number">1000</span>) + <span class="string">" Thousand"</span> + numberToWordsR(number % <span class="number">1000</span>);</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> (number &lt; <span class="number">1000000000</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> numberToWordsR(number / <span class="number">1000000</span>) + <span class="string">" Million"</span> + numberToWordsR(number % <span class="number">1000000</span>);</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> numberToWordsR(number / <span class="number">1000000000</span>) + <span class="string">" Billion"</span> + numberToWordsR(number % <span class="number">1000000000</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="Follow-up："><a href="#Follow-up：" class="headerlink" title="Follow-up："></a><strong>Follow-up：</strong></h3><p>integer, minus, decimals, internationlization(localization)。  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -709,6 +674,14 @@ minStack.getMin();   --> Returns -2.
   <ul class="entry">
     
       <li>
+        <a href="/2021/07/27/lee-003/">Longest Substring Without Repeating Characters</a>
+      </li>
+    
+      <li>
+        <a href="/2021/07/27/lee-138/">Copy List with Random Pointer</a>
+      </li>
+    
+      <li>
         <a href="/2021/06/07/kb-Python/">Python知识点</a>
       </li>
     
@@ -718,14 +691,6 @@ minStack.getMin();   --> Returns -2.
     
       <li>
         <a href="/2020/05/10/lee-010/">LeetCode 010 Regular Expression Matching</a>
-      </li>
-    
-      <li>
-        <a href="/2020/05/10/lee-044/">LeetCode 044 Wildcard Matching</a>
-      </li>
-    
-      <li>
-        <a href="/2020/05/09/memoization/">记忆性搜索</a>
       </li>
     
   </ul>
@@ -738,7 +703,7 @@ minStack.getMin();   --> Returns -2.
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Array/" style="font-size: 18px;">Array</a> <a href="/tags/Binary-Indexed-Tree/" style="font-size: 10px;">Binary Indexed Tree</a> <a href="/tags/Binary-Search/" style="font-size: 13px;">Binary Search</a> <a href="/tags/Binary-Search-Tree/" style="font-size: 10px;">Binary Search Tree</a> <a href="/tags/Breadth-first-Search/" style="font-size: 15px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 17px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 13px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 18px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 11px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 11px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 14px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 10px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 16px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 19px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 11px;">Linked List</a> <a href="/tags/Math/" style="font-size: 11px;">Math</a> <a href="/tags/Memoization/" style="font-size: 13px;">Memoization</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10px;">Segment Tree</a> <a href="/tags/Sort/" style="font-size: 13px;">Sort</a> <a href="/tags/Stack/" style="font-size: 14px;">Stack</a> <a href="/tags/String/" style="font-size: 12px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12px;">Tree</a> <a href="/tags/Two-Pointers/" style="font-size: 13px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 11px;">Union Find</a>
+    <a href="/tags/Array/" style="font-size: 18px;">Array</a> <a href="/tags/Binary-Indexed-Tree/" style="font-size: 10px;">Binary Indexed Tree</a> <a href="/tags/Binary-Search/" style="font-size: 13px;">Binary Search</a> <a href="/tags/Binary-Search-Tree/" style="font-size: 10px;">Binary Search Tree</a> <a href="/tags/Breadth-first-Search/" style="font-size: 15px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 17px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 13px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 18px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 11px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 11px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 15px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 10px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 16px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 19px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 12px;">Linked List</a> <a href="/tags/Math/" style="font-size: 11px;">Math</a> <a href="/tags/Memoization/" style="font-size: 13px;">Memoization</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10px;">Segment Tree</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 13px;">Sort</a> <a href="/tags/Stack/" style="font-size: 14px;">Stack</a> <a href="/tags/String/" style="font-size: 13px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12px;">Tree</a> <a href="/tags/Two-Pointers/" style="font-size: 13px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 11px;">Union Find</a>
   </div>
 </div>
 
