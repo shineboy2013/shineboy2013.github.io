@@ -53,6 +53,66 @@
     <header>
       
   
+    <h1 class="title"><a href="/2018/05/01/design-chime/">Design Chime</a></h1>
+  
+
+      
+        <time datetime="2018-05-02T05:21:57.460Z">2018-05-01</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>Design a chatting application like Chime  </p>
+<h3 id="了解用户需求："><a href="#了解用户需求：" class="headerlink" title="了解用户需求："></a><strong>了解用户需求：</strong></h3><p>通过不断和面试官沟通，了解用户角度的需求。把这些需求逐一列举在白板上。面试者一开始会刻意只说出1-2点。面试者通过联系实际，不够构想<br>一些需求，若得到确认就要写入。</p>
+<ol>
+<li>用户可以单对单相互聊天(one-on-one chat)</li>
+<li>用户可以群聊(group chat)</li>
+<li>用户可登陆</li>
+<li>用户可以添加好友(sending)，接受好友(accepting)，拒绝添加(rejecting). 好友相互添加(mutual)，不支持两人分别添加。</li>
+<li>用户更新状态为offline, available, busy, don’t disturb，还有个性化签名</li>
+</ol>
+<p>面试者通过重新排序user life cycle更有助于理解和记忆</p>
+<ol>
+<li>用户可登陆</li>
+<li>用户可以添加好友(sending)，接受好友(accepting)，拒绝添加(rejecting)</li>
+<li>用户可以单对单相互聊天(one-on-one chat)</li>
+<li>用户可以群聊(group chat)</li>
+<li>用户更新状态为offline, available, busy, don’t disturb，还有个性化签名</li>
+</ol>
+<p>本面试不支持以下use cases<br>音频会议，视频会议，文件传输</p>
+<h3 id="Block-Component-diagram："><a href="#Block-Component-diagram：" class="headerlink" title="Block/Component diagram："></a><strong>Block/Component diagram：</strong></h3><p>最简单的设计就是一系列的clients，一系列的servers，还有存储系统。<br><img src="/images/chime.png" alt=""><br>存储系统可以选择SQL或者No SQL。No SQL就会更加scalable.这里可以讨论它们之间的pros和cons。<br>传输协议(client-server)可用Java中的Socket和ServerSocket对象，它们建立一个TCP连接，用IO Stream传输。<br>服务器端用多个服务器避免single point of failure。server端的memory会存一些用户状态等数据（当然它也会被持久化），这表示它需要<br>    replicate一些数据减少不同机器之间的lookup时间。</p>
+<p>这些大概讨论一下即可，本design主要针对OOD。</p>
+<h3 id="Class-diagram："><a href="#Class-diagram：" class="headerlink" title="Class diagram："></a><strong>Class diagram：</strong></h3><p>从User开始写fields和key methods，因为需求就是针对用户，比较直观。当参数含有多个属性时，就应该考虑产生一个新的class，如Message，<br>因为Message不只内容String还有发送时间甚至styling等。 还有注意每个类是否存在状态(如UserStatus)，如果有，就要考虑用enum。</p>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line">User:</span><br><span class="line">   <span class="keyword">int</span> id;</span><br><span class="line">   String fullName;</span><br><span class="line">   String alias;</span><br><span class="line">   List&lt;User&gt; friends;</span><br><span class="line">   List&lt;GroupChat&gt; gChats;</span><br><span class="line">   List&lt;PrivateChat&gt; pChats;</span><br><span class="line">   UserStatus s;</span><br><span class="line">   </span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">sign</span><span class="params">()</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">signout</span><span class="params">()</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">sendFriend</span><span class="params">(FriendRequest r)</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">acceptFriend</span><span class="params">(FriendRequest r)</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">rejectFriend</span><span class="params">(FriendRequest r)</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">setUserStatus</span><span class="params">(UserStatus s)</span></span>;</span><br><span class="line">   <span class="function">PrivateChat <span class="title">createConversation</span><span class="params">(User b)</span></span>;</span><br><span class="line">   <span class="function">GroupChat <span class="title">createConversation</span><span class="params">(List&lt;User&gt; c)</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">sendMessage</span><span class="params">(PrivateChat s, String msg)</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">sendMessage</span><span class="params">(GroupChat s, String msg)</span></span>;</span><br><span class="line"></span><br><span class="line">Conversation:</span><br><span class="line">   <span class="keyword">int</span> id;</span><br><span class="line">   List&lt;User&gt; users;</span><br><span class="line">   List&lt;Message&gt; messages;</span><br><span class="line">   </span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">addMessage</span><span class="params">(Message msg)</span></span>;</span><br><span class="line">   </span><br><span class="line">PrivateChat extends Conversation:</span><br><span class="line">   PrivateChat(User user, User user2);</span><br><span class="line"></span><br><span class="line">GroupChat extends Conversation:</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">addUser</span><span class="params">(User u)</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">removeUser</span><span class="params">(User u)</span></span>;</span><br><span class="line">   </span><br><span class="line">Message:</span><br><span class="line">   <span class="keyword">int</span> id;</span><br><span class="line">   Date timestamp;</span><br><span class="line">   User user;<span class="comment">//I would like to know who sent this msg</span></span><br><span class="line">   String content;</span><br><span class="line"></span><br><span class="line">FriendRequest:</span><br><span class="line">   User from;</span><br><span class="line">   User to;</span><br><span class="line">   Date timestamp;</span><br><span class="line">   RequestStatus Status;</span><br><span class="line"></span><br><span class="line">UserStatus:</span><br><span class="line">   String message;</span><br><span class="line">   UserStatusType type;</span><br><span class="line"></span><br><span class="line"><span class="keyword">enum</span> RequestStatus:</span><br><span class="line">   ACCEPTED, REJECTED, PENDING</span><br><span class="line"> </span><br><span class="line"><span class="keyword">enum</span> UserStatusType:</span><br><span class="line">   offline, available, busy, DONT_disturb</span><br><span class="line"></span><br><span class="line"><span class="comment">//这个类最为复杂，主要是维护用户关系和用户状态以及对应的数据库读写。这里有几个隐形需求。。可以根据alias搜索用户，  </span></span><br><span class="line"><span class="comment">//如果用户offline，即使是好友也不能发信息。它是singleton。</span></span><br><span class="line">UserManager:</span><br><span class="line">   HashMap&lt;String, User&gt; usersByAlias;</span><br><span class="line">   <span class="comment">//User类需要含有UserManager，查看要发送信息的对象是否在线，若不在线，不能发出信息。</span></span><br><span class="line">   HashMap&lt;Integer, User&gt; onlineUsers;</span><br><span class="line">   </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> UserManager <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">       <span class="keyword">if</span> (instance==<span class="keyword">null</span>) instance = <span class="keyword">new</span> UserManager();</span><br><span class="line">	   <span class="keyword">return</span> instance;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="comment">//用observer模式，User调用UserManager这个接口来更新onlineUsers</span></span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">signInUser</span><span class="params">(String alias)</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">signOutUser</span><span class="params">(String alias)</span></span>;</span><br><span class="line">   <span class="comment">//User to的acceptFriend会调用这个函数来更新User a和User b的friend list同时更新FriendRequest的状态。</span></span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">approveRequest</span><span class="params">(FriendRequest f)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>具体实现可以选择approveRequest或者某用户发信息怎么令group chat的其他用户收到该信息sendMessage(GroupChat s, String msg)。</p>
+<p>void sendMessage(GroupChat s, String msg){<br>    List<user> users = s.getUsers();<br>}</user></p>
+<h3 id="扩展问题："><a href="#扩展问题：" class="headerlink" title="扩展问题："></a><strong>扩展问题：</strong></h3><ol>
+<li>怎么知道某用户真的在线</li>
+<li>怎么处理内存和数据冲突的信息</li>
+<li>怎么让server scale</li>
+<li>怎么防止DDOS攻击</li>
+</ol>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2018/04/30/design-tiny-url/">Design Tiny URL</a></h1>
   
 
@@ -557,84 +617,6 @@ Y   I   R
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2018/01/29/lee-572/">LeetCode 572 Subtree of Another Tree</a></h1>
-  
-
-      
-        <time datetime="2018-01-29T09:33:24.225Z">2018-01-29</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/subtree-of-another-tree" target="_blank" rel="noopener">LeetCode 572 Subtree of Another Tree</a></strong></p>
-<p>Given two non-empty binary trees <strong>s</strong> and <strong>t</strong>, check whether tree <strong>t</strong> has exactly the same structure and node values with a subtree of <strong>s</strong>. A subtree of <strong>s</strong> is a tree consists of a node in <strong>s</strong> and all of this node’s descendants. The tree <strong>s</strong> could also be considered as a subtree of itself.</p>
-<p><strong>Example 1:</strong><br>Given tree s:</p>
-<pre>     3
-    / \
-   4   5
-  / \
- 1   2
-</pre>
-
-<p>Given tree t:</p>
-<pre>   4 
-  / \
- 1   2
-</pre>
-
-<p>Return <strong>true</strong>, because t has the same structure and node values with a subtree of s.</p>
-<p><strong>Example 2:</strong><br>Given tree s:</p>
-<pre>     3
-    / \
-   4   5
-  / \
- 1   2
-    /
-   0
-</pre>
-
-<p>Given tree t:</p>
-<pre>   4
-  / \
- 1   2
-</pre>
-
-<p>Return <strong>false</strong>.</p>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定两个非空二叉树s和t，判断t是否是s的子树。s的子树是指由s中某节点及该节点的所有子节点构成的二叉树。<br>特别的，s是其本身的子树。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是A公司的题目。DFS解题：</p>
-<ol>
-<li>s树的每一个节点与t树的根节点比较，若值相等进行下一步。</li>
-<li>s树的某节点为根的子树和t树进行结构+值比较。</li>
-</ol>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>s=null和t=null，是子树</li>
-<li>s和t任一为空，另一个不为空，不是子树。</li>
-</ol>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isSubtree</span><span class="params">(TreeNode s, TreeNode t)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(isSame(s, t))</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">	<span class="keyword">if</span>(t==<span class="keyword">null</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	<span class="keyword">return</span> s!=<span class="keyword">null</span> &amp;&amp; (isSubtree(s.left, t) || isSubtree(s.right, t));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isSame</span><span class="params">(TreeNode root, TreeNode root2)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(root==<span class="keyword">null</span> &amp;&amp; root2 == <span class="keyword">null</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">	<span class="keyword">if</span>(root==<span class="keyword">null</span> || root2 == <span class="keyword">null</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	<span class="keyword">return</span> root.val==root2.val &amp;&amp; isSame(root.left,root2.left) &amp;&amp; isSame(root.right, root2.right);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nm)</code>，空间复杂度<code>O(1)</code>，n和m分别为s数和t数大小。</p>
-<h3 id="Follow-up"><a href="#Follow-up" class="headerlink" title="Follow-up:"></a><strong>Follow-up:</strong></h3><p>如果s是BST，怎么改进算法？<br>二分法先找到s的节点值等于t根节点值的节点再比较。时间复杂度为<code>O(logn+m)</code>。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">contains</span><span class="params">(TreeNode t, TreeNode node)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (node == <span class="keyword">null</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	<span class="keyword">int</span> result = t.compareTo(node.val);</span><br><span class="line">	<span class="keyword">if</span> (result &gt; <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> contains(t, node.right);</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (result &lt; <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> contains(t, node.left);</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>若BST不是严格递增 (allow duplicates)，多比较几个相等节点即可。</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -659,11 +641,15 @@ Y   I   R
   <ul class="entry">
     
       <li>
-        <a href="/2021/07/27/lee-003/">Longest Substring Without Repeating Characters</a>
+        <a href="/2021/07/27/lee-104/">LeetCode 104 Maximum Depth of Binary Tree</a>
       </li>
     
       <li>
-        <a href="/2021/07/27/lee-138/">Copy List with Random Pointer</a>
+        <a href="/2021/07/27/lee-003/">LeetCode 003 Longest Substring Without Repeating Characters</a>
+      </li>
+    
+      <li>
+        <a href="/2021/07/27/lee-138/">LeetCode 138 Copy List with Random Pointer</a>
       </li>
     
       <li>
@@ -672,10 +658,6 @@ Y   I   R
     
       <li>
         <a href="/2020/05/10/lee-368/">LeetCode 368 Largest Divisible Subset</a>
-      </li>
-    
-      <li>
-        <a href="/2020/05/10/lee-010/">LeetCode 010 Regular Expression Matching</a>
       </li>
     
   </ul>
@@ -688,7 +670,7 @@ Y   I   R
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Array/" style="font-size: 18px;">Array</a> <a href="/tags/Binary-Indexed-Tree/" style="font-size: 10px;">Binary Indexed Tree</a> <a href="/tags/Binary-Search/" style="font-size: 13px;">Binary Search</a> <a href="/tags/Binary-Search-Tree/" style="font-size: 10px;">Binary Search Tree</a> <a href="/tags/Breadth-first-Search/" style="font-size: 15px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 17px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 13px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 18px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 11px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 11px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 15px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 10px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 16px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 19px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 12px;">Linked List</a> <a href="/tags/Math/" style="font-size: 11px;">Math</a> <a href="/tags/Memoization/" style="font-size: 13px;">Memoization</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10px;">Segment Tree</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 13px;">Sort</a> <a href="/tags/Stack/" style="font-size: 14px;">Stack</a> <a href="/tags/String/" style="font-size: 13px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12px;">Tree</a> <a href="/tags/Two-Pointers/" style="font-size: 13px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 11px;">Union Find</a>
+    <a href="/tags/Array/" style="font-size: 18px;">Array</a> <a href="/tags/Binary-Indexed-Tree/" style="font-size: 10px;">Binary Indexed Tree</a> <a href="/tags/Binary-Search/" style="font-size: 13px;">Binary Search</a> <a href="/tags/Binary-Search-Tree/" style="font-size: 10px;">Binary Search Tree</a> <a href="/tags/Breadth-first-Search/" style="font-size: 15px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 17px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 13px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 18px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 11px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 11px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 15px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 10px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 16px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 19px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 12px;">Linked List</a> <a href="/tags/Math/" style="font-size: 11px;">Math</a> <a href="/tags/Memoization/" style="font-size: 13px;">Memoization</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10px;">Segment Tree</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 13px;">Sort</a> <a href="/tags/Stack/" style="font-size: 14px;">Stack</a> <a href="/tags/String/" style="font-size: 13px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 13px;">Tree</a> <a href="/tags/Two-Pointers/" style="font-size: 13px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 11px;">Union Find</a>
   </div>
 </div>
 
