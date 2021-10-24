@@ -6,11 +6,14 @@
   <title>Design Tiny URL › Jiajie&#39;s blog</title>
   <meta name="author" content="KK Shum">
   
-  <meta name="description" content="题目大意：长URL变成短URL方便传输和阅读，特别是很多社交网站对字数有限制如Twitter。
-解题步骤：解题思路：
+  <meta name="description" content="题目大意：
+长URL变成短URL方便传输和阅读，特别是很多社交网站对字数有限制如Twitter。
+解题步骤：
+解题思路：
+
 沟通清楚需要，用户数（都会很大）
 数据量估计。如火车售票系统，估计西雅图总人口，高峰乘坐人数。
-先完成一个功能。如buy ticket。画图，每个部件high level细节包括数据">
+先完成一个功能。如buy ticket。画图，每个部件high level细节包">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -67,15 +70,21 @@
     </header>
     <div class="entry">
       
-        <h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>长URL变成短URL方便传输和阅读，特别是很多社交网站对字数有限制如Twitter。</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><ol>
+        <h3><strong>题目大意：</strong></h3>
+<p>长URL变成短URL方便传输和阅读，特别是很多社交网站对字数有限制如Twitter。</p>
+<h3><strong>解题步骤：</strong></h3>
+<h3><strong>解题思路：</strong></h3>
+<ol>
 <li>沟通清楚需要，用户数（都会很大）</li>
 <li>数据量估计。如火车售票系统，估计西雅图总人口，高峰乘坐人数。</li>
 <li>先完成一个功能。如buy ticket。画图，每个部件high level细节包括数据库的schema和组件间的API接口。</li>
 <li>自觉加上优化，如cache，master-slave数据库,LB等等。不要等面试官提醒</li>
-<li>完成一个功能后，再画图扩展到其他功能。 </li>
+<li>完成一个功能后，再画图扩展到其他功能。</li>
 </ol>
-<h3 id="短网址长度："><a href="#短网址长度：" class="headerlink" title="短网址长度："></a><strong>短网址长度：</strong></h3><p>短网址若只含数字，也就是十进制整数还是不够短。可以考虑加入大小写字母，总共有26x2+10=62，也就是一个62进制数。<br>网站总数是45亿个，62^7就远远大于45亿，7位就够。<br>若long表示的64位整数，log62(2^64-1)=11，大约是对应11位。  </p>
+<h3><strong>短网址长度：</strong></h3>
+<p>短网址若只含数字，也就是十进制整数还是不够短。可以考虑加入大小写字母，总共有26x2+10=62，也就是一个62进制数。<br>
+网站总数是45亿个，62^7就远远大于45亿，7位就够。<br>
+若long表示的64位整数，log62(2^64-1)=11，大约是对应11位。</p>
 <table>
 <thead>
 <tr>
@@ -92,10 +101,15 @@
 </tr>
 </tbody>
 </table>
-<h3 id="存储方法："><a href="#存储方法：" class="headerlink" title="存储方法："></a><strong>存储方法：</strong></h3><p>写操作：长网址到短网址<br>读操作：短网址到长网址<br>读操作远远大于写操作，所以key（或primary key）选在短网址， value在长网址。<br>每个新的长网址，对应一个短网址还是多个？考虑一下几点：</p>
+<h3><strong>存储方法：</strong></h3>
+<p>写操作：长网址到短网址<br>
+读操作：短网址到长网址<br>
+读操作远远大于写操作，所以key（或primary key）选在短网址， value在长网址。<br>
+每个新的长网址，对应一个短网址还是多个？考虑一下几点：</p>
 <ol>
-<li>若对应一个短网址，必须再产生一个unique key在长网址上来决定该长网址对应的短网址是否存在。大大降低写操作速度。  </li>
-<li>长网址虽然一样，但可以带不同的header, user agent，从而知道进入该长网址的入口（其他网站），短网址商的盈利来源。<br>所以长网址对应多个短网址，Google Maps就采取这个设计。    </li>
+<li>若对应一个短网址，必须再产生一个unique key在长网址上来决定该长网址对应的短网址是否存在。大大降低写操作速度。</li>
+<li>长网址虽然一样，但可以带不同的header, user agent，从而知道进入该长网址的入口（其他网站），短网址商的盈利来源。<br>
+所以长网址对应多个短网址，Google Maps就采取这个设计。</li>
 </ol>
 <table>
 <thead>
@@ -118,21 +132,34 @@
 </tr>
 </tbody>
 </table>
-<p>数据库选择可以是关系型数据库SQL Server，或者KV数据库如Redis，dynamoDB。可以详细讨论关系型数据库与No SQL的区别。<br>此题目用No sql比较好，因为从分布性考虑和是否需要复杂的Join操作来考虑，No sql有明显优势。</p>
-<h3 id="计算短网址："><a href="#计算短网址：" class="headerlink" title="计算短网址："></a><strong>计算短网址：</strong></h3><p>另一个核心问题就是如何计算短网址，具体而言是怎么从URL转化为一个十进制整数。有几个方案：  </p>
+<p>数据库选择可以是关系型数据库SQL Server，或者KV数据库如Redis，dynamoDB。可以详细讨论关系型数据库与No SQL的区别。<br>
+此题目用No sql比较好，因为从分布性考虑和是否需要复杂的Join操作来考虑，No sql有明显优势。</p>
+<h3><strong>计算短网址：</strong></h3>
+<p>另一个核心问题就是如何计算短网址，具体而言是怎么从URL转化为一个十进制整数。有几个方案：</p>
 <ol>
 <li>最简单的是维护一个最大值，每个新的请求，对此值加1。缺点是分布式系统中，维护单一最大值（所有机器中）大大降低性能。</li>
 <li>取URL的hash值得到64位整数再取前7位，但会有冲突。</li>
-<li><a href="https://shineboy2013.github.io/2018/06/18/design-distributed-id/" target="_blank" rel="noopener">参考分布式发号器</a>  </li>
+<li><a href="https://shineboy2013.github.io/2018/06/18/design-distributed-id/" target="_blank" rel="noopener">参考分布式发号器</a></li>
 </ol>
-<p>十进制到62进制用短除法来做，<br><img src="/images/design-tiny-url.png" alt=""><br>796%62=52， (796-52)/62=12.<br>12%62=12, (12-12)/62=0.<br>结果为(12)(52) = cP</p>
-<h3 id="DDOS："><a href="#DDOS：" class="headerlink" title="DDOS："></a><strong>DDOS：</strong></h3><p>这是一个细节考虑，若黑客大量发请求，耗尽所有ID怎么办？</p>
+<p>十进制到62进制用短除法来做，
+<img src="/images/design-tiny-url.png" alt=""><br>
+796%62=52， (796-52)/62=12.
+12%62=12, (12-12)/62=0.
+结果为(12)(52) = cP</p>
+<h3><strong>DDOS：</strong></h3>
+<p>这是一个细节考虑，若黑客大量发请求，耗尽所有ID怎么办？</p>
 <ol>
 <li>限制IP单日请求总数，超过直接拒绝。</li>
-<li>限制长网址的单一性。限制IP还不够，因为用proxy provider服务可以绕过这个限制。用Redis来cache长网址到短网址的一日数据，<br>然后LRU淘汰旧的数据。这样如果此URL的请求超过一定数量，比如100次，就返回最新的短网址。<br>长网址-&gt;次数+短URL</li>
+<li>限制长网址的单一性。限制IP还不够，因为用proxy provider服务可以绕过这个限制。用Redis来cache长网址到短网址的一日数据，<br>
+然后LRU淘汰旧的数据。这样如果此URL的请求超过一定数量，比如100次，就返回最新的短网址。
+长网址-&gt;次数+短URL</li>
 </ol>
-<h3 id="301还是302："><a href="#301还是302：" class="headerlink" title="301还是302："></a><strong>301还是302：</strong></h3><p>301是永久重定向，302是临时重定向。如果用了301， Google，百度等搜索引擎，搜索的时候会直接展示真实地址，那我们就无法统计<br>到短地址被点击的次数了，也无法收集用户的Cookie, User Agent等信息。这是短网址商的盈利来源。  </p>
-<h3 id="Ref："><a href="#Ref：" class="headerlink" title="Ref："></a><strong>Ref：</strong></h3><p><a href="https://soulmachine.gitbooks.io/system-design/content/cn/tinyurl.html" target="_blank" rel="noopener">https://soulmachine.gitbooks.io/system-design/content/cn/tinyurl.html</a><br><a href="https://segmentfault.com/a/1190000006140476" target="_blank" rel="noopener">https://segmentfault.com/a/1190000006140476</a>  </p>
+<h3><strong>301还是302：</strong></h3>
+<p>301是永久重定向，302是临时重定向。如果用了301， Google，百度等搜索引擎，搜索的时候会直接展示真实地址，那我们就无法统计<br>
+到短地址被点击的次数了，也无法收集用户的Cookie, User Agent等信息。这是短网址商的盈利来源。</p>
+<h3><strong>Ref：</strong></h3>
+<p><a href="https://soulmachine.gitbooks.io/system-design/content/cn/tinyurl.html" target="_blank" rel="noopener">https://soulmachine.gitbooks.io/system-design/content/cn/tinyurl.html</a><br>
+<a href="https://segmentfault.com/a/1190000006140476" target="_blank" rel="noopener">https://segmentfault.com/a/1190000006140476</a></p>
 
       
     </div>
