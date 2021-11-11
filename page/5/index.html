@@ -53,6 +53,66 @@
     <header>
       
   
+    <h1 class="title"><a href="/2018/01/31/lee-004/">LeetCode 004 Median of Two Sorted Arrays</a></h1>
+  
+
+      
+        <time datetime="2018-02-01T03:24:53.428Z">2018-01-31</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/median-of-two-sorted-arrays" target="_blank" rel="noopener">LeetCode 004 Median of Two Sorted Arrays</a></strong></p>
+<p>There are two sorted arrays <strong>nums1</strong> and <strong>nums2</strong> of size m and n respectively.</p>
+<p>Find the median of the two sorted arrays. The overall run time complexity should be O(log (m+n)).</p>
+<p><strong>Example 1:</strong>  </p>
+<pre>nums1 = [1, 3]
+nums2 = [2]
+
+The median is 2.0
+</pre>
+
+<p><strong>Example 2:</strong>  </p>
+<pre>nums1 = [1, 2]
+nums2 = [3, 4]
+
+The median is (2 + 3)/2 = 2.5
+</pre>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求两个有序数组中的中位数。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>题目要求log(m+n)复杂度，也就提示要对数组总长做二分法。因为要同时处理两个数组所以考虑用递归版二分法。因奇偶中位数有1-2个，<br>所以加强命题为求两有序数组的第k个数(k&gt;=1)。<br>对k的值进行二分k/2，先尝试num1数组的第k/2个数和num2数组的第k/2个数。若它们相等，表示它们即为第k个数。也就是比如求第4个数，<br>分别在两数组中取前两个，平均分配名额。此题类似于求前k大的数(算法文档4.1.13)用统计个数的方法来判断走左还是右。若它们不等，不妨假设<br>aKey&lt;bKey，这样表示第k个数一定不会是aKey，因为即使比bKey小的数均小于aKey的话（有k/2-1个），总共有k/2-1+k/2-1=k-2个数小于<br>aKey，也就是aKey为第k-1个数，不可能为第k个数，它只可能出现是bKey或者在num1中比aKey大的数。既然aKey不是解，比aKey小的数<br>更不可能是解。所以，可以抛掉num1[0, k/2]这部分，转而求num1[k/2+1,nums.length-1]以及nums2的第k-k/2个数，抛掉部分会影响结果<br>吗？答案是否定的。比如<br>1 2 3 4<br>0 6 7 8<br>k=4，比较2和6,2&lt;6抛掉1 2，转求[3,4],[0,6,7,8]的第2个数，答案仍为3，不影响结果，因为前k/2个数即使有些在nums2也不会影响<br>最后结果，求的是第k个。<br>1 2 3 4<br>0 6 7 8<br>第k=4数可能出现在num1[k/2+1,nums.length-1]=3或num2=6（下面例子），所以保留部分是正确的。<br>主要思路是<strong>每次递归抛掉k/2个数，数组规模减少k/2，k变成k-k/2</strong>, API为left, left2表示新数组的左边界(因为永远抛左边部分)以及k。<br>递归终止条件为</p>
+<ol>
+<li>left越界，这时此数组的数刚好用完或此数组为空(不会越界太多，否则aKey无穷大会递归到num2)。归结为求另一数组[left..]的第k个数.  </li>
+<li>k为1时候，是基本情况，表示求两数组的第1个数，只要返回左端的最小值即可。  </li>
+</ol>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>中位数有1-2两个。</li>
+<li>off by 1的问题。若API中的k定义为第k个数k&gt;=1，若总长len=5，中位数为第len/2+1=3个数。所以在递归函数中，数组下标用到k时<br>都要-1。抛掉[left, left+k/2-1],递归[left+k/2..]。</li>
+<li>若nums中left+k/2-1越界，不碰nums，右移left2，因为nums不能右移那么多。</li>
+</ol>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">findMedianSortedArrays</span><span class="params">(<span class="keyword">int</span>[] num1, <span class="keyword">int</span>[] num2)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> len = num1.length+num2.length;</span><br><span class="line">	<span class="keyword">if</span>(len%<span class="number">2</span>==<span class="number">1</span>)</span><br><span class="line">		<span class="keyword">return</span> findKth(num1,num2,<span class="number">0</span>,<span class="number">0</span>,len/<span class="number">2</span>+<span class="number">1</span>);</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">return</span> (findKth(num1,num2,<span class="number">0</span>,<span class="number">0</span>,len/<span class="number">2</span>)+findKth(num1,num2,<span class="number">0</span>,<span class="number">0</span>,len/<span class="number">2</span>+<span class="number">1</span>))/<span class="number">2.0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">findKth</span><span class="params">(<span class="keyword">int</span>[] num1, <span class="keyword">int</span>[] num2, <span class="keyword">int</span> left, <span class="keyword">int</span> left2, <span class="keyword">int</span> k)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(left&gt;=num1.length)</span><br><span class="line">		<span class="keyword">return</span> num2[left2+k-<span class="number">1</span>];</span><br><span class="line">	<span class="keyword">if</span>(left2&gt;=num2.length)</span><br><span class="line">		<span class="keyword">return</span> num1[left+k-<span class="number">1</span>];</span><br><span class="line">	<span class="keyword">if</span>(k==<span class="number">1</span>)</span><br><span class="line">		<span class="keyword">return</span> Math.min(num1[left], num2[left2]);;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">int</span> aKey = left+k/<span class="number">2</span>-<span class="number">1</span>&lt;num1.length?num1[left+k/<span class="number">2</span>-<span class="number">1</span>]:Integer.MAX_VALUE;</span><br><span class="line">	<span class="keyword">int</span> bKey = left2+k/<span class="number">2</span>-<span class="number">1</span>&lt;num2.length?num2[left2+k/<span class="number">2</span>-<span class="number">1</span>]:Integer.MAX_VALUE;</span><br><span class="line">	<span class="keyword">if</span>(aKey&lt;bKey)</span><br><span class="line">		<span class="keyword">return</span> findKth(num1,num2,left+k/<span class="number">2</span>,left2,k-k/<span class="number">2</span>);</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		<span class="keyword">return</span> findKth(num1,num2,left,left2+k/<span class="number">2</span>, k-k/<span class="number">2</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>假设两数组总长度为N，k为中位数即N/2，每次抛掉k/2也就是子问题规模为N-k/2=N-N/4=3N/4. f(N)=f(3N/4)+1.<br>利用master理论b=4/3, a=1, f(n)=1代入时间复杂度为<code>O(log(m+n))</code>，空间复杂度<code>O(1)</code>。</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2018/01/30/lee-006/">LeetCode 006 ZigZag Conversion</a></h1>
   
 
@@ -64,28 +124,21 @@
       
         <p><strong><a href="https://leetcode.com/problems/zigzag-conversion" target="_blank" rel="noopener">LeetCode 006 ZigZag Conversion</a></strong></p>
 <p>The string <code>&quot;PAYPALISHIRING&quot;</code> is written in a zigzag pattern on a given number of rows like this: (you may want to display this pattern in a fixed font for better legibility)</p>
-<p>&lt;pre&gt;P   A   H   N
+<pre>P   A   H   N
 A P L S I I G
 Y   I   R
-&lt;/pre&gt;</p>
+</pre>
+
 <p>And then read line by line: <code>&quot;PAHNAPLSIIGYIR&quot;</code></p>
 <p>Write the code that will take a string and make this conversion given a number of rows:</p>
-<p>&lt;pre&gt;string convert(string text, int nRows);&lt;/pre&gt;</p>
+<pre>string convert(string text, int nRows);</pre>
+
 <p><code>convert(&quot;PAYPALISHIRING&quot;, 3)</code> should return <code>&quot;PAHNAPLSIIGYIR&quot;</code>.</p>
-<h3><strong>题目大意：</strong></h3>
-<p>给定字符串按如上的“Z”字锯齿形进行按行重排。</p>
-<h3><strong>解题思路：</strong></h3>
-<p>这是一个周期性的字符串。周期是竖+折（不含首节点）。
-<img src="/images/L006.png" alt="">
-首节点和竖的最后一点在每周期只会出现一次，其他点会出现两次。
-T=2×numRows-2(因为不含竖节点最后一点+折线上的最后一点属于另一个周期)。nT是有几个周期，即使不完成的周期也算一个。
-按行遍历（实质是周期上的每个点），再按周期遍历，非顶点有两个需加入到结果中：j×T+i,(j+1)×T-i。由于周期可能不完成，只要写一个API检查边界且加入字符即可。</p>
-<h3><strong>注意事项：</strong></h3>
-<p>一个字符的字符串。此时T=0.直接返回原字符串。</p>
-<h3><strong>Java代码：</strong></h3>
-<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">convert2</span><span class="params">(String s, <span class="keyword">int</span> numRows)</span> </span>&#123;</span><br><span class="line">	StringBuffer sb = <span class="keyword">new</span> StringBuffer();</span><br><span class="line">	<span class="keyword">int</span> T = numRows*<span class="number">2</span>-<span class="number">2</span>;</span><br><span class="line">	<span class="keyword">if</span>(T==<span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> s;</span><br><span class="line">	<span class="keyword">int</span> nT = (<span class="keyword">int</span>)Math.ceil((s.length()+<span class="number">0.0</span>)/T);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;numRows;i++)&#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;nT;j++)&#123;</span><br><span class="line">			<span class="keyword">if</span>(i==<span class="number">0</span> || i==numRows-<span class="number">1</span>)</span><br><span class="line">				sb.append(addChar(s, j*T+i));</span><br><span class="line">			<span class="keyword">else</span>&#123;</span><br><span class="line">				sb.append(addChar(s, j*T+i));</span><br><span class="line">				sb.append(addChar(s, (j+<span class="number">1</span>)*T-i));</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> sb.toString();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">addChar</span><span class="params">(String s, <span class="keyword">int</span> index)</span></span>&#123;</span><br><span class="line">	String a = <span class="string">""</span>;</span><br><span class="line">	<span class="keyword">if</span>(index&lt;s.length())</span><br><span class="line">		<span class="keyword">return</span> s.substring(index, index+<span class="number">1</span>);</span><br><span class="line">	<span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>。</p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定字符串按如上的“Z”字锯齿形进行按行重排。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是一个周期性的字符串。周期是竖+折（不含首节点）。<br><img src="/images/L006.png" alt=""><br>首节点和竖的最后一点在每周期只会出现一次，其他点会出现两次。<br>T=2&times;numRows-2(因为不含竖节点最后一点+折线上的最后一点属于另一个周期)。nT是有几个周期，即使不完成的周期也算一个。<br>按行遍历（实质是周期上的每个点），再按周期遍历，非顶点有两个需加入到结果中：j&times;T+i,(j+1)&times;T-i。由于周期可能不完成，只要写一个API检查边界且加入字符即可。</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><p>一个字符的字符串。此时T=0.直接返回原字符串。</p>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">convert2</span><span class="params">(String s, <span class="keyword">int</span> numRows)</span> </span>&#123;</span><br><span class="line">	StringBuffer sb = <span class="keyword">new</span> StringBuffer();</span><br><span class="line">	<span class="keyword">int</span> T = numRows*<span class="number">2</span>-<span class="number">2</span>;</span><br><span class="line">	<span class="keyword">if</span>(T==<span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> s;</span><br><span class="line">	<span class="keyword">int</span> nT = (<span class="keyword">int</span>)Math.ceil((s.length()+<span class="number">0.0</span>)/T);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;numRows;i++)&#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;nT;j++)&#123;</span><br><span class="line">			<span class="keyword">if</span>(i==<span class="number">0</span> || i==numRows-<span class="number">1</span>)</span><br><span class="line">				sb.append(addChar(s, j*T+i));</span><br><span class="line">			<span class="keyword">else</span>&#123;</span><br><span class="line">				sb.append(addChar(s, j*T+i));</span><br><span class="line">				sb.append(addChar(s, (j+<span class="number">1</span>)*T-i));</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> sb.toString();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">addChar</span><span class="params">(String s, <span class="keyword">int</span> index)</span></span>&#123;</span><br><span class="line">	String a = <span class="string">""</span>;</span><br><span class="line">	<span class="keyword">if</span>(index&lt;s.length())</span><br><span class="line">		<span class="keyword">return</span> s.substring(index, index+<span class="number">1</span>);</span><br><span class="line">	<span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>。</p>
 
       
     </div>
@@ -118,39 +171,23 @@ T=2×numRows-2(因为不含竖节点最后一点+折线上的最后一点属于�
       
         <p><strong><a href="https://leetcode.com/problems/meeting-rooms-ii/" target="_blank" rel="noopener">LeetCode 253 Meeting Rooms II</a></strong></p>
 <p>Given an array of meeting time intervals consisting of start and end times <code>[[s1,e1],[s2,e2],...]</code> (si &lt; ei), find the minimum number of conference rooms required.</p>
-<p>For example,
-Given <code>[[0, 30],[5, 10],[15, 20]]</code>,
-return <code>2</code>.</p>
-<h3><strong>题目大意：</strong></h3>
-<p>输入[[0, 30],[5, 10],[15, 20]]表示每个会议的开始结束时间，求最少需要多少会议室能够安排所有的会议。</p>
-<h3><strong>最小堆解题思路：</strong></h3>
-<p>基于merging interval题目，首先按start排序。并且merge条件是start小于上一个会议的end。</p>
+<p>For example,<br>Given <code>[[0, 30],[5, 10],[15, 20]]</code>,<br>return <code>2</code>.</p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>输入[[0, 30],[5, 10],[15, 20]]表示每个会议的开始结束时间，求最少需要多少会议室能够安排所有的会议。</p>
+<h3 id="最小堆解题思路："><a href="#最小堆解题思路：" class="headerlink" title="最小堆解题思路："></a><strong>最小堆解题思路：</strong></h3><p>基于merging interval题目，首先按start排序。并且merge条件是start小于上一个会议的end。</p>
 <ol>
-<li>写几个例子感受一下。
-<img src="/images/L253.png" alt="">
-有两个重叠的会议，现在插入新的会议。是否再需要一个会议室取决于该新会议的开始时间小于这两个目前会议的终止时间的最小值。<br>
-所以思路是用End time min-heap维护目前会议End time。若新会议start time小于堆顶元素，入栈且activeMeeting++，否则循环地出栈且activeMeeting--直到
-start time小于堆顶。<br>
-这过程activeMeeting的最大值即所求。
-最坏情况是所有会议都重叠，复杂度为n* 2logn因为n个元素入堆出堆各一次，所以复杂度为nlogn，但会议一般不会集中，平均情况比排序法稍优。</li>
+<li>写几个例子感受一下。<br><img src="/images/L253.png" alt=""><br>有两个重叠的会议，现在插入新的会议。是否再需要一个会议室取决于该新会议的开始时间小于这两个目前会议的终止时间的最小值。<br>所以思路是用End time min-heap维护目前会议End time。若新会议start time小于堆顶元素，入栈且activeMeeting++，否则循环地出栈且activeMeeting–直到<br>start time小于堆顶。<br>这过程activeMeeting的最大值即所求。<br>最坏情况是所有会议都重叠，复杂度为n* 2logn因为n个元素入堆出堆各一次，所以复杂度为nlogn，但会议一般不会集中，平均情况比排序法稍优。  </li>
 </ol>
-<h3><strong>排序法解题思路：</strong></h3>
-<ol>
-<li>证明解与具体间隔无关，只与end time的值有关。
-<img src="/images/L253-2.png" alt=""></li>
-<li>基于1和2，对end time进行排序，题解只与start-end的相对顺序有关。既然这样，我们可以把所有start，end一起排序，也就是按时间轴排列，排成一个2n大小的数组，<br>
-遇到start，activeMeeting++，遇到end，activeMeeting--。 这过程activeMeeting的最大值即所求。
-当然，上述方法直观，但实现起来需要建立一个class Node{value, startOrEnd}。本质上等价于对排序后的start数组和排序后的end数组进行<strong>合并排序</strong>。
-合并排序的结果等价于时间轴上两个数组的统一排序。当然，不需要剩余部分的合并排序，因为这部分不会增加activeMeeting的值。</li>
+<h3 id="排序法解题思路："><a href="#排序法解题思路：" class="headerlink" title="排序法解题思路："></a><strong>排序法解题思路：</strong></h3><ol>
+<li>证明解与具体间隔无关，只与end time的值有关。<br><img src="/images/L253-2.png" alt=""></li>
+<li>基于1和2，对end time进行排序，题解只与start-end的相对顺序有关。既然这样，我们可以把所有start，end一起排序，也就是按时间轴排列，排成一个2n大小的数组，<br>遇到start，activeMeeting++，遇到end，activeMeeting–。 这过程activeMeeting的最大值即所求。<br>当然，上述方法直观，但实现起来需要建立一个class Node{value, startOrEnd}。本质上等价于对排序后的start数组和排序后的end数组进行<strong>合并排序</strong>。<br>合并排序的结果等价于时间轴上两个数组的统一排序。当然，不需要剩余部分的合并排序，因为这部分不会增加activeMeeting的值。</li>
 </ol>
 <p>解题步骤：</p>
 <ol>
 <li>排序start</li>
 <li>排序end</li>
-<li>合并排序，start小就activeMeeting++，否则activeMeeting--。求activeMeeting的最大值。</li>
+<li>合并排序，start小就activeMeeting++，否则activeMeeting–。求activeMeeting的最大值。</li>
 </ol>
-<h3><strong>Ref：</strong></h3>
-<p>http://blog.csdn.net/jmspan/article/details/51093343</p>
+<h3 id="Ref："><a href="#Ref：" class="headerlink" title="Ref："></a><strong>Ref：</strong></h3><p><a href="http://blog.csdn.net/jmspan/article/details/51093343" target="_blank" rel="noopener">http://blog.csdn.net/jmspan/article/details/51093343</a></p>
 
       
     </div>
@@ -182,59 +219,52 @@ start time小于堆顶。<br>
     <div class="entry">
       
         <p><strong><a href="https://leetcode.com/problems/subtree-of-another-tree" target="_blank" rel="noopener">LeetCode 572 Subtree of Another Tree</a></strong></p>
-<p>Given two non-empty binary trees <strong>s</strong> and <strong>t</strong>, check whether tree <strong>t</strong> has exactly the same structure and node values with a subtree of <strong>s</strong>. A subtree of <strong>s</strong> is a tree consists of a node in <strong>s</strong> and all of this node's descendants. The tree <strong>s</strong> could also be considered as a subtree of itself.</p>
-<p><strong>Example 1:</strong><br>
-Given tree s:</p>
-<p>&lt;pre&gt;     3
-/ <br>
-4   5
-/ <br>
-1   2
-&lt;/pre&gt;</p>
+<p>Given two non-empty binary trees <strong>s</strong> and <strong>t</strong>, check whether tree <strong>t</strong> has exactly the same structure and node values with a subtree of <strong>s</strong>. A subtree of <strong>s</strong> is a tree consists of a node in <strong>s</strong> and all of this node’s descendants. The tree <strong>s</strong> could also be considered as a subtree of itself.</p>
+<p><strong>Example 1:</strong><br>Given tree s:</p>
+<pre>     3
+    / \
+   4   5
+  / \
+ 1   2
+</pre>
+
 <p>Given tree t:</p>
-<p>&lt;pre&gt;   4
-/ <br>
-1   2
-&lt;/pre&gt;</p>
+<pre>   4 
+  / \
+ 1   2
+</pre>
+
 <p>Return <strong>true</strong>, because t has the same structure and node values with a subtree of s.</p>
-<p><strong>Example 2:</strong><br>
-Given tree s:</p>
-<p>&lt;pre&gt;     3
-/ <br>
-4   5
-/ <br>
-1   2
-/
-0
-&lt;/pre&gt;</p>
+<p><strong>Example 2:</strong><br>Given tree s:</p>
+<pre>     3
+    / \
+   4   5
+  / \
+ 1   2
+    /
+   0
+</pre>
+
 <p>Given tree t:</p>
-<p>&lt;pre&gt;   4
-/ <br>
-1   2
-&lt;/pre&gt;</p>
+<pre>   4
+  / \
+ 1   2
+</pre>
+
 <p>Return <strong>false</strong>.</p>
-<h3><strong>题目大意：</strong></h3>
-<p>给定两个非空二叉树s和t，判断t是否是s的子树。s的子树是指由s中某节点及该节点的所有子节点构成的二叉树。
-特别的，s是其本身的子树。</p>
-<h3><strong>解题思路：</strong></h3>
-<p>这是A公司的题目。DFS解题：</p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定两个非空二叉树s和t，判断t是否是s的子树。s的子树是指由s中某节点及该节点的所有子节点构成的二叉树。<br>特别的，s是其本身的子树。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是A公司的题目。DFS解题：</p>
 <ol>
 <li>s树的每一个节点与t树的根节点比较，若值相等进行下一步。</li>
 <li>s树的某节点为根的子树和t树进行结构+值比较。</li>
 </ol>
-<h3><strong>注意事项：</strong></h3>
-<ol>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
 <li>s=null和t=null，是子树</li>
 <li>s和t任一为空，另一个不为空，不是子树。</li>
 </ol>
-<h3><strong>Java代码：</strong></h3>
-<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isSubtree</span><span class="params">(TreeNode s, TreeNode t)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(isSame(s, t))</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">	<span class="keyword">if</span>(t==<span class="keyword">null</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	<span class="keyword">return</span> s!=<span class="keyword">null</span> &amp;&amp; (isSubtree(s.left, t) || isSubtree(s.right, t));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isSame</span><span class="params">(TreeNode root, TreeNode root2)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(root==<span class="keyword">null</span> &amp;&amp; root2 == <span class="keyword">null</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">	<span class="keyword">if</span>(root==<span class="keyword">null</span> || root2 == <span class="keyword">null</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	<span class="keyword">return</span> root.val==root2.val &amp;&amp; isSame(root.left,root2.left) &amp;&amp; isSame(root.right, root2.right);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>时间复杂度为<code>O(nm)</code>，空间复杂度<code>O(1)</code>，n和m分别为s数和t数大小。</p>
-<h3><strong>Follow-up:</strong></h3>
-<p>如果s是BST，怎么改进算法？<br>
-二分法先找到s的节点值等于t根节点值的节点再比较。时间复杂度为<code>O(logn+m)</code>。
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">contains</span><span class="params">(TreeNode t, TreeNode node)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (node == <span class="keyword">null</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	<span class="keyword">int</span> result = t.compareTo(node.val);</span><br><span class="line">	<span class="keyword">if</span> (result &gt; <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> contains(t, node.right);</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (result &lt; <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> contains(t, node.left);</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isSubtree</span><span class="params">(TreeNode s, TreeNode t)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(isSame(s, t))</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">	<span class="keyword">if</span>(t==<span class="keyword">null</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	<span class="keyword">return</span> s!=<span class="keyword">null</span> &amp;&amp; (isSubtree(s.left, t) || isSubtree(s.right, t));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isSame</span><span class="params">(TreeNode root, TreeNode root2)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(root==<span class="keyword">null</span> &amp;&amp; root2 == <span class="keyword">null</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">	<span class="keyword">if</span>(root==<span class="keyword">null</span> || root2 == <span class="keyword">null</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	<span class="keyword">return</span> root.val==root2.val &amp;&amp; isSame(root.left,root2.left) &amp;&amp; isSame(root.right, root2.right);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nm)</code>，空间复杂度<code>O(1)</code>，n和m分别为s数和t数大小。</p>
+<h3 id="Follow-up"><a href="#Follow-up" class="headerlink" title="Follow-up:"></a><strong>Follow-up:</strong></h3><p>如果s是BST，怎么改进算法？<br>二分法先找到s的节点值等于t根节点值的节点再比较。时间复杂度为<code>O(logn+m)</code>。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">contains</span><span class="params">(TreeNode t, TreeNode node)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (node == <span class="keyword">null</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	<span class="keyword">int</span> result = t.compareTo(node.val);</span><br><span class="line">	<span class="keyword">if</span> (result &gt; <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> contains(t, node.right);</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (result &lt; <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> contains(t, node.left);</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>若BST不是严格递增 (allow duplicates)，多比较几个相等节点即可。</p>
 
       
@@ -269,27 +299,19 @@ Given tree s:</p>
         <p><strong><a href="https://leetcode.com/problems/insert-interval" target="_blank" rel="noopener">LeetCode 057 Insert Interval</a></strong></p>
 <p>Given a set of <em>non-overlapping</em> intervals, insert a new interval into the intervals (merge if necessary).</p>
 <p>You may assume that the intervals were initially sorted according to their start times.</p>
-<p><strong>Example 1:</strong><br>
-Given intervals <code>[1,3],[6,9]</code>, insert and merge <code>[2,5]</code> in as <code>[1,5],[6,9]</code>.</p>
-<p><strong>Example 2:</strong><br>
-Given <code>[1,2],[3,5],[6,7],[8,10],[12,16]</code>, insert and merge <code>[4,9]</code> in as <code>[1,2],[3,10],[12,16]</code>.</p>
+<p><strong>Example 1:</strong><br>Given intervals <code>[1,3],[6,9]</code>, insert and merge <code>[2,5]</code> in as <code>[1,5],[6,9]</code>.</p>
+<p><strong>Example 2:</strong><br>Given <code>[1,2],[3,5],[6,7],[8,10],[12,16]</code>, insert and merge <code>[4,9]</code> in as <code>[1,2],[3,10],[12,16]</code>.</p>
 <p>This is because the new interval <code>[4,9]</code> overlaps with <code>[3,5],[6,7],[8,10]</code>.</p>
-<h3><strong>题目大意：</strong></h3>
-<p>对于给出的互不重叠且按照左端点排序的区间序列，将一个新的区间插入到这个序列当中（合并重叠的区间），使其仍然保持原本的性质。</p>
-<h3><strong>解题思路：</strong></h3>
-<p>与L56题基本一致，但单元测试更加严格，加入含最大整数值的区间。</p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>对于给出的互不重叠且按照左端点排序的区间序列，将一个新的区间插入到这个序列当中（合并重叠的区间），使其仍然保持原本的性质。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>与L56题基本一致，但单元测试更加严格，加入含最大整数值的区间。</p>
 <ol>
 <li>先找到start大于等于待插入区间的区间，然后待插入区间插入其前。</li>
 <li>归结成L56题</li>
 </ol>
-<h3><strong>注意事项：</strong></h3>
-<p>判断是否合并的API中，加入in2.start == Integer.MAX_VALUE返回false。</p>
-<h3><strong>Java代码：</strong></h3>
-<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;Interval&gt; <span class="title">insert</span><span class="params">(List&lt;Interval&gt; intervals, Interval newInterval)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> st = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(;st&lt;intervals.size();st++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(intervals.get(st).start&gt;=newInterval.start)&#123;</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	intervals.add(st, newInterval);</span><br><span class="line">	</span><br><span class="line">	intervals.add(<span class="keyword">new</span> Interval(Integer.MAX_VALUE, Integer.MAX_VALUE));</span><br><span class="line">	List&lt;Interval&gt; re = <span class="keyword">new</span> ArrayList&lt;Interval&gt;();</span><br><span class="line">	Interval newInterval2 = <span class="keyword">null</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;intervals.size();i++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(newInterval2==<span class="keyword">null</span>)</span><br><span class="line">			newInterval2 = intervals.get(i-<span class="number">1</span>);</span><br><span class="line">		<span class="keyword">if</span>(canMerge(newInterval2,intervals.get(i)))&#123;</span><br><span class="line">			newInterval2 = mergeIntervals(newInterval2,intervals.get(i));</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span>&#123;</span><br><span class="line">			re.add(newInterval2);</span><br><span class="line">			newInterval2 = <span class="keyword">null</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> re;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>，因为不用排序。</p>
-<h3><strong>Follow-up:</strong></h3>
-<ol>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><p>判断是否合并的API中，加入in2.start == Integer.MAX_VALUE返回false。</p>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;Interval&gt; <span class="title">insert</span><span class="params">(List&lt;Interval&gt; intervals, Interval newInterval)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> st = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(;st&lt;intervals.size();st++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(intervals.get(st).start&gt;=newInterval.start)&#123;</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	intervals.add(st, newInterval);</span><br><span class="line">	</span><br><span class="line">	intervals.add(<span class="keyword">new</span> Interval(Integer.MAX_VALUE, Integer.MAX_VALUE));</span><br><span class="line">	List&lt;Interval&gt; re = <span class="keyword">new</span> ArrayList&lt;Interval&gt;();</span><br><span class="line">	Interval newInterval2 = <span class="keyword">null</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;intervals.size();i++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(newInterval2==<span class="keyword">null</span>)</span><br><span class="line">			newInterval2 = intervals.get(i-<span class="number">1</span>);</span><br><span class="line">		<span class="keyword">if</span>(canMerge(newInterval2,intervals.get(i)))&#123;</span><br><span class="line">			newInterval2 = mergeIntervals(newInterval2,intervals.get(i));</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span>&#123;</span><br><span class="line">			re.add(newInterval2);</span><br><span class="line">			newInterval2 = <span class="keyword">null</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> re;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>，因为不用排序。</p>
+<h3 id="Follow-up"><a href="#Follow-up" class="headerlink" title="Follow-up:"></a><strong>Follow-up:</strong></h3><ol>
 <li>先解出L56</li>
 <li>再解此题</li>
 </ol>
@@ -325,30 +347,22 @@ Given <code>[1,2],[3,5],[6,7],[8,10],[12,16]</code>, insert and merge <code>[4,9
       
         <p><strong><a href="https://leetcode.com/problems/merge-interval" target="_blank" rel="noopener">LeetCode 056 Merge Intervals</a></strong></p>
 <p>Given a collection of intervals, merge all overlapping intervals.</p>
-<p>For example,<br>
-Given <code>[1,3],[2,6],[8,10],[15,18]</code>,<br>
-return <code>[1,6],[8,10],[15,18]</code>.</p>
-<h3><strong>题目大意：</strong></h3>
-<p>给定几个区间，要求合并重叠区间，返回结果.</p>
-<h3><strong>解题思路：</strong></h3>
-<p>A公司的考题。这条题难点在于判断是否合并，怎么合并，新区间合并多个区间。</p>
+<p>For example,<br>Given <code>[1,3],[2,6],[8,10],[15,18]</code>,<br>return <code>[1,6],[8,10],[15,18]</code>.</p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定几个区间，要求合并重叠区间，返回结果.</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>A公司的考题。这条题难点在于判断是否合并，怎么合并，新区间合并多个区间。</p>
 <ol>
 <li>按start排序。</li>
 <li>定义API：如何合并两个区间（两情况），两个区间是否可以合并</li>
-<li>遍历每个区间，产生新区间并将其带入到下一轮循环。这是难点，公式为 新区间=新区间+输入区间[i]，这也分为两种情况，可合并和不可合并<br>
-不可合并时，前状态的新区间成为结果，公式为新区间=输入区间[i]。</li>
-<li>若不想特别处理循环边界，可加入空区间到末尾（见Java实现，它把新区间=输入区间[i]放入了下一轮）。若不如此做，可将空区间放入开头。</li>
+<li>遍历每个区间，产生新区间并将其带入到下一轮循环。这是难点，公式为 新区间=新区间+输入区间[i]，这也分为两种情况，可合并和不可合并<br>不可合并时，前状态的新区间成为结果，公式为新区间=输入区间[i]。  </li>
+<li>若不想特别处理循环边界，可加入空区间到末尾（见Java实现，它把新区间=输入区间[i]放入了下一轮）。若不如此做，可将空区间放入开头。  </li>
 </ol>
-<h3><strong>注意事项：</strong></h3>
-<ol>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
 <li>区间的右端与另一个区间的左端一样，也算重叠，如[1,2],[2,3]。</li>
 <li>原输入末端加入空节点（左右端均为最大值，不能为最小值或0，表示不可能合并），避免1.处理单一区间输入。2. 最后一个区间的情况。</li>
 <li>合并后生成新区间，要与下一个继续尝试合并。</li>
 </ol>
-<h3><strong>Java代码：</strong></h3>
-<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;Interval&gt; <span class="title">merge</span><span class="params">(List&lt;Interval&gt; intervals)</span> </span>&#123;</span><br><span class="line">	Collections.sort(intervals, <span class="keyword">new</span> Comparator&lt;Interval&gt;()&#123;</span><br><span class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(Interval v1, Interval v2)</span></span>&#123;</span><br><span class="line">			<span class="keyword">return</span> v1.start - v2.start;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;);</span><br><span class="line">	intervals.add(<span class="keyword">new</span> Interval(Integer.MAX_VALUE, Integer.MAX_VALUE));</span><br><span class="line">	List&lt;Interval&gt; re = <span class="keyword">new</span> ArrayList&lt;Interval&gt;();</span><br><span class="line">	Interval newInterval = <span class="keyword">null</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;intervals.size();i++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(newInterval==<span class="keyword">null</span>)</span><br><span class="line">			newInterval = intervals.get(i-<span class="number">1</span>);</span><br><span class="line">		<span class="keyword">if</span>(canMerge(newInterval,intervals.get(i)))&#123;</span><br><span class="line">			newInterval = mergeIntervals(newInterval,intervals.get(i));</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span>&#123;</span><br><span class="line">			re.add(newInterval);</span><br><span class="line">			newInterval = <span class="keyword">null</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> re;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//假设in与in2按start排序，所以只有两情况：</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * In  -------</span></span><br><span class="line"><span class="comment"> * In2   ---</span></span><br><span class="line"><span class="comment"> * In2   -------- </span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">canMerge</span><span class="params">(Interval in, Interval in2)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(in2.start == Integer.MAX_VALUE)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	<span class="keyword">return</span> in.end&gt;=in2.start;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> Interval <span class="title">mergeIntervals</span><span class="params">(Interval in, Interval in2)</span></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">new</span> Interval(in.start, Math.max(in.end, in2.end));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>时间复杂度为<code>O(nlogn)</code>，空间复杂度<code>O(1)</code>。</p>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;Interval&gt; <span class="title">merge</span><span class="params">(List&lt;Interval&gt; intervals)</span> </span>&#123;</span><br><span class="line">	Collections.sort(intervals, <span class="keyword">new</span> Comparator&lt;Interval&gt;()&#123;</span><br><span class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(Interval v1, Interval v2)</span></span>&#123;</span><br><span class="line">			<span class="keyword">return</span> v1.start - v2.start;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;);</span><br><span class="line">	intervals.add(<span class="keyword">new</span> Interval(Integer.MAX_VALUE, Integer.MAX_VALUE));</span><br><span class="line">	List&lt;Interval&gt; re = <span class="keyword">new</span> ArrayList&lt;Interval&gt;();</span><br><span class="line">	Interval newInterval = <span class="keyword">null</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;intervals.size();i++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(newInterval==<span class="keyword">null</span>)</span><br><span class="line">			newInterval = intervals.get(i-<span class="number">1</span>);</span><br><span class="line">		<span class="keyword">if</span>(canMerge(newInterval,intervals.get(i)))&#123;</span><br><span class="line">			newInterval = mergeIntervals(newInterval,intervals.get(i));</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span>&#123;</span><br><span class="line">			re.add(newInterval);</span><br><span class="line">			newInterval = <span class="keyword">null</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> re;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//假设in与in2按start排序，所以只有两情况：</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * In  -------</span></span><br><span class="line"><span class="comment"> * In2   ---</span></span><br><span class="line"><span class="comment"> * In2   -------- </span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">canMerge</span><span class="params">(Interval in, Interval in2)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(in2.start == Integer.MAX_VALUE)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	<span class="keyword">return</span> in.end&gt;=in2.start;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> Interval <span class="title">mergeIntervals</span><span class="params">(Interval in, Interval in2)</span></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">new</span> Interval(in.start, Math.max(in.end, in2.end));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nlogn)</code>，空间复杂度<code>O(1)</code>。</p>
 
       
     </div>
@@ -380,49 +394,36 @@ return <code>[1,6],[8,10],[15,18]</code>.</p>
     <div class="entry">
       
         <p><strong><a href="https://leetcode.com/problems/next-greater-element-ii" target="_blank" rel="noopener">LeetCode 503 Next Greater Element II</a></strong></p>
-<p>Given a circular array (the next element of the last element is the first element of the array), print the Next Greater Number for every element. The Next Greater Number of a number x is the first greater number to its traversing-order next in the array, which means you could search circularly to find its next greater number. If it doesn't exist, output -1 for this number.</p>
-<p><strong>Example 1:</strong></p>
-<p>&lt;pre&gt;&lt;b&gt;Input:&lt;/b&gt; [1,2,1]
-&lt;b&gt;Output:&lt;/b&gt; [2,-1,2]
-&lt;b&gt;Explanation:&lt;/b&gt; The first 1's next greater number is 2;<br>
-The number 2 can't find next greater number;<br>
+<p>Given a circular array (the next element of the last element is the first element of the array), print the Next Greater Number for every element. The Next Greater Number of a number x is the first greater number to its traversing-order next in the array, which means you could search circularly to find its next greater number. If it doesn’t exist, output -1 for this number.</p>
+<p><strong>Example 1:</strong>  </p>
+<pre><b>Input:</b> [1,2,1]
+<b>Output:</b> [2,-1,2]
+<b>Explanation:</b> The first 1's next greater number is 2;   
+The number 2 can't find next greater number;   
 The second 1's next greater number needs to search circularly, which is also 2.
-&lt;/pre&gt;</p>
-<p><strong>Note:</strong> The length of given array won't exceed 10000.</p>
-<h3><strong>题目大意：</strong></h3>
-<p>给定一个循环数组（末尾元素的下一个元素为起始元素），输出每一个元素的下一个更大的数字（Next Greater Number）。Next Greater Number是指位于某元素右侧，大于该元素，且距离最近的元素。如果不存在这样的元素，则输出-1。</p>
+</pre>
+
+<p><strong>Note:</strong> The length of given array won’t exceed 10000.</p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个循环数组（末尾元素的下一个元素为起始元素），输出每一个元素的下一个更大的数字（Next Greater Number）。Next Greater Number是指位于某元素右侧，大于该元素，且距离最近的元素。如果不存在这样的元素，则输出-1。</p>
 <p>注意：给定数组长度不超过10000。</p>
-<h3><strong>解题思路：</strong></h3>
-<p>最直接的思路是遍历每个元素，对每个元素，遍历它的后面所有元素。最差情况是递减数列，时间复杂度为&lt;code&gt;O(<em>n</em>&lt;sup&gt;2&lt;/sup&gt;)&lt;/code&gt;。<br>
-这题关于局部递增数组，所以考虑用递减栈。首先不考虑循环数组的情况，例如8,5,4,6,栈存入8,5,4，当6准备进栈时，5,4比6小，它们都出栈且它们的结果集为6。
-循环数组其实只要将原数组复制一倍，按原算法处理，结果集取前n个元素即可。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>最直接的思路是遍历每个元素，对每个元素，遍历它的后面所有元素。最差情况是递减数列，时间复杂度为<code>O(<em>n</em><sup>2</sup>)</code>。<br>这题关于局部递增数组，所以考虑用递减栈。首先不考虑循环数组的情况，例如8,5,4,6,栈存入8,5,4，当6准备进栈时，5,4比6小，它们都出栈且它们的结果集为6。<br>循环数组其实只要将原数组复制一倍，按原算法处理，结果集取前n个元素即可。</p>
 <ol>
 <li>栈不为空，准入栈元素逼出比其小的元素且赋予其结果。</li>
 <li>该元素入栈。、</li>
 <li>栈剩下元素的结果集赋值为-1</li>
 </ol>
-<h3><strong>注意事项：</strong></h3>
-<ol>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
 <li>栈存储元素下标，结果集存储元素值。</li>
 <li>栈剩下元素的结果集赋值为-1</li>
 </ol>
-<h3><strong>Java代码：</strong></h3>
-<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] nextGreaterElements(<span class="keyword">int</span>[] nums) &#123;</span><br><span class="line">	Stack s = <span class="keyword">new</span> Stack();</span><br><span class="line">	<span class="keyword">int</span>[] nums2 = <span class="keyword">new</span> <span class="keyword">int</span>[nums.length*<span class="number">2</span>];</span><br><span class="line">	<span class="keyword">int</span>[] re2 = <span class="keyword">new</span> <span class="keyword">int</span>[nums2.length];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums2.length;i++)&#123;</span><br><span class="line">		nums2[i] = nums[i%nums.length];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums2.length;i++)&#123;</span><br><span class="line">		<span class="keyword">while</span>(!s.isEmpty() &amp;&amp; nums2[i]&gt;nums2[(<span class="keyword">int</span>)s.peek()])&#123;</span><br><span class="line">			<span class="keyword">int</span> topIdx = (<span class="keyword">int</span>)s.pop();</span><br><span class="line">			re2[topIdx] = nums2[i];</span><br><span class="line">		&#125;</span><br><span class="line">		s.add(i);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">while</span>(!s.isEmpty())&#123;</span><br><span class="line">		<span class="keyword">int</span> topIdx = (<span class="keyword">int</span>)s.pop();</span><br><span class="line">		re2[topIdx] = -<span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">int</span>[] re = <span class="keyword">new</span> <span class="keyword">int</span>[nums.length];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums.length;i++)</span><br><span class="line">		re[i] = re2[i];</span><br><span class="line">	<span class="keyword">return</span> re;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>。</p>
-<p>有人考虑用TreeMap，
-2
-1 3
-但TreeMap不能保留顺序，如这个TreeMap可以对应两种数组,[2,1,3], [2,3,1]并非一一对应。</p>
-<h3><strong>Follow-up:</strong></h3>
-<ol>
-<li>Given an integer array, print the Next Greater Number for every element.先从不循环数组考起。
-3,8,5,4,6,7 =&gt; 8,-1,6,6,7,-1</li>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] nextGreaterElements(<span class="keyword">int</span>[] nums) &#123;</span><br><span class="line">	Stack s = <span class="keyword">new</span> Stack();</span><br><span class="line">	<span class="keyword">int</span>[] nums2 = <span class="keyword">new</span> <span class="keyword">int</span>[nums.length*<span class="number">2</span>];</span><br><span class="line">	<span class="keyword">int</span>[] re2 = <span class="keyword">new</span> <span class="keyword">int</span>[nums2.length];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums2.length;i++)&#123;</span><br><span class="line">		nums2[i] = nums[i%nums.length];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums2.length;i++)&#123;</span><br><span class="line">		<span class="keyword">while</span>(!s.isEmpty() &amp;&amp; nums2[i]&gt;nums2[(<span class="keyword">int</span>)s.peek()])&#123;</span><br><span class="line">			<span class="keyword">int</span> topIdx = (<span class="keyword">int</span>)s.pop();</span><br><span class="line">			re2[topIdx] = nums2[i];</span><br><span class="line">		&#125;</span><br><span class="line">		s.add(i);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">while</span>(!s.isEmpty())&#123;</span><br><span class="line">		<span class="keyword">int</span> topIdx = (<span class="keyword">int</span>)s.pop();</span><br><span class="line">		re2[topIdx] = -<span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">int</span>[] re = <span class="keyword">new</span> <span class="keyword">int</span>[nums.length];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums.length;i++)</span><br><span class="line">		re[i] = re2[i];</span><br><span class="line">	<span class="keyword">return</span> re;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>。</p>
+<p>有人考虑用TreeMap，<br> 2<br>1 3<br>但TreeMap不能保留顺序，如这个TreeMap可以对应两种数组,[2,1,3], [2,3,1]并非一一对应。</p>
+<h3 id="Follow-up"><a href="#Follow-up" class="headerlink" title="Follow-up:"></a><strong>Follow-up:</strong></h3><ol>
+<li>Given an integer array, print the Next Greater Number for every element.先从不循环数组考起。<br>3,8,5,4,6,7 =&gt; 8,-1,6,6,7,-1</li>
 <li>先让其写出暴力法brute force</li>
-<li>再优化，第0个提示是考虑用一些数据结构，第一个提示为Stack。第二个提示，给定两个stack，怎么排序一个数组。如1,4,3,2.
-一个stack用于维护当前递增栈，另一个用于缓冲。过程：栈1从底到顶14，3准入，因为比4小，不能维持递增顺序，4入栈2，然后3入栈1，再把栈2所有元素入栈1。同理4,3入栈2,2入栈1。</li>
-<li>最后如果是循环数组circular array，如果解决。
-3,8,5,4,6,7 =&gt; 8,-1,6,6,7,8</li>
+<li>再优化，第0个提示是考虑用一些数据结构，第一个提示为Stack。第二个提示，给定两个stack，怎么排序一个数组。如1,4,3,2.<br>一个stack用于维护当前递增栈，另一个用于缓冲。过程：栈1从底到顶14，3准入，因为比4小，不能维持递增顺序，4入栈2，然后3入栈1，再把栈2所有元素入栈1。同理4,3入栈2,2入栈1。</li>
+<li>最后如果是循环数组circular array，如果解决。<br>3,8,5,4,6,7 =&gt; 8,-1,6,6,7,8</li>
 <li>第一个层次暴力法，第二层次思路从第二个提示到联系到此题解法，Meets bar。最后能实现且解决follow-up，raise bar。</li>
 </ol>
 
@@ -457,36 +458,33 @@ The second 1's next greater number needs to search circularly, which is also 2.
       
         <p><strong><a href="https://leetcode.com/problems/find-k-closest-elements" target="_blank" rel="noopener">LeetCode 658 Find K Closest Elements</a></strong></p>
 <p>Given a sorted array, two integers <code>k</code> and <code>x</code>, find the <code>k</code> closest elements to <code>x</code> in the array. The result should also be sorted in ascending order. If there is a tie, the smaller elements are always preferred.</p>
-<p><strong>Example 1:</strong></p>
-<p>&lt;pre&gt;&lt;b&gt;Input:&lt;/b&gt; [1,2,3,4,5], k=4, x=3
-&lt;b&gt;Output:&lt;/b&gt; [1,2,3,4]
-&lt;/pre&gt;</p>
-<p><strong>Example 2:</strong></p>
-<p>&lt;pre&gt;&lt;b&gt;Input:&lt;/b&gt; [1,2,3,4,5], k=4, x=-1
-&lt;b&gt;Output:&lt;/b&gt; [1,2,3,4]
-&lt;/pre&gt;</p>
-<p><strong>Note:</strong></p>
+<p><strong>Example 1:</strong>  </p>
+<pre><b>Input:</b> [1,2,3,4,5], k=4, x=3
+<b>Output:</b> [1,2,3,4]
+</pre>
+
+<p><strong>Example 2:</strong>  </p>
+<pre><b>Input:</b> [1,2,3,4,5], k=4, x=-1
+<b>Output:</b> [1,2,3,4]
+</pre>
+
+<p><strong>Note:</strong>  </p>
 <ol>
 <li>The value k is positive and will always be smaller than the length of the sorted array.</li>
-<li>Length of the given array is positive and will not exceed 10&lt;sup&gt;4&lt;/sup&gt;</li>
-<li>Absolute value of elements in the array and x will not exceed 10&lt;sup&gt;4&lt;/sup&gt;</li>
+<li>Length of the given array is positive and will not exceed 10<sup>4</sup></li>
+<li>Absolute value of elements in the array and x will not exceed 10<sup>4</sup></li>
 </ol>
-<h3><strong>题目大意：</strong></h3>
-<p>给定一个排序数组，两个整数k和x，求数组中距离x最近的k个数字。结果应该有序，距离相同时优先选择较小的数字。</p>
-<h3><strong>解题思路：</strong></h3>
-<ol>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个排序数组，两个整数k和x，求数组中距离x最近的k个数字。结果应该有序，距离相同时优先选择较小的数字。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><ol>
 <li>进阶二分法找出第一个大于等于key值的元素。</li>
 <li>左右两指针搜索k个元素。</li>
 </ol>
-<h3><strong>注意事项：</strong></h3>
-<ol>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
 <li>指针不能越界</li>
 <li>根据题意，与key距离一样时，取较小元素。</li>
 </ol>
-<h3><strong>Java代码：</strong></h3>
-<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;Integer&gt; <span class="title">findClosestElements</span><span class="params">(<span class="keyword">int</span>[] arr, <span class="keyword">int</span> k, <span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> upperIdx = firstEqualOrGreater(arr, x);</span><br><span class="line">	<span class="keyword">int</span> lowerIdx = upperIdx-<span class="number">1</span>;</span><br><span class="line">	List result = <span class="keyword">new</span> ArrayList();</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=k;i&gt;<span class="number">0</span>;i--)&#123;</span><br><span class="line">		<span class="keyword">if</span>(lowerIdx&lt;<span class="number">0</span>)</span><br><span class="line">			result.add(arr[upperIdx++]);</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(upperIdx&gt;=arr.length)</span><br><span class="line">			result.add(arr[lowerIdx--]);</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(x-arr[lowerIdx]&lt;=arr[upperIdx]-x)</span><br><span class="line">			result.add(arr[lowerIdx--]);</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			result.add(arr[upperIdx++]);</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	Collections.sort(result);</span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">firstEqualOrGreater</span><span class="params">(<span class="keyword">int</span>[] a, <span class="keyword">int</span> key)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> lo = <span class="number">0</span>, hi = a.length-<span class="number">1</span>;</span><br><span class="line">	<span class="keyword">while</span>(lo&lt;=hi)&#123;</span><br><span class="line">		<span class="keyword">int</span> mid =  lo + (hi - lo) / <span class="number">2</span>;</span><br><span class="line">		<span class="keyword">if</span>(a[mid]&lt;key)</span><br><span class="line">			lo = mid+<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			hi = mid-<span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> lo;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>时间复杂度为<code>O(logn+k)</code>，空间复杂度<code>O(1)</code>。</p>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;Integer&gt; <span class="title">findClosestElements</span><span class="params">(<span class="keyword">int</span>[] arr, <span class="keyword">int</span> k, <span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> upperIdx = firstEqualOrGreater(arr, x);</span><br><span class="line">	<span class="keyword">int</span> lowerIdx = upperIdx-<span class="number">1</span>;</span><br><span class="line">	List result = <span class="keyword">new</span> ArrayList();</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=k;i&gt;<span class="number">0</span>;i--)&#123;</span><br><span class="line">		<span class="keyword">if</span>(lowerIdx&lt;<span class="number">0</span>)</span><br><span class="line">			result.add(arr[upperIdx++]);</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(upperIdx&gt;=arr.length)</span><br><span class="line">			result.add(arr[lowerIdx--]);</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(x-arr[lowerIdx]&lt;=arr[upperIdx]-x)</span><br><span class="line">			result.add(arr[lowerIdx--]);</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			result.add(arr[upperIdx++]);</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	Collections.sort(result);</span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">firstEqualOrGreater</span><span class="params">(<span class="keyword">int</span>[] a, <span class="keyword">int</span> key)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> lo = <span class="number">0</span>, hi = a.length-<span class="number">1</span>;</span><br><span class="line">	<span class="keyword">while</span>(lo&lt;=hi)&#123;</span><br><span class="line">		<span class="keyword">int</span> mid =  lo + (hi - lo) / <span class="number">2</span>;</span><br><span class="line">		<span class="keyword">if</span>(a[mid]&lt;key)</span><br><span class="line">			lo = mid+<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			hi = mid-<span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> lo;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(logn+k)</code>，空间复杂度<code>O(1)</code>。</p>
 
       
     </div>
@@ -518,52 +516,41 @@ The second 1's next greater number needs to search circularly, which is also 2.
     <div class="entry">
       
         <p><strong><a href="https://leetcode.com/problems/partition-to-k-equal-sum-subsets" target="_blank" rel="noopener">LeetCode 698 Partition to K Equal Sum Subsets</a></strong></p>
-<p>Given an array of integers <code>nums</code> and a positive integer <code>k</code>, find whether it's possible to divide this array into <code>k</code> non-empty subsets whose sums are all equal.</p>
-<p><strong>Example 1:</strong></p>
-<p>&lt;pre&gt;&lt;b&gt;Input:&lt;/b&gt; nums = [4, 3, 2, 3, 5, 2, 1], k = 4
-&lt;b&gt;Output:&lt;/b&gt; True
-&lt;b&gt;Explanation:&lt;/b&gt; It's possible to divide it into 4 subsets (5), (1, 4), (2,3), (2,3) with equal sums.
-&lt;/pre&gt;</p>
+<p>Given an array of integers <code>nums</code> and a positive integer <code>k</code>, find whether it’s possible to divide this array into <code>k</code> non-empty subsets whose sums are all equal.</p>
+<p><strong>Example 1:</strong>  </p>
+<pre><b>Input:</b> nums = [4, 3, 2, 3, 5, 2, 1], k = 4
+<b>Output:</b> True
+<b>Explanation:</b> It's possible to divide it into 4 subsets (5), (1, 4), (2,3), (2,3) with equal sums.
+</pre>
+
 <p><strong>Note:</strong></p>
 <ul>
 <li><code>1 &lt;= k &lt;= len(nums) &lt;= 16</code>.</li>
 <li><code>0 &lt; nums[i] &lt; 10000</code>.</li>
 </ul>
-<h3><strong>题目大意：</strong></h3>
-<p>判断数组nums是否可以划分为k个和相等的子数组</p>
-<h3><strong>解题思路：</strong></h3>
-<p>这题与416类似，所以一开始考虑用0-1背包问题思路，但是0-1背包问题得出的解为2,2,1，与答案不同。因为背包问题只能求出第一个解，并不能求出k个解。所以类似于排列组合，<br>
-需要DFS来一个个数来试。参数为visited数组为记录该数是否用了，curSum，k，若curSum等于target(sum/k)，找到第一个解，k--，curSum=0，找下一个解。这个方法是用k次排列组合法组成最终解。</p>
-<h3><strong>注意事项：</strong></h3>
-<ol>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>判断数组nums是否可以划分为k个和相等的子数组</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这题与416类似，所以一开始考虑用0-1背包问题思路，但是0-1背包问题得出的解为2,2,1，与答案不同。因为背包问题只能求出第一个解，并不能求出k个解。所以类似于排列组合，<br>需要DFS来一个个数来试。参数为visited数组为记录该数是否用了，curSum，k，若curSum等于target(sum/k)，找到第一个解，k–，curSum=0，找下一个解。这个方法是用k次排列组合法组成最终解。</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
 <li>数组和为不能被k整除，无解</li>
 <li>引入st，排列组合必须，用于for循环的起始点。</li>
 <li>k=1立刻剪枝，因为前三个解都是等于sum/k,最后一个也一定是sum/k</li>
 <li>当curSum==target时，进行k-1，curSum=0的下一轮dfs。</li>
 </ol>
-<h3><strong>Java代码：</strong></h3>
-<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">canPartitionKSubsets0</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> sum = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i : nums)</span><br><span class="line">		sum+=i;</span><br><span class="line">	<span class="keyword">if</span>(sum%k!=<span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	<span class="keyword">boolean</span>[] visited = <span class="keyword">new</span> <span class="keyword">boolean</span>[nums.length];</span><br><span class="line">	<span class="keyword">return</span> dfs0(nums, k, sum/k, <span class="number">0</span>, visited, <span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">dfs0</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> k, <span class="keyword">int</span> target, <span class="keyword">int</span> curSum, <span class="keyword">boolean</span>[] visited, <span class="keyword">int</span> start)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(k==<span class="number">1</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">	<span class="keyword">if</span>(curSum==target)</span><br><span class="line">		<span class="keyword">return</span> dfs0(nums, k-<span class="number">1</span>, target, <span class="number">0</span>, visited, <span class="number">0</span>);</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=start;i&lt;nums.length;i++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(visited[i])</span><br><span class="line">			<span class="keyword">continue</span>;</span><br><span class="line">		<span class="keyword">if</span>(curSum+nums[i]&lt;=target)&#123;</span><br><span class="line">			visited[i] = <span class="keyword">true</span>;</span><br><span class="line">			<span class="keyword">if</span>(dfs0(nums, k, target, curSum+nums[i], visited, i+<span class="number">1</span>))</span><br><span class="line">				<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">			visited[i] = <span class="keyword">false</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>这是NP问题。</p>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">canPartitionKSubsets0</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> sum = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i : nums)</span><br><span class="line">		sum+=i;</span><br><span class="line">	<span class="keyword">if</span>(sum%k!=<span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	<span class="keyword">boolean</span>[] visited = <span class="keyword">new</span> <span class="keyword">boolean</span>[nums.length];</span><br><span class="line">	<span class="keyword">return</span> dfs0(nums, k, sum/k, <span class="number">0</span>, visited, <span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">dfs0</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> k, <span class="keyword">int</span> target, <span class="keyword">int</span> curSum, <span class="keyword">boolean</span>[] visited, <span class="keyword">int</span> start)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(k==<span class="number">1</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">	<span class="keyword">if</span>(curSum==target)</span><br><span class="line">		<span class="keyword">return</span> dfs0(nums, k-<span class="number">1</span>, target, <span class="number">0</span>, visited, <span class="number">0</span>);</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=start;i&lt;nums.length;i++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(visited[i])</span><br><span class="line">			<span class="keyword">continue</span>;</span><br><span class="line">		<span class="keyword">if</span>(curSum+nums[i]&lt;=target)&#123;</span><br><span class="line">			visited[i] = <span class="keyword">true</span>;</span><br><span class="line">			<span class="keyword">if</span>(dfs0(nums, k, target, curSum+nums[i], visited, i+<span class="number">1</span>))</span><br><span class="line">				<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">			visited[i] = <span class="keyword">false</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>这是NP问题。  </p>
 <hr>
-<p>另一个方法是，将k次排列组合法整合成一次，途径是开一个k大小数组，每一个数肯定属于其中一个。visited数组替换成ksum数组和idx控制遍历数组顺序。某一个数肯定是属于ksum数组的任一个，<br>
-所以所有可能性都考虑到，可以求得解。先对原数组排序方便从后往前遍历，贪心算法可以帮助剪枝，因为先填大的数，容易获得结果或排除结果。如[1....1, 4], target=4, k=2，从前往后的话，<br>
-多个1可以有非常多的可能。提高算法效率但若不排序的话会得到LTE。
-这个方法比第一个方法的优势在于它用ksum数组取代visited和curSum参数，第一种方法要从头开始扫k遍数组，而此法只需扫一遍数组+每个元素试k次。</p>
+<p>另一个方法是，将k次排列组合法整合成一次，途径是开一个k大小数组，每一个数肯定属于其中一个。visited数组替换成ksum数组和idx控制遍历数组顺序。某一个数肯定是属于ksum数组的任一个，<br>所以所有可能性都考虑到，可以求得解。先对原数组排序方便从后往前遍历，贪心算法可以帮助剪枝，因为先填大的数，容易获得结果或排除结果。如[1….1, 4], target=4, k=2，从前往后的话，<br>多个1可以有非常多的可能。提高算法效率但若不排序的话会得到LTE。<br>这个方法比第一个方法的优势在于它用ksum数组取代visited和curSum参数，第一种方法要从头开始扫k遍数组，而此法只需扫一遍数组+每个元素试k次。   </p>
 <ol>
 <li>数组和为不能被k整除，无解</li>
 <li>对数组排序</li>
 <li>DFS四部曲，从后往前遍历数组加入ksum</li>
 </ol>
-<h3><strong>注意事项：</strong></h3>
-<ol>
+<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
 <li>数组和为不能被k整除，无解</li>
 <li>从后往前遍历数组</li>
 </ol>
-<h3><strong>Java代码：</strong></h3>
-<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">canPartitionKSubsets</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> sum = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i : nums)</span><br><span class="line">		sum+=i;</span><br><span class="line">	<span class="keyword">if</span>(sum%k!=<span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	Arrays.sort(nums);</span><br><span class="line">	<span class="keyword">int</span>[] ksum = <span class="keyword">new</span> <span class="keyword">int</span>[k];</span><br><span class="line">	<span class="keyword">return</span> dfs(nums, k, sum/k, ksum, nums.length-<span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> k, <span class="keyword">int</span> target, <span class="keyword">int</span>[] ksum, <span class="keyword">int</span> idx)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(idx==-<span class="number">1</span>)&#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> a : ksum)</span><br><span class="line">			<span class="keyword">if</span>(a!=target)</span><br><span class="line">				<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;k; i++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(ksum[i]+nums[idx]&lt;=target)&#123;</span><br><span class="line">			ksum[i] += nums[idx];</span><br><span class="line">			<span class="keyword">if</span>(dfs(nums, k, target, ksum, idx-<span class="number">1</span>))</span><br><span class="line">				<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">			ksum[i] -= nums[idx];</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>这是NP问题。</p>
+<h3 id="Java代码：-1"><a href="#Java代码：-1" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">canPartitionKSubsets</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> sum = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i : nums)</span><br><span class="line">		sum+=i;</span><br><span class="line">	<span class="keyword">if</span>(sum%k!=<span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	Arrays.sort(nums);</span><br><span class="line">	<span class="keyword">int</span>[] ksum = <span class="keyword">new</span> <span class="keyword">int</span>[k];</span><br><span class="line">	<span class="keyword">return</span> dfs(nums, k, sum/k, ksum, nums.length-<span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> k, <span class="keyword">int</span> target, <span class="keyword">int</span>[] ksum, <span class="keyword">int</span> idx)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(idx==-<span class="number">1</span>)&#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> a : ksum)</span><br><span class="line">			<span class="keyword">if</span>(a!=target)</span><br><span class="line">				<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;k; i++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(ksum[i]+nums[idx]&lt;=target)&#123;</span><br><span class="line">			ksum[i] += nums[idx];</span><br><span class="line">			<span class="keyword">if</span>(dfs(nums, k, target, ksum, idx-<span class="number">1</span>))</span><br><span class="line">				<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">			ksum[i] -= nums[idx];</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>这是NP问题。</p>
 
       
     </div>
@@ -596,110 +583,37 @@ The second 1's next greater number needs to search circularly, which is also 2.
       
         <p><strong><a href="https://leetcode.com/problems/partition-equal-subset-sum" target="_blank" rel="noopener">LeetCode 416 Partition Equal Subset Sum</a></strong></p>
 <p>Given a <strong>non-empty</strong> array containing <strong>only positive integers</strong>, find if the array can be partitioned into two subsets such that the sum of elements in both subsets is equal.</p>
-<p><strong>Note:</strong></p>
+<p><strong>Note:</strong>  </p>
 <ol>
 <li>Each of the array element will not exceed 100.</li>
 <li>The array size will not exceed 200.</li>
 </ol>
 <p><strong>Example 1:</strong></p>
-<p>&lt;pre&gt;Input: [1, 5, 11, 5]</p>
-<p>Output: true</p>
-<p>Explanation: The array can be partitioned as [1, 5, 5] and [11].
-&lt;/pre&gt;</p>
+<pre>Input: [1, 5, 11, 5]
+
+Output: true
+
+Explanation: The array can be partitioned as [1, 5, 5] and [11].
+</pre>
+
 <p><strong>Example 2:</strong></p>
-<p>&lt;pre&gt;Input: [1, 2, 3, 5]</p>
-<p>Output: false</p>
-<p>Explanation: The array cannot be partitioned into equal sum subsets.
-&lt;/pre&gt;</p>
-<h3><strong>题目大意：</strong></h3>
-<p>给定一个只包含正整数的非空数组，判断数组是否可以分成两个和相等的子数组。</p>
-<h3><strong>解题思路：</strong></h3>
-<p>这题转化为求是否有子序列的和等于数组和的一半，这就是0-1背包问题。价值和重量是一样数组的背包问题。背包问题递归式：
-f[j] = Math.max(f[j], f[j-w[i]]+v[i]);
-背包问题最后的解为容量为C的背包能装的最大价值，也就是在这题中，容量为数组一半和的背包能装的最大价值是否为数组一半。如果能，即有解。
-表示存在前i个数它的和（最大价值）等于和的一半。<br>
-举例说明，容量一半表示刚好可以凑到几个数和为一半，如[1,5,11,5]，容量为11，就可以凑到[1,5,5]重量和价值均为一半。<br>
-如[1,2,3,10]和为16，容量为8，只能找到[1,2,3]价值为6达不到一半。所以这里C是限制条件并不是一定要达到。但刚好达到即为解。</p>
-<h3><strong>注意事项：</strong></h3>
-<ol>
+<pre>Input: [1, 2, 3, 5]
+
+Output: false
+
+Explanation: The array cannot be partitioned into equal sum subsets.
+</pre>
+
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个只包含正整数的非空数组，判断数组是否可以分成两个和相等的子数组。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这题转化为求是否有子序列的和等于数组和的一半，这就是0-1背包问题。价值和重量是一样数组的背包问题。背包问题递归式：<br>f[j] = Math.max(f[j], f[j-w[i]]+v[i]);<br>背包问题最后的解为容量为C的背包能装的最大价值，也就是在这题中，容量为数组一半和的背包能装的最大价值是否为数组一半。如果能，即有解。<br>表示存在前i个数它的和（最大价值）等于和的一半。<br>举例说明，容量一半表示刚好可以凑到几个数和为一半，如[1,5,11,5]，容量为11，就可以凑到[1,5,5]重量和价值均为一半。<br>如[1,2,3,10]和为16，容量为8，只能找到[1,2,3]价值为6达不到一半。所以这里C是限制条件并不是一定要达到。但刚好达到即为解。  </p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
 <li>数组和为奇数，无解</li>
 <li>背包问题的解若为数组一半的和即有解</li>
 <li>背包问题解法C向前滚</li>
 </ol>
-<h3><strong>Java代码：</strong></h3>
-<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">canPartition</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> sum = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums.length;i++)</span><br><span class="line">		sum+=nums[i];</span><br><span class="line">	<span class="keyword">if</span>(sum%<span class="number">2</span>==<span class="number">1</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	<span class="keyword">int</span>[] result = knapsack(nums,nums,sum/<span class="number">2</span>);</span><br><span class="line">	<span class="keyword">if</span>(sum/<span class="number">2</span>==result[result.length-<span class="number">1</span>])</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] knapsack(<span class="keyword">int</span> v[], <span class="keyword">int</span> w[], <span class="keyword">int</span> C)&#123;</span><br><span class="line">	<span class="keyword">int</span> n = v.length;</span><br><span class="line">	<span class="comment">//int[][] re = new int[n][C+1];</span></span><br><span class="line">	<span class="keyword">int</span>[] f = <span class="keyword">new</span> <span class="keyword">int</span>[C+<span class="number">1</span>];</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++)&#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j=C;j&gt;=w[i];j--)&#123;</span><br><span class="line">			f[j] = Math.max(f[j], f[j-w[i]]+v[i]);</span><br><span class="line">			<span class="comment">//if(f[j]==f[j-w[i]]+v[i])</span></span><br><span class="line">			   <span class="comment">// re[i][j] = 1;</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> f;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>时间复杂度为<code>O(nC)</code>，空间复杂度<code>O(C)</code>。C为数组和的一半，n为数组个数。</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2018/01/10/lee-329/">LeetCode 329 Longest Increasing Path in a Matrix</a></h1>
-  
-
-      
-        <time datetime="2018-01-10T09:46:52.076Z">2018-01-10</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/longest-increasing-path-in-a-matrix" target="_blank" rel="noopener">LeetCode 329 Longest Increasing Path in a Matrix</a></strong></p>
-<p>Given an integer matrix, find the length of the longest increasing path.</p>
-<p>From each cell, you can either move to four directions: left, right, up or down. You may NOT move diagonally or move outside of the boundary (i.e. wrap-around is not allowed).</p>
-<p><strong>Example 1:</strong></p>
-<p>&lt;pre&gt;nums = [
-[&lt;font color=&quot;red&quot;&gt;9&lt;/font&gt;,9,4],
-[&lt;font color=&quot;red&quot;&gt;6&lt;/font&gt;,6,8],
-[&lt;font color=&quot;red&quot;&gt;2&lt;/font&gt;,&lt;font color=&quot;red&quot;&gt;1&lt;/font&gt;,1]
-]
-&lt;/pre&gt;</p>
-<p>Return <code>4</code><br>
-The longest increasing path is <code>[1, 2, 6, 9]</code>.</p>
-<p><strong>Example 2:</strong></p>
-<p>&lt;pre&gt;nums = [
-[&lt;font color=&quot;red&quot;&gt;3&lt;/font&gt;,&lt;font color=&quot;red&quot;&gt;4&lt;/font&gt;,&lt;font color=&quot;red&quot;&gt;5&lt;/font&gt;],
-[3,2,&lt;font color=&quot;red&quot;&gt;6&lt;/font&gt;],
-[2,2,1]
-]
-&lt;/pre&gt;</p>
-<p>Return <code>4</code><br>
-The longest increasing path is <code>[3, 4, 5, 6]</code>. Moving diagonally is not allowed.</p>
-<h3><strong>题目大意：</strong></h3>
-<p>给定一个整数矩阵，计算其最长递增路径的长度。
-从每一个单元格出发，你可以向四个方向移动：左右上下。你不可以沿着对角线移动也不能移出边界。（亦即，环绕是不允许的）。</p>
-<h3><strong>解题思路：</strong></h3>
-<p>这是经典题，类似于LIS题，只要将以每个点为终点的最长路径长度存起来，就可以类推它的邻近点的最长长度（DP）。f(x,y)=max{f(x,y),4个邻近点的f+1}
-由于这是求最长路径题且为矩阵，可以考虑按步长计算，就是Floyd的思路，就是先计算步长为1,2一直到所以最长路径长度矩阵长度不再更新为止。<br>
-另一个思路也是用矩阵存起每个点最长路径长度，但用DFS搜索，直至这个点的值不为初始值为止，详见书影博客。</p>
-<h3><strong>注意事项：</strong></h3>
-<ol>
-<li>矩阵为空或长度为0</li>
-<li>当任何值没有更新时，Floyd停止计算</li>
-</ol>
-<h3><strong>Java代码：</strong></h3>
-<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">longestIncreasingPath</span><span class="params">(<span class="keyword">int</span>[][] matrix)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (matrix==<span class="keyword">null</span> || matrix.length==<span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span>[][] path = <span class="keyword">new</span> <span class="keyword">int</span>[matrix.length][matrix[<span class="number">0</span>].length];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;matrix.length;i++)</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;matrix[<span class="number">0</span>].length;j++)</span><br><span class="line">			path[i][j] = <span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">boolean</span> nextPath = <span class="keyword">true</span>;</span><br><span class="line">	<span class="keyword">while</span>(nextPath)&#123;</span><br><span class="line">		nextPath = <span class="keyword">false</span>;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;matrix.length;i++)</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;matrix[<span class="number">0</span>].length;j++)&#123;</span><br><span class="line">				<span class="keyword">if</span>(changeCell(matrix, path, i, j))</span><br><span class="line">					nextPath = <span class="keyword">true</span>;</span><br><span class="line">			&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">int</span> max = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;matrix.length;i++)</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;matrix[<span class="number">0</span>].length;j++)</span><br><span class="line">			<span class="keyword">if</span>(path[i][j]&gt;max)</span><br><span class="line">				max = path[i][j];</span><br><span class="line">	<span class="keyword">return</span> max;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">changeCell</span><span class="params">(<span class="keyword">int</span>[][] matrix, <span class="keyword">int</span>[][] path, <span class="keyword">int</span> i, <span class="keyword">int</span> j)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> pre = path[i][j];</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(i-<span class="number">1</span>&gt;=<span class="number">0</span> &amp;&amp; matrix[i-<span class="number">1</span>][j]&lt;matrix[i][j] &amp;&amp;  path[i-<span class="number">1</span>][j]+<span class="number">1</span>&gt;path[i][j])</span><br><span class="line">		path[i][j] = path[i-<span class="number">1</span>][j]+<span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(i+<span class="number">1</span>&lt;matrix.length &amp;&amp; matrix[i+<span class="number">1</span>][j]&lt;matrix[i][j] &amp;&amp;  path[i+<span class="number">1</span>][j]+<span class="number">1</span>&gt;path[i][j])</span><br><span class="line">		path[i][j] = path[i+<span class="number">1</span>][j]+<span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(j-<span class="number">1</span>&gt;=<span class="number">0</span> &amp;&amp; matrix[i][j-<span class="number">1</span>]&lt;matrix[i][j] &amp;&amp;  path[i][j-<span class="number">1</span>]+<span class="number">1</span>&gt;path[i][j])</span><br><span class="line">		path[i][j] = path[i][j-<span class="number">1</span>]+<span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(j+<span class="number">1</span>&lt;matrix[<span class="number">0</span>].length &amp;&amp; matrix[i][j+<span class="number">1</span>]&lt;matrix[i][j] &amp;&amp;  path[i][j+<span class="number">1</span>]+<span class="number">1</span>&gt;path[i][j])</span><br><span class="line">		path[i][j] = path[i][j+<span class="number">1</span>]+<span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(pre!=path[i][j])</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>k为最长路径长度，时间复杂度为&lt;code&gt;O(k_n_&lt;sup&gt;2&lt;/sup&gt;)&lt;/code&gt;，空间复杂度&lt;code&gt;O(<em>n</em>&lt;sup&gt;2&lt;/sup&gt;)&lt;/code&gt;。</p>
-<hr>
-<h3><strong>算法II解题思路：</strong></h3>
-<p>这题也可以额用记忆性搜索DFS来解。</p>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">canPartition</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> sum = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums.length;i++)</span><br><span class="line">		sum+=nums[i];</span><br><span class="line">	<span class="keyword">if</span>(sum%<span class="number">2</span>==<span class="number">1</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	<span class="keyword">int</span>[] result = knapsack(nums,nums,sum/<span class="number">2</span>);</span><br><span class="line">	<span class="keyword">if</span>(sum/<span class="number">2</span>==result[result.length-<span class="number">1</span>])</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] knapsack(<span class="keyword">int</span> v[], <span class="keyword">int</span> w[], <span class="keyword">int</span> C)&#123;</span><br><span class="line">	<span class="keyword">int</span> n = v.length;</span><br><span class="line">	<span class="comment">//int[][] re = new int[n][C+1];</span></span><br><span class="line">	<span class="keyword">int</span>[] f = <span class="keyword">new</span> <span class="keyword">int</span>[C+<span class="number">1</span>];</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++)&#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j=C;j&gt;=w[i];j--)&#123;</span><br><span class="line">			f[j] = Math.max(f[j], f[j-w[i]]+v[i]);</span><br><span class="line">			<span class="comment">//if(f[j]==f[j-w[i]]+v[i])</span></span><br><span class="line">			   <span class="comment">// re[i][j] = 1;</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> f;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nC)</code>，空间复杂度<code>O(C)</code>。C为数组和的一半，n为数组个数。</p>
 
       
     </div>
@@ -740,6 +654,10 @@ The longest increasing path is <code>[3, 4, 5, 6]</code>. Moving diagonally is n
   <ul class="entry">
     
       <li>
+        <a href="/2021/10/30/stack/">Stack</a>
+      </li>
+    
+      <li>
         <a href="/2021/10/21/lee-017/">LeetCode 017 Letter Combinations of a Phone Number</a>
       </li>
     
@@ -753,10 +671,6 @@ The longest increasing path is <code>[3, 4, 5, 6]</code>. Moving diagonally is n
     
       <li>
         <a href="/2021/07/27/lee-003/">LeetCode 003 Longest Substring Without Repeating Characters</a>
-      </li>
-    
-      <li>
-        <a href="/2021/07/27/lee-138/">LeetCode 138 Copy List with Random Pointer</a>
       </li>
     
   </ul>

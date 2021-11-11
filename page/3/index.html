@@ -53,6 +53,63 @@
     <header>
       
   
+    <h1 class="title"><a href="/2020/04/26/lee-272/">LeetCode 272 Closest Binary Search Tree Value II</a></h1>
+  
+
+      
+        <time datetime="2020-04-26T18:31:21.211Z">2020-04-26</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/closest-binary-search-tree-value-ii/" target="_blank" rel="noopener">LeetCode 272 Closest Binary Search Tree Value II</a></strong></p>
+<p>Given a non-empty binary search tree and a target value, find <em>k</em> values in the BST that are closest to the target.</p>
+<p>Note:</p>
+<ul>
+<li>Given target value is a floating point.</li>
+<li>You may assume <em>k</em> is always valid, that is: <em>k</em>≤ total nodes.</li>
+<li>You are guaranteed to have only one unique set of <em>k</em> values in the BST that are closest to the target.</li>
+</ul>
+<p>Example:</p>
+<pre>Input: root = [4,2,5,1,3], target = 3.714286, and _k_ = 2
+
+    4
+   / \
+  2   5
+ / \
+1   3
+
+Output: [4,3]</pre>
+
+<p>Follow up:<br>Assume that the BST is balanced, could you solve it in less than <em>O</em>(<em>n</em>) runtime (where <em>n</em> = total nodes)?</p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>找BST中给定目标的最接近的k个值。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>首先观察得到最接近的节点一定在二叉树的搜索路径上的节点的其中一个。这样可以分成两组<br>前驱节点和后驱节点（比target大），加入到两个stack中，由BST的iterator可以知道这两个<br>stack的越靠近栈首就越接近target，所以出栈的一定是最接近target的。只要比较两栈首元素<br>即可。如果某个节点出栈要找其儿子节点填充。找前驱节点和后驱节点的方法是相反的。这里可<br>参照KB的BST非递归中序遍历。    </p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>target - preOrder.peek().val &lt; postOrder.peek().val - target的条件前<br>记得加上!preOrder.isEmpty()</li>
+</ol>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line">public List&lt;Integer&gt; closestKValues(TreeNode root, double target, int k) &#123;</span><br><span class="line">	List&lt;Integer&gt; res = new ArrayList&lt;&gt;();</span><br><span class="line">	if(root == null)</span><br><span class="line">		return res;</span><br><span class="line">	Stack&lt;TreeNode&gt; preOrder = new Stack&lt;&gt;();</span><br><span class="line">	Stack&lt;TreeNode&gt; postOrder = new Stack&lt;&gt;();</span><br><span class="line">	findTargetAndPopulateStacks(preOrder, postOrder, root, target);</span><br><span class="line">	</span><br><span class="line">	while(k-- &gt; 0) &#123;</span><br><span class="line">		if(postOrder.isEmpty() || (!preOrder.isEmpty() &amp;&amp; </span><br><span class="line">				target - preOrder.peek().val &lt; postOrder.peek().val - target))</span><br><span class="line">			getPredecessor(preOrder, res);</span><br><span class="line">		else </span><br><span class="line">			getSuccessor(postOrder, res);</span><br><span class="line">	&#125;</span><br><span class="line">	return res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void findTargetAndPopulateStacks(Stack&lt;TreeNode&gt; preOrder, Stack&lt;TreeNode&gt; postOrder, </span><br><span class="line">		TreeNode root, double target) &#123;</span><br><span class="line">	TreeNode node = root;</span><br><span class="line">	while(node != null) &#123;</span><br><span class="line">		if(node.val &lt; target) &#123; </span><br><span class="line">			preOrder.push(node);</span><br><span class="line">			node = node.right;</span><br><span class="line">		&#125;</span><br><span class="line">		else &#123;</span><br><span class="line">			postOrder.push(node);</span><br><span class="line">			node = node.left;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void getSuccessor(Stack&lt;TreeNode&gt; postOrder, List&lt;Integer&gt; res) &#123;</span><br><span class="line">	TreeNode node = postOrder.pop();</span><br><span class="line">	res.add(node.val);</span><br><span class="line">	if(node.right != null) &#123;</span><br><span class="line">		TreeNode n = node.right;</span><br><span class="line">		while(n != null) &#123;</span><br><span class="line">			postOrder.push(n);</span><br><span class="line">			n = n.left;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void getPredecessor(Stack&lt;TreeNode&gt; preOrder, List&lt;Integer&gt; res) &#123;</span><br><span class="line">	TreeNode node = preOrder.pop();</span><br><span class="line">	res.add(node.val);</span><br><span class="line">	if(node.left != null) &#123;</span><br><span class="line">		TreeNode n = node.left;</span><br><span class="line">		while(n != null) &#123;</span><br><span class="line">			preOrder.push(n);</span><br><span class="line">			n = n.right;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为O(k + logn)，空间复杂度O(logn)。  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2020/04/26/lee-173/">LeetCode 173 Binary Search Tree Iterator</a></h1>
   
 
@@ -62,35 +119,14 @@
     </header>
     <div class="entry">
       
-        <p><strong><a href="https://leetcode.com/problems/binary-search-tree-iterator/" target="_blank" rel="noopener">LeetCode 173 Binary Search Tree Iterator</a></strong>
-&lt;div&gt;</p>
-<p>Implement an iterator over a binary search tree (BST). Your iterator will be initialized with the root node of a BST.</p>
-<p>Calling <code>next()</code> will return the next smallest number in the BST.</p>
-<p><strong>Example:</strong></p>
-<p><strong><img src="https://assets.leetcode.com/uploads/2018/12/25/bst-tree.png" alt=""></strong></p>
-<p>&lt;pre&gt;BSTIterator iterator = new BSTIterator(root);
-iterator.next();    // return 3
-iterator.next();    // return 7
-iterator.hasNext(); // return true
-iterator.next();    // return 9
-iterator.hasNext(); // return true
-iterator.next();    // return 15
-iterator.hasNext(); // return true
-iterator.next();    // return 20
-iterator.hasNext(); // return false
-&lt;/pre&gt;</p>
-<p><strong>Note:</strong></p>
-<ul>
-<li><code>next()</code> and <code>hasNext()</code> should run in average O(1) time and uses O(<em>h</em>) memory, where <em>h</em> is the height of the tree.</li>
-<li>You may assume that <code>next()</code> call will always be valid, that is, there will be at least a next smallest number in the BST when <code>next()</code> is called.</li>
-</ul>
-<p>&lt;/div&gt;</p>
-<h3><strong>算法思路：</strong></h3>
-<p>参照KB中BST的非递归中序遍历。将其分拆为初始化以及去掉stack不为空的循环分别为所求。</p>
-<h3><strong>Java代码：</strong></h3>
-<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">Stack&lt;TreeNode&gt; s = <span class="keyword">new</span> Stack&lt;&gt;();</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">L173BinarySearchTreeIterator</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">	TreeNode head = root;</span><br><span class="line">	<span class="keyword">while</span>(head != <span class="keyword">null</span>) &#123;</span><br><span class="line">		s.push(head);</span><br><span class="line">		head = head.left;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Recommended</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">next2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	TreeNode node = s.pop(); </span><br><span class="line">	<span class="keyword">if</span>(node.right != <span class="keyword">null</span>) &#123;<span class="comment">// left node has been visited</span></span><br><span class="line">		TreeNode n = node.right; </span><br><span class="line">		<span class="keyword">while</span>(n != <span class="keyword">null</span>) &#123;</span><br><span class="line">			s.push(n);</span><br><span class="line">			n = n.left;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> node.val;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/** <span class="doctag">@return</span> whether we have a next smallest number */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">hasNext</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> !s.isEmpty();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>next的平均时间复杂度(amortized complexity)为<code>O(1)</code>，n为字符串长度，空间复杂度<code>O(logn)</code>。</p>
+        <p><strong><a href="https://leetcode.com/problems/binary-search-tree-iterator/" target="_blank" rel="noopener">LeetCode 173 Binary Search Tree Iterator</a></strong></p>
+<div><br><br>Implement an iterator over a binary search tree (BST). Your iterator will be initialized with the root node of a BST.<br><br>Calling <code>next()</code> will return the next smallest number in the BST.<br><br><strong>Example:</strong><br><br><strong><img src="https://assets.leetcode.com/uploads/2018/12/25/bst-tree.png" alt=""></strong><br><br><pre>BSTIterator iterator = new BSTIterator(root);<br>iterator.next();    // return 3<br>iterator.next();    // return 7<br>iterator.hasNext(); // return true<br>iterator.next();    // return 9<br>iterator.hasNext(); // return true<br>iterator.next();    // return 15<br>iterator.hasNext(); // return true<br>iterator.next();    // return 20<br>iterator.hasNext(); // return false<br></pre><br><br><strong>Note:</strong><br><br><em>   <code>next()</code> and <code>hasNext()</code> should run in average O(1) time and uses O(<em>h</em>) memory, where <em>h</em> is the height of the tree.
+</em>   You may assume that <code>next()</code> call will always be valid, that is, there will be at least a next smallest number in the BST when <code>next()</code> is called.<br><br></div>
+
+
+<h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>参照KB中BST的非递归中序遍历。将其分拆为初始化以及去掉stack不为空的循环分别为所求。 </p>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">Stack&lt;TreeNode&gt; s = <span class="keyword">new</span> Stack&lt;&gt;();</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">L173BinarySearchTreeIterator</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">	TreeNode head = root;</span><br><span class="line">	<span class="keyword">while</span>(head != <span class="keyword">null</span>) &#123;</span><br><span class="line">		s.push(head);</span><br><span class="line">		head = head.left;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Recommended</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">next2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	TreeNode node = s.pop(); </span><br><span class="line">	<span class="keyword">if</span>(node.right != <span class="keyword">null</span>) &#123;<span class="comment">// left node has been visited</span></span><br><span class="line">		TreeNode n = node.right; </span><br><span class="line">		<span class="keyword">while</span>(n != <span class="keyword">null</span>) &#123;</span><br><span class="line">			s.push(n);</span><br><span class="line">			n = n.left;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> node.val;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/** <span class="doctag">@return</span> whether we have a next smallest number */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">hasNext</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> !s.isEmpty();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>next的平均时间复杂度(amortized complexity)为<code>O(1)</code>，n为字符串长度，空间复杂度<code>O(logn)</code>。</p>
 
       
     </div>
@@ -121,25 +157,18 @@ iterator.hasNext(); // return false
     </header>
     <div class="entry">
       
-        <h3><strong>算法思路：</strong></h3>
-<ol>
-<li>循环条件start + 1 &lt; end。 当跳出循环时，start和end的关系只能是相等或相邻。<br>
-相等是若数组只有一个元素，没有进入循环时出现。当进入过循环，一定是相邻。</li>
-<li>跳出循环后比较start和end的关系从而判断答案。</li>
+        <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><ol>
+<li>循环条件start + 1 &lt; end。 当跳出循环时，start和end的关系只能是相等或相邻。<br>相等是若数组只有一个元素，没有进入循环时出现。当进入过循环，一定是相邻。</li>
+<li>跳出循环后比较start和end的关系从而判断答案。  </li>
 </ol>
-<p>这可以满足二分法找first position或者last position, peak element的题目。<br>
-first position中若等于target，end = mid，因为要在左半部分找，相反last<br>
-position在右半部分找，所以start = mid。</p>
-<h3><strong>应用：</strong></h3>
-<ol>
+<p>这可以满足二分法找first position或者last position, peak element的题目。<br>first position中若等于target，end = mid，因为要在左半部分找，相反last<br>position在右半部分找，所以start = mid。</p>
+<h3 id="应用："><a href="#应用：" class="headerlink" title="应用："></a><strong>应用：</strong></h3><ol>
 <li>有序数组找目标</li>
 <li>没给定目标情况下，找峰值</li>
 <li>没给定目标情况下，求数值，如求根号</li>
 </ol>
-<h3><strong>Java代码：</strong></h3>
-<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">lastPosition</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(nums == <span class="keyword">null</span> || nums.length == <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">int</span> start = <span class="number">0</span>, end = nums.length - <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">while</span>(start + <span class="number">1</span> &lt; end) &#123;</span><br><span class="line">		<span class="keyword">int</span> mid = start + (end - start) / <span class="number">2</span>;</span><br><span class="line">		<span class="keyword">if</span>(nums[mid] &lt; target)</span><br><span class="line">			start = mid;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(nums[mid] == target) </span><br><span class="line">		<span class="comment">// Depends on the target on the right side or left side. For fist pos, use end = mid</span></span><br><span class="line">			start = mid; </span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			end = mid;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(nums[end] == target)</span><br><span class="line">		<span class="keyword">return</span> end;</span><br><span class="line">	<span class="keyword">if</span>(nums[start] == target)</span><br><span class="line">		<span class="keyword">return</span> start;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>时间复杂度为<code>O(logn)</code>，空间复杂度<code>O(1)</code>。</p>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">lastPosition</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(nums == <span class="keyword">null</span> || nums.length == <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">int</span> start = <span class="number">0</span>, end = nums.length - <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">while</span>(start + <span class="number">1</span> &lt; end) &#123;</span><br><span class="line">		<span class="keyword">int</span> mid = start + (end - start) / <span class="number">2</span>;</span><br><span class="line">		<span class="keyword">if</span>(nums[mid] &lt; target)</span><br><span class="line">			start = mid;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(nums[mid] == target) </span><br><span class="line">		<span class="comment">// Depends on the target on the right side or left side. For fist pos, use end = mid</span></span><br><span class="line">			start = mid; </span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			end = mid;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(nums[end] == target)</span><br><span class="line">		<span class="keyword">return</span> end;</span><br><span class="line">	<span class="keyword">if</span>(nums[start] == target)</span><br><span class="line">		<span class="keyword">return</span> start;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(logn)</code>，空间复杂度<code>O(1)</code>。</p>
 
       
     </div>
@@ -171,47 +200,45 @@ position在右半部分找，所以start = mid。</p>
     <div class="entry">
       
         <p><strong><a href="https://leetcode.com/problems/minimum-knight-moves/" target="_blank" rel="noopener">LeetCode 1197 Minimum Knight Moves</a></strong></p>
-<p>In an infinite chess board with coordinates from <code>-infinity</code> to <code>+infinity</code>, you have a knight at square <code>[0, 0]</code>.</p>
-<p>A knight has 8 possible moves it can make, as illustrated below. Each move is two squares in a cardinal direction, then one square in an orthogonal direction.</p>
+<p>In an infinite chess board with coordinates from <code>-infinity</code> to <code>+infinity</code>, you have a knight at square <code>[0, 0]</code>.</p>
+<p>A knight has 8 possible moves it can make, as illustrated below. Each move is two squares in a cardinal direction, then one square in an orthogonal direction.</p>
 <p><img src="https://assets.leetcode.com/uploads/2018/10/12/knight.png" alt=""></p>
-<p>Return the minimum number of steps needed to move the knight to the square <code>[x, y]</code>.  It is guaranteed the answer exists.</p>
+<p>Return the minimum number of steps needed to move the knight to the square <code>[x, y]</code>.  It is guaranteed the answer exists.</p>
 <p>Example 1:</p>
-<p>&lt;pre&gt;Input: x = 2, y = 1
+<pre>Input: x = 2, y = 1
 Output: 1
 Explanation: [0, 0] → [2, 1]
-&lt;/pre&gt;</p>
+</pre>
+
 <p>Example 2:</p>
-<p>&lt;pre&gt;Input: x = 5, y = 5
+<pre>Input: x = 5, y = 5
 Output: 4
 Explanation: [0, 0] → [2, 1] → [4, 2] → [3, 4] → [5, 5]
-&lt;/pre&gt;</p>
+</pre>
+
 <p>Constraints:</p>
 <ul>
 <li><code>|x| + |y| &lt;= 300</code></li>
 </ul>
-<p>Because x and y are constrained to be in range[-300, 300], we can use BFS to find the minimum steps needed to reach target(x, y). Furthermore, we can only consider the case that x &gt;=0 &amp;&amp; y &gt;=0 since the chess board is symmetric.  The bfs implementation is pretty straightforward. There are two important points you need to be careful with.</p>
-<p>1.  Pruning. We can limit the search dimension within 310 * 310. Any moves that lead to a position that is outside this box will not yield an optimal result.</p>
-<p>2. Initially, you used a Set of type int[] to track visited positions. This caused TLE because you didn't overwrite the hashCode and equals methods for int[]. As a result, Set uses the default hashCode and equals method when checking if an element is already in the set. For equals(), The default implementation provided by the JDK is based on memory location — two objects are equal if and only if they are stored in the same memory address. For a comprehensive reading, refer to <a href="https://dzone.com/articles/working-with-hashcode-and-equals-in-java" target="_blank" rel="noopener">https://dzone.com/articles/working-with-hashcode-and-equals-in-java</a></p>
+<p>Because x and y are constrained to be in range[-300, 300], we can use BFS to find the minimum steps needed to reach target(x, y). Furthermore, we can only consider the case that x &gt;=0 &amp;&amp; y &gt;=0 since the chess board is symmetric.  The bfs implementation is pretty straightforward. There are two important points you need to be careful with.</p>
+<ol>
+<li>Pruning. We can limit the search dimension within 310 * 310. Any moves that lead to a position that is outside this box will not yield an optimal result.</li>
+</ol>
+<p>2. Initially, you used a Set of type int[] to track visited positions. This caused TLE because you didn’t overwrite the hashCode and equals methods for int[]. As a result, Set uses the default hashCode and equals method when checking if an element is already in the set. For equals(), The default implementation provided by the JDK is based on memory location — two objects are equal if and only if they are stored in the same memory address. For a comprehensive reading, refer to <a href="https://dzone.com/articles/working-with-hashcode-and-equals-in-java" target="_blank" rel="noopener">https://dzone.com/articles/working-with-hashcode-and-equals-in-java</a></p>
 <p>O(x * y) runtime and space</p>
-<h3><strong>题目大意：</strong></h3>
-<p>象棋一样，走日字到达目标点的最小次数。</p>
-<h3><strong>解题思路：</strong></h3>
-<p>这题是最短路径题，第一时间想到BFS。</p>
-<h3><strong>解题步骤：</strong></h3>
-<p>这题是最短路径题，第一时间想到BFS。这是一条典型的单源最短路径问题。</p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>象棋一样，走日字到达目标点的最小次数。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这题是最短路径题，第一时间想到BFS。</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>这题是最短路径题，第一时间想到BFS。这是一条典型的单源最短路径问题。  </p>
 <ol>
-<li>建距离map。</li>
-<li>BFS访问。</li>
+<li>建距离map。  </li>
+<li>BFS访问。  </li>
 </ol>
-<h3><strong>注意事项：</strong></h3>
-<ol>
-<li><strong>用map记录距离一定要将首节点加入到map中，否则求距离时候会NPE。</strong></li>
-<li>visited我一开始实现用HashSet但因为没有实现equals导致LTE，改成矩阵即可。</li>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li><strong>用map记录距离一定要将首节点加入到map中，否则求距离时候会NPE。</strong>  </li>
+<li>visited我一开始实现用HashSet但因为没有实现equals导致LTE，改成矩阵即可。  </li>
 </ol>
-<h3><strong>Java代码：</strong></h3>
-<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span>[] directX = <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;<span class="number">1</span>, <span class="number">1</span>,-<span class="number">1</span>,-<span class="number">1</span>,<span class="number">2</span>,<span class="number">2</span>,-<span class="number">2</span>,-<span class="number">2</span>&#125;;</span><br><span class="line"><span class="keyword">int</span>[] directY = <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;<span class="number">2</span>,-<span class="number">2</span>,<span class="number">2</span>,-<span class="number">2</span>,<span class="number">1</span>,-<span class="number">1</span>,<span class="number">1</span>,-<span class="number">1</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">shortestPath</span><span class="params">(<span class="keyword">boolean</span>[][] grid, Point source, Point destination)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(grid == <span class="keyword">null</span> || grid.length == <span class="number">0</span> || grid[<span class="number">0</span>].length == <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	Queue&lt;Point&gt; q = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">	Map&lt;Point, Integer&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">	map.put(source, <span class="number">0</span>); <span class="comment">// remember</span></span><br><span class="line">	<span class="keyword">boolean</span>[][] visited = <span class="keyword">new</span> <span class="keyword">boolean</span>[grid.length][grid[<span class="number">0</span>].length];</span><br><span class="line">	q.offer(source);</span><br><span class="line">	visited[source.x][source.y] = <span class="keyword">true</span>; <span class="comment">// use hashSet is wrong.</span></span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty()) &#123;</span><br><span class="line">		Point p = q.poll();</span><br><span class="line">		<span class="keyword">if</span>(p.x == destination.x &amp;&amp; p.y == destination.y)</span><br><span class="line">			<span class="keyword">return</span> map.get(p);</span><br><span class="line">		<span class="keyword">for</span>(Point neighbor : getNeighbors(p)) &#123;</span><br><span class="line">			<span class="keyword">if</span>(!isValid(grid, neighbor) || visited[neighbor.x][neighbor.y])</span><br><span class="line">				<span class="keyword">continue</span>;</span><br><span class="line">			q.offer(neighbor);</span><br><span class="line">			visited[neighbor.x][neighbor.y] = <span class="keyword">true</span>;</span><br><span class="line">			map.put(neighbor, map.get(p) + <span class="number">1</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">List&lt;Point&gt; <span class="title">getNeighbors</span><span class="params">(Point point)</span> </span>&#123;</span><br><span class="line">	List&lt;Point&gt; result = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">8</span>; i++) &#123;</span><br><span class="line">		result.add(<span class="keyword">new</span> Point(point.x + directX[i], point.y + directY[i]));</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">isValid</span><span class="params">(<span class="keyword">boolean</span>[][] grid, Point point)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(point.x &gt;= <span class="number">0</span> &amp;&amp; point.x &lt; grid.length &amp;&amp; point.y &gt;= <span class="number">0</span> &amp;&amp; point.y &lt; grid[<span class="number">0</span>].length </span><br><span class="line">			&amp;&amp; !grid[point.x][point.y])</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>时间复杂度为棋盘大小&lt;code&gt;O(n*m&lt;/sup&gt;)&lt;/code&gt;，空间复杂度<code>O(n)</code>。</p>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span>[] directX = <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;<span class="number">1</span>, <span class="number">1</span>,-<span class="number">1</span>,-<span class="number">1</span>,<span class="number">2</span>,<span class="number">2</span>,-<span class="number">2</span>,-<span class="number">2</span>&#125;;</span><br><span class="line"><span class="keyword">int</span>[] directY = <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;<span class="number">2</span>,-<span class="number">2</span>,<span class="number">2</span>,-<span class="number">2</span>,<span class="number">1</span>,-<span class="number">1</span>,<span class="number">1</span>,-<span class="number">1</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">shortestPath</span><span class="params">(<span class="keyword">boolean</span>[][] grid, Point source, Point destination)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(grid == <span class="keyword">null</span> || grid.length == <span class="number">0</span> || grid[<span class="number">0</span>].length == <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	Queue&lt;Point&gt; q = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">	Map&lt;Point, Integer&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">	map.put(source, <span class="number">0</span>); <span class="comment">// remember</span></span><br><span class="line">	<span class="keyword">boolean</span>[][] visited = <span class="keyword">new</span> <span class="keyword">boolean</span>[grid.length][grid[<span class="number">0</span>].length];</span><br><span class="line">	q.offer(source);</span><br><span class="line">	visited[source.x][source.y] = <span class="keyword">true</span>; <span class="comment">// use hashSet is wrong.</span></span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty()) &#123;</span><br><span class="line">		Point p = q.poll();</span><br><span class="line">		<span class="keyword">if</span>(p.x == destination.x &amp;&amp; p.y == destination.y)</span><br><span class="line">			<span class="keyword">return</span> map.get(p);</span><br><span class="line">		<span class="keyword">for</span>(Point neighbor : getNeighbors(p)) &#123;</span><br><span class="line">			<span class="keyword">if</span>(!isValid(grid, neighbor) || visited[neighbor.x][neighbor.y])</span><br><span class="line">				<span class="keyword">continue</span>;</span><br><span class="line">			q.offer(neighbor);</span><br><span class="line">			visited[neighbor.x][neighbor.y] = <span class="keyword">true</span>;</span><br><span class="line">			map.put(neighbor, map.get(p) + <span class="number">1</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">List&lt;Point&gt; <span class="title">getNeighbors</span><span class="params">(Point point)</span> </span>&#123;</span><br><span class="line">	List&lt;Point&gt; result = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">8</span>; i++) &#123;</span><br><span class="line">		result.add(<span class="keyword">new</span> Point(point.x + directX[i], point.y + directY[i]));</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">isValid</span><span class="params">(<span class="keyword">boolean</span>[][] grid, Point point)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(point.x &gt;= <span class="number">0</span> &amp;&amp; point.x &lt; grid.length &amp;&amp; point.y &gt;= <span class="number">0</span> &amp;&amp; point.y &lt; grid[<span class="number">0</span>].length </span><br><span class="line">			&amp;&amp; !grid[point.x][point.y])</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为棋盘大小<code>O(n*m)</code>，空间复杂度<code>O(n)</code>。  </p>
 
       
     </div>
@@ -243,64 +270,30 @@ Explanation: [0, 0] → [2, 1] → [4, 2] → [3, 4] → [5, 5]
     <div class="entry">
       
         <p><strong><a href="https://leetcode.com/problems/word-ladder/" target="_blank" rel="noopener">LeetCode 127 Word Ladder</a></strong></p>
-<p>&lt;div&gt;</p>
-<p>Given two words (<em>beginWord</em> and <em>endWord</em>), and a dictionary's word list, find the length of shortest transformation sequence from <em>beginWord</em> to <em>endWord</em>, such that:</p>
-<ol>
-<li>Only one letter can be changed at a time.</li>
-<li>Each transformed word must exist in the word list.</li>
-</ol>
-<p><strong>Note:</strong></p>
-<ul>
-<li>Return 0 if there is no such transformation sequence.</li>
-<li>All words have the same length.</li>
-<li>All words contain only lowercase alphabetic characters.</li>
-<li>You may assume no duplicates in the word list.</li>
-<li>You may assume <em>beginWord</em> and <em>endWord</em> are non-empty and are not the same.</li>
-</ul>
-<p><strong>Example 1:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong>
-beginWord = &quot;hit&quot;,
-endWord = &quot;cog&quot;,
-wordList = [&quot;hot&quot;,&quot;dot&quot;,&quot;dog&quot;,&quot;lot&quot;,&quot;log&quot;,&quot;cog&quot;]</p>
-<p><strong>Output:</strong> 5</p>
-<p><strong>Explanation:</strong> As one shortest transformation is &quot;hit&quot; -&gt; &quot;hot&quot; -&gt; &quot;dot&quot; -&gt; &quot;dog&quot; -&gt; &quot;cog&quot;,
-return its length 5.
-&lt;/pre&gt;</p>
-<p><strong>Example 2:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong>
-beginWord = &quot;hit&quot;
-endWord = &quot;cog&quot;
-wordList = [&quot;hot&quot;,&quot;dot&quot;,&quot;dog&quot;,&quot;lot&quot;,&quot;log&quot;]</p>
-<p><strong>Output:</strong> 0</p>
-<p><strong>Explanation:</strong> The endWord &quot;cog&quot; is not in wordList, therefore no possibletransformation.
-&lt;/pre&gt;</p>
-<p>&lt;/div&gt;</p>
-<h3><strong>题目大意：</strong></h3>
-<p>给定一个字典和两个单词。每次变换一个字母的得到新单词且该词要在字典中。求最少变换次数。</p>
-<h3><strong>解题思路：</strong></h3>
-<p>这题是最短路径题，第一时间想到BFS。这是一条典型的单源最短路径问题。</p>
+<div><br><br>Given two words (<em>beginWord</em> and <em>endWord</em>), and a dictionary’s word list, find the length of shortest transformation sequence from <em>beginWord</em> to <em>endWord</em>, such that:<br><br>1.  Only one letter can be changed at a time.<br>2.  Each transformed word must exist in the word list.<br><br><strong>Note:</strong><br><br><em>   Return 0 if there is no such transformation sequence.
+</em>   All words have the same length.<br><em>   All words contain only lowercase alphabetic characters.
+</em>   You may assume no duplicates in the word list.<br><em>   You may assume <em>beginWord</em> and <em>endWord</em> are non-empty and are not the same.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong><br>beginWord = “hit”,<br>endWord = “cog”,<br>wordList = [“hot”,”dot”,”dog”,”lot”,”log”,”cog”]<br><br><strong>Output:</strong> 5<br><br><strong>Explanation:</strong> As one shortest transformation is “hit” -&gt; “hot” -&gt; “dot” -&gt; “dog” -&gt; “cog”,<br>return its length 5.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong><br>beginWord = “hit”<br>endWord = “cog”<br>wordList = [“hot”,”dot”,”dog”,”lot”,”log”]<br><br><strong>Output:</strong> 0<br><br><em>*Explanation:</em></pre></em> The endWord “cog” is not in wordList, therefore no possibletransformation.<br><br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个字典和两个单词。每次变换一个字母的得到新单词且该词要在字典中。求最少变换次数。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这题是最短路径题，第一时间想到BFS。这是一条典型的单源最短路径问题。  </p>
 <ol>
 <li>这是图，所以要有visited记录是否重复访问。</li>
-<li>字典的实现两个作用： 快速查找，以及记录距离可以省下一轮循环。总共两重循环。</li>
-<li>getNextWords的实现。通过变换每位上字母，比较巧妙。</li>
+<li>字典的实现两个作用： 快速查找，以及记录距离可以省下一轮循环。总共两重循环。  </li>
+<li>getNextWords的实现。通过变换每位上字母，比较巧妙。    </li>
 </ol>
-<h3><strong>解题步骤：</strong></h3>
-<p>这题是最短路径题，第一时间想到BFS。这是一条典型的单源最短路径问题。</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>这题是最短路径题，第一时间想到BFS。这是一条典型的单源最短路径问题。  </p>
 <ol>
-<li>建字典。</li>
-<li>BFS访问。</li>
-<li>求所有距离为1的相邻单词getNextWords。</li>
+<li>建字典。  </li>
+<li>BFS访问。  </li>
+<li>求所有距离为1的相邻单词getNextWords。    </li>
 </ol>
-<h3><strong>注意事项：</strong></h3>
-<ol>
-<li>getNextWords的实现不含自己。</li>
-<li>注意题目条件，开始词和终结词不一定在字典中，要将它们加入去。</li>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>用Map来记录解，同时用于记录visited  </li>
+<li>getNextWords的实现不含自己。  </li>
+<li>注意题目条件，开始词和终结词不一定在字典中，要将它们加入去。  </li>
 </ol>
-<h3><strong>Java代码：</strong></h3>
-<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">ladderLength</span><span class="params">(String beginWord, String endWord, List&lt;String&gt; wordList)</span> </span>&#123;</span><br><span class="line">	<span class="comment">// This is a dict and also keeps track of distance</span></span><br><span class="line">	Map&lt;String, Integer&gt; dict = getDict(wordList);</span><br><span class="line">	<span class="comment">// Make sure endWord is in the dict and can be the next word </span></span><br><span class="line">	<span class="comment">//dict.put(endWord, 0);</span></span><br><span class="line">	dict.put(beginWord, <span class="number">1</span>);</span><br><span class="line">	</span><br><span class="line">	Set&lt;String&gt; visited = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">	Queue&lt;String&gt; q = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">	q.offer(beginWord);</span><br><span class="line">	visited.add(beginWord);</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty()) &#123;</span><br><span class="line">		String word = q.poll();</span><br><span class="line">		<span class="keyword">if</span>(endWord.equals(word))</span><br><span class="line">			<span class="keyword">return</span> dict.get(word);</span><br><span class="line">		</span><br><span class="line">		List&lt;String&gt; nextWords = getNextWords(word, dict);</span><br><span class="line">		<span class="keyword">for</span>(String s : nextWords) &#123;</span><br><span class="line">			<span class="keyword">if</span>(visited.contains(s))</span><br><span class="line">				<span class="keyword">continue</span>;</span><br><span class="line">			</span><br><span class="line">			q.offer(s);</span><br><span class="line">			visited.add(s);</span><br><span class="line">			dict.put(s, dict.get(word) + <span class="number">1</span>);</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Map&lt;String, Integer&gt; <span class="title">getDict</span><span class="params">(List&lt;String&gt; wordList)</span> </span>&#123;</span><br><span class="line">	Map&lt;String, Integer&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">	<span class="keyword">for</span>(String word : wordList) &#123;</span><br><span class="line">		map.put(word, <span class="number">0</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> map;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">List&lt;String&gt; <span class="title">getNextWords</span><span class="params">(String word, Map&lt;String, Integer&gt; dict)</span> </span>&#123;</span><br><span class="line">	List&lt;String&gt; result = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; word.length(); i++) &#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">26</span>; j++) &#123; </span><br><span class="line">			<span class="keyword">char</span> newChar = (<span class="keyword">char</span>)(<span class="string">'a'</span> + j);</span><br><span class="line">			<span class="keyword">if</span>(word.charAt(i) == newChar) <span class="comment">// exclude itself</span></span><br><span class="line">				<span class="keyword">continue</span>;</span><br><span class="line">			String newWord = word.substring(<span class="number">0</span>, i) + </span><br><span class="line">					newChar + word.substring(i + <span class="number">1</span>, word.length());</span><br><span class="line">			<span class="keyword">if</span>(dict.containsKey(newWord))</span><br><span class="line">				result.add(newWord);</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>getNextWords是L<em>26</em>L=&lt;code&gt;O(<em>L</em>&lt;sup&gt;2&lt;/sup&gt;)&lt;/code&gt;产生新字符串需要L<br>
-时间复杂度为&lt;code&gt;O(n*<em>L</em>&lt;sup&gt;2&lt;/sup&gt;)&lt;/code&gt;，空间复杂度<code>O(n)</code>，n为单词数。</p>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">ladderLength</span><span class="params">(String beginWord, String endWord, List&lt;String&gt; wordList)</span> </span>&#123;</span><br><span class="line">	<span class="comment">// This is a dict and also keeps track of distance</span></span><br><span class="line">	Map&lt;String, Integer&gt; dict = getDict(wordList);</span><br><span class="line">	<span class="comment">// Make sure endWord is in the dict and can be the next word </span></span><br><span class="line">	<span class="comment">//dict.put(endWord, 0);</span></span><br><span class="line">	dict.put(beginWord, <span class="number">1</span>);</span><br><span class="line">	</span><br><span class="line">	Set&lt;String&gt; visited = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">	Queue&lt;String&gt; q = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">	q.offer(beginWord);</span><br><span class="line">	visited.add(beginWord);</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty()) &#123;</span><br><span class="line">		String word = q.poll();</span><br><span class="line">		<span class="keyword">if</span>(endWord.equals(word))</span><br><span class="line">			<span class="keyword">return</span> dict.get(word);</span><br><span class="line">		</span><br><span class="line">		List&lt;String&gt; nextWords = getNextWords(word, dict);</span><br><span class="line">		<span class="keyword">for</span>(String s : nextWords) &#123;</span><br><span class="line">			<span class="keyword">if</span>(visited.contains(s))</span><br><span class="line">				<span class="keyword">continue</span>;</span><br><span class="line">			</span><br><span class="line">			q.offer(s);</span><br><span class="line">			visited.add(s);</span><br><span class="line">			dict.put(s, dict.get(word) + <span class="number">1</span>);</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Map&lt;String, Integer&gt; <span class="title">getDict</span><span class="params">(List&lt;String&gt; wordList)</span> </span>&#123;</span><br><span class="line">	Map&lt;String, Integer&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">	<span class="keyword">for</span>(String word : wordList) &#123;</span><br><span class="line">		map.put(word, <span class="number">0</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> map;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">List&lt;String&gt; <span class="title">getNextWords</span><span class="params">(String word, Map&lt;String, Integer&gt; dict)</span> </span>&#123;</span><br><span class="line">	List&lt;String&gt; result = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; word.length(); i++) &#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">26</span>; j++) &#123; </span><br><span class="line">			<span class="keyword">char</span> newChar = (<span class="keyword">char</span>)(<span class="string">'a'</span> + j);</span><br><span class="line">			<span class="keyword">if</span>(word.charAt(i) == newChar) <span class="comment">// exclude itself</span></span><br><span class="line">				<span class="keyword">continue</span>;</span><br><span class="line">			String newWord = word.substring(<span class="number">0</span>, i) + </span><br><span class="line">					newChar + word.substring(i + <span class="number">1</span>, word.length());</span><br><span class="line">			<span class="keyword">if</span>(dict.containsKey(newWord))</span><br><span class="line">				result.add(newWord);</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>getNextWords是L<em>26</em>L=<code>O(<em>L</em><sup>2</sup>)</code>产生新字符串需要L<br>时间复杂度为<code>O(n*<em>L</em><sup>2</sup>)</code>，空间复杂度<code>O(n)</code>，n为单词数。  </p>
 
       
     </div>
@@ -334,62 +327,51 @@ wordList = [&quot;hot&quot;,&quot;dot&quot;,&quot;dog&quot;,&quot;lot&quot;,&quo
         <p><strong><a href="https://leetcode.com/problems/serialize-and-deserialize-binary-tree/" target="_blank" rel="noopener">LeetCode 297 Serialize and Deserialize Binary Tree</a></strong></p>
 <p>Serialization is the process of converting a data structure or object into a sequence of bits so that it can be stored in a file or memory buffer, or transmitted across a network connection link to be reconstructed later in the same or another computer environment.</p>
 <p>Design an algorithm to serialize and deserialize a binary tree. There is no restriction on how your serialization/deserialization algorithm should work. You just need to ensure that a binary tree can be serialized to a string and this string can be deserialized to the original tree structure.</p>
-<p>**Example: **</p>
-<p>&lt;pre&gt;You may serialize the following tree:</p>
-<pre><code>1
-</code></pre>
-<p>/ <br>
-2   3
-/ <br>
-4   5</p>
-<p>as <code>&quot;[1,2,3,null,null,4,5]&quot;</code>
-&lt;/pre&gt;</p>
+<p><strong>Example: </strong></p>
+<pre>You may serialize the following tree:
+
+    1
+   / \
+  2   3
+     / \
+    4   5
+
+as `"[1,2,3,null,null,4,5]"`
+</pre>
+
 <p><strong>Clarification:</strong> The above format is the same as <a href="/faq/#binary-tree">how LeetCode serializes a binary tree</a>. You do not necessarily need to follow this format, so please be creative and come up with different approaches yourself.</p>
-<p>**Note: **Do not use class member/global/static variables to store states. Your serialize and deserialize algorithms should be stateless.</p>
-<h3><strong>题目大意：</strong></h3>
-<p>序列化和反序列化二叉树。</p>
-<h3><strong>解题思路：</strong></h3>
-<p>BFS可以涉及三重循环</p>
+<p><strong>Note: </strong>Do not use class member/global/static variables to store states. Your serialize and deserialize algorithms should be stateless.</p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>序列化和反序列化二叉树。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>BFS可以涉及三重循环</p>
 <ol>
-<li>q不为空</li>
-<li>是否按层遍历</li>
-<li>是否为图</li>
+<li>q不为空  </li>
+<li>是否按层遍历  </li>
+<li>是否为图  </li>
 </ol>
 <p>这题不需要按层遍历，所以不用第二重。而且只是二叉树，不用第三重循环。</p>
-<p>编码方式：<br>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">	      1</span><br><span class="line">	    /   \</span><br><span class="line">	   #     3</span><br><span class="line">	        /  \</span><br><span class="line">	       2   #</span><br><span class="line">	      / \</span><br><span class="line">	     #   #</span><br><span class="line">=&gt; 1,#,3,2,#,#,#</span><br></pre></td></tr></table></figure></p>
-<h3><strong>BFS解题步骤：</strong></h3>
-<p>serialize:</p>
+<p>编码方式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">	      1</span><br><span class="line">	    /   \</span><br><span class="line">	   #     3</span><br><span class="line">	        /  \</span><br><span class="line">	       2   #</span><br><span class="line">	      / \</span><br><span class="line">	     #   #</span><br><span class="line">=&gt; 1,#,3,2,#,#,#</span><br></pre></td></tr></table></figure></p>
+<h3 id="BFS解题步骤："><a href="#BFS解题步骤：" class="headerlink" title="BFS解题步骤："></a><strong>BFS解题步骤：</strong></h3><p>serialize:  </p>
 <ol>
 <li>建queue，然后首节点入列</li>
-<li>进入q的非空循环，队首出列，分别加入左右子树。由于空子树也会被遍历，所以左右子树可能为空，队首为空时continue<br>
-且val加入到结果字符串</li>
-<li>用#代替null且删去末尾的#和，</li>
+<li>进入q的非空循环，队首出列，分别加入左右子树。由于空子树也会被遍历，所以左右子树可能为空，队首为空时continue<br>且val加入到结果字符串</li>
+<li>用#代替null且删去末尾的#和，  </li>
 </ol>
-<p>deserialize:<br>
-这方法难实现点。用两个指针来代表遍历上一层和该层节点们。q出列的节点是上一层节点head，而idx指向的是<br>
-该层节点。这样head.left = Node(tokens[idx])就建立了它们的关系。两指针分别向后一位。每轮循环父指针<br>
-向后一位，而idx向后两位，因为有左右儿子。</p>
+<p>deserialize:<br>这方法难实现点。用两个指针来代表遍历上一层和该层节点们。q出列的节点是上一层节点head，而idx指向的是<br>该层节点。这样head.left = Node(tokens[idx])就建立了它们的关系。两指针分别向后一位。每轮循环父指针<br>向后一位，而idx向后两位，因为有左右儿子。</p>
 <ol>
 <li>建queue，然后首节点入列</li>
-<li>进入q的非空循环，队首出列，分别生成非空左右子树，且建立父子关系。idx走两步，非空儿子加入q。</li>
+<li>进入q的非空循环，队首出列，分别生成非空左右子树，且建立父子关系。idx走两步，非空儿子加入q。  </li>
 </ol>
-<h3><strong>注意事项：</strong></h3>
-<ol>
-<li>字符串相等判断用equals，不用==。</li>
-<li>deserialize中循环条件要加入idx &lt; tokens.length因为serialize末尾#已经删除。</li>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>#也要入栈，因为结果需要  </li>
+<li>解码需要一个字符串扫描指针（类全局指针），左右儿子无条件扫两位。这点DFS也是一样的。  </li>
+<li>deserialize中循环条件要加入idx &lt; tokens.length因为serialize末尾#已经删除。  </li>
+<li>字符串相等判断用equals，不用==。  </li>
 </ol>
-<h3><strong>Java代码：</strong></h3>
-<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">serialize2</span><span class="params">(TreeNode root)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(root == <span class="keyword">null</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"&#123;&#125;"</span>;</span><br><span class="line"></span><br><span class="line">	StringBuilder sb = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">	Queue&lt;TreeNode&gt; q = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">	q.add(root);</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty()) &#123;		</span><br><span class="line">		TreeNode n = q.poll();</span><br><span class="line">		sb.append(n == <span class="keyword">null</span> ? <span class="string">"null"</span> : n.val);</span><br><span class="line">		sb.append(<span class="string">","</span>);</span><br><span class="line">		<span class="keyword">if</span>(n == <span class="keyword">null</span>)</span><br><span class="line">			<span class="keyword">continue</span>;</span><br><span class="line">		q.add(n.left);</span><br><span class="line">		q.add(n.right);</span><br><span class="line">	&#125;</span><br><span class="line">	String res = sb.toString().replaceAll(<span class="string">"null"</span>, <span class="string">"#"</span>);</span><br><span class="line">	<span class="keyword">int</span> endIdx = res.length() - <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">while</span>(res.charAt(endIdx) == <span class="string">','</span> || res.charAt(endIdx) == <span class="string">'#'</span>)</span><br><span class="line">		endIdx--;</span><br><span class="line">	<span class="keyword">return</span> <span class="string">"&#123;"</span> + res.substring(<span class="number">0</span>, endIdx + <span class="number">1</span>) + <span class="string">"&#125;"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> TreeNode <span class="title">deserialize2</span><span class="params">(String data)</span> </span>&#123;</span><br><span class="line">	String str = data.substring(<span class="number">1</span>, data.length() - <span class="number">1</span>);</span><br><span class="line">	<span class="keyword">if</span>(<span class="string">""</span>.equals(str))</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">	</span><br><span class="line">	String[] tokens = str.split(<span class="string">","</span>);</span><br><span class="line">	<span class="keyword">int</span> idx = <span class="number">1</span>;</span><br><span class="line">	Queue&lt;TreeNode&gt; q = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">	TreeNode root = <span class="keyword">new</span> TreeNode(Integer.parseInt(tokens[<span class="number">0</span>]));</span><br><span class="line">	q.offer(root);</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty() &amp;&amp; idx &lt; tokens.length) &#123;</span><br><span class="line">		TreeNode head = q.poll();</span><br><span class="line">		<span class="keyword">if</span>(head == <span class="keyword">null</span>)</span><br><span class="line">			<span class="keyword">continue</span>;</span><br><span class="line">		head.left = generateChildNode(idx++, tokens, q);</span><br><span class="line">		head.right = generateChildNode(idx++, tokens, q);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">TreeNode <span class="title">generateChildNode</span><span class="params">(<span class="keyword">int</span> idx, String[] tokens, Queue&lt;TreeNode&gt; q)</span> </span>&#123;</span><br><span class="line">	TreeNode root = <span class="keyword">null</span>;</span><br><span class="line">	<span class="keyword">if</span>(idx &lt; tokens.length &amp;&amp; !<span class="string">"#"</span>.equals(tokens[idx])) &#123;</span><br><span class="line">		root = <span class="keyword">new</span> TreeNode(Integer.parseInt(tokens[idx]));</span><br><span class="line">		q.offer(root);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">serialize2</span><span class="params">(TreeNode root)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(root == <span class="keyword">null</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"&#123;&#125;"</span>;</span><br><span class="line"></span><br><span class="line">	StringBuilder sb = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">	Queue&lt;TreeNode&gt; q = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">	q.add(root);</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty()) &#123;		</span><br><span class="line">		TreeNode n = q.poll();</span><br><span class="line">		sb.append(n == <span class="keyword">null</span> ? <span class="string">"null"</span> : n.val);</span><br><span class="line">		sb.append(<span class="string">","</span>);</span><br><span class="line">		<span class="keyword">if</span>(n == <span class="keyword">null</span>)</span><br><span class="line">			<span class="keyword">continue</span>;</span><br><span class="line">		q.add(n.left);</span><br><span class="line">		q.add(n.right);</span><br><span class="line">	&#125;</span><br><span class="line">	String res = sb.toString().replaceAll(<span class="string">"null"</span>, <span class="string">"#"</span>);</span><br><span class="line">	<span class="keyword">int</span> endIdx = res.length() - <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">while</span>(res.charAt(endIdx) == <span class="string">','</span> || res.charAt(endIdx) == <span class="string">'#'</span>)</span><br><span class="line">		endIdx--;</span><br><span class="line">	<span class="keyword">return</span> <span class="string">"&#123;"</span> + res.substring(<span class="number">0</span>, endIdx + <span class="number">1</span>) + <span class="string">"&#125;"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> TreeNode <span class="title">deserialize2</span><span class="params">(String data)</span> </span>&#123;</span><br><span class="line">	String str = data.substring(<span class="number">1</span>, data.length() - <span class="number">1</span>);</span><br><span class="line">	<span class="keyword">if</span>(<span class="string">""</span>.equals(str))</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">	</span><br><span class="line">	String[] tokens = str.split(<span class="string">","</span>);</span><br><span class="line">	<span class="keyword">int</span> idx = <span class="number">1</span>;</span><br><span class="line">	Queue&lt;TreeNode&gt; q = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">	TreeNode root = <span class="keyword">new</span> TreeNode(Integer.parseInt(tokens[<span class="number">0</span>]));</span><br><span class="line">	q.offer(root);</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty() &amp;&amp; idx &lt; tokens.length) &#123;</span><br><span class="line">		TreeNode head = q.poll();</span><br><span class="line">		<span class="keyword">if</span>(head == <span class="keyword">null</span>)</span><br><span class="line">			<span class="keyword">continue</span>;</span><br><span class="line">		head.left = generateChildNode(idx++, tokens, q);</span><br><span class="line">		head.right = generateChildNode(idx++, tokens, q);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">TreeNode <span class="title">generateChildNode</span><span class="params">(<span class="keyword">int</span> idx, String[] tokens, Queue&lt;TreeNode&gt; q)</span> </span>&#123;</span><br><span class="line">	TreeNode root = <span class="keyword">null</span>;</span><br><span class="line">	<span class="keyword">if</span>(idx &lt; tokens.length &amp;&amp; !<span class="string">"#"</span>.equals(tokens[idx])) &#123;</span><br><span class="line">		root = <span class="keyword">new</span> TreeNode(Integer.parseInt(tokens[idx]));</span><br><span class="line">		q.offer(root);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <hr>
-<h3><strong>DFS算法II解题思路：</strong></h3>
-<p>DFS的serialize很简单，但deserialize比较难。有点类似于前序遍历的递归版。因为编码时候就是前序遍历，解码时候也是先root再左右。
-需要维护一个指针p来记录已处理的字符串。</p>
-<p>编码方式：<br>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">    1</span><br><span class="line">  2   3</span><br><span class="line">5  6</span><br><span class="line">=&gt; 1,2,5,#,#,6,#,#,3,#,#</span><br></pre></td></tr></table></figure></p>
-<h3><strong>Java代码：</strong></h3>
-<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">serialize</span><span class="params">(TreeNode root)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(root==<span class="keyword">null</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"#"</span>;</span><br><span class="line">	String rootStr = root.val+<span class="string">""</span>;</span><br><span class="line">	String lStr = serialize(root.left);</span><br><span class="line">	String rStr = serialize(root.right);</span><br><span class="line">	<span class="keyword">return</span> rootStr+<span class="string">","</span>+lStr+<span class="string">","</span>+rStr;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> p=<span class="number">0</span>;</span><br><span class="line">String[] items = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> TreeNode <span class="title">deserialize</span><span class="params">(String data)</span></span>&#123;</span><br><span class="line">	p = <span class="number">0</span>;</span><br><span class="line">	items = <span class="keyword">null</span>;</span><br><span class="line">	<span class="keyword">return</span> deserializeR(data);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> TreeNode <span class="title">deserializeR</span><span class="params">(String data)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(data==<span class="keyword">null</span>||data.length()==<span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">	<span class="keyword">if</span>(p&gt;=data.length())</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">	String curVal = getNext(data);</span><br><span class="line">	<span class="keyword">if</span>(curVal.equals(<span class="string">"#"</span>))</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">	</span><br><span class="line">	TreeNode newRoot = <span class="keyword">new</span> TreeNode(Integer.parseInt(curVal));</span><br><span class="line">	newRoot.left = deserializeR(data);</span><br><span class="line">	newRoot.right = deserializeR(data);</span><br><span class="line">	<span class="keyword">return</span> newRoot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">getNext</span><span class="params">(String s)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(items==<span class="keyword">null</span>)</span><br><span class="line">		items = s.split(<span class="string">","</span>);</span><br><span class="line">	<span class="keyword">return</span> items[p++];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-
+<h3 id="DFS算法II解题思路："><a href="#DFS算法II解题思路：" class="headerlink" title="DFS算法II解题思路："></a><strong>DFS算法II解题思路：</strong></h3><p>DFS的serialize很简单，但deserialize比较难。有点类似于前序遍历的递归版。因为编码时候就是前序遍历，解码时候也是先root再左右。<br>需要维护一个指针p来记录已处理的字符串。  </p>
+<p>编码方式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">    1</span><br><span class="line">  2   3</span><br><span class="line">5  6</span><br><span class="line">=&gt; 1,2,5,#,#,6,#,#,3,#,#</span><br></pre></td></tr></table></figure></p>
+<h3 id="Java代码：-1"><a href="#Java代码：-1" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">serialize</span><span class="params">(TreeNode root)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(root==<span class="keyword">null</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"#"</span>;</span><br><span class="line">	String rootStr = root.val+<span class="string">""</span>;</span><br><span class="line">	String lStr = serialize(root.left);</span><br><span class="line">	String rStr = serialize(root.right);</span><br><span class="line">	<span class="keyword">return</span> rootStr+<span class="string">","</span>+lStr+<span class="string">","</span>+rStr;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> p=<span class="number">0</span>;</span><br><span class="line">String[] items = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> TreeNode <span class="title">deserialize</span><span class="params">(String data)</span></span>&#123;</span><br><span class="line">	p = <span class="number">0</span>;</span><br><span class="line">	items = <span class="keyword">null</span>;</span><br><span class="line">	<span class="keyword">return</span> deserializeR(data);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> TreeNode <span class="title">deserializeR</span><span class="params">(String data)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(data==<span class="keyword">null</span>||data.length()==<span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">	<span class="keyword">if</span>(p&gt;=data.length())</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">	String curVal = getNext(data);</span><br><span class="line">	<span class="keyword">if</span>(curVal.equals(<span class="string">"#"</span>))</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">	</span><br><span class="line">	TreeNode newRoot = <span class="keyword">new</span> TreeNode(Integer.parseInt(curVal));</span><br><span class="line">	newRoot.left = deserializeR(data);</span><br><span class="line">	newRoot.right = deserializeR(data);</span><br><span class="line">	<span class="keyword">return</span> newRoot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">getNext</span><span class="params">(String s)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(items==<span class="keyword">null</span>)</span><br><span class="line">		items = s.split(<span class="string">","</span>);</span><br><span class="line">	<span class="keyword">return</span> items[p++];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
       
     </div>
       
@@ -420,44 +402,49 @@ wordList = [&quot;hot&quot;,&quot;dot&quot;,&quot;dog&quot;,&quot;lot&quot;,&quo
     <div class="entry">
       
         <p><strong><a href="https://leetcode.com/problems/clone-graph/" target="_blank" rel="noopener">LeetCode 133 Clone Graph</a></strong></p>
-<p>Given a reference of a node in a <strong><a href="https://en.wikipedia.org/wiki/Connectivity_(graph_theory)#Connected_graph" target="_blank" rel="noopener">connected</a></strong> undirected graph.</p>
+<p>Given a reference of a node in a <strong><a href="https://en.wikipedia.org/wiki/Connectivity_(graph_theory" target="_blank" rel="noopener">connected</a>#Connected_graph)</strong> undirected graph.</p>
 <p>Return a <a href="https://en.wikipedia.org/wiki/Object_copying#Deep_copy" target="_blank" rel="noopener"><strong>deep copy</strong></a> (clone) of the graph.</p>
 <p>Each node in the graph contains a val (<code>int</code>) and a list (<code>List[Node]</code>) of its neighbors.</p>
-<p>&lt;pre&gt;class Node {
-public int val;
-public List&lt;Node&gt; neighbors;
+<pre>class Node {
+    public int val;
+    public List<node> neighbors;
 }
-&lt;/pre&gt;</p>
+</node></pre>
+
 <p><strong>Test case format:</strong></p>
-<p>For simplicity sake, each node's value is the same as the node's index (1-indexed). For example, the first node with <code>val = 1</code>, the second node with <code>val = 2</code>, and so on. The graph is represented in the test case using an adjacency list.</p>
-<p><strong>Adjacency list</strong> is a collection of unordered <strong>lists</strong> used to represent a finite graph. Each list describes the set of neighbors of a node in the graph.</p>
-<p>The given node will always be the first node with <code>val = 1</code>. You must return the <strong>copy of the given node</strong> as a reference to the cloned graph.</p>
+<p>For simplicity sake, each node’s value is the same as the node’s index (1-indexed). For example, the first node with <code>val = 1</code>, the second node with <code>val = 2</code>, and so on. The graph is represented in the test case using an adjacency list.</p>
+<p><strong>Adjacency list</strong> is a collection of unordered <strong>lists</strong> used to represent a finite graph. Each list describes the set of neighbors of a node in the graph.</p>
+<p>The given node will always be the first node with <code>val = 1</code>. You must return the <strong>copy of the given node</strong> as a reference to the cloned graph.</p>
 <p><strong>Example 1:</strong></p>
 <p><img src="https://assets.leetcode.com/uploads/2019/11/04/133_clone_graph_question.png" alt=""></p>
-<p>&lt;pre&gt;<strong>Input:</strong> adjList = [[2,4],[1,3],[2,4],[1,3]]
-<strong>Output:</strong> [[2,4],[1,3],[2,4],[1,3]]
-<strong>Explanation:</strong> There are 4 nodes in the graph.
+<pre>**Input:** adjList = [[2,4],[1,3],[2,4],[1,3]]
+**Output:** [[2,4],[1,3],[2,4],[1,3]]
+**Explanation:** There are 4 nodes in the graph.
 1st node (val = 1)'s neighbors are 2nd node (val = 2) and 4th node (val = 4).
 2nd node (val = 2)'s neighbors are 1st node (val = 1) and 3rd node (val = 3).
 3rd node (val = 3)'s neighbors are 2nd node (val = 2) and 4th node (val = 4).
 4th node (val = 4)'s neighbors are 1st node (val = 1) and 3rd node (val = 3).
-&lt;/pre&gt;</p>
+</pre>
+
 <p><strong>Example 2:</strong></p>
 <p><img src="https://assets.leetcode.com/uploads/2020/01/07/graph.png" alt=""></p>
-<p>&lt;pre&gt;<strong>Input:</strong> adjList = [[]]
-<strong>Output:</strong> [[]]
-<strong>Explanation:</strong> Note that the input contains one empty list. The graph consists of only one node with val = 1 and it does not have any neighbors.
-&lt;/pre&gt;</p>
+<pre>**Input:** adjList = [[]]
+**Output:** [[]]
+**Explanation:** Note that the input contains one empty list. The graph consists of only one node with val = 1 and it does not have any neighbors.
+</pre>
+
 <p><strong>Example 3:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> adjList = []
-<strong>Output:</strong> []
-<strong>Explanation:</strong> This an empty graph, it does not have any nodes.
-&lt;/pre&gt;</p>
+<pre>**Input:** adjList = []
+**Output:** []
+**Explanation:** This an empty graph, it does not have any nodes.
+</pre>
+
 <p><strong>Example 4:</strong></p>
 <p><img src="https://assets.leetcode.com/uploads/2020/01/07/graph-1.png" alt=""></p>
-<p>&lt;pre&gt;<strong>Input:</strong> adjList = [[2],[1]]
-<strong>Output:</strong> [[2],[1]]
-&lt;/pre&gt;</p>
+<pre>**Input:** adjList = [[2],[1]]
+**Output:** [[2],[1]]
+</pre>
+
 <p><strong>Constraints:</strong></p>
 <ul>
 <li><code>1 &lt;= Node.val &lt;= 100</code></li>
@@ -466,28 +453,21 @@ public List&lt;Node&gt; neighbors;
 <li>There is no repeated edges and no self-loops in the graph.</li>
 <li>The Graph is connected and all nodes can be visited starting from the given node.</li>
 </ul>
-<p>&lt;/div&gt;</p>
-<p>&lt;/div&gt;</p>
-<h3><strong>题目大意：</strong></h3>
-<p>深度复制图。注意要复制所有邻接节点。</p>
-<h3><strong>解题思路：</strong></h3>
-<p>BFS。</p>
-<h3><strong>注意事项：</strong></h3>
-<ol>
-<li>空节点判断。</li>
+<p></p>
+<p></p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>深度复制图。注意要复制所有邻接节点。 </p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>BFS。利用Map来作为visited记录以及维持旧新的关系。  </p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>空节点判断。  </li>
+<li>利用Map来作为visited记录以及维持旧新的关系。  </li>
+<li>要先复制儿子节点，再复制和儿子的边  </li>
 </ol>
-<h3><strong>Java代码：</strong></h3>
-<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> UndirectedGraphNode <span class="title">cloneGraph2</span><span class="params">(UndirectedGraphNode node)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(node == <span class="keyword">null</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">	</span><br><span class="line">	HashMap&lt;UndirectedGraphNode, UndirectedGraphNode&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">	bfs(node, map);</span><br><span class="line">	<span class="keyword">return</span> map.get(node);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">bfs</span><span class="params">(UndirectedGraphNode node, HashMap&lt;UndirectedGraphNode, UndirectedGraphNode&gt; map)</span> </span>&#123;</span><br><span class="line">	Queue&lt;UndirectedGraphNode&gt; q = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">	q.offer(node);</span><br><span class="line">	map.put(node, <span class="keyword">new</span> UndirectedGraphNode(node.label));</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty()) &#123;</span><br><span class="line">		UndirectedGraphNode head = q.poll();</span><br><span class="line">		<span class="keyword">for</span>(UndirectedGraphNode neighbor : head.neighbors) &#123;</span><br><span class="line">			<span class="keyword">if</span>(!map.containsKey(neighbor)) &#123;</span><br><span class="line">				q.offer(neighbor);</span><br><span class="line">				<span class="comment">// Clone vertex</span></span><br><span class="line">				map.put(neighbor, <span class="keyword">new</span> UndirectedGraphNode(neighbor.label));</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="comment">// Clone edge</span></span><br><span class="line">			map.get(head).neighbors.add(map.get(neighbor));</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> UndirectedGraphNode <span class="title">cloneGraph2</span><span class="params">(UndirectedGraphNode node)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(node == <span class="keyword">null</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">	</span><br><span class="line">	HashMap&lt;UndirectedGraphNode, UndirectedGraphNode&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">	bfs(node, map);</span><br><span class="line">	<span class="keyword">return</span> map.get(node);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">bfs</span><span class="params">(UndirectedGraphNode node, HashMap&lt;UndirectedGraphNode, UndirectedGraphNode&gt; map)</span> </span>&#123;</span><br><span class="line">	Queue&lt;UndirectedGraphNode&gt; q = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">	q.offer(node);</span><br><span class="line">	map.put(node, <span class="keyword">new</span> UndirectedGraphNode(node.label));</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty()) &#123;</span><br><span class="line">		UndirectedGraphNode head = q.poll();</span><br><span class="line">		<span class="keyword">for</span>(UndirectedGraphNode neighbor : head.neighbors) &#123;</span><br><span class="line">			<span class="keyword">if</span>(!map.containsKey(neighbor)) &#123;</span><br><span class="line">				q.offer(neighbor);</span><br><span class="line">				<span class="comment">// Clone children's vertex</span></span><br><span class="line">				map.put(neighbor, <span class="keyword">new</span> UndirectedGraphNode(neighbor.label));</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="comment">// Clone edge</span></span><br><span class="line">			map.get(head).neighbors.add(map.get(neighbor));</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <hr>
-<h3><strong>算法II解题思路：</strong></h3>
-<p>三步走。分开写逻辑会显得清晰点。第一步，BFS搜索所有节点，变成邻接表。第二步，复制节点。第三步，复制边。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">// another bfs3 method uses 3 steps, convert graph to adjacent list by bfs (flatten the graph), </span><br><span class="line">//clone vertices, clone edges</span><br><span class="line">public void bfs3(UndirectedGraphNode node, HashMap&lt;UndirectedGraphNode, UndirectedGraphNode&gt; map) &#123;</span><br><span class="line">	ArrayList&lt;UndirectedGraphNode&gt; nodes = getNodes(node);</span><br><span class="line">	</span><br><span class="line">	// Copy vertices</span><br><span class="line">	for(UndirectedGraphNode old : nodes) &#123;</span><br><span class="line">		UndirectedGraphNode newNode = new UndirectedGraphNode(old.label);</span><br><span class="line">		map.put(old, newNode);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	// Copy edges</span><br><span class="line">	for(UndirectedGraphNode old : nodes) &#123;</span><br><span class="line">		for(UndirectedGraphNode neighbor : old.neighbors) &#123;</span><br><span class="line">			map.get(old).neighbors.add(map.get(neighbor));</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public ArrayList&lt;UndirectedGraphNode&gt; getNodes(UndirectedGraphNode node) &#123;</span><br><span class="line">	Queue&lt;UndirectedGraphNode&gt; q = new LinkedList&lt;&gt;();</span><br><span class="line">	Set&lt;UndirectedGraphNode&gt; result = new HashSet&lt;&gt;();</span><br><span class="line">	q.offer(node);</span><br><span class="line">	result.add(node); // Use result set so we can save the visited set</span><br><span class="line">	while(!q.isEmpty()) &#123;</span><br><span class="line">		UndirectedGraphNode n = q.poll();</span><br><span class="line">		for(UndirectedGraphNode neighbor : n.neighbors) &#123;</span><br><span class="line">			if(result.contains(neighbor))</span><br><span class="line">				continue;</span><br><span class="line">			q.offer(neighbor);</span><br><span class="line">			result.add(neighbor);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	ArrayList&lt;UndirectedGraphNode&gt; reList = new ArrayList&lt;UndirectedGraphNode&gt;();</span><br><span class="line">	reList.addAll(result);</span><br><span class="line">	return reList;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="算法II解题思路："><a href="#算法II解题思路：" class="headerlink" title="算法II解题思路："></a><strong>算法II解题思路：</strong></h3><p>三步走。分开写逻辑会显得清晰点。第一步，BFS搜索所有节点，变成邻接表。第二步，复制节点。第三步，复制边。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">// another bfs3 method uses 3 steps, convert graph to adjacent list by bfs (flatten the graph), </span><br><span class="line">//clone vertices, clone edges</span><br><span class="line">public void bfs3(UndirectedGraphNode node, HashMap&lt;UndirectedGraphNode, UndirectedGraphNode&gt; map) &#123;</span><br><span class="line">	ArrayList&lt;UndirectedGraphNode&gt; nodes = getNodes(node);</span><br><span class="line">	</span><br><span class="line">	// Copy vertices</span><br><span class="line">	for(UndirectedGraphNode old : nodes) &#123;</span><br><span class="line">		UndirectedGraphNode newNode = new UndirectedGraphNode(old.label);</span><br><span class="line">		map.put(old, newNode);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	// Copy edges</span><br><span class="line">	for(UndirectedGraphNode old : nodes) &#123;</span><br><span class="line">		for(UndirectedGraphNode neighbor : old.neighbors) &#123;</span><br><span class="line">			map.get(old).neighbors.add(map.get(neighbor));</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public ArrayList&lt;UndirectedGraphNode&gt; getNodes(UndirectedGraphNode node) &#123;</span><br><span class="line">	Queue&lt;UndirectedGraphNode&gt; q = new LinkedList&lt;&gt;();</span><br><span class="line">	Set&lt;UndirectedGraphNode&gt; result = new HashSet&lt;&gt;();</span><br><span class="line">	q.offer(node);</span><br><span class="line">	result.add(node); // Use result set so we can save the visited set</span><br><span class="line">	while(!q.isEmpty()) &#123;</span><br><span class="line">		UndirectedGraphNode n = q.poll();</span><br><span class="line">		for(UndirectedGraphNode neighbor : n.neighbors) &#123;</span><br><span class="line">			if(result.contains(neighbor))</span><br><span class="line">				continue;</span><br><span class="line">			q.offer(neighbor);</span><br><span class="line">			result.add(neighbor);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	ArrayList&lt;UndirectedGraphNode&gt; reList = new ArrayList&lt;UndirectedGraphNode&gt;();</span><br><span class="line">	reList.addAll(result);</span><br><span class="line">	return reList;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <hr>
-<h3><strong>算法II解题思路：</strong></h3>
-<p>DFS。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">public UndirectedGraphNode cloneGraph(UndirectedGraphNode node) &#123;</span><br><span class="line">	HashMap&lt;Integer, UndirectedGraphNode&gt; map = new HashMap&lt;Integer, UndirectedGraphNode&gt;();</span><br><span class="line">	return cloneGraphR(node, map);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public UndirectedGraphNode cloneGraphR(UndirectedGraphNode node,</span><br><span class="line">		HashMap&lt;Integer, UndirectedGraphNode&gt; map) &#123;</span><br><span class="line">	if (node == null)</span><br><span class="line">		return node;</span><br><span class="line">	if (map.containsKey(node.label))</span><br><span class="line">		return map.get(node.label);</span><br><span class="line"></span><br><span class="line">	UndirectedGraphNode result = new UndirectedGraphNode(node.label);</span><br><span class="line">	map.put(node.label, result);</span><br><span class="line">	for (UndirectedGraphNode child : node.neighbors) &#123;</span><br><span class="line">		result.neighbors.add(cloneGraphR(child, map));</span><br><span class="line">	&#125;</span><br><span class="line">	return result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>时间复杂度为<code>O(# of results)</code>，空间复杂度<code>O(lengh(high))</code>。</p>
+<h3 id="算法II解题思路：-1"><a href="#算法II解题思路：-1" class="headerlink" title="算法II解题思路："></a><strong>算法II解题思路：</strong></h3><p>DFS。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">public UndirectedGraphNode cloneGraph(UndirectedGraphNode node) &#123;</span><br><span class="line">	HashMap&lt;Integer, UndirectedGraphNode&gt; map = new HashMap&lt;Integer, UndirectedGraphNode&gt;();</span><br><span class="line">	return cloneGraphR(node, map);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public UndirectedGraphNode cloneGraphR(UndirectedGraphNode node,</span><br><span class="line">		HashMap&lt;Integer, UndirectedGraphNode&gt; map) &#123;</span><br><span class="line">	if (node == null)</span><br><span class="line">		return node;</span><br><span class="line">	if (map.containsKey(node.label))</span><br><span class="line">		return map.get(node.label);</span><br><span class="line"></span><br><span class="line">	UndirectedGraphNode result = new UndirectedGraphNode(node.label);</span><br><span class="line">	map.put(node.label, result);</span><br><span class="line">	for (UndirectedGraphNode child : node.neighbors) &#123;</span><br><span class="line">		result.neighbors.add(cloneGraphR(child, map));</span><br><span class="line">	&#125;</span><br><span class="line">	return result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(# of results)</code>，空间复杂度<code>O(lengh(high))</code>。  </p>
 
       
     </div>
@@ -519,32 +499,25 @@ public List&lt;Node&gt; neighbors;
     <div class="entry">
       
         <p><strong><a href="https://leetcode.com/problems/strobogrammatic-number-iii/" target="_blank" rel="noopener">LeetCode 248 Strobogrammatic Number III</a></strong></p>
-<p>A strobogrammatic number is a number that looks the same when rotated 180 degrees (looked at upside down).
-Write a function to count the total strobogrammatic numbers that exist in the range of low &lt;= num &lt;= high.</p>
-<p><strong>Example:</strong>
-&lt;pre&gt;**Input: low = &quot;50&quot;, high = &quot;100&quot;</p>
-<p><strong>Output:</strong> 3</p>
-<p>Explanation: 69, 88, and 96 are three strobogrammatic numbers.
-&lt;/pre&gt;</p>
+<p>A strobogrammatic number is a number that looks the same when rotated 180 degrees (looked at upside down).<br>Write a function to count the total strobogrammatic numbers that exist in the range of low &lt;= num &lt;= high.</p>
+<p><strong>Example:</strong> </p>
+<pre>**Input: low = "50", high = "100"
+
+**Output:** 3 
+
+Explanation: 69, 88, and 96 are three strobogrammatic numbers.
+</pre>
+
 <p><strong>Note:</strong> Because the range might be a large number, the lowand high numbers are represented as string.</p>
-<h3><strong>题目大意：</strong></h3>
-<p>求某范围的旋转数的个数。旋转数是这个数旋转180度还是一样，如0, 1, 8， 还含两位的如69， 96.</p>
-<h3><strong>解题思路：</strong></h3>
-<p>这是M公司的题目。这题不能用乘法原理，因为情况多变，要实实在在地找出每一个可能性。<br>
-类似于L351安卓解码种数，数字间有关系，求[m, n]范围间种数。用DFS将每一位填上合法位，此题区别是<br>
-需要它有对称性，所以DFS从中间向两边。API为f(res, low, high, map), res为当前结果字符串，map为旋转数的映射关系，<br>
-终止条件为res超过high，若在范围内，结果+1，也就是先将自己加入到结果中，然后两边加入旋转字符，进入下一轮递归，<br>
-累加到结果中。</p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求某范围的旋转数的个数。旋转数是这个数旋转180度还是一样，如0, 1, 8， 还含两位的如69， 96. </p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是M公司的题目。这题不能用乘法原理，因为情况多变，要实实在在地找出每一个可能性。<br>类似于L351安卓解码种数，数字间有关系，求[m, n]范围间种数。用DFS将每一位填上合法位，此题区别是<br>需要它有对称性，所以DFS从中间向两边。API为f(res, low, high, map), res为当前结果字符串，map为旋转数的映射关系，<br>终止条件为res超过high，若在范围内，结果+1，也就是先将自己加入到结果中，然后两边加入旋转字符，进入下一轮递归，<br>累加到结果中。  </p>
 <p>注意: 与上题一样，和最左位不能为0除了0自己本身。</p>
-<h3><strong>注意事项：</strong></h3>
-<ol>
-<li>奇偶位。对称中心既可以是奇数位也可以是偶数位。</li>
-<li>最左位为0，不合法如0880，但0本身除外。</li>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>奇偶位。对称中心既可以是奇数位也可以是偶数位。  </li>
+<li>最左位为0，不合法如0880，但0本身除外。  </li>
 </ol>
-<h3><strong>Java代码：</strong></h3>
-<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">strobogrammaticInRange</span><span class="params">(String low, String high)</span> </span>&#123;</span><br><span class="line">	Map&lt;String, String&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">	map.put(<span class="string">"6"</span>, <span class="string">"9"</span>);</span><br><span class="line">	map.put(<span class="string">"9"</span>, <span class="string">"6"</span>);</span><br><span class="line">	map.put(<span class="string">"1"</span>, <span class="string">"1"</span>);</span><br><span class="line">	map.put(<span class="string">"8"</span>, <span class="string">"8"</span>);</span><br><span class="line">	map.put(<span class="string">"0"</span>, <span class="string">"0"</span>);</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">int</span> result = <span class="number">0</span>;</span><br><span class="line">	result += dfs(<span class="string">""</span>, low, high, map);</span><br><span class="line">	result += dfs(<span class="string">"1"</span>, low, high, map);</span><br><span class="line">	result += dfs(<span class="string">"0"</span>, low, high, map);</span><br><span class="line">	result += dfs(<span class="string">"8"</span>, low, high, map);</span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line">	</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">dfs</span><span class="params">(String res, String low, String high, Map&lt;String, String&gt; map)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(res.length() &gt; high.length() || (res.length() == high.length() &amp;&amp; res.compareTo(high) &gt; <span class="number">0</span>)) </span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> result = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">if</span>((res.length() == low.length() &amp;&amp; res.compareTo(low) &gt;= <span class="number">0</span>)  || res.length() &gt; low.length()) </span><br><span class="line">		result = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">if</span>(res.length() &gt; <span class="number">1</span> &amp;&amp; res.charAt(<span class="number">0</span>) == <span class="string">'0'</span>)</span><br><span class="line">		result = <span class="number">0</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">for</span> (Map.Entry&lt;String, String&gt; entry : map.entrySet()) &#123;</span><br><span class="line">		result += dfs(entry.getKey() + res + entry.getValue(), low, high, map);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>时间复杂度为<code>O(# of results)</code>，空间复杂度<code>O(lengh(high))</code>。</p>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">strobogrammaticInRange</span><span class="params">(String low, String high)</span> </span>&#123;</span><br><span class="line">	Map&lt;String, String&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">	map.put(<span class="string">"6"</span>, <span class="string">"9"</span>);</span><br><span class="line">	map.put(<span class="string">"9"</span>, <span class="string">"6"</span>);</span><br><span class="line">	map.put(<span class="string">"1"</span>, <span class="string">"1"</span>);</span><br><span class="line">	map.put(<span class="string">"8"</span>, <span class="string">"8"</span>);</span><br><span class="line">	map.put(<span class="string">"0"</span>, <span class="string">"0"</span>);</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">int</span> result = <span class="number">0</span>;</span><br><span class="line">	result += dfs(<span class="string">""</span>, low, high, map);</span><br><span class="line">	result += dfs(<span class="string">"1"</span>, low, high, map);</span><br><span class="line">	result += dfs(<span class="string">"0"</span>, low, high, map);</span><br><span class="line">	result += dfs(<span class="string">"8"</span>, low, high, map);</span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line">	</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">dfs</span><span class="params">(String res, String low, String high, Map&lt;String, String&gt; map)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(res.length() &gt; high.length() || (res.length() == high.length() &amp;&amp; res.compareTo(high) &gt; <span class="number">0</span>)) </span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> result = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">if</span>((res.length() == low.length() &amp;&amp; res.compareTo(low) &gt;= <span class="number">0</span>)  || res.length() &gt; low.length()) </span><br><span class="line">		result = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">if</span>(res.length() &gt; <span class="number">1</span> &amp;&amp; res.charAt(<span class="number">0</span>) == <span class="string">'0'</span>)</span><br><span class="line">		result = <span class="number">0</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">for</span> (Map.Entry&lt;String, String&gt; entry : map.entrySet()) &#123;</span><br><span class="line">		result += dfs(entry.getKey() + res + entry.getValue(), low, high, map);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(# of results)</code>，空间复杂度<code>O(lengh(high))</code>。  </p>
 
       
     </div>
@@ -577,39 +550,26 @@ Write a function to count the total strobogrammatic numbers that exist in the ra
       
         <p><strong><a href="https://leetcode.com/problems/single-element-in-a-sorted-array" target="_blank" rel="noopener">LeetCode 540 Single Element in a Sorted Array</a></strong></p>
 <p>Given a sorted array consisting of only integers where every element appears twice except for one element which appears once. Find this single element that appears only once.</p>
-<p><strong>Example 1:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> [1,1,2,3,3,4,4,8,8]
-<strong>Output:</strong> 2
-&lt;/pre&gt;</p>
-<p><strong>Example 2:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> [3,3,7,7,10,11,11]
-<strong>Output:</strong> 10
-&lt;/pre&gt;</p>
+<p><strong>Example 1:</strong>  </p>
+<pre>**Input:** [1,1,2,3,3,4,4,8,8]
+**Output:** 2
+</pre>
+
+<p><strong>Example 2:</strong>  </p>
+<pre>**Input:** [3,3,7,7,10,11,11]
+**Output:** 10
+</pre>
+
 <p><strong>Note:</strong> Your solution should run in O(log n) time and O(1) space.</p>
-<h3><strong>题目大意：</strong></h3>
-<p>一个有序数组中，每个数字都出现了两次，只有一个数字出现了一次，求出现一次的数字。</p>
-<h3><strong>解题思路：</strong></h3>
-<p>这是A公司Problem solving的题目。类似于L136。此题数组有序且要求O(logn)时间，所以考虑用二分法。由于没有输入tgt，有点似<br>
-算法文档中用二分法求峰值，就是比较相邻两个数做二分法。考虑一个结论，若数组为偶数个数，就一定不存在只出现一次的元素。<br>
-所以必须考虑奇偶位，若下标mid为偶数，其后一位与其相等，就一定在右半边搜索left=mid+2(不会是mid和mid+1)，如第二个<br>
-例子，因为mid左边个数为偶数，利用结论可知不会在左边。同理与后一位不等，搜左边right=mid(可能为mid)。注意边界。<br>
-若mid为奇数，mid前面有奇数个，mid包括自己的后面有偶数个，所以mid和mid+1上的数相等，就应在左半搜，所以与偶数位的<br>
-情况正好相反，但是边界不同，产生了4个if语句。<br>
-法二：改进一下，若mid为奇数位，就mid--归结为偶数位的情况，这样if变成两个。</p>
-<h3><strong>注意事项：</strong></h3>
-<ol>
-<li>边界也就是mid的赋值，写出例子来理解。</li>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>一个有序数组中，每个数字都出现了两次，只有一个数字出现了一次，求出现一次的数字。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是A公司Problem solving的题目。类似于L136。此题数组有序且要求O(logn)时间，所以考虑用二分法。由于没有输入tgt，有点似<br>算法文档中用二分法求峰值，就是比较相邻两个数做二分法。考虑一个结论，若数组为偶数个数，就一定不存在只出现一次的元素。<br>所以必须考虑奇偶位，若下标mid为偶数，其后一位与其相等，就一定在右半边搜索left=mid+2(不会是mid和mid+1)，如第二个<br>例子，因为mid左边个数为偶数，利用结论可知不会在左边。同理与后一位不等，搜左边right=mid(可能为mid)。注意边界。<br>若mid为奇数，mid前面有奇数个，mid包括自己的后面有偶数个，所以mid和mid+1上的数相等，就应在左半搜，所以与偶数位的<br>情况正好相反，但是边界不同，产生了4个if语句。<br>法二：改进一下，若mid为奇数位，就mid–归结为偶数位的情况，这样if变成两个。  </p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>边界也就是mid的赋值，写出例子来理解。  </li>
 </ol>
-<h3><strong>Java代码：</strong></h3>
-<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">singleNonDuplicate</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> N = nums.length;</span><br><span class="line">	<span class="keyword">int</span> left = <span class="number">0</span>, right = N - <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">while</span> (left &lt; right) &#123;</span><br><span class="line">		<span class="keyword">int</span> mid = (right - left) / <span class="number">2</span> + left;</span><br><span class="line">		<span class="keyword">boolean</span> isEven = <span class="keyword">true</span>;</span><br><span class="line">		<span class="keyword">if</span> (mid % <span class="number">2</span> == <span class="number">1</span>) isEven = <span class="keyword">false</span>;</span><br><span class="line">		<span class="keyword">if</span> ((isEven &amp;&amp; nums[mid] != nums[mid + <span class="number">1</span>]) )</span><br><span class="line">			right = mid;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (isEven &amp;&amp; nums[mid] == nums[mid + <span class="number">1</span>])</span><br><span class="line">			left = mid + <span class="number">2</span>;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (!isEven &amp;&amp; nums[mid] == nums[mid + <span class="number">1</span>])</span><br><span class="line">			right = mid-<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			left = mid + <span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> nums[left];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">singleNonDuplicate2</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">	  <span class="keyword">int</span> N = nums.length;</span><br><span class="line">	  <span class="keyword">int</span> left = <span class="number">0</span>, right = N - <span class="number">1</span>;</span><br><span class="line">	  <span class="keyword">while</span> (left &lt; right) &#123;</span><br><span class="line">		  <span class="keyword">int</span> mid = (right - left) / <span class="number">2</span> + left;</span><br><span class="line">		  <span class="keyword">if</span> (mid % <span class="number">2</span> == <span class="number">1</span>) mid--;</span><br><span class="line">		  <span class="keyword">if</span> (nums[mid] != nums[mid + <span class="number">1</span>])</span><br><span class="line">			  right = mid;</span><br><span class="line">		  <span class="keyword">else</span></span><br><span class="line">			  left = mid + <span class="number">2</span>;</span><br><span class="line">	  &#125;</span><br><span class="line">	  <span class="keyword">return</span> nums[left];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>时间复杂度为<code>O(logn)</code>，空间复杂度<code>O(1)</code>。</p>
-<h3><strong>Follow-up:</strong></h3>
-<p>首先问L316 Given a non-empty array of integers, every element appears twice except for one. Find that single one.
-XOR解法，不用实现。
-Follow up问题是L260 Given an array of numbers nums, in which exactly two elements appear only once and all the other elements appear exactly twice. Find the two elements that appear only once.
-分三步。若只有一个数出现1次，只要把所有数异或^即可(相同数异或=0)。如果有两个此数，异或结果是这两数不同的位。只要选为1且最低位(或任意为1的位)lowBit=a-(a&amp;(a-1))。再扫所有数，根据它们在lowBit上=0和=1分组异或num1, num2，最后分组异或后它们为所求</p>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">singleNonDuplicate</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> N = nums.length;</span><br><span class="line">	<span class="keyword">int</span> left = <span class="number">0</span>, right = N - <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">while</span> (left &lt; right) &#123;</span><br><span class="line">		<span class="keyword">int</span> mid = (right - left) / <span class="number">2</span> + left;</span><br><span class="line">		<span class="keyword">boolean</span> isEven = <span class="keyword">true</span>;</span><br><span class="line">		<span class="keyword">if</span> (mid % <span class="number">2</span> == <span class="number">1</span>) isEven = <span class="keyword">false</span>;</span><br><span class="line">		<span class="keyword">if</span> ((isEven &amp;&amp; nums[mid] != nums[mid + <span class="number">1</span>]) )</span><br><span class="line">			right = mid;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (isEven &amp;&amp; nums[mid] == nums[mid + <span class="number">1</span>])</span><br><span class="line">			left = mid + <span class="number">2</span>;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (!isEven &amp;&amp; nums[mid] == nums[mid + <span class="number">1</span>])</span><br><span class="line">			right = mid-<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			left = mid + <span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> nums[left];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">singleNonDuplicate2</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">	  <span class="keyword">int</span> N = nums.length;</span><br><span class="line">	  <span class="keyword">int</span> left = <span class="number">0</span>, right = N - <span class="number">1</span>;</span><br><span class="line">	  <span class="keyword">while</span> (left &lt; right) &#123;</span><br><span class="line">		  <span class="keyword">int</span> mid = (right - left) / <span class="number">2</span> + left;</span><br><span class="line">		  <span class="keyword">if</span> (mid % <span class="number">2</span> == <span class="number">1</span>) mid--;</span><br><span class="line">		  <span class="keyword">if</span> (nums[mid] != nums[mid + <span class="number">1</span>])</span><br><span class="line">			  right = mid;</span><br><span class="line">		  <span class="keyword">else</span></span><br><span class="line">			  left = mid + <span class="number">2</span>;</span><br><span class="line">	  &#125;</span><br><span class="line">	  <span class="keyword">return</span> nums[left];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(logn)</code>，空间复杂度<code>O(1)</code>。  </p>
+<h3 id="Follow-up"><a href="#Follow-up" class="headerlink" title="Follow-up:"></a><strong>Follow-up:</strong></h3><p>首先问L316 Given a non-empty array of integers, every element appears twice except for one. Find that single one.<br>XOR解法，不用实现。<br>Follow up问题是L260 Given an array of numbers nums, in which exactly two elements appear only once and all the other elements appear exactly twice. Find the two elements that appear only once.<br>分三步。若只有一个数出现1次，只要把所有数异或^即可(相同数异或=0)。如果有两个此数，异或结果是这两数不同的位。只要选为1且最低位(或任意为1的位)lowBit=a-(a&amp;(a-1))。再扫所有数，根据它们在lowBit上=0和=1分组异或num1, num2，最后分组异或后它们为所求</p>
 
       
     </div>
@@ -642,94 +602,22 @@ Follow up问题是L260 Given an array of numbers nums, in which exactly two elem
       
         <p><strong><a href="https://leetcode.com/problems/trapping-rain-water" target="_blank" rel="noopener">LeetCode 042 Trapping Rain Water</a></strong></p>
 <p>Given <em>n</em> non-negative integers representing an elevation map where the width of each bar is 1, compute how much water it is able to trap after raining.</p>
-<p><img src="http://www.leetcode.com/static/images/problemset/rainwatertrap.png" alt=""><br>
-&lt;small&gt;The above elevation map is represented by array [0,1,0,2,1,0,1,3,2,1,2,1]. In this case, 6 units of rain water (blue section) are being trapped. <strong>Thanks Marcos</strong> for contributing this image!&lt;/small&gt;</p>
+<p><img src="http://www.leetcode.com/static/images/problemset/rainwatertrap.png" alt=""><br><small>The above elevation map is represented by array [0,1,0,2,1,0,1,3,2,1,2,1]. In this case, 6 units of rain water (blue section) are being trapped. <strong>Thanks Marcos</strong> for contributing this image!</small></p>
 <p><strong>Example:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> [0,1,0,2,1,0,1,3,2,1,2,1]
-<strong>Output:</strong> 6&lt;/pre&gt;</p>
-<h3><strong>题目大意：</strong></h3>
-<p>给出 n 个非负整数，代表一张X轴上每个区域宽度为 1 的海拔图, 计算这个海拔图最多能接住多少（面积）雨水。</p>
-<h3><strong>解题思路：</strong></h3>
-<p>画图解题。
-比较直观的方法是找低谷，只有低谷才可以藏水。用一个递减栈来存所有呈递减趋势的下标，而当上升时就计算藏水量。<br>
-<img src="/images/L042-3.png" alt=""><br>
-从图可以看出，栈中有最高的，3,2,1，最矮的已经出栈了。蓝色的bar准备入栈。计算水量是水平计算的。具体而言，<br>
-右边界是确定的，左边界以及高度都是由此bar相邻的在栈中的bar确定的。如1的水量由bar2的高度和位置确定。<br>
-同理bar2的水量由bar3确定。实质上，是求出栈的元素之间的水量，既然是之间，最后一个出栈就要特殊处理，需要准入栈<br>
-元素来确定。特殊之处是计算栈中最后一个将要被新bar踢出栈的bar3时，并没有相邻的bar作参考，<br>
-导致它需要用新bar作为参考，所以它不能在while中处理，需要特别处理，主要因为它是最后一个，属于edge case。</p>
-<h3><strong>解题步骤：</strong></h3>
-<ol>
+<pre>**Input:** [0,1,0,2,1,0,1,3,2,1,2,1]
+**Output:** 6</pre>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给出 n 个非负整数，代表一张X轴上每个区域宽度为 1 的海拔图, 计算这个海拔图最多能接住多少（面积）雨水。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>画图解题。<br>比较直观的方法是找低谷，只有低谷才可以藏水。用一个递减栈来存所有呈递减趋势的下标，而当上升时就计算藏水量。<br><img src="/images/L042-3.png" alt=""><br>从图可以看出，栈中有最高的，3,2,1，最矮的已经出栈了。蓝色的bar准备入栈。计算水量是水平计算的。具体而言，<br>右边界是确定的，左边界以及高度都是由此bar相邻的在栈中的bar确定的。如1的水量由bar2的高度和位置确定。<br>同理bar2的水量由bar3确定。实质上，是求出栈的元素之间的水量，既然是之间，最后一个出栈就要特殊处理，需要准入栈<br>元素来确定。特殊之处是计算栈中最后一个将要被新bar踢出栈的bar3时，并没有相邻的bar作参考，<br>导致它需要用新bar作为参考，所以它不能在while中处理，需要特别处理，主要因为它是最后一个，属于edge case。</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><ol>
 <li>遍历数组</li>
-<li>若比上一个高度递增，出栈直至栈中下标对应高度大于当前高度（保持递减栈）。每次出栈，用上一轮的高度作为底部计算高度差<br>
-乘以下标距离即为横向藏水增量，更新底部进入下一次出栈。</li>
+<li>若比上一个高度递增，出栈直至栈中下标对应高度大于当前高度（保持递减栈）。每次出栈，用上一轮的高度作为底部计算高度差<br>乘以下标距离即为横向藏水增量，更新底部进入下一次出栈。  </li>
 <li>出栈完成后，根据新bar计算最后一个bar的水量，用当前高度计算藏水增量。</li>
 <li>加入下标到栈中</li>
 </ol>
 <hr>
-<h3><strong>算法II解题思路：</strong></h3>
-<p>算法I主要从面考虑，现在我们从点来考虑。下标4的水量取决于向左最大值（下标0）和向右最大值（下标12）中的较小值。<br>
-问题转化为求每个点的向左向右最大值。数组从左到右扫描，把当前最大值存入leftHeight中，这是向左最大值。<br>
-<img src="/images/L042-2.png" alt="">
-同理，数组从又到左扫描，得到向右最大值。对每个点取向左向右最大值的较小者，从而计算水量。此法实现起来简单很多。</p>
-<h3><strong>Ref：</strong></h3>
-<p>http://bangbingsyb.blogspot.com/2014/11/leetcode-trapping-rain-water.html</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2018/06/17/design-distributed-id/">Design Distributed ID Generator</a></h1>
-  
-
-      
-        <time datetime="2018-06-18T06:16:29.341Z">2018-06-17</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h3><strong>题目大意：</strong></h3>
-<p>生成唯一ID如用户ID，订单ID。</p>
-<h3><strong>解题思路：</strong></h3>
-<p>基本思路是将所有网站映射到一个整数。
-三大核心需求：</p>
-<ol>
-<li>全局唯一(unique)</li>
-<li>按照时间粗略有序(sortable by time)。按时间查询是普遍的请求，如得到最新的1000个用户。</li>
-<li>尽可能短。省空间，查询要更有效率。</li>
-</ol>
-<h3><strong>UUID：</strong></h3>
-<p>UUID是一类算法的统称，具体有不同的实现。UUID的有点是每台机器可以独立产生ID，理论上保证<br>
-不会重复，所以天然是分布式的，缺点是生成的ID太长，不仅占用内存，而且索引查询效率低。
-4个字节表示的Unix timestamp,
-3个字节表示的机器的ID
-2个字节表示的进程ID
-3个字节表示的计数器</p>
-<h3><strong>多机器分别自增：</strong></h3>
-<p>假设用8台MySQL服务器协同工作，第一台MySQL初始值是1，每次自增8，第二台MySQL初始值是2，<br>
-每次自增8，依次类推。前面用一个 round-robin load balancer 挡着，每来一个请求，由<br>
-round-robin balancer 随机地将请求发给8台MySQL中的任意一个，然后返回一个ID。<br>
-load balance可以确保请求平均分配到不同的机器，所以粗略有序，缺点是加机器要re-hash这些Id<br>
-且顺序不够稳定。</p>
-<h3><strong>Twitter Snowflake：</strong></h3>
-<p>原理与UUID基本一样。也是时间戳+机器id+自增序号。时间戳保证有序。<br>
-<img src="/images/design-distributed-id.png" alt=""></p>
+<h3 id="算法II解题思路："><a href="#算法II解题思路：" class="headerlink" title="算法II解题思路："></a><strong>算法II解题思路：</strong></h3><p>算法I主要从面考虑，现在我们从点来考虑。下标4的水量取决于向左最大值（下标0）和向右最大值（下标12）中的较小值。<br>问题转化为求每个点的向左向右最大值。数组从左到右扫描，把当前最大值存入leftHeight中，这是向左最大值。<br><img src="/images/L042-2.png" alt=""><br>同理，数组从又到左扫描，得到向右最大值。对每个点取向左向右最大值的较小者，从而计算水量。此法实现起来简单很多。  </p>
+<h3 id="Ref："><a href="#Ref：" class="headerlink" title="Ref："></a><strong>Ref：</strong></h3><p><a href="http://bangbingsyb.blogspot.com/2014/11/leetcode-trapping-rain-water.html" target="_blank" rel="noopener">http://bangbingsyb.blogspot.com/2014/11/leetcode-trapping-rain-water.html</a></p>
 
       
     </div>
@@ -770,6 +658,10 @@ load balance可以确保请求平均分配到不同的机器，所以粗略有�
   <ul class="entry">
     
       <li>
+        <a href="/2021/10/30/stack/">Stack</a>
+      </li>
+    
+      <li>
         <a href="/2021/10/21/lee-017/">LeetCode 017 Letter Combinations of a Phone Number</a>
       </li>
     
@@ -783,10 +675,6 @@ load balance可以确保请求平均分配到不同的机器，所以粗略有�
     
       <li>
         <a href="/2021/07/27/lee-003/">LeetCode 003 Longest Substring Without Repeating Characters</a>
-      </li>
-    
-      <li>
-        <a href="/2021/07/27/lee-138/">LeetCode 138 Copy List with Random Pointer</a>
       </li>
     
   </ul>
