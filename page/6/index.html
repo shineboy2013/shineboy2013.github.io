@@ -53,6 +53,69 @@
     <header>
       
   
+    <h1 class="title"><a href="/2018/01/27/lee-416/">LeetCode 416 Partition Equal Subset Sum</a></h1>
+  
+
+      
+        <time datetime="2018-01-28T04:36:12.780Z">2018-01-27</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/partition-equal-subset-sum" target="_blank" rel="noopener">LeetCode 416 Partition Equal Subset Sum</a></strong></p>
+<p>Given a <strong>non-empty</strong> array containing <strong>only positive integers</strong>, find if the array can be partitioned into two subsets such that the sum of elements in both subsets is equal.</p>
+<p><strong>Note:</strong>  </p>
+<ol>
+<li>Each of the array element will not exceed 100.</li>
+<li>The array size will not exceed 200.</li>
+</ol>
+<p><strong>Example 1:</strong></p>
+<pre>Input: [1, 5, 11, 5]
+
+Output: true
+
+Explanation: The array can be partitioned as [1, 5, 5] and [11].
+</pre>
+
+<p><strong>Example 2:</strong></p>
+<pre>Input: [1, 2, 3, 5]
+
+Output: false
+
+Explanation: The array cannot be partitioned into equal sum subsets.
+</pre>
+
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个只包含正整数的非空数组，判断数组是否可以分成两个和相等的子数组。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这题转化为求是否有子序列的和等于数组和的一半，这就是0-1背包问题。价值和重量是一样数组的背包问题。背包问题递归式：<br>f[j] = Math.max(f[j], f[j-w[i]]+v[i]);<br>背包问题最后的解为容量为C的背包能装的最大价值，也就是在这题中，容量为数组一半和的背包能装的最大价值是否为数组一半。如果能，即有解。<br>表示存在前i个数它的和（最大价值）等于和的一半。<br>举例说明，容量一半表示刚好可以凑到几个数和为一半，如[1,5,11,5]，容量为11，就可以凑到[1,5,5]重量和价值均为一半。<br>如[1,2,3,10]和为16，容量为8，只能找到[1,2,3]价值为6达不到一半。所以这里C是限制条件并不是一定要达到。但刚好达到即为解。  </p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>数组和为奇数，无解</li>
+<li>背包问题的解若为数组一半的和即有解</li>
+<li>背包问题解法C向前滚</li>
+</ol>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">canPartition</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> sum = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums.length;i++)</span><br><span class="line">		sum+=nums[i];</span><br><span class="line">	<span class="keyword">if</span>(sum%<span class="number">2</span>==<span class="number">1</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	<span class="keyword">int</span>[] result = knapsack(nums,nums,sum/<span class="number">2</span>);</span><br><span class="line">	<span class="keyword">if</span>(sum/<span class="number">2</span>==result[result.length-<span class="number">1</span>])</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] knapsack(<span class="keyword">int</span> v[], <span class="keyword">int</span> w[], <span class="keyword">int</span> C)&#123;</span><br><span class="line">	<span class="keyword">int</span> n = v.length;</span><br><span class="line">	<span class="comment">//int[][] re = new int[n][C+1];</span></span><br><span class="line">	<span class="keyword">int</span>[] f = <span class="keyword">new</span> <span class="keyword">int</span>[C+<span class="number">1</span>];</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++)&#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j=C;j&gt;=w[i];j--)&#123;</span><br><span class="line">			f[j] = Math.max(f[j], f[j-w[i]]+v[i]);</span><br><span class="line">			<span class="comment">//if(f[j]==f[j-w[i]]+v[i])</span></span><br><span class="line">			   <span class="comment">// re[i][j] = 1;</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> f;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nC)</code>，空间复杂度<code>O(C)</code>。C为数组和的一半，n为数组个数。</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2018/01/10/lee-329/">LeetCode 329 Longest Increasing Path in a Matrix</a></h1>
   
 
@@ -536,48 +599,6 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2017/12/24/union-find/">Union Find</a></h1>
-  
-
-      
-        <time datetime="2017-12-24T18:51:12.341Z">2017-12-24</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>DFS用于需要知道具体路径的问题，而并查集方法用于不需知道具体路径只关心连通性的问题。<br>此算法把同一个连通集归结为同一个根节点，作为判断是否一个连通集的标识。它用深度为2的扁平树组织起来。这是查找操作。<br>另一个关键操作是联合两个不同连通集，就是直接把根节点直接作为另一课树的子节点。在这个过程中，新的树深度可能会大于2，但当要union路径大于2的节点是，会对其进行路径压缩。<br>最巧妙的操作当属find操作，将路径进行压缩，变成长度为1的路径，见步骤4。<br>可能有人会考虑用HashMap而不是树，HashMap查找也是很高效，但联合操作比较费时，因为要更新另一个树的所有节点的根节点。</p>
-<h3 id="算法步骤："><a href="#算法步骤：" class="headerlink" title="算法步骤："></a><strong>算法步骤：</strong></h3><ol>
-<li>初始化UnionFind类，包括3个属性：count（独立连通数）, parent（某节点的父节点）, rank（连通集排名，只有每个连通集根节点的rank不为0，其他点均为0。这是一个描述连通集规模的变量，如果规模越大，<br>rank值可能越大。合并时候，rank较小的话，规模也较小，这样用rank小的合并到rank大的，需要压缩路径的节点较少，复杂度更低）。合格的节点的parent初始化为自己的id，rank为0，count为所有合格节点数量。</li>
-<li>遍历所有节点，<strong>union</strong>此节点及其相邻的节点（如上下左右）</li>
-<li>union时候，先<strong>find</strong>两节点的根节点，若相同忽略。若不同，合并此两连通集：rank大的连通集，作为rank小的连通集的父节点。若rank相等，选任一作为另一个的父节点且把它的rank加1。count减1。<br>如下图，union 5和1的，find(6)会进行压缩路径，把6接到5下。<br><img src="/images/union-find-2.png" alt=""></li>
-<li>find寻找根节点的同时，压缩成与根节点路径为1的连通。<br><img src="/images/union-find.png" alt=""></li>
-</ol>
-<p>例子矩阵：<br>{‘0’,’1’,’1’,’0’,’0’}<br>{‘1’,’1’,’1’,’0’,’0’}</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><p>find要注意压缩路径parent[i] = find(parent[i])</p>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UnionFind</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> count; <span class="comment">// # of connected components</span></span><br><span class="line">	<span class="keyword">int</span>[] parent;</span><br><span class="line">	<span class="keyword">int</span>[] rank;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">UnionFind</span><span class="params">(<span class="keyword">char</span>[][] grid)</span> </span>&#123; <span class="comment">// for problem 200</span></span><br><span class="line">		count = <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">int</span> m = grid.length;</span><br><span class="line">		<span class="keyword">int</span> n = grid[<span class="number">0</span>].length;</span><br><span class="line">		parent = <span class="keyword">new</span> <span class="keyword">int</span>[m * n];</span><br><span class="line">		rank = <span class="keyword">new</span> <span class="keyword">int</span>[m * n];</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; m; ++i) &#123;</span><br><span class="line">			<span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; n; ++j) &#123;</span><br><span class="line">				<span class="keyword">if</span> (grid[i][j] == <span class="string">'1'</span>) &#123;</span><br><span class="line">					parent[i * n + j] = i * n + j;</span><br><span class="line">					++count;</span><br><span class="line">				&#125;</span><br><span class="line">				rank[i * n + j] = <span class="number">0</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">find</span><span class="params">(<span class="keyword">int</span> i)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (parent[i] != i) &#123;</span><br><span class="line">			parent[i] = find(parent[i]); <span class="comment">// path compression</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> parent[i];</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// union point x and y with rank</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">union</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">int</span> rootx = find(x);</span><br><span class="line">		<span class="keyword">int</span> rooty = find(y);</span><br><span class="line">		<span class="keyword">if</span> (rootx != rooty) &#123;</span><br><span class="line">			<span class="keyword">if</span> (rank[rootx] &gt; rank[rooty]) &#123;</span><br><span class="line">				parent[rooty] = rootx;</span><br><span class="line">			&#125; <span class="keyword">else</span> <span class="keyword">if</span> (rank[rootx] &lt; rank[rooty]) &#123;</span><br><span class="line">				parent[rootx] = rooty;</span><br><span class="line">			&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">				parent[rooty] = rootx;</span><br><span class="line">				rank[rootx] += <span class="number">1</span>;</span><br><span class="line">			&#125;</span><br><span class="line">			--count;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getCount</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> count;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">numIslands3</span><span class="params">(<span class="keyword">char</span>[][] grid)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (grid == <span class="keyword">null</span> || grid.length == <span class="number">0</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">int</span> nr = grid.length;</span><br><span class="line">	<span class="keyword">int</span> nc = grid[<span class="number">0</span>].length;</span><br><span class="line">	<span class="keyword">int</span> num_islands = <span class="number">0</span>;</span><br><span class="line">	UnionFind uf = <span class="keyword">new</span> UnionFind(grid);</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> r = <span class="number">0</span>; r &lt; nr; ++r) &#123;</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> c = <span class="number">0</span>; c &lt; nc; ++c) &#123;</span><br><span class="line">			<span class="keyword">if</span> (grid[r][c] == <span class="string">'1'</span>) &#123;</span><br><span class="line">				grid[r][c] = <span class="string">'0'</span>;</span><br><span class="line">				<span class="keyword">if</span> (r - <span class="number">1</span> &gt;= <span class="number">0</span> &amp;&amp; grid[r - <span class="number">1</span>][c] == <span class="string">'1'</span>) &#123;</span><br><span class="line">					uf.union(r * nc + c, (r - <span class="number">1</span>) * nc + c);</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">if</span> (r + <span class="number">1</span> &lt; nr &amp;&amp; grid[r + <span class="number">1</span>][c] == <span class="string">'1'</span>) &#123;</span><br><span class="line">					uf.union(r * nc + c, (r + <span class="number">1</span>) * nc + c);</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">if</span> (c - <span class="number">1</span> &gt;= <span class="number">0</span> &amp;&amp; grid[r][c - <span class="number">1</span>] == <span class="string">'1'</span>) &#123;</span><br><span class="line">					uf.union(r * nc + c, r * nc + c - <span class="number">1</span>);</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">if</span> (c + <span class="number">1</span> &lt; nc &amp;&amp; grid[r][c + <span class="number">1</span>] == <span class="string">'1'</span>) &#123;</span><br><span class="line">					uf.union(r * nc + c, r * nc + c + <span class="number">1</span>);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> uf.getCount();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(MN)</code>，空间复杂度<code>O(MN)</code>。M,N分别为矩阵长宽。遍历每个节点，而每个节点只会遍历4个相邻节点。</p>
-<h3 id="Ref："><a href="#Ref：" class="headerlink" title="Ref："></a><strong>Ref：</strong></h3><p><a href="http://blog.csdn.net/dm_vincent/article/details/7655764" target="_blank" rel="noopener">并查集(Union-Find)算法介绍</a></p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -602,6 +623,10 @@
   <ul class="entry">
     
       <li>
+        <a href="/2021/11/13/kb-alg/">算法知识点目录</a>
+      </li>
+    
+      <li>
         <a href="/2021/10/30/stack/">Stack</a>
       </li>
     
@@ -615,10 +640,6 @@
     
       <li>
         <a href="/2021/07/27/lee-104/">LeetCode 104 Maximum Depth of Binary Tree</a>
-      </li>
-    
-      <li>
-        <a href="/2021/07/27/lee-003/">LeetCode 003 Longest Substring Without Repeating Characters</a>
       </li>
     
   </ul>

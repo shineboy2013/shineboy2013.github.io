@@ -84,7 +84,7 @@ Given n non-negative integers representing an elevation map where the width of e
 <li>水量的宽度=准入栈下标与相邻栈的下标i - stack[-1] - 1，并不是当前栈的下标，因为如上图，2-3之间可能实际上不相邻（有些<br>高度已出栈），若用当前栈的下标会忽略了2-3之间的水量。    </li>
 <li>最后一个出栈的高度计算要注意还有相邻的bar才计算也就是栈不为空if stack。   </li>
 </ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">stack = []</span><br><span class="line">sum = <span class="number">0</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(len(height)):</span><br><span class="line">	j = <span class="number">-1</span></span><br><span class="line">	<span class="keyword">while</span> stack <span class="keyword">and</span> height[stack[<span class="number">-1</span>]] &lt; height[i]:</span><br><span class="line">		j = stack.pop()</span><br><span class="line">		<span class="keyword">if</span> stack <span class="keyword">and</span> height[stack[<span class="number">-1</span>]] &lt; height[i]:</span><br><span class="line">			sum += (height[stack[<span class="number">-1</span>]] - height[j]) * (i - stack[<span class="number">-1</span>] - <span class="number">1</span>)</span><br><span class="line">	<span class="keyword">if</span> stack <span class="keyword">and</span> j &gt; <span class="number">0</span>:</span><br><span class="line">		sum += (height[i] - height[j]) * (i - stack[<span class="number">-1</span>] - <span class="number">1</span>)</span><br><span class="line">	stack.append(i)</span><br><span class="line"><span class="keyword">return</span> sum</span><br></pre></td></tr></table></figure>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">trap</span><span class="params">(self, height: List[int])</span> -&gt; int:</span></span><br><span class="line">	stack = []</span><br><span class="line">	sum = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(height)):</span><br><span class="line">		j = <span class="number">-1</span></span><br><span class="line">		<span class="keyword">while</span> stack <span class="keyword">and</span> height[i] &gt; height[stack[<span class="number">-1</span>]]:</span><br><span class="line">			j = stack.pop()</span><br><span class="line">			<span class="keyword">if</span> stack <span class="keyword">and</span> height[i] &gt; height[stack[<span class="number">-1</span>]]:</span><br><span class="line">				sum += (height[stack[<span class="number">-1</span>]] - height[j]) * (i - stack[<span class="number">-1</span>] - <span class="number">1</span>)</span><br><span class="line">		<span class="keyword">if</span> stack <span class="keyword">and</span> j &gt; <span class="number">0</span>:</span><br><span class="line">			sum += (height[i] - height[j]) * (i - stack[<span class="number">-1</span>] - <span class="number">1</span>)</span><br><span class="line">		stack.append(i)</span><br><span class="line">	<span class="keyword">return</span> sum</span><br></pre></td></tr></table></figure>
 <h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>。</p>
 <hr>
 <h3 id="算法II解题思路："><a href="#算法II解题思路：" class="headerlink" title="算法II解题思路："></a><strong>算法II解题思路：</strong></h3><p>算法I主要从面考虑，现在我们从点来考虑。下标4的水量取决于向左最大值（下标0）和向右最大值（下标12）中的较小值。<br>问题转化为求每个点的向左向右最大值。数组从左到右扫描，把当前最大值存入leftHeight中，这是向左最大值。<br><img src="/images/L042-2.png" alt=""><br>同理，数组从又到左扫描，得到向右最大值。对每个点取向左向右最大值的较小者，从而计算水量。此法实现起来简单很多。  </p>
@@ -147,6 +147,10 @@ Given n non-negative integers representing an elevation map where the width of e
   <ul class="entry">
     
       <li>
+        <a href="/2021/11/13/kb-alg/">算法知识点目录</a>
+      </li>
+    
+      <li>
         <a href="/2021/10/30/stack/">Stack</a>
       </li>
     
@@ -160,10 +164,6 @@ Given n non-negative integers representing an elevation map where the width of e
     
       <li>
         <a href="/2021/07/27/lee-104/">LeetCode 104 Maximum Depth of Binary Tree</a>
-      </li>
-    
-      <li>
-        <a href="/2021/07/27/lee-003/">LeetCode 003 Longest Substring Without Repeating Characters</a>
       </li>
     
   </ul>
