@@ -53,294 +53,84 @@
     <header>
       
   
-    <h1 class="title"><a href="/2018/05/01/design-chime/">Design Chime</a></h1>
+    <h1 class="title"><a href="/2020/05/09/lee-139/">LeetCode 139 Word Break</a></h1>
   
 
       
-        <time datetime="2018-05-02T05:21:57.460Z">2018-05-01</time>
+        <time datetime="2020-05-09T18:13:14.876Z">2020-05-09</time>
       
     </header>
     <div class="entry">
       
-        <h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>Design a chatting application like Chime  </p>
-<h3 id="了解用户需求："><a href="#了解用户需求：" class="headerlink" title="了解用户需求："></a><strong>了解用户需求：</strong></h3><p>通过不断和面试官沟通，了解用户角度的需求。把这些需求逐一列举在白板上。面试者一开始会刻意只说出1-2点。面试者通过联系实际，不够构想<br>一些需求，若得到确认就要写入。</p>
-<ol>
-<li>用户可以单对单相互聊天(one-on-one chat)</li>
-<li>用户可以群聊(group chat)</li>
-<li>用户可登陆</li>
-<li>用户可以添加好友(sending)，接受好友(accepting)，拒绝添加(rejecting). 好友相互添加(mutual)，不支持两人分别添加。</li>
-<li>用户更新状态为offline, available, busy, don’t disturb，还有个性化签名</li>
-</ol>
-<p>面试者通过重新排序user life cycle更有助于理解和记忆</p>
-<ol>
-<li>用户可登陆</li>
-<li>用户可以添加好友(sending)，接受好友(accepting)，拒绝添加(rejecting)</li>
-<li>用户可以单对单相互聊天(one-on-one chat)</li>
-<li>用户可以群聊(group chat)</li>
-<li>用户更新状态为offline, available, busy, don’t disturb，还有个性化签名</li>
-</ol>
-<p>本面试不支持以下use cases<br>音频会议，视频会议，文件传输</p>
-<h3 id="Block-Component-diagram："><a href="#Block-Component-diagram：" class="headerlink" title="Block/Component diagram："></a><strong>Block/Component diagram：</strong></h3><p>最简单的设计就是一系列的clients，一系列的servers，还有存储系统。<br><img src="/images/chime.png" alt=""><br>存储系统可以选择SQL或者No SQL。No SQL就会更加scalable.这里可以讨论它们之间的pros和cons。<br>传输协议(client-server)可用Java中的Socket和ServerSocket对象，它们建立一个TCP连接，用IO Stream传输。<br>服务器端用多个服务器避免single point of failure。server端的memory会存一些用户状态等数据（当然它也会被持久化），这表示它需要<br>    replicate一些数据减少不同机器之间的lookup时间。</p>
-<p>这些大概讨论一下即可，本design主要针对OOD。</p>
-<h3 id="Class-diagram："><a href="#Class-diagram：" class="headerlink" title="Class diagram："></a><strong>Class diagram：</strong></h3><p>从User开始写fields和key methods，因为需求就是针对用户，比较直观。当参数含有多个属性时，就应该考虑产生一个新的class，如Message，<br>因为Message不只内容String还有发送时间甚至styling等。 还有注意每个类是否存在状态(如UserStatus)，如果有，就要考虑用enum。</p>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line">User:</span><br><span class="line">   <span class="keyword">int</span> id;</span><br><span class="line">   String fullName;</span><br><span class="line">   String alias;</span><br><span class="line">   List&lt;User&gt; friends;</span><br><span class="line">   List&lt;GroupChat&gt; gChats;</span><br><span class="line">   List&lt;PrivateChat&gt; pChats;</span><br><span class="line">   UserStatus s;</span><br><span class="line">   </span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">sign</span><span class="params">()</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">signout</span><span class="params">()</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">sendFriend</span><span class="params">(FriendRequest r)</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">acceptFriend</span><span class="params">(FriendRequest r)</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">rejectFriend</span><span class="params">(FriendRequest r)</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">setUserStatus</span><span class="params">(UserStatus s)</span></span>;</span><br><span class="line">   <span class="function">PrivateChat <span class="title">createConversation</span><span class="params">(User b)</span></span>;</span><br><span class="line">   <span class="function">GroupChat <span class="title">createConversation</span><span class="params">(List&lt;User&gt; c)</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">sendMessage</span><span class="params">(PrivateChat s, String msg)</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">sendMessage</span><span class="params">(GroupChat s, String msg)</span></span>;</span><br><span class="line"></span><br><span class="line">Conversation:</span><br><span class="line">   <span class="keyword">int</span> id;</span><br><span class="line">   List&lt;User&gt; users;</span><br><span class="line">   List&lt;Message&gt; messages;</span><br><span class="line">   </span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">addMessage</span><span class="params">(Message msg)</span></span>;</span><br><span class="line">   </span><br><span class="line">PrivateChat extends Conversation:</span><br><span class="line">   PrivateChat(User user, User user2);</span><br><span class="line"></span><br><span class="line">GroupChat extends Conversation:</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">addUser</span><span class="params">(User u)</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">removeUser</span><span class="params">(User u)</span></span>;</span><br><span class="line">   </span><br><span class="line">Message:</span><br><span class="line">   <span class="keyword">int</span> id;</span><br><span class="line">   Date timestamp;</span><br><span class="line">   User user;<span class="comment">//I would like to know who sent this msg</span></span><br><span class="line">   String content;</span><br><span class="line"></span><br><span class="line">FriendRequest:</span><br><span class="line">   User from;</span><br><span class="line">   User to;</span><br><span class="line">   Date timestamp;</span><br><span class="line">   RequestStatus Status;</span><br><span class="line"></span><br><span class="line">UserStatus:</span><br><span class="line">   String message;</span><br><span class="line">   UserStatusType type;</span><br><span class="line"></span><br><span class="line"><span class="keyword">enum</span> RequestStatus:</span><br><span class="line">   ACCEPTED, REJECTED, PENDING</span><br><span class="line"> </span><br><span class="line"><span class="keyword">enum</span> UserStatusType:</span><br><span class="line">   offline, available, busy, DONT_disturb</span><br><span class="line"></span><br><span class="line"><span class="comment">//这个类最为复杂，主要是维护用户关系和用户状态以及对应的数据库读写。这里有几个隐形需求。。可以根据alias搜索用户，  </span></span><br><span class="line"><span class="comment">//如果用户offline，即使是好友也不能发信息。它是singleton。</span></span><br><span class="line">UserManager:</span><br><span class="line">   HashMap&lt;String, User&gt; usersByAlias;</span><br><span class="line">   <span class="comment">//User类需要含有UserManager，查看要发送信息的对象是否在线，若不在线，不能发出信息。</span></span><br><span class="line">   HashMap&lt;Integer, User&gt; onlineUsers;</span><br><span class="line">   </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> UserManager <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">       <span class="keyword">if</span> (instance==<span class="keyword">null</span>) instance = <span class="keyword">new</span> UserManager();</span><br><span class="line">	   <span class="keyword">return</span> instance;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="comment">//用observer模式，User调用UserManager这个接口来更新onlineUsers</span></span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">signInUser</span><span class="params">(String alias)</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">signOutUser</span><span class="params">(String alias)</span></span>;</span><br><span class="line">   <span class="comment">//User to的acceptFriend会调用这个函数来更新User a和User b的friend list同时更新FriendRequest的状态。</span></span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">approveRequest</span><span class="params">(FriendRequest f)</span></span>;</span><br></pre></td></tr></table></figure>
-<p>具体实现可以选择approveRequest或者某用户发信息怎么令group chat的其他用户收到该信息sendMessage(GroupChat s, String msg)。</p>
-<p>void sendMessage(GroupChat s, String msg){<br>    List<user> users = s.getUsers();<br>}</user></p>
-<h3 id="扩展问题："><a href="#扩展问题：" class="headerlink" title="扩展问题："></a><strong>扩展问题：</strong></h3><ol>
-<li>怎么知道某用户真的在线</li>
-<li>怎么处理内存和数据冲突的信息</li>
-<li>怎么让server scale</li>
-<li>怎么防止DDOS攻击</li>
-</ol>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2018/04/30/design-tiny-url/">Design Tiny URL</a></h1>
-  
-
-      
-        <time datetime="2018-04-30T22:56:55.681Z">2018-04-30</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>长URL变成短URL方便传输和阅读，特别是很多社交网站对字数有限制如Twitter。</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><ol>
-<li>沟通清楚需要，用户数（都会很大）</li>
-<li>数据量估计。如火车售票系统，估计西雅图总人口，高峰乘坐人数。</li>
-<li>先完成一个功能。如buy ticket。画图，每个部件high level细节包括数据库的schema和组件间的API接口。</li>
-<li>自觉加上优化，如cache，master-slave数据库,LB等等。不要等面试官提醒</li>
-<li>完成一个功能后，再画图扩展到其他功能。 </li>
-</ol>
-<h3 id="短网址长度："><a href="#短网址长度：" class="headerlink" title="短网址长度："></a><strong>短网址长度：</strong></h3><p>短网址若只含数字，也就是十进制整数还是不够短。可以考虑加入大小写字母，总共有26x2+10=62，也就是一个62进制数。<br>网站总数是45亿个，62^7就远远大于45亿，7位就够。<br>若long表示的64位整数，log62(2^64-1)=11，大约是对应11位。  </p>
-<table>
-<thead>
-<tr>
-<th>网站</th>
-<th style="text-align:left">十进制</th>
-<th style="text-align:left">62进制</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>amazon.com</td>
-<td style="text-align:left">0854</td>
-<td style="text-align:left">a5G</td>
-</tr>
-</tbody>
-</table>
-<h3 id="存储方法："><a href="#存储方法：" class="headerlink" title="存储方法："></a><strong>存储方法：</strong></h3><p>写操作：长网址到短网址<br>读操作：短网址到长网址<br>读操作远远大于写操作，所以key（或primary key）选在短网址， value在长网址。<br>每个新的长网址，对应一个短网址还是多个？考虑一下几点：</p>
-<ol>
-<li>若对应一个短网址，必须再产生一个unique key在长网址上来决定该长网址对应的短网址是否存在。大大降低写操作速度。  </li>
-<li>长网址虽然一样，但可以带不同的header, user agent，从而知道进入该长网址的入口（其他网站），短网址商的盈利来源。<br>所以长网址对应多个短网址，Google Maps就采取这个设计。    </li>
-</ol>
-<table>
-<thead>
-<tr>
-<th>网站</th>
-<th style="text-align:left">十进制</th>
-<th style="text-align:left">62进制</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>amazon.com</td>
-<td style="text-align:left">0854</td>
-<td style="text-align:left">a5G</td>
-</tr>
-<tr>
-<td>amazon.com</td>
-<td style="text-align:left">17922</td>
-<td style="text-align:left">bYd</td>
-</tr>
-</tbody>
-</table>
-<p>数据库选择可以是关系型数据库SQL Server，或者KV数据库如Redis，dynamoDB。可以详细讨论关系型数据库与No SQL的区别。<br>此题目用No sql比较好，因为从分布性考虑和是否需要复杂的Join操作来考虑，No sql有明显优势。</p>
-<h3 id="计算短网址："><a href="#计算短网址：" class="headerlink" title="计算短网址："></a><strong>计算短网址：</strong></h3><p>另一个核心问题就是如何计算短网址，具体而言是怎么从URL转化为一个十进制整数。有几个方案：  </p>
-<ol>
-<li>最简单的是维护一个最大值，每个新的请求，对此值加1。缺点是分布式系统中，维护单一最大值（所有机器中）大大降低性能。</li>
-<li>取URL的hash值得到64位整数再取前7位，但会有冲突。</li>
-<li><a href="https://shineboy2013.github.io/2018/06/18/design-distributed-id/" target="_blank" rel="noopener">参考分布式发号器</a>  </li>
-</ol>
-<p>十进制到62进制用短除法来做，<br><img src="/images/design-tiny-url.png" alt=""><br>796%62=52， (796-52)/62=12.<br>12%62=12, (12-12)/62=0.<br>结果为(12)(52) = cP</p>
-<h3 id="DDOS："><a href="#DDOS：" class="headerlink" title="DDOS："></a><strong>DDOS：</strong></h3><p>这是一个细节考虑，若黑客大量发请求，耗尽所有ID怎么办？</p>
-<ol>
-<li>限制IP单日请求总数，超过直接拒绝。</li>
-<li>限制长网址的单一性。限制IP还不够，因为用proxy provider服务可以绕过这个限制。用Redis来cache长网址到短网址的一日数据，<br>然后LRU淘汰旧的数据。这样如果此URL的请求超过一定数量，比如100次，就返回最新的短网址。<br>长网址-&gt;次数+短URL</li>
-</ol>
-<h3 id="301还是302："><a href="#301还是302：" class="headerlink" title="301还是302："></a><strong>301还是302：</strong></h3><p>301是永久重定向，302是临时重定向。如果用了301， Google，百度等搜索引擎，搜索的时候会直接展示真实地址，那我们就无法统计<br>到短地址被点击的次数了，也无法收集用户的Cookie, User Agent等信息。这是短网址商的盈利来源。  </p>
-<h3 id="Ref："><a href="#Ref：" class="headerlink" title="Ref："></a><strong>Ref：</strong></h3><p><a href="https://soulmachine.gitbooks.io/system-design/content/cn/tinyurl.html" target="_blank" rel="noopener">https://soulmachine.gitbooks.io/system-design/content/cn/tinyurl.html</a><br><a href="https://segmentfault.com/a/1190000006140476" target="_blank" rel="noopener">https://segmentfault.com/a/1190000006140476</a>  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2018/04/30/lee-273/">LeetCode 273 Integer to English Words</a></h1>
-  
-
-      
-        <time datetime="2018-04-30T22:53:48.778Z">2018-04-30</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/integer-to-english-words" target="_blank" rel="noopener">LeetCode 273 Integer to English Words</a></strong></p>
-<p>Convert a non-negative integer to its english words representation. Given input is guaranteed to be less than 2<sup>31</sup> - 1.</p>
+        <p><strong><a href="https://leetcode.com/problems/word-break/" target="_blank" rel="noopener">LeetCode 139 Word Break</a></strong></p>
+<p>&lt;div&gt;</p>
+<p>Given a <strong>non-empty</strong> string <em>s</em> and a dictionary <em>wordDict</em> containing a list of <strong>non-empty</strong> words, determine if <em>s</em> can be segmented into a space-separated sequence of one or more dictionary words.</p>
+<p><strong>Note:</strong></p>
+<ul>
+<li>The same word in the dictionary may be reused multiple times in the segmentation.</li>
+<li>You may assume the dictionary does not contain duplicate words.</li>
+</ul>
 <p><strong>Example 1:</strong></p>
-<pre>**Input:** 123
-**Output:** "One Hundred Twenty Three"
-</pre>
-
+<p>&lt;pre&gt;<strong>Input:</strong> s = &quot;leetcode&quot;, wordDict = [&quot;leet&quot;, &quot;code&quot;]
+<strong>Output:</strong> true
+<strong>Explanation:</strong> Return true because <code>&quot;leetcode&quot;</code> can be segmented as <code>&quot;leet code&quot;</code>.
+&lt;/pre&gt;</p>
 <p><strong>Example 2:</strong></p>
-<pre>**Input:** 12345
-**Output:** "Twelve Thousand Three Hundred Forty Five"</pre>
-
+<p>&lt;pre&gt;<strong>Input:</strong> s = &quot;applepenapple&quot;, wordDict = [&quot;apple&quot;, &quot;pen&quot;]
+<strong>Output:</strong> true
+<strong>Explanation:</strong> Return true because <code>&quot;</code>applepenapple<code>&quot;</code> can be segmented as <code>&quot;</code>apple pen apple<code>&quot;</code>.
+             Note that you are allowed to reuse a dictionary word.
+&lt;/pre&gt;</p>
 <p><strong>Example 3:</strong></p>
-<pre>**Input:** 1234567
-**Output:** "One Million Two Hundred Thirty Four Thousand Five Hundred Sixty Seven"
-</pre>
-
-<p><strong>Example 4:</strong></p>
-<pre>**Input:** 1234567891
-**Output:** "One Billion Two Hundred Thirty Four Million Five Hundred Sixty Seven Thousand Eight Hundred Ninety One"
-</pre>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>这是将非负整数转化为其英文单词表示。给定输入确保小于 2 ^ 31 - 1</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是logical and maintainable的经典题。按照英语的习惯，每三位是一组，所以实现的时候，也是按千为分组，有一个方法去处理一千<br>内的数。一千以内也分为三种情况，20以内，几十，其他。20以内和几十都是特殊情况的单词，所以可以放入数组或HashMap，数组比较<br>好，因为可以直接用索引读出。大于一千的数，可以用递归来做，从人的习惯，从低位到高位，每三位加一个逗号分隔。所以同样，算法<br>也是从低位开始，若千位内的数大于0，加入Thousand, Million等，每三位调用千位方法，再递归。<br>group的引入作为递归的层次来决定Thousand还是Million。<br>由于从低位递归，所以倒着做，要reverse地加入到结果，最终结果再reverse回来。  </p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>空格总加在新数前面，也就是append前先加空格</li>
-<li>低3位大于0才加Thousand, Million等词，也就是低三位在1-999之间，若为0如1 million。</li>
+<p>&lt;pre&gt;<strong>Input:</strong> s = &quot;catsandog&quot;, wordDict = [&quot;cats&quot;, &quot;dog&quot;, &quot;sand&quot;, &quot;and&quot;, &quot;cat&quot;]
+<strong>Output:</strong> false
+&lt;/pre&gt;</p>
+<p>&lt;/div&gt;</p>
+<h3><strong>题目大意：</strong></h3>
+<p>一个字符串s，是否能够被“字典集合”（wordDict）中的单词拼接而成。</p>
+<h3><strong>解题思路：</strong></h3>
+<p>这是经典题。如果知道s[0:n-1)很容易知道s[0:n)是否有解，既然和子问题有关，就用DP。</p>
+<ol>
+<li>定义dp[i]为字符串s[0,i)是否可以合法分解。</li>
+<li>判断一个字符串是否可以合法分解，方案是尝试在每一位进行分解，若其中一个可分解，即有解。<br>
+递归式为dp[i] |= dp[k] &amp;&amp; isWord(s[k:i)), 0 &lt;= k &lt; i.</li>
+<li>方向为从左到右i=0..n, 初始值为dp[0] = true.</li>
 </ol>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> String[] lows = &#123;<span class="string">""</span>, <span class="string">"One"</span>, <span class="string">"Two"</span>, <span class="string">"Three"</span>, <span class="string">"Four"</span>, <span class="string">"Five"</span>, <span class="string">"Six"</span>, <span class="string">"Seven"</span>, <span class="string">"Eight"</span>, <span class="string">"Nine"</span>, <span class="string">"Ten"</span>, </span><br><span class="line">   <span class="string">"Eleven"</span>, <span class="string">"Twelve"</span>,<span class="string">"Thirteen"</span>, <span class="string">"Fourteen"</span>,<span class="string">"Fifteen"</span>,<span class="string">"Sixteen"</span>,<span class="string">"Seventeen"</span>,<span class="string">"Eighteen"</span>, <span class="string">"Nineteen"</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> String[] tens = &#123;<span class="string">""</span>, <span class="string">""</span>, <span class="string">"Twenty"</span>, <span class="string">"Thirty"</span>, <span class="string">"Forty"</span>, <span class="string">"Fifty"</span>, <span class="string">"Sixty"</span>, <span class="string">"Seventy"</span>, <span class="string">"Eighty"</span>, <span class="string">"Ninety"</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">numberToWords</span><span class="params">(<span class="keyword">int</span> number)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(number == <span class="number">0</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"Zero"</span>;	</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	StringBuilder result = <span class="keyword">new</span> StringBuilder();</span><br><span class="line"></span><br><span class="line">	translateThreeR(number, result, <span class="number">0</span>);</span><br><span class="line">	<span class="keyword">return</span> result.reverse().toString().trim();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">translateThreeR</span><span class="params">(<span class="keyword">int</span> number, StringBuilder result, <span class="keyword">int</span> group)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> lower = number % <span class="number">1000</span>;</span><br><span class="line">	<span class="keyword">int</span> thousands = number / <span class="number">1000</span>;     </span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (group == <span class="number">1</span> &amp;&amp; lower &gt; <span class="number">0</span>)</span><br><span class="line">		result.append(reverse(<span class="string">" Thousand"</span>));</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (group==<span class="number">2</span> &amp;&amp; lower &gt; <span class="number">0</span>)</span><br><span class="line">		result.append(reverse(<span class="string">" Million"</span>));</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (group==<span class="number">3</span> &amp;&amp; lower &gt; <span class="number">0</span>)</span><br><span class="line">		result.append(reverse(<span class="string">" Billion"</span>));</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(lower&gt;<span class="number">0</span>)</span><br><span class="line">		result.append(reverse(translateThree(lower)));</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(thousands &gt;= <span class="number">1</span>) &#123;</span><br><span class="line">		translateThreeR(thousands, result, ++group);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">translateThree</span><span class="params">(<span class="keyword">int</span> number)</span> </span>&#123;</span><br><span class="line">	StringBuilder result = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">	<span class="keyword">if</span>(number &gt; <span class="number">99</span>) &#123;</span><br><span class="line">		result.append(<span class="string">" "</span>+lows[number / <span class="number">100</span>]);</span><br><span class="line">		result.append(<span class="string">" Hundred"</span>);</span><br><span class="line">		number = number % <span class="number">100</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span>(number &gt; <span class="number">19</span>) &#123;</span><br><span class="line">		result.append(<span class="string">" "</span>);</span><br><span class="line">		result.append(tens[number/<span class="number">10</span>]);</span><br><span class="line">		number = number % <span class="number">10</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Remainder is under 20</span></span><br><span class="line">	result.append(<span class="string">" "</span>+lows[number]);</span><br><span class="line">	<span class="keyword">return</span> <span class="string">" "</span>+result.toString().trim();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">reverse</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> (<span class="keyword">new</span> StringBuilder()).append(s).reverse().toString();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>n为位数，时间复杂度为O(n)，空间复杂度O(1)。  </p>
+<h3><strong>注意事项：</strong></h3>
+<ol>
+<li>将两个输入都转换成小写。</li>
+<li>递归中dp[i]用或操作符。</li>
+</ol>
+<h3><strong>Java代码：</strong></h3>
+<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">wordBreak</span><span class="params">(String s, List&lt;String&gt; wordDict)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(s == <span class="keyword">null</span> || s.isEmpty() || wordDict == <span class="keyword">null</span> || wordDict.size() == <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	Set&lt;String&gt; wordDictLower = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">	<span class="keyword">for</span>(String c : wordDict)</span><br><span class="line">		wordDictLower.add(c.toLowerCase());</span><br><span class="line">	s = s.toLowerCase();</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">boolean</span>[] dp = <span class="keyword">new</span> <span class="keyword">boolean</span>[s.length() + <span class="number">1</span>];</span><br><span class="line">	dp[<span class="number">0</span>] = <span class="keyword">true</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; dp.length; i++)</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; i; k++) &#123;<span class="comment">//"a"</span></span><br><span class="line">			dp[i] |= dp[k] &amp;&amp; wordDictLower.contains(s.substring(k, i));</span><br><span class="line">		&#125;</span><br><span class="line">	<span class="keyword">return</span> dp[dp.length - <span class="number">1</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3><strong>算法分析：</strong></h3>
+<p>时间复杂度为&lt;code&gt;O(n&lt;sup&gt;2&lt;/sup&gt;)&lt;/code&gt;，空间复杂度为<code>O(n)</code>。</p>
 <hr>
-<h3 id="算法II解题思路："><a href="#算法II解题思路：" class="headerlink" title="算法II解题思路："></a><strong>算法II解题思路：</strong></h3><p>上述方法是按千位递归的。下面的方法是按20以下，100以下，百位，千位…递归，递归的颗粒度更小，程序更简单。</p>
-<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>空格总加在新数前面，只需要加在有返回值的时候，也就是tens和lows中，其他如numberToWordsR(number/1000)<br>可能返回空值，此时不在前面加空格。</li>
-<li>在递归中，num为0要单独列出，因为0表示此位不存在，也就是无返回值。</li>
-<li>在入口方法中，若num为0，则返回Zero，要单独列出。</li>
-</ol>
-<h3 id="Java代码：-1"><a href="#Java代码：-1" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">numberToWords</span><span class="params">(<span class="keyword">int</span> number)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (number == <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"Zero"</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">return</span> numberToWordsR(number).trim();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">numberToWordsR</span><span class="params">(<span class="keyword">int</span> number)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(number == <span class="number">0</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">""</span>;</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> (number &lt; <span class="number">20</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">" "</span> + lows[number];</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> (number &lt; <span class="number">100</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">" "</span> + tens[number / <span class="number">10</span>] + numberToWordsR(number % <span class="number">10</span>);</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> (number &lt; <span class="number">1000</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">" "</span> + lows[number / <span class="number">100</span>] + <span class="string">" Hundred"</span> + numberToWordsR(number % <span class="number">100</span>);</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> (number &lt; <span class="number">1000000</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> numberToWordsR(number / <span class="number">1000</span>) + <span class="string">" Thousand"</span> + numberToWordsR(number % <span class="number">1000</span>);</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> (number &lt; <span class="number">1000000000</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> numberToWordsR(number / <span class="number">1000000</span>) + <span class="string">" Million"</span> + numberToWordsR(number % <span class="number">1000000</span>);</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> numberToWordsR(number / <span class="number">1000000000</span>) + <span class="string">" Billion"</span> + numberToWordsR(number % <span class="number">1000000000</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="Follow-up："><a href="#Follow-up：" class="headerlink" title="Follow-up："></a><strong>Follow-up：</strong></h3><p>integer, minus, decimals, internationlization(localization)。  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2018/04/30/lee-493/">LeetCode 493 Reverse Pairs</a></h1>
-  
-
-      
-        <time datetime="2018-04-30T22:45:07.446Z">2018-04-30</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/reverse-pairs" target="_blank" rel="noopener">LeetCode 493 Reverse Pairs</a></strong></p>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>整数乘法注意越界</li>
-</ol>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>k为最长路径长度，时间复杂度为<code>O(k<em>n</em><sup>2</sup>)</code>，空间复杂度<code>O(<em>n</em><sup>2</sup>)</code>。   </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2018/03/17/lee-019/">LeetCode 019 Remove Nth Node From End of List</a></h1>
-  
-
-      
-        <time datetime="2018-03-18T03:35:41.222Z">2018-03-17</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/remove-nth-node-from-end-of-list" target="_blank" rel="noopener">LeetCode 019 Remove Nth Node From End of List</a></strong></p>
-<p>Given a linked list, remove the <em>n</em><sup>th</sup> node from the end of list and return its head.</p>
-<p>For example,</p>
-<pre>   Given linked list: 1->2->3->4->5, and n = 2.
-
-   After removing the second node from the end, the linked list becomes 1->2->3->5.
-</pre>
-
-<p><strong>Note:</strong><br>Given <em>n</em> will always be valid.<br>Try to do this in one pass.</p>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>删除一个单链表末尾开始算起的第n个结点，然后返回该单链表。 例如：<br>输入: 1-&gt;2-&gt;3-&gt;4-&gt;5 其中n=2；<br>输出： 1-&gt;2-&gt;3-&gt;5;<br>n一定合法，只能遍历一次链表。  </p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是经典题。两指针法。距离为N的两指针，当前指针到末尾，后指针即是要删除的节点。头部插入fake节点，类似于mergeIntervals L56末尾插入一个空节点避免特别化处理。</p>
+<h3><strong>算法II解题思路：</strong></h3>
+<p>这题也可以额用DFS来解。如果可以用DP就尽量用DP，只有求所有可能性才只能用DFS而不能用DP。<br>
+这道题递归子问题dfs[:n]为子串[0:n)是否可合法拆解。对于子问题而言，需要对其范围内i=[0:st)的每个可能位置分解
+dfs[:i) + word[i:st)从而求出dfs(st)的解，只有任一分解成功，dfs(st)=true，否则false。</p>
+<p>Cache的应用场景： 如果子问题重复就要用Cache。<br>
+例如dfs(10)=dfs(9)+s[9:9] = (dfs(8) + s[8:8]) + s[9:9]<br>
+=dfs(8)+s[8:9]<br>
+dfs(8)由第一层递归第二个循环s[8:9]和第二层递归s[9:9]达到，这是重复的子问题dfs(8)。如果不cache，dfs(8)的求解<br>
+是重复的。</p>
+<p><strong>Cache模板：</strong></p>
 <ol>
-<li>快指针从fake节点开始先走n步</li>
-<li>慢指针开始一起和快指针同步走，直到快指针到最后一个（next为空）</li>
-<li>此时慢指针是要删除指针的上一个，删除操作是可以的。</li>
+<li>key为子问题索引st，value为子问题的解。</li>
+<li>紧跟终结条件，若在cache中，返回子问题的解。</li>
+<li>循环结束，将子问题的结果存于cache。</li>
 </ol>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><p>因为头指针也可能被删除，如只有一个节点的链表，n=1。删除操作在待删除节点的上一个节点上操作，所以引入假头节点prehead。 </p>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ListNode <span class="title">removeNthFromEnd</span><span class="params">(ListNode head, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">	ListNode prehead = <span class="keyword">new</span> ListNode(-<span class="number">1</span>);</span><br><span class="line">	prehead.next = head;</span><br><span class="line">	</span><br><span class="line">	ListNode slow = prehead, fast = prehead;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++)</span><br><span class="line">		fast = fast.next;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">while</span>(fast.next != <span class="keyword">null</span>)&#123;</span><br><span class="line">		fast = fast.next;</span><br><span class="line">		slow = slow.next;</span><br><span class="line">	&#125;</span><br><span class="line">	deleteNode(slow);</span><br><span class="line">	<span class="keyword">return</span> prehead.next;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">deleteNode</span><span class="params">(ListNode p)</span></span>&#123;</span><br><span class="line">	p.next = p.next.next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>。   </p>
+<h3><strong>注意事项：</strong></h3>
+<ol>
+<li>将两个输入都转换成小写。</li>
+<li>递归中先查询词是否在字典中再递归。如果顺序调转就会LTE，因为这些子问题是白费的。</li>
+<li>递归终结条件为st==0而不是st==s.length()因为子问题递归从右到左。</li>
+</ol>
+<h3><strong>Java代码：</strong></h3>
+<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">wordBreakDFS</span><span class="params">(String s, List&lt;String&gt; wordDict)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(s == <span class="keyword">null</span> || s.isEmpty() || wordDict == <span class="keyword">null</span> || wordDict.size() == <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	Set&lt;String&gt; wordDictLower = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">	<span class="keyword">for</span>(String c : wordDict)</span><br><span class="line">		wordDictLower.add(c.toLowerCase());</span><br><span class="line">	s = s.toLowerCase();</span><br><span class="line">	Map&lt;Integer, Boolean&gt; cache = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">	<span class="keyword">return</span> dfs(s, wordDictLower, s.length(), cache);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// subproblem's answer dfs[:st)</span></span><br><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">dfs</span><span class="params">(String s, Set&lt;String&gt; wordDict, <span class="keyword">int</span> st, Map&lt;Integer, Boolean&gt; cache)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(st == <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">	<span class="keyword">if</span>(cache.containsKey(st))</span><br><span class="line">		<span class="keyword">return</span> cache.get(st);</span><br><span class="line">	<span class="keyword">boolean</span> re = <span class="keyword">false</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; st; i++) &#123;</span><br><span class="line">		<span class="keyword">if</span>(wordDict.contains(s.substring(i, st)) &amp;&amp; dfs(s, wordDict, i, cache))</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	cache.put(st, re);</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3><strong>算法分析：</strong></h3>
+<p>时间复杂度为&lt;code&gt;O(n&lt;sup&gt;2&lt;/sup&gt;)&lt;/code&gt;，空间复杂度为<code>O(n)</code>。</p>
 
       
     </div>
@@ -362,43 +152,75 @@
     <header>
       
   
-    <h1 class="title"><a href="/2018/03/13/lee-001/">LeetCode 001 Two Sum</a></h1>
+    <h1 class="title"><a href="/2020/05/04/lee-146/">LeetCode 146 LRU Cache</a></h1>
   
 
       
-        <time datetime="2018-03-13T07:57:39.086Z">2018-03-13</time>
+        <time datetime="2020-05-05T05:58:23.494Z">2020-05-04</time>
       
     </header>
     <div class="entry">
       
-        <p><strong><a href="https://leetcode.com/problems/two-sum/" target="_blank" rel="noopener">LeetCode 001 Two Sum</a></strong></p>
-<p>Given an array of integers, return <strong>indices</strong> of the two numbers such that they add up to a specific target.</p>
-<p>You may assume that each input would have <strong><em>exactly</em></strong> one solution, and you may not use the <em>same</em> element twice.</p>
-<p><strong>Example:</strong>  </p>
-<pre>Given nums = [2, 7, 11, 15], target = 9,
-
-Because nums[0] + nums[1] = 2 + 7 = 9,
-return [0, 1].
-</pre>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个整数数组，从中找出两个数的下标，使得它们的和等于一个特定的数字。可以假设题目有唯一解。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><ol>
-<li>最简单的思路是暴力法，两重循环试遍所有组合。</li>
-<li>先排序，再用两指针法，若指针指向的数和小于target则左指针右移，反之亦然。注意，为了保持原数组的下标，要预先保留下标及值对到Node中。</li>
-<li>遍历数组，同时查看target-该数是否在HashMap中，否则加入到HashMap中。</li>
+        <p><strong><a href="https://leetcode.com/problems/lru-cache/" target="_blank" rel="noopener">LeetCode 146 LRU Cache</a></strong></p>
+<p>&lt;div&gt;</p>
+<p>Design and implement a data structure for <a href="https://en.wikipedia.org/wiki/Cache_replacement_policies#LRU" target="_blank" rel="noopener">Least Recently Used (LRU) cache</a>. It should support the following operations: <code>get</code> and <code>put</code>.</p>
+<p><code>get(key)</code> - Get the value (will always be positive) of the key if the key exists in the cache, otherwise return -1.<br>
+<code>put(key, value)</code> - Set or insert the value if the key is not already present. When the cache reached its capacity, it should invalidate the least recently used item before inserting a new item.</p>
+<p>The cache is initialized with a <strong>positive</strong> capacity.</p>
+<p><strong>Follow up:</strong><br>
+Could you do both operations in <strong>O(1)</strong> time complexity?</p>
+<p><strong>Example:</strong></p>
+<p>&lt;pre&gt;LRUCache cache = new LRUCache( 2 /* capacity */ );</p>
+<p>cache.put(1, 1);
+cache.put(2, 2);
+cache.get(1);       // returns 1
+cache.put(3, 3);    // evicts key 2
+cache.get(2);       // returns -1 (not found)
+cache.put(4, 4);    // evicts key 1
+cache.get(1);       // returns -1 (not found)
+cache.get(3);       // returns 3
+cache.get(4);       // returns 4
+&lt;/pre&gt;</p>
+<p>&lt;/div&gt;</p>
+<h3><strong>题目大意：</strong></h3>
+<p>设计LRU。就是最就的cache会先被删除。</p>
+<h3><strong>解题思路：</strong></h3>
+<p>因为是Cache，get是O(1)，自然想到用HashMap。如果不限容量，get，put都可以O(1)。限容量的情况下，<br>
+就要删除部分数据，这里要求按key的时间排序，所以考虑用一个串将keys串联起来。而key的添加和删除<br>
+也要O(1)，所以考虑用LinkedList。HashMap和LinkedList的组合很常见。这里value就指向LL中的Node，<br>
+而Node中含key和value，key又可以让Node只向HashMap，做到互相索引。分析get和set，get就只要从Map<br>
+中读Node的value即可。set比较复杂，含三种情况：</p>
+<ol>
+<li>已有节点</li>
+<li>不含节点且少于容量</li>
+<li>不含节点且大于等于容量</li>
 </ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">twoSum</span><span class="params">(self, nums: List[int], target: int)</span> -&gt; List[int]:</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(nums)):</span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> range(i + <span class="number">1</span>, len(nums)):</span><br><span class="line">			<span class="keyword">if</span> nums[i] + nums[j] == target:</span><br><span class="line">				<span class="keyword">return</span> [i, j]</span><br></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">twoSum</span><span class="params">(self, nums: List[int], target: int)</span> -&gt; List[int]:</span></span><br><span class="line">	temp = [(n, i) <span class="keyword">for</span> i, n <span class="keyword">in</span> enumerate(nums)]</span><br><span class="line">	temp.sort()</span><br><span class="line">	i, j = <span class="number">0</span>, len(temp) - <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> i &lt; j:</span><br><span class="line">		<span class="keyword">if</span> temp[i][<span class="number">0</span>] + temp[j][<span class="number">0</span>] &lt; target:</span><br><span class="line">			i += <span class="number">1</span></span><br><span class="line">		<span class="keyword">elif</span> temp[i][<span class="number">0</span>] + temp[j][<span class="number">0</span>] &gt; target:</span><br><span class="line">			j -= <span class="number">1</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			<span class="keyword">return</span> [temp[i][<span class="number">1</span>], temp[j][<span class="number">1</span>]]</span><br></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">twoSum</span><span class="params">(self, nums: List[int], target: int)</span> -&gt; List[int]:</span></span><br><span class="line">	nums_dict = &#123;&#125;</span><br><span class="line">	<span class="keyword">for</span> i, n <span class="keyword">in</span> enumerate(nums):</span><br><span class="line">		<span class="keyword">if</span> target - n <span class="keyword">in</span> nums_dict:</span><br><span class="line">             <span class="keyword">return</span> [nums_dict[target - n], i]</span><br><span class="line">		nums_dict[n] = i</span><br></pre></td></tr></table></figure>
-<p>第二种方法，Python的tuple相当于Java的自定义Node，但节省了很多代码。每种方法都大概节省了2/3的代码。  </p>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] twoSum0(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target) &#123;</span><br><span class="line">	<span class="keyword">int</span>[] re = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums.length;i++)</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j=i+<span class="number">1</span>;j&lt;nums.length;j++)&#123;</span><br><span class="line">			<span class="keyword">if</span>(nums[i]+nums[j]==target)&#123;</span><br><span class="line">				re[<span class="number">0</span>] = i;</span><br><span class="line">				re[<span class="number">1</span>] = j;</span><br><span class="line">				<span class="keyword">return</span> re;</span><br><span class="line">			&#125;</span><br><span class="line">				</span><br><span class="line">		&#125;</span><br><span class="line">	<span class="keyword">return</span> re;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] twoSum2(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target) &#123;</span><br><span class="line">	Node[] ary = <span class="keyword">new</span> Node[nums.length];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums.length;i++)&#123;</span><br><span class="line">		ary[i] = <span class="keyword">new</span> Node(i, nums[i]);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	Arrays.sort(ary, <span class="keyword">new</span> Comparator&lt;Node&gt;() &#123;</span><br><span class="line">		<span class="meta">@Override</span></span><br><span class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(Node o1, Node o2)</span> </span>&#123;</span><br><span class="line">			<span class="keyword">return</span> o1.value - o2.value;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;);</span><br><span class="line">	<span class="keyword">int</span>[] re = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>];</span><br><span class="line">	<span class="keyword">int</span> start=<span class="number">0</span>, end=nums.length-<span class="number">1</span>;</span><br><span class="line">	<span class="keyword">while</span>(start&lt;end)&#123;</span><br><span class="line">		<span class="keyword">if</span>(ary[start].value+ary[end].value==target)&#123;</span><br><span class="line">			re[<span class="number">0</span>] = ary[start].index;</span><br><span class="line">			re[<span class="number">1</span>] = ary[end].index;</span><br><span class="line">			<span class="keyword">return</span> re;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(ary[start].value+ary[end].value&lt;target)</span><br><span class="line">			start++;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			end--;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> re;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Node</span> </span>&#123;</span><br><span class="line">	Node(<span class="keyword">int</span> i, <span class="keyword">int</span> v)&#123;</span><br><span class="line">		<span class="keyword">this</span>.index = i;</span><br><span class="line">		<span class="keyword">this</span>.value = v;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">int</span> index;</span><br><span class="line">	<span class="keyword">int</span> value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] twoSum(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target) &#123;</span><br><span class="line">	HashMap&lt;Integer,Integer&gt; h  = <span class="keyword">new</span> HashMap&lt;Integer,Integer&gt;();</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">int</span>[] re = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums.length;i++)&#123;</span><br><span class="line">		Integer index = h.get(target-nums[i]);</span><br><span class="line">		<span class="keyword">if</span>(index!=<span class="keyword">null</span>)&#123;</span><br><span class="line">			re[<span class="number">0</span>]=index;</span><br><span class="line">			re[<span class="number">1</span>]=i;</span><br><span class="line">			<span class="keyword">return</span> re;</span><br><span class="line">		&#125;</span><br><span class="line">		h.put(nums[i],i);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> re;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><ol>
-<li>时间复杂度为<code>O(<em>n</em><sup>2</sup>)</code>，空间复杂度<code>O(1)</code>。</li>
-<li>时间复杂度为<code>O(nlogn)</code>，空间复杂度<code>O(n)</code>。</li>
-<li>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>。</li>
+<p>对应链表操作为：</p>
+<ol>
+<li>删除该节点且插入到末尾</li>
+<li>插入新节点到末尾</li>
+<li>删除头节点且插入新节点到末尾</li>
 </ol>
+<p>总结链表操作为两个：</p>
+<ol>
+<li>删除某节点</li>
+<li>插入新节点到末尾</li>
+</ol>
+<p>实现上可以分为单链表和双链表。单链表要让Map指向节点的父节点。实现上很麻烦，因为更新节点都会涉及<br>
+两个keys上HashMap更新，即使已有节点换到末尾同样要两次更新Map。但双链表对此情况就避免了Map的更新。</p>
+<p>DummyNode的选择：一开始我只选用了DummyHead，但capacity=1的时候要判断末节点是否为空很麻烦，由于<br>
+经常性的插入末节点，所以根据若头结点涉及插入删除就应该用dummyNode的原则，末节点也增加dummyNode<br>
+程序就简洁很多。</p>
+<h3><strong>注意事项：</strong></h3>
+<ol>
+<li>set中，若节点存在，更新value。更新节点在链表中的顺序。</li>
+<li>头尾dummy node</li>
+<li>注意删除顺序，先删map中的entry再删Node。否则会出现NPE。新加入是顺序相反。</li>
+</ol>
+<h3><strong>Java代码：</strong></h3>
+<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line">Map&lt;Integer, ListNode&gt; map;</span><br><span class="line">ListNode head; <span class="comment">// from oldest to newest</span></span><br><span class="line">ListNode tail;</span><br><span class="line"><span class="keyword">int</span> capacity;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">L146LRUCache</span><span class="params">(<span class="keyword">int</span> capacity)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">this</span>.capacity = capacity;</span><br><span class="line">	head = <span class="keyword">new</span> ListNode(-<span class="number">1</span>, -<span class="number">1</span>);</span><br><span class="line">	tail = <span class="keyword">new</span> ListNode(-<span class="number">1</span>, -<span class="number">1</span>);</span><br><span class="line">	head.next = tail;</span><br><span class="line">	tail.prev = head;</span><br><span class="line">	map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">get</span><span class="params">(<span class="keyword">int</span> key)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(!map.containsKey(key))</span><br><span class="line">		<span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">	pushback(key);</span><br><span class="line">	<span class="keyword">return</span> map.get(key).val;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">put</span><span class="params">(<span class="keyword">int</span> key, <span class="keyword">int</span> value)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(map.containsKey(key)) &#123;</span><br><span class="line">		pushback(key);</span><br><span class="line">		map.get(key).val = value; <span class="comment">// remember to update the value</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="keyword">if</span>(map.size() == capacity) &#123;</span><br><span class="line">			map.remove(head.next.key);</span><br><span class="line">			deleteNode(head.next);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// add new key</span></span><br><span class="line">		ListNode newNode = <span class="keyword">new</span> ListNode(key, value);</span><br><span class="line">		addNodeToTail(newNode);</span><br><span class="line">		map.put(key, newNode);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">pushback</span><span class="params">(<span class="keyword">int</span> key)</span> </span>&#123;</span><br><span class="line">	ListNode curNode = map.get(key);</span><br><span class="line">	deleteNode(curNode);</span><br><span class="line">	addNodeToTail(curNode);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">addNodeToTail</span><span class="params">(ListNode curNode)</span> </span>&#123;</span><br><span class="line">	ListNode prevTailNode = tail.prev;</span><br><span class="line">	prevTailNode.next = curNode;</span><br><span class="line">	curNode.prev = prevTailNode;</span><br><span class="line">	curNode.next = tail;</span><br><span class="line">	tail.prev = curNode;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// delete head node and updated node</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">deleteNode</span><span class="params">(ListNode curNode)</span> </span>&#123;</span><br><span class="line">	ListNode nextNode = curNode.next;</span><br><span class="line">	ListNode prevNode = curNode.prev;</span><br><span class="line">	prevNode.next = nextNode;</span><br><span class="line">	nextNode.prev = prevNode;</span><br><span class="line">	curNode.next = <span class="keyword">null</span>;</span><br><span class="line">	curNode.prev = <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ListNode</span> </span>&#123;</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">int</span> key;</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">int</span> val;</span><br><span class="line">	<span class="keyword">public</span> ListNode next;</span><br><span class="line">	<span class="keyword">public</span> ListNode prev;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">ListNode</span><span class="params">(<span class="keyword">int</span> key, <span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.key = key;</span><br><span class="line">		<span class="keyword">this</span>.val = val;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3><strong>算法分析：</strong></h3>
+<p>时间复杂度为<code>O(1)</code>，空间复杂度为<code>O(n)</code>。</p>
 
       
     </div>
@@ -420,33 +242,81 @@ return [0, 1].
     <header>
       
   
-    <h1 class="title"><a href="/2018/02/22/lee-054/">LeetCode 054 Spiral Matrix</a></h1>
+    <h1 class="title"><a href="/2020/05/03/lee-126/">LeetCode 126 Word Ladder II</a></h1>
   
 
       
-        <time datetime="2018-02-23T06:12:22.319Z">2018-02-22</time>
+        <time datetime="2020-05-04T01:09:53.727Z">2020-05-03</time>
       
     </header>
     <div class="entry">
       
-        <p><strong><a href="https://leetcode.com/problems/spiral-matrix" target="_blank" rel="noopener">LeetCode 054 Spiral Matrix</a></strong></p>
-<p>Given a matrix of <em>m</em> x <em>n</em> elements (<em>m</em> rows, <em>n</em> columns), return all elements of the matrix in spiral order.</p>
-<p>For example,<br>Given the following matrix:</p>
-<pre>[
- [ 1, 2, 3 ],
- [ 4, 5, 6 ],
- [ 7, 8, 9 ]
+        <p><strong><a href="https://leetcode.com/problems/word-ladder-ii/" target="_blank" rel="noopener">LeetCode 126 Word Ladder</a></strong>
+&lt;div&gt;</p>
+<p>Given two words (<em>beginWord</em> and <em>endWord</em>), and a dictionary's word list, find all shortest transformation sequence(s) from <em>beginWord</em> to <em>endWord</em>, such that:</p>
+<ol>
+<li>Only one letter can be changed at a time</li>
+<li>Each transformed word must exist in the word list. Note that <em>beginWord</em> is <em>not</em> a transformed word.</li>
+</ol>
+<p><strong>Note:</strong></p>
+<ul>
+<li>Return an empty list if there is no such transformation sequence.</li>
+<li>All words have the same length.</li>
+<li>All words contain only lowercase alphabetic characters.</li>
+<li>You may assume no duplicates in the word list.</li>
+<li>You may assume <em>beginWord</em> and <em>endWord</em> are non-empty and are not the same.</li>
+</ul>
+<p><strong>Example 1:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong>
+beginWord = &quot;hit&quot;,
+endWord = &quot;cog&quot;,
+wordList = [&quot;hot&quot;,&quot;dot&quot;,&quot;dog&quot;,&quot;lot&quot;,&quot;log&quot;,&quot;cog&quot;]</p>
+<p><strong>Output:</strong>
+[
+[&quot;hit&quot;,&quot;hot&quot;,&quot;dot&quot;,&quot;dog&quot;,&quot;cog&quot;],
+  [&quot;hit&quot;,&quot;hot&quot;,&quot;lot&quot;,&quot;log&quot;,&quot;cog&quot;]
 ]
-</pre>
-
-<p>You should return <code>[1,2,3,6,9,8,7,4,5]</code>.</p>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个mxn的矩阵（m行 n列），以螺旋状返回矩阵中的所有元素。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>打印方法主要是以下两种：第一种四边对称打印，实现起来边际情况很多，不推荐。因为要不断向内遍历，所以对称打印不合适。第二种方法是每条边比上一条少一个，<br>用四个指针，top, bottom, left, right来记录四个边界，每打印完一条边该边界向内扩展。注意有些回路不是完整比如[1,2]或上面例子中5就不是完整回路，此情况，<br>注意判断top和bottom以及left和right关系即可。四指针法可以进一步升级到两指针法甚至一个指针法，其实都是大同小异。<br><img src="/images/L054.png" alt=""></p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><p>注意不是所有矩阵都有完整回路。</p>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">spiral2</span><span class="params">(<span class="keyword">int</span>[][] a)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> rowTop = <span class="number">0</span>, rowBottom = a.length-<span class="number">1</span>, colLeft = <span class="number">0</span>, colRight = a[<span class="number">0</span>].length-<span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">while</span>(rowTop&lt;=rowBottom &amp;&amp; colLeft&lt;=colRight)&#123;</span><br><span class="line">		<span class="comment">//topRow</span></span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=colLeft;i&lt;=colRight;i++)</span><br><span class="line">			System.out.print(a[rowTop][i]+<span class="string">" "</span>);</span><br><span class="line">		rowTop++;</span><br><span class="line">		<span class="comment">//rightCol</span></span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=rowTop;i&lt;=rowBottom;i++)</span><br><span class="line">			System.out.print(a[i][colRight]+<span class="string">" "</span>);</span><br><span class="line">		colRight--;</span><br><span class="line">		<span class="keyword">if</span>(rowTop&lt;=rowBottom)&#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> i=colRight;i&gt;=colLeft;i--)</span><br><span class="line">				System.out.print(a[rowBottom][i]+<span class="string">" "</span>);</span><br><span class="line">			rowBottom--;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(colLeft&lt;=colRight)&#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> i=rowBottom;i&gt;=rowTop;i--)</span><br><span class="line">				System.out.print(a[i][colLeft]+<span class="string">" "</span>);</span><br><span class="line">			colLeft++;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">spiral3</span><span class="params">(<span class="keyword">int</span>[][] a)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> rowTop = <span class="number">0</span>, colLeft = <span class="number">0</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">while</span>(rowTop&lt;=a.length-rowTop-<span class="number">1</span> &amp;&amp; colLeft&lt;=a[<span class="number">0</span>].length-colLeft-<span class="number">1</span>)&#123;</span><br><span class="line">		<span class="comment">//topRow</span></span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=colLeft;i&lt;=a[<span class="number">0</span>].length-colLeft-<span class="number">1</span>;i++)</span><br><span class="line">			System.out.print(a[rowTop][i]+<span class="string">" "</span>);</span><br><span class="line">		rowTop++;</span><br><span class="line">		<span class="comment">//rightCol</span></span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=rowTop;i&lt;=a.length-rowTop;i++)</span><br><span class="line">			System.out.print(a[i][a[<span class="number">0</span>].length-colLeft-<span class="number">1</span>]+<span class="string">" "</span>);</span><br><span class="line">		<span class="comment">//colRight--;</span></span><br><span class="line">		<span class="keyword">if</span>(rowTop&lt;=a.length-rowTop)&#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> i=a[<span class="number">0</span>].length-colLeft-<span class="number">2</span>;i&gt;=colLeft;i--)</span><br><span class="line">				System.out.print(a[a.length-rowTop][i]+<span class="string">" "</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(colLeft&lt;=a[<span class="number">0</span>].length-colLeft-<span class="number">2</span>)&#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> i=a.length-rowTop-<span class="number">1</span>;i&gt;=rowTop;i--)</span><br><span class="line">				System.out.print(a[i][colLeft]+<span class="string">" "</span>);</span><br><span class="line">			colLeft++;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">spiral4</span><span class="params">(<span class="keyword">int</span>[][] a)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> num = Math.min(a.length, a[<span class="number">0</span>].length);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> st=<span class="number">0</span>;st&lt;(num+<span class="number">1</span>)/<span class="number">2</span>;st++)&#123;</span><br><span class="line">		<span class="comment">//complete edge(top)</span></span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=st;i&lt;a[<span class="number">0</span>].length-st;i++)</span><br><span class="line">			System.out.print(a[st][i]+<span class="string">" "</span>);</span><br><span class="line">		<span class="comment">//complete edge-top (right)</span></span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=st+<span class="number">1</span>;i&lt;a.length-st;i++)</span><br><span class="line">			System.out.print(a[i][a[<span class="number">0</span>].length-<span class="number">1</span>-st]+<span class="string">" "</span>);</span><br><span class="line">		<span class="keyword">if</span>(a[<span class="number">0</span>].length-<span class="number">2</span>-st&gt;st)</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> i=a[<span class="number">0</span>].length-<span class="number">2</span>-st;i&gt;=st;i--)</span><br><span class="line">				System.out.print(a[a.length-st-<span class="number">1</span>][i]+<span class="string">" "</span>);</span><br><span class="line">		<span class="keyword">if</span>(a.length-<span class="number">2</span>-st&gt;st+<span class="number">1</span>)</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> i=a.length-<span class="number">2</span>-st;i&gt;=st+<span class="number">1</span>;i--)</span><br><span class="line">				System.out.print(a[i][st]+<span class="string">" "</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(mn)</code>，空间复杂度<code>O(1)</code>。   </p>
+&lt;/pre&gt;</p>
+<p><strong>Example 2:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong>
+beginWord = &quot;hit&quot;
+endWord = &quot;cog&quot;
+wordList = [&quot;hot&quot;,&quot;dot&quot;,&quot;dog&quot;,&quot;lot&quot;,&quot;log&quot;]</p>
+<p><strong>Output:</strong> []</p>
+<p><strong>Explanation:</strong> The endWord &quot;cog&quot; is not in wordList, therefore no possibletransformation.
+&lt;/pre&gt;</p>
+<p>&lt;/div&gt;</p>
+<h3><strong>题目大意：</strong></h3>
+<p>给定一个字典和两个单词。每次变换一个字母的得到新单词且该词要在字典中。求所有最少的变换路径。</p>
+<h3><strong>解题思路：</strong></h3>
+<p>更难于Leetcode 127，BFS用于找最短路径而DFS找路径，此题正是贯彻这一思想，先用BFS找出最短路径，<br>
+然后根据最短路径值找出所有路径。找BFS解的同时建图用邻接表表示Map&lt;String, List&lt;String&gt;&gt;(这是<br>
+部分图，与解相关的图)和解集合Map&lt;String, Integer&gt;(从始点到不同节点的最短距离)，这两个信息正是<br>
+Dijkistra的图输入和解。DFS从始点开始遍历邻接节点，确保沿着最短路径走，最短路径为<br>
+map.get(cur)+1=map.get(next)表示当前节点到始点距离+1=儿节点到始点距离，终止条件为找到目标节点。</p>
+<ol>
+<li>在遍历所有邻接节点的时候，如果不加筛选对所有邻接节点都做DFS会造成LTE。关键是要利用BFS中所有<br>
+节点到单源的最短路径来剪枝。只需DFS最短路径上的节点，否则跳过。</li>
+<li>利用了单源最短路径映射表distance后，不需要记录visited，因为重复的节点不会在最短路劲上。</li>
+<li>Cache nextWords的结果。</li>
+</ol>
+<h3><strong>解题步骤：</strong></h3>
+<p>这题是最短路径题，第一时间想到BFS。这是一条典型的单源最短路径问题。</p>
+<ol>
+<li>建字典。</li>
+<li>BFS访问，得到图和单源最短路径Map，以及最短路径距离。</li>
+<li>DFS求路径，按最短路径剪枝。</li>
+</ol>
+<h3><strong>注意事项：</strong></h3>
+<ol>
+<li>建图要先建点，再建边。若不先建点，graph.get(cur)会NPE。在BFS中发生.</li>
+<li>DFS中用BFS的解来剪边。</li>
+</ol>
+<h3><strong>Java代码：</strong></h3>
+<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> List&lt;List&lt;String&gt;&gt; findLadders(String beginWord, String endWord, List&lt;String&gt; wordList) &#123;</span><br><span class="line">	List&lt;String&gt; path = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">	List&lt;List&lt;String&gt;&gt; res = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">	<span class="keyword">if</span>(beginWord == <span class="keyword">null</span> || endWord == <span class="keyword">null</span>)</span><br><span class="line">		<span class="keyword">return</span> res;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// This is a dict and also keeps track of distance</span></span><br><span class="line">	Map&lt;String, Integer&gt; dict = getDict(wordList);</span><br><span class="line">	<span class="comment">// Make sure endWord is in the dict and can be the next word </span></span><br><span class="line">	<span class="comment">//dict.put(endWord, 0);</span></span><br><span class="line">	dict.put(beginWord, <span class="number">1</span>);</span><br><span class="line">	HashMap&lt;String, List&lt;String&gt;&gt; graph = <span class="keyword">new</span> HashMap&lt;String, List&lt;String&gt;&gt;();</span><br><span class="line">	ladderLength(beginWord, endWord, dict, graph);</span><br><span class="line">	path.add(beginWord);</span><br><span class="line">	dfs(beginWord, endWord, dict, graph, path, res);</span><br><span class="line">	<span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(String cur, String endWord, Map&lt;String, Integer&gt; distance,</span></span></span><br><span class="line"><span class="function"><span class="params">		HashMap&lt;String, List&lt;String&gt;&gt; graph, List&lt;String&gt; path, List&lt;List&lt;String&gt;&gt; res)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(endWord.equals(cur)) &#123;</span><br><span class="line">		res.add(<span class="keyword">new</span> ArrayList&lt;&gt;(path));</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span>(String word : graph.get(cur)) &#123;</span><br><span class="line">		path.add(word);</span><br><span class="line">		<span class="keyword">if</span>(distance.get(word) - <span class="number">1</span> == distance.get(cur)) <span class="comment">// use distance, resolve LTE the most important</span></span><br><span class="line">			dfs(word, endWord, distance, graph, path, res);</span><br><span class="line">		path.remove(path.size() - <span class="number">1</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// cache getNextWords</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">ladderLength</span><span class="params">(String beginWord, String endWord, Map&lt;String, Integer&gt; dict, Map&lt;String, List&lt;String&gt;&gt; graph)</span> </span>&#123;</span><br><span class="line">	Set&lt;String&gt; visited = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">	Queue&lt;String&gt; q = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">	q.offer(beginWord);</span><br><span class="line">	visited.add(beginWord);</span><br><span class="line">	<span class="keyword">for</span>(String s : dict.keySet()) &#123;<span class="comment">// remember</span></span><br><span class="line">		graph.put(s, <span class="keyword">new</span> ArrayList&lt;&gt;());</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty()) &#123;</span><br><span class="line">		String word = q.poll();</span><br><span class="line">		<span class="keyword">if</span>(endWord.equals(word))</span><br><span class="line">			<span class="keyword">return</span> dict.get(word);</span><br><span class="line">		</span><br><span class="line">		List&lt;String&gt; nextWords = getNextWords(word, dict);</span><br><span class="line">		graph.put(word, <span class="keyword">new</span> ArrayList&lt;&gt;(nextWords));</span><br><span class="line">		<span class="keyword">for</span>(String s : nextWords) &#123;</span><br><span class="line">			<span class="keyword">if</span>(visited.contains(s))</span><br><span class="line">				<span class="keyword">continue</span>;</span><br><span class="line">			</span><br><span class="line">			q.offer(s);</span><br><span class="line">			visited.add(s);</span><br><span class="line">			dict.put(s, dict.get(word) + <span class="number">1</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Map&lt;String, Integer&gt; <span class="title">getDict</span><span class="params">(List&lt;String&gt; wordList)</span> </span>&#123;</span><br><span class="line">	Map&lt;String, Integer&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">	<span class="keyword">for</span>(String word : wordList) &#123;</span><br><span class="line">		map.put(word, <span class="number">0</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> map;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">List&lt;String&gt; <span class="title">getNextWords</span><span class="params">(String word, Map&lt;String, Integer&gt; dict)</span> </span>&#123;</span><br><span class="line">	List&lt;String&gt; result = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; word.length(); i++) &#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">26</span>; j++) &#123; </span><br><span class="line">			<span class="keyword">char</span> newChar = (<span class="keyword">char</span>)(<span class="string">'a'</span> + j);</span><br><span class="line">			<span class="keyword">if</span>(word.charAt(i) == newChar) <span class="comment">// exclude itself</span></span><br><span class="line">				<span class="keyword">continue</span>;</span><br><span class="line">			String newWord = word.substring(<span class="number">0</span>, i) + </span><br><span class="line">					newChar + word.substring(i + <span class="number">1</span>, word.length());</span><br><span class="line">			<span class="keyword">if</span>(dict.containsKey(newWord))</span><br><span class="line">				result.add(newWord);</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3><strong>算法分析：</strong></h3>
+<p>getNextWords是L<em>26</em>L=&lt;code&gt;O(<em>L</em>&lt;sup&gt;2&lt;/sup&gt;)&lt;/code&gt;产生新字符串需要L<br>
+时间复杂度为&lt;code&gt;O(n*<em>L</em>&lt;sup&gt;2&lt;/sup&gt; + m*k)&lt;/code&gt;，空间复杂度<code>O(n)</code>，m为答案个数, k为最短路径值，n为单词数。</p>
 
       
     </div>
@@ -468,45 +338,38 @@ return [0, 1].
     <header>
       
   
-    <h1 class="title"><a href="/2018/01/31/lee-004/">LeetCode 004 Median of Two Sorted Arrays</a></h1>
+    <h1 class="title"><a href="/2020/05/03/combination/">组合</a></h1>
   
 
       
-        <time datetime="2018-02-01T03:24:53.428Z">2018-01-31</time>
+        <time datetime="2020-05-03T21:53:45.466Z">2020-05-03</time>
       
     </header>
     <div class="entry">
       
-        <p><strong><a href="https://leetcode.com/problems/median-of-two-sorted-arrays" target="_blank" rel="noopener">LeetCode 004 Median of Two Sorted Arrays</a></strong></p>
-<p>There are two sorted arrays <strong>nums1</strong> and <strong>nums2</strong> of size m and n respectively.</p>
-<p>Find the median of the two sorted arrays. The overall run time complexity should be O(log (m+n)).</p>
-<p><strong>Example 1:</strong>  </p>
-<pre>nums1 = [1, 3]
-nums2 = [2]
-
-The median is 2.0
-</pre>
-
-<p><strong>Example 2:</strong>  </p>
-<pre>nums1 = [1, 2]
-nums2 = [3, 4]
-
-The median is (2 + 3)/2 = 2.5
-</pre>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求两个有序数组中的中位数。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>题目要求log(m+n)复杂度，也就提示要对数组总长做二分法。因为要同时处理两个数组所以考虑用递归版二分法。因奇偶中位数有1-2个，<br>所以加强命题为求两有序数组的第k个数(k&gt;=1)。<br>对k的值进行二分k/2，先尝试num1数组的第k/2个数和num2数组的第k/2个数。若它们相等，表示它们即为第k个数。也就是比如求第4个数，<br>分别在两数组中取前两个，平均分配名额。此题类似于求前k大的数(算法文档4.1.13)用统计个数的方法来判断走左还是右。若它们不等，不妨假设<br>aKey&lt;bKey，这样表示第k个数一定不会是aKey，因为即使比bKey小的数均小于aKey的话（有k/2-1个），总共有k/2-1+k/2-1=k-2个数小于<br>aKey，也就是aKey为第k-1个数，不可能为第k个数，它只可能出现是bKey或者在num1中比aKey大的数。既然aKey不是解，比aKey小的数<br>更不可能是解。所以，可以抛掉num1[0, k/2]这部分，转而求num1[k/2+1,nums.length-1]以及nums2的第k-k/2个数，抛掉部分会影响结果<br>吗？答案是否定的。比如<br>1 2 3 4<br>0 6 7 8<br>k=4，比较2和6,2&lt;6抛掉1 2，转求[3,4],[0,6,7,8]的第2个数，答案仍为3，不影响结果，因为前k/2个数即使有些在nums2也不会影响<br>最后结果，求的是第k个。<br>1 2 3 4<br>0 6 7 8<br>第k=4数可能出现在num1[k/2+1,nums.length-1]=3或num2=6（下面例子），所以保留部分是正确的。<br>主要思路是<strong>每次递归抛掉k/2个数，数组规模减少k/2，k变成k-k/2</strong>, API为left, left2表示新数组的左边界(因为永远抛左边部分)以及k。<br>递归终止条件为</p>
+        <h3><strong>算法思路：</strong></h3>
+<p>Leetcode 078的题目。这里作为知识点归纳。</p>
 <ol>
-<li>left越界，这时此数组的数刚好用完或此数组为空(不会越界太多，否则aKey无穷大会递归到num2)。归结为求另一数组[left..]的第k个数.  </li>
-<li>k为1时候，是基本情况，表示求两数组的第1个数，只要返回左端的最小值即可。  </li>
+<li>递归中i=st开始。</li>
+<li>回溯： path递归后去恢复状态。</li>
+<li>dfs中传入i+1。</li>
+<li>结果要复制new ArrayList&lt;&gt;(path)</li>
+<li>一般来说，终止条件才加入结果，但由于子集任何path修改都是子集，所有立即加入。</li>
 </ol>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>中位数有1-2两个。</li>
-<li>off by 1的问题。若API中的k定义为第k个数k&gt;=1，若总长len=5，中位数为第len/2+1=3个数。所以在递归函数中，数组下标用到k时<br>都要-1。抛掉[left, left+k/2-1],递归[left+k/2..]。</li>
-<li>若nums中left+k/2-1越界，不碰nums，右移left2，因为nums不能右移那么多。</li>
+<p>和全排列的区别：</p>
+<ol>
+<li>由于排列可以乱序如[1,2,3]结果是[1,3,2]也就是一个结果需要多次从左向右完全扫描，所以i=0开始且维护visited数组<br>
+组合的结果是按照数组顺序的，所以只要从左到右扫描一次即可，所以用i=st。</li>
+<li>结果方面，排列结果是满长度，而组合不是。所以在加入到res位置不同。</li>
 </ol>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">findMedianSortedArrays</span><span class="params">(<span class="keyword">int</span>[] num1, <span class="keyword">int</span>[] num2)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> len = num1.length+num2.length;</span><br><span class="line">	<span class="keyword">if</span>(len%<span class="number">2</span>==<span class="number">1</span>)</span><br><span class="line">		<span class="keyword">return</span> findKth(num1,num2,<span class="number">0</span>,<span class="number">0</span>,len/<span class="number">2</span>+<span class="number">1</span>);</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">return</span> (findKth(num1,num2,<span class="number">0</span>,<span class="number">0</span>,len/<span class="number">2</span>)+findKth(num1,num2,<span class="number">0</span>,<span class="number">0</span>,len/<span class="number">2</span>+<span class="number">1</span>))/<span class="number">2.0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">findKth</span><span class="params">(<span class="keyword">int</span>[] num1, <span class="keyword">int</span>[] num2, <span class="keyword">int</span> left, <span class="keyword">int</span> left2, <span class="keyword">int</span> k)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(left&gt;=num1.length)</span><br><span class="line">		<span class="keyword">return</span> num2[left2+k-<span class="number">1</span>];</span><br><span class="line">	<span class="keyword">if</span>(left2&gt;=num2.length)</span><br><span class="line">		<span class="keyword">return</span> num1[left+k-<span class="number">1</span>];</span><br><span class="line">	<span class="keyword">if</span>(k==<span class="number">1</span>)</span><br><span class="line">		<span class="keyword">return</span> Math.min(num1[left], num2[left2]);;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">int</span> aKey = left+k/<span class="number">2</span>-<span class="number">1</span>&lt;num1.length?num1[left+k/<span class="number">2</span>-<span class="number">1</span>]:Integer.MAX_VALUE;</span><br><span class="line">	<span class="keyword">int</span> bKey = left2+k/<span class="number">2</span>-<span class="number">1</span>&lt;num2.length?num2[left2+k/<span class="number">2</span>-<span class="number">1</span>]:Integer.MAX_VALUE;</span><br><span class="line">	<span class="keyword">if</span>(aKey&lt;bKey)</span><br><span class="line">		<span class="keyword">return</span> findKth(num1,num2,left+k/<span class="number">2</span>,left2,k-k/<span class="number">2</span>);</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		<span class="keyword">return</span> findKth(num1,num2,left,left2+k/<span class="number">2</span>, k-k/<span class="number">2</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>假设两数组总长度为N，k为中位数即N/2，每次抛掉k/2也就是子问题规模为N-k/2=N-N/4=3N/4. f(N)=f(3N/4)+1.<br>利用master理论b=4/3, a=1, f(n)=1代入时间复杂度为<code>O(log(m+n))</code>，空间复杂度<code>O(1)</code>。</p>
+<h3><strong>应用：</strong></h3>
+<ol>
+<li>找所有可能性</li>
+</ol>
+<h3><strong>Java代码：</strong></h3>
+<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> List&lt;List&lt;Integer&gt;&gt; subsets(<span class="keyword">int</span>[] nums) &#123;</span><br><span class="line">	List&lt;Integer&gt; path = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">	List&lt;List&lt;Integer&gt;&gt; res = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">	res.add(<span class="keyword">new</span> ArrayList&lt;&gt;(path)); <span class="comment">//empty set</span></span><br><span class="line">	<span class="keyword">if</span>(nums == <span class="keyword">null</span> || nums.length == <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> res;</span><br><span class="line">	dfs(nums, <span class="number">0</span>, path, res);</span><br><span class="line">	<span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> st, List&lt;Integer&gt; path, List&lt;List&lt;Integer&gt;&gt; res)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(st == nums.length)</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = st; i &lt; nums.length; i++) &#123;</span><br><span class="line">		path.add(nums[i]);</span><br><span class="line">		res.add(<span class="keyword">new</span> ArrayList&lt;&gt;(path));</span><br><span class="line">		dfs(nums, i + <span class="number">1</span>, path, res);</span><br><span class="line">		path.remove(path.size() - <span class="number">1</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3><strong>算法分析：</strong></h3>
+<p>时间复杂度为&lt;code&gt;O(<em>2</em>&lt;sup&gt;n&lt;/sup&gt;)&lt;/code&gt; ，空间复杂度<code>O(1)</code>。</p>
 
       
     </div>
@@ -528,84 +391,28 @@ The median is (2 + 3)/2 = 2.5
     <header>
       
   
-    <h1 class="title"><a href="/2018/01/30/lee-006/">LeetCode 006 ZigZag Conversion</a></h1>
+    <h1 class="title"><a href="/2020/05/03/permutation/">排列</a></h1>
   
 
       
-        <time datetime="2018-01-31T06:11:31.903Z">2018-01-30</time>
+        <time datetime="2020-05-03T21:48:49.111Z">2020-05-03</time>
       
     </header>
     <div class="entry">
       
-        <p><strong><a href="https://leetcode.com/problems/zigzag-conversion" target="_blank" rel="noopener">LeetCode 006 ZigZag Conversion</a></strong></p>
-<p>The string <code>&quot;PAYPALISHIRING&quot;</code> is written in a zigzag pattern on a given number of rows like this: (you may want to display this pattern in a fixed font for better legibility)</p>
-<pre>P   A   H   N
-A P L S I I G
-Y   I   R
-</pre>
-
-<p>And then read line by line: <code>&quot;PAHNAPLSIIGYIR&quot;</code></p>
-<p>Write the code that will take a string and make this conversion given a number of rows:</p>
-<pre>string convert(string text, int nRows);</pre>
-
-<p><code>convert(&quot;PAYPALISHIRING&quot;, 3)</code> should return <code>&quot;PAHNAPLSIIGYIR&quot;</code>.</p>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定字符串按如上的“Z”字锯齿形进行按行重排。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是一个周期性的字符串。周期是竖+折（不含首节点）。<br><img src="/images/L006.png" alt=""><br>首节点和竖的最后一点在每周期只会出现一次，其他点会出现两次。<br>T=2&times;numRows-2(因为不含竖节点最后一点+折线上的最后一点属于另一个周期)。nT是有几个周期，即使不完成的周期也算一个。<br>按行遍历（实质是周期上的每个点），再按周期遍历，非顶点有两个需加入到结果中：j&times;T+i,(j+1)&times;T-i。由于周期可能不完成，只要写一个API检查边界且加入字符即可。</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><p>一个字符的字符串。此时T=0.直接返回原字符串。</p>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">convert2</span><span class="params">(String s, <span class="keyword">int</span> numRows)</span> </span>&#123;</span><br><span class="line">	StringBuffer sb = <span class="keyword">new</span> StringBuffer();</span><br><span class="line">	<span class="keyword">int</span> T = numRows*<span class="number">2</span>-<span class="number">2</span>;</span><br><span class="line">	<span class="keyword">if</span>(T==<span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> s;</span><br><span class="line">	<span class="keyword">int</span> nT = (<span class="keyword">int</span>)Math.ceil((s.length()+<span class="number">0.0</span>)/T);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;numRows;i++)&#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;nT;j++)&#123;</span><br><span class="line">			<span class="keyword">if</span>(i==<span class="number">0</span> || i==numRows-<span class="number">1</span>)</span><br><span class="line">				sb.append(addChar(s, j*T+i));</span><br><span class="line">			<span class="keyword">else</span>&#123;</span><br><span class="line">				sb.append(addChar(s, j*T+i));</span><br><span class="line">				sb.append(addChar(s, (j+<span class="number">1</span>)*T-i));</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> sb.toString();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">addChar</span><span class="params">(String s, <span class="keyword">int</span> index)</span></span>&#123;</span><br><span class="line">	String a = <span class="string">""</span>;</span><br><span class="line">	<span class="keyword">if</span>(index&lt;s.length())</span><br><span class="line">		<span class="keyword">return</span> s.substring(index, index+<span class="number">1</span>);</span><br><span class="line">	<span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>。</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2018/01/29/lee-253/">LeetCode 253 Meeting Rooms II</a></h1>
-  
-
-      
-        <time datetime="2018-01-30T06:07:55.171Z">2018-01-29</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/meeting-rooms-ii/" target="_blank" rel="noopener">LeetCode 253 Meeting Rooms II</a></strong></p>
-<p>Given an array of meeting time intervals consisting of start and end times <code>[[s1,e1],[s2,e2],...]</code> (si &lt; ei), find the minimum number of conference rooms required.</p>
-<p>For example,<br>Given <code>[[0, 30],[5, 10],[15, 20]]</code>,<br>return <code>2</code>.</p>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>输入[[0, 30],[5, 10],[15, 20]]表示每个会议的开始结束时间，求最少需要多少会议室能够安排所有的会议。</p>
-<h3 id="最小堆解题思路："><a href="#最小堆解题思路：" class="headerlink" title="最小堆解题思路："></a><strong>最小堆解题思路：</strong></h3><p>基于merging interval题目，首先按start排序。并且merge条件是start小于上一个会议的end。</p>
+        <h3><strong>算法思路：</strong></h3>
+<p>Leetcode 046的题目。这里作为知识点归纳。</p>
 <ol>
-<li>写几个例子感受一下。<br><img src="/images/L253.png" alt=""><br>有两个重叠的会议，现在插入新的会议。是否再需要一个会议室取决于该新会议的开始时间小于这两个目前会议的终止时间的最小值。<br>所以思路是用End time min-heap维护目前会议End time。若新会议start time小于堆顶元素，入栈且activeMeeting++，否则循环地出栈且activeMeeting–直到<br>start time小于堆顶。<br>这过程activeMeeting的最大值即所求。<br>最坏情况是所有会议都重叠，复杂度为n* 2logn因为n个元素入堆出堆各一次，所以复杂度为nlogn，但会议一般不会集中，平均情况比排序法稍优。 </li>
+<li>类似于组合题，但用到了visited数组且递归中从i=0开始。</li>
 </ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">minMeetingRooms</span><span class="params">(self, intervals: List[List[int]])</span> -&gt; int:</span></span><br><span class="line">	intervals.sort()</span><br><span class="line">	heap = [] <span class="comment"># heap for end time</span></span><br><span class="line">	max = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(intervals)):</span><br><span class="line">		<span class="comment"># start time of the new meeting is earlier than on-going endtime</span></span><br><span class="line">		<span class="keyword">while</span> heap <span class="keyword">and</span> intervals[i][<span class="number">0</span>] &gt; heap[<span class="number">0</span>]:</span><br><span class="line">			heappop(heap)</span><br><span class="line">		heappush(heap, (intervals[i][<span class="number">1</span>]))</span><br><span class="line">		<span class="keyword">if</span> len(heap) &gt; max:</span><br><span class="line">			max = len(heap)</span><br><span class="line">	<span class="keyword">return</span> max</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>由于输入无序，所以先要排序O(nlogn), 而循环复杂度为O(nlogk), 所以总时间复杂度为<code>O(nlogn)</code>，空间复杂度<code>O(k)</code>, k为所求也就是需要的会议室数。     </p>
-<h3 id="排序法解题思路："><a href="#排序法解题思路：" class="headerlink" title="排序法解题思路："></a><strong>排序法解题思路：</strong></h3><ol>
-<li>证明解与具体间隔无关，只与end time的值有关。<br><img src="/images/L253-2.png" alt=""></li>
-<li>基于1和2，对end time进行排序，题解只与start-end的相对顺序有关。既然这样，我们可以把所有start，end一起排序，也就是按时间轴排列，排成一个2n大小的数组，<br>遇到start，activeMeeting++，遇到end，activeMeeting–。 这过程activeMeeting的最大值即所求。<br>当然，上述方法直观，但实现起来需要建立一个class Node{value, startOrEnd}。本质上等价于对排序后的start数组和排序后的end数组进行<strong>合并排序</strong>。<br>合并排序的结果等价于时间轴上两个数组的统一排序。当然，不需要剩余部分的合并排序，因为这部分不会增加activeMeeting的值。</li>
-</ol>
-<p>解题步骤：</p>
+<h3><strong>应用：</strong></h3>
 <ol>
-<li>排序start</li>
-<li>排序end</li>
-<li>合并排序，start小就activeMeeting++，否则activeMeeting–。求activeMeeting的最大值。</li>
+<li>找所有可能性</li>
 </ol>
-<h3 id="Python代码：-1"><a href="#Python代码：-1" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">minMeetingRooms</span><span class="params">(self, intervals: List[List[int]])</span> -&gt; int:</span></span><br><span class="line">	start = [(i[<span class="number">0</span>], <span class="number">1</span>) <span class="keyword">for</span> i <span class="keyword">in</span> intervals]</span><br><span class="line">	ends = [(i[<span class="number">1</span>], <span class="number">-1</span>) <span class="keyword">for</span> i <span class="keyword">in</span> intervals]</span><br><span class="line">	endpoints = start + ends</span><br><span class="line">	endpoints.sort()</span><br><span class="line">	active_meetings, max = <span class="number">0</span>, <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(endpoints)):</span><br><span class="line">		<span class="keyword">if</span> endpoints[i][<span class="number">1</span>] == <span class="number">1</span>:</span><br><span class="line">			active_meetings += <span class="number">1</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			active_meetings -= <span class="number">1</span></span><br><span class="line">		<span class="keyword">if</span> active_meetings &gt; max:</span><br><span class="line">			max = active_meetings</span><br><span class="line">	<span class="keyword">return</span> max</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nlogn)</code>，空间复杂度<code>O(n)</code>。</p>
+<h3><strong>Java代码：</strong></h3>
+<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> List&lt;List&lt;Integer&gt;&gt; permute(<span class="keyword">int</span>[] nums) &#123;</span><br><span class="line">	List&lt;Integer&gt; path = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">	List&lt;List&lt;Integer&gt;&gt; res = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">	<span class="keyword">if</span>(nums == <span class="keyword">null</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> res;</span><br><span class="line">	&#125;</span><br><span class="line">	dfs(nums, <span class="keyword">new</span> HashSet&lt;&gt;(), path, res);</span><br><span class="line">	<span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span>[] nums, Set&lt;Integer&gt; visited, List&lt;Integer&gt; path, List&lt;List&lt;Integer&gt;&gt; res)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(path.size() == nums.length) &#123;</span><br><span class="line">		res.add(<span class="keyword">new</span> ArrayList&lt;&gt;(path));</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nums.length; i++) &#123;</span><br><span class="line">		<span class="keyword">if</span>(visited.contains(i))</span><br><span class="line">			<span class="keyword">continue</span>;</span><br><span class="line">		visited.add(i);</span><br><span class="line">		path.add(nums[i]);</span><br><span class="line">		dfs(nums, visited, path, res);</span><br><span class="line">		visited.remove(i);</span><br><span class="line">		path.remove(path.size() - <span class="number">1</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3><strong>算法分析：</strong></h3>
+<p>时间复杂度为<code>O(n!)</code>，空间复杂度<code>O(1)</code>。</p>
 
       
     </div>
@@ -675,7 +482,7 @@ Y   I   R
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Array/" style="font-size: 18.46px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 10px;">Backtracking</a> <a href="/tags/Binary-Indexed-Tree/" style="font-size: 10px;">Binary Indexed Tree</a> <a href="/tags/Binary-Search/" style="font-size: 14.62px;">Binary Search</a> <a href="/tags/Binary-Search-Tree/" style="font-size: 10px;">Binary Search Tree</a> <a href="/tags/Breadth-first-Search/" style="font-size: 14.62px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 16.15px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 12.31px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.54px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 16.92px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 10.77px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 10.77px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 15.38px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 10px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 15.38px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 19.23px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 12.31px;">Linked List</a> <a href="/tags/Math/" style="font-size: 11.54px;">Math</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 12.31px;">Memoization</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Python-KB/" style="font-size: 17.69px;">Python KB</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10px;">Segment Tree</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 12.31px;">Sort</a> <a href="/tags/Stack/" style="font-size: 13.85px;">Stack</a> <a href="/tags/String/" style="font-size: 13.08px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.31px;">Tree</a> <a href="/tags/Two-Pointers/" style="font-size: 12.31px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 10.77px;">Union Find</a>
+    <a href="/tags/Array/" style="font-size: 18.33px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 10px;">Backtracking</a> <a href="/tags/Binary-Indexed-Tree/" style="font-size: 10px;">Binary Indexed Tree</a> <a href="/tags/Binary-Search/" style="font-size: 15px;">Binary Search</a> <a href="/tags/Binary-Search-Tree/" style="font-size: 10px;">Binary Search Tree</a> <a href="/tags/Breadth-first-Search/" style="font-size: 15px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15.83px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 12.5px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.67px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 16.67px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 10.83px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 10.83px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 15.83px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 10px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 15.83px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 19.17px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 12.5px;">Linked List</a> <a href="/tags/Math/" style="font-size: 11.67px;">Math</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 12.5px;">Memoization</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Python-KB/" style="font-size: 17.5px;">Python KB</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10px;">Segment Tree</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 12.5px;">Sort</a> <a href="/tags/Stack/" style="font-size: 14.17px;">Stack</a> <a href="/tags/String/" style="font-size: 13.33px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.5px;">Tree</a> <a href="/tags/Two-Pointers/" style="font-size: 12.5px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 10.83px;">Union Find</a>
   </div>
 </div>
 

@@ -68,27 +68,38 @@ For this problem, a path is defined as any sequence of nodes">
         <p><strong><a href="https://leetcode.com/problems/binary-tree-maximum-path-sum" target="_blank" rel="noopener">LeetCode 124 Binary Tree Maximum Path Sum</a></strong></p>
 <p>Given a binary tree, find the maximum path sum.</p>
 <p>For this problem, a path is defined as any sequence of nodes from some starting node to any node in the tree along the parent-child connections. The path must contain <strong>at least one node</strong> and does not need to go through the root.</p>
-<p>For example:<br>Given the below binary tree,</p>
-<pre>       
-       1
-      / \
-     2   3
-</pre>
-
+<p>For example:<br>
+Given the below binary tree,</p>
+<p>&lt;pre&gt;<br>
+1
+/ <br>
+2   3
+&lt;/pre&gt;</p>
 <p>Return <code>6</code>.</p>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一棵二叉树，寻找最大路径和。路径指的是从任意起始节点出发沿着父亲-孩子链接到达某个终止节点的节点序列。路径不一定要穿过根节点。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>DFS搜索，二叉树的题。步骤主要是考虑</p>
+<h3><strong>题目大意：</strong></h3>
+<p>给定一棵二叉树，寻找最大路径和。路径指的是从任意起始节点出发沿着父亲-孩子链接到达某个终止节点的节点序列。路径不一定要穿过根节点。</p>
+<h3><strong>解题思路：</strong></h3>
+<p>DFS搜索，二叉树的题。步骤主要是考虑</p>
 <ol>
 <li>空指针</li>
-<li>一个node情况或多个node情况（可合并）<br>多个node情况下（比如3个节点），有4种情况下含根节点的和：左子树+根节点，右子树+跟节点，根节点，左子树+根节点+右子树。这些情况包含了所有可能的和的情况。但值得注意的是，前三种<br>情况可以是子问题的解，也就是它返回值将成为此根节点父亲的左或右子树的解，但第四种情况例外，因为此情况形成的路径与根节点父亲并不在一条路径上。所以此情况应在全局变量中比较<br>并不能作为返回值。<br>gmax = max {return max{val,left+val,right+val}  or left+val+right}</li>
+<li>一个node情况或多个node情况（可合并）<br>
+多个node情况下（比如3个节点），有4种情况下含根节点的和：左子树+根节点，右子树+跟节点，根节点，左子树+根节点+右子树。这些情况包含了所有可能的和的情况。但值得注意的是，前三种<br>
+情况可以是子问题的解，也就是它返回值将成为此根节点父亲的左或右子树的解，但第四种情况例外，因为此情况形成的路径与根节点父亲并不在一条路径上。所以此情况应在全局变量中比较<br>
+并不能作为返回值。
+gmax = max {return max{val,left+val,right+val}  or left+val+right}</li>
 </ol>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<h3><strong>注意事项：</strong></h3>
+<ol>
 <li>4种情况</li>
 <li>定义全局变量来比较最大值，因为左到右情况不能返回。全局变量初始值为负无穷。</li>
 </ol>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> gsum = Integer.MIN_VALUE;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxPathSum</span><span class="params">(TreeNode root)</span></span>&#123;</span><br><span class="line">	gsum = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> a = max(root);</span><br><span class="line">	<span class="keyword">return</span> gsum;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">max</span><span class="params">(TreeNode root)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(root==<span class="keyword">null</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> lmax = max(root.left);</span><br><span class="line">	<span class="keyword">int</span> rmax = max(root.right);</span><br><span class="line">	<span class="keyword">int</span> sum = Math.max(Math.max(lmax, rmax)+root.val,root.val);</span><br><span class="line">	gsum = Math.max(Math.max(gsum, sum), lmax+root.val+rmax);</span><br><span class="line">	<span class="keyword">return</span> sum;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>两种方法时间复杂度为<code>O(n)</code>，n为节点数。空间复杂度为<code>O(h)</code>，h为二叉树高度。</p>
-<h3 id="相关题目："><a href="#相关题目：" class="headerlink" title="相关题目："></a><strong>相关题目：</strong></h3><p>LeetCode 112 Path Sum<br>LeetCode 124 Binary Tree Maximum Path Sum</p>
+<h3><strong>Java代码：</strong></h3>
+<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> gsum = Integer.MIN_VALUE;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxPathSum</span><span class="params">(TreeNode root)</span></span>&#123;</span><br><span class="line">	gsum = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> a = max(root);</span><br><span class="line">	<span class="keyword">return</span> gsum;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">max</span><span class="params">(TreeNode root)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(root==<span class="keyword">null</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> lmax = max(root.left);</span><br><span class="line">	<span class="keyword">int</span> rmax = max(root.right);</span><br><span class="line">	<span class="keyword">int</span> sum = Math.max(Math.max(lmax, rmax)+root.val,root.val);</span><br><span class="line">	gsum = Math.max(Math.max(gsum, sum), lmax+root.val+rmax);</span><br><span class="line">	<span class="keyword">return</span> sum;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3><strong>算法分析：</strong></h3>
+<p>两种方法时间复杂度为<code>O(n)</code>，n为节点数。空间复杂度为<code>O(h)</code>，h为二叉树高度。</p>
+<h3><strong>相关题目：</strong></h3>
+<p>LeetCode 112 Path Sum
+LeetCode 124 Binary Tree Maximum Path Sum</p>
 
       
     </div>
@@ -98,7 +109,7 @@ For this problem, a path is defined as any sequence of nodes">
         
   
   <div class="tags">
-    <a href="/tags/Depth-first-Search/">Depth-first Search</a>, <a href="/tags/Classic/">Classic</a>, <a href="/tags/Tree/">Tree</a>
+    <a href="/tags/Classic/">Classic</a>, <a href="/tags/Tree/">Tree</a>, <a href="/tags/Depth-first-Search/">Depth-first Search</a>
   </div>
 
         
@@ -175,7 +186,7 @@ For this problem, a path is defined as any sequence of nodes">
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Array/" style="font-size: 18.46px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 10px;">Backtracking</a> <a href="/tags/Binary-Indexed-Tree/" style="font-size: 10px;">Binary Indexed Tree</a> <a href="/tags/Binary-Search/" style="font-size: 14.62px;">Binary Search</a> <a href="/tags/Binary-Search-Tree/" style="font-size: 10px;">Binary Search Tree</a> <a href="/tags/Breadth-first-Search/" style="font-size: 14.62px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 16.15px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 12.31px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.54px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 16.92px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 10.77px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 10.77px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 15.38px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 10px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 15.38px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 19.23px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 12.31px;">Linked List</a> <a href="/tags/Math/" style="font-size: 11.54px;">Math</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 12.31px;">Memoization</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Python-KB/" style="font-size: 17.69px;">Python KB</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10px;">Segment Tree</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 12.31px;">Sort</a> <a href="/tags/Stack/" style="font-size: 13.85px;">Stack</a> <a href="/tags/String/" style="font-size: 13.08px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.31px;">Tree</a> <a href="/tags/Two-Pointers/" style="font-size: 12.31px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 10.77px;">Union Find</a>
+    <a href="/tags/Array/" style="font-size: 18.33px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 10px;">Backtracking</a> <a href="/tags/Binary-Indexed-Tree/" style="font-size: 10px;">Binary Indexed Tree</a> <a href="/tags/Binary-Search/" style="font-size: 15px;">Binary Search</a> <a href="/tags/Binary-Search-Tree/" style="font-size: 10px;">Binary Search Tree</a> <a href="/tags/Breadth-first-Search/" style="font-size: 15px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15.83px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 12.5px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.67px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 16.67px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 10.83px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 10.83px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 15.83px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 10px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 15.83px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 19.17px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 12.5px;">Linked List</a> <a href="/tags/Math/" style="font-size: 11.67px;">Math</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 12.5px;">Memoization</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Python-KB/" style="font-size: 17.5px;">Python KB</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10px;">Segment Tree</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 12.5px;">Sort</a> <a href="/tags/Stack/" style="font-size: 14.17px;">Stack</a> <a href="/tags/String/" style="font-size: 13.33px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.5px;">Tree</a> <a href="/tags/Two-Pointers/" style="font-size: 12.5px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 10.83px;">Union Find</a>
   </div>
 </div>
 
