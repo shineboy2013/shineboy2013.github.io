@@ -1,0 +1,187 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+  
+  <title>LeetCode 1048 Longest String Chain › Jiajie&#39;s blog</title>
+  <meta name="author" content="KK Shum">
+  
+  <meta name="description" content="LeetCode 1048 Longest String Chain
+Problem OverviewGet longgest one-character transformation in the given list
+Thinking ProcessThis problem is similar">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="LeetCode 1048 Longest String Chain"/>
+  <meta property="og:site_name" content="Jiajie&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="Jiajie&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]--><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+</head>
+
+
+<body>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><header id="header"><div class="meta inner">
+  <h1><a href="/">Jiajie&#39;s blog</a></h1>
+  <h2><a href="/">每天积累多一些</a></h2>
+  <nav id="main-nav">
+    <ul>
+      
+      <li><a href="/about">About</a></li>
+      
+      <li><a href="/archives">Archives</a></li>
+      
+      <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+</div>
+<div class="clearfix"></div>
+
+	<script data-ad-client="ca-pub-3350210696528821" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  </header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title">LeetCode 1048 Longest String Chain</h1>
+  
+
+      
+        <time datetime="2021-11-28T07:34:39.183Z">2021-11-27</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/longest-string-chain/" target="_blank" rel="noopener">LeetCode 1048 Longest String Chain</a></strong></p>
+<h3 id="Problem-Overview"><a href="#Problem-Overview" class="headerlink" title="Problem Overview"></a><strong>Problem Overview</strong></h3><p>Get longgest one-character transformation in the given list</p>
+<h3 id="Thinking-Process"><a href="#Thinking-Process" class="headerlink" title="Thinking Process"></a><strong>Thinking Process</strong></h3><p>This problem is similar to Word Break (reversed to get neighbors) but it is a multi-source longest path problem. </p>
+<h3 id="Steps"><a href="#Steps" class="headerlink" title="Steps"></a><strong>Steps</strong></h3><ol>
+<li>Loop through each word  </li>
+<li>BFS from each word and get the max distance    </li>
+<li>Get the max of distance    </li>
+</ol>
+<h3 id="Notes"><a href="#Notes" class="headerlink" title="Notes"></a><strong>Notes</strong></h3><ol>
+<li>max_dis = 1 by default in BFS  </li>
+<li>To improve the complexity, make the distance map global so that the distance of each node will be calculated once.<br>To do that, <strong>sort the list</strong> from longest to shortest and make sure the it is greedy to get the max distance</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">longestStrChain</span><span class="params">(self, words: List[str])</span> -&gt; int:</span></span><br><span class="line">	word_dict = set(words)</span><br><span class="line">	max_dis = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> word <span class="keyword">in</span> words:</span><br><span class="line">		dis = self.bfs(word, word_dict)</span><br><span class="line">		max_dis = max(max_dis, dis)</span><br><span class="line">	<span class="keyword">return</span> max_dis</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">bfs</span><span class="params">(self, word, word_dict)</span>:</span></span><br><span class="line">	queue = [word]</span><br><span class="line">	visited = &#123;word&#125;</span><br><span class="line">	distance = &#123;word: <span class="number">1</span>&#125;</span><br><span class="line">	max_dis = <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.pop(<span class="number">0</span>)</span><br><span class="line">		<span class="keyword">for</span> neighbor <span class="keyword">in</span> self.get_neighbors(node, word_dict):</span><br><span class="line">			<span class="keyword">if</span> neighbor <span class="keyword">in</span> visited:</span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			queue.append(neighbor)</span><br><span class="line">			visited.add(neighbor)</span><br><span class="line">			distance[neighbor] = distance[node] + <span class="number">1</span></span><br><span class="line">			max_dis = max(max_dis, distance[neighbor])</span><br><span class="line">	<span class="keyword">return</span> max_dis</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_neighbors</span><span class="params">(self, word, word_dict)</span>:</span></span><br><span class="line">	res = []</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(word)):</span><br><span class="line">		new_word = word[:i] + word[i + <span class="number">1</span>:]</span><br><span class="line">		<span class="keyword">if</span> new_word <span class="keyword">in</span> word_dict:</span><br><span class="line">			res.append(new_word)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h3 id="Analysis"><a href="#Analysis" class="headerlink" title="Analysis"></a><strong>Analysis</strong></h3><p>Though there is a loop and bfs like n^2, actually it is a traversal in a graph. n <em> L (n is # of nodes, L is max of path<br>single-source) is the num of edges. Another L is to get neighbors.<br>Time complexity<code>O(n</code></em><em>L</em><sup>2</sup>), Spce complexity<code>O(n)</code>.</p>
+
+      
+    </div>
+      
+      <footer>
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/tiktok/">tiktok</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  
+</section>
+
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="q" value="site:shineboy2013.github.com">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">Recent Posts</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2021/11/27/lee-1048/">LeetCode 1048 Longest String Chain</a>
+      </li>
+    
+      <li>
+        <a href="/2021/11/27/dp/">DP</a>
+      </li>
+    
+      <li>
+        <a href="/2021/11/20/lee-2080/">LeetCode 2080 Range Frequency Queries</a>
+      </li>
+    
+      <li>
+        <a href="/2021/11/20/lee-2079/">LeetCode 2079 Watering Plants</a>
+      </li>
+    
+      <li>
+        <a href="/2021/11/15/merge-sort/">合并排序</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">Tag Cloud</h3>
+  <div class="entry">
+    <a href="/tags/Array/" style="font-size: 19.17px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 10px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 15.83px;">Binary Search</a> <a href="/tags/Breadth-first-Search/" style="font-size: 15px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 16.67px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 12.5px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.67px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 17.5px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 10.83px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 10.83px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.67px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 10px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 16.67px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 18.33px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 12.5px;">Linked List</a> <a href="/tags/Math/" style="font-size: 11.67px;">Math</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 12.5px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Python-KB/" style="font-size: 18.33px;">Python KB</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 12.5px;">Sort</a> <a href="/tags/Stack/" style="font-size: 14.17px;">Stack</a> <a href="/tags/String/" style="font-size: 13.33px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.5px;">Tree</a> <a href="/tags/Two-Pointers/" style="font-size: 12.5px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 10.83px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
+  </div>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2021 KK Shum
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+
+</body>
+</html>
+
