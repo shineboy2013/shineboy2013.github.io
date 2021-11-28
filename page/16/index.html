@@ -53,6 +53,51 @@
     <header>
       
   
+    <h1 class="title"><a href="/2017/12/03/topological/">拓扑排序</a></h1>
+  
+
+      
+        <time datetime="2017-12-04T07:23:54.692Z">2017-12-03</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>对于拓扑排序来说， 我们的中心思想是要我们可以找到一个顺序，每一次我们可以进行的工序是现在没有先序依赖的工序，<br>按照这个顺序可以流畅的完成我们的任务。<br>思路基于BFS的队列实现。区别在于统计每个节点的入度数。此法也可用于无向图。</p>
+<ol>
+<li>根据边统计每个节点的入度数记入in[i]</li>
+<li>找出度数为0的节点加入到Queue</li>
+<li>取出队首节点，把此节点邻接的节点度数减1，如果度数为0，加入到队列，循环直到队列为空</li>
+<li>如果队列为空但仍有节点度数不为0，存在循环，否则不存在</li>
+</ol>
+<h3 id="应用："><a href="#应用：" class="headerlink" title="应用："></a><strong>应用：</strong></h3><ol>
+<li>求最长或最短路径(Leetcode 310)</li>
+<li>判断拓扑顺序(Leetcode外星人字典)</li>
+<li>判断循环(Python代码返回None)</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">topological_sort</span><span class="params">(self, graph: List[List[int]], n: int)</span> -&gt; List[int]:</span></span><br><span class="line">	in_degree = [<span class="number">0</span>] * n</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(graph)):</span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> range(len(graph[i])):</span><br><span class="line">			in_degree[graph[i][j]] += <span class="number">1</span></span><br><span class="line">	queue, res = [], []</span><br><span class="line">	<span class="keyword">for</span> i, in_degree_num <span class="keyword">in</span> enumerate(in_degree):</span><br><span class="line">		<span class="keyword">if</span> in_degree_num == <span class="number">0</span>:</span><br><span class="line">			queue.append(i)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		root = queue.pop(<span class="number">0</span>)</span><br><span class="line">		res.append(root)</span><br><span class="line">		<span class="keyword">for</span> i <span class="keyword">in</span> graph[root]:</span><br><span class="line">			in_degree[i] -= <span class="number">1</span></span><br><span class="line">			<span class="keyword">if</span> in_degree[i] == <span class="number">0</span>:</span><br><span class="line">				queue.append(i)</span><br><span class="line">	<span class="keyword">return</span> res <span class="keyword">if</span> len(res) == n <span class="keyword">else</span> <span class="keyword">None</span></span><br></pre></td></tr></table></figure>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * graph: 邻接表</span></span><br><span class="line"><span class="comment"> * num: 节点个数 </span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">topologicalSort</span><span class="params">(ArrayList&lt;ArrayList&lt;Integer&gt;&gt; graph, <span class="keyword">int</span> num)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span>[] inDegree = <span class="keyword">new</span> <span class="keyword">int</span>[num];</span><br><span class="line">	<span class="comment">//populate inDegree</span></span><br><span class="line">	<span class="keyword">for</span>(ArrayList&lt;Integer&gt; adjacencyList : graph)&#123;</span><br><span class="line">		<span class="keyword">for</span>(Integer node : adjacencyList)&#123;</span><br><span class="line">			inDegree[node]++;</span><br><span class="line">		&#125;       	</span><br><span class="line">	&#125;</span><br><span class="line">	Queue&lt;Integer&gt; q = <span class="keyword">new</span> LinkedList&lt;Integer&gt;();</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;inDegree.length;i++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(inDegree[i]==<span class="number">0</span>)</span><br><span class="line">			q.offer(i);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty())&#123;</span><br><span class="line">		Integer v = q.poll();</span><br><span class="line">		count++;</span><br><span class="line">		System.out.print(v + <span class="string">"-&gt;"</span>);</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> neighbor : graph.get(v))&#123;</span><br><span class="line">			<span class="keyword">if</span>(--inDegree[neighbor]==<span class="number">0</span>)</span><br><span class="line">				q.offer(neighbor);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">/* check isCyclic  or not</span></span><br><span class="line"><span class="comment">	return count == num;;</span></span><br><span class="line"><span class="comment">	*/</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，w为树的所有层里面的最大长度，空间复杂度<code>O(w)</code>。</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2017/12/03/bfs/">BFS</a></h1>
   
 
@@ -72,9 +117,9 @@
 <li>q.isEmpty() &amp;&amp; !q2.isEmpty()</li>
 <li>矩阵的遍历用方向List: directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]</li>
 </ol>
-<h2 id="图遍历"><a href="#图遍历" class="headerlink" title="图遍历"></a>图遍历</h2><h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">bfs</span><span class="params">(self, graph, visited, start)</span> -&gt; List[int]:</span></span><br><span class="line">	queue, res = [start], []</span><br><span class="line">	visited.add(start)</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.pop(<span class="number">0</span>)</span><br><span class="line">		res.append(node)</span><br><span class="line">		<span class="keyword">for</span> neighbor <span class="keyword">in</span> graph[node]:</span><br><span class="line">			<span class="keyword">if</span> neighbor <span class="keyword">not</span> <span class="keyword">in</span> visited:</span><br><span class="line">				queue.append(neighbor)</span><br><span class="line">				visited.add(neighbor)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h2 id="图遍历"><a href="#图遍历" class="headerlink" title="图遍历"></a>图遍历</h2><h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">bfs</span><span class="params">(self, graph, start)</span> -&gt; List[int]:</span></span><br><span class="line">	queue, res = [start], []</span><br><span class="line">	visited = &#123;start&#125;</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.pop(<span class="number">0</span>)</span><br><span class="line">		res.append(node)</span><br><span class="line">		<span class="keyword">for</span> neighbor <span class="keyword">in</span> graph[node]:</span><br><span class="line">			<span class="keyword">if</span> neighbor <span class="keyword">not</span> <span class="keyword">in</span> visited:</span><br><span class="line">				queue.append(neighbor)</span><br><span class="line">				visited.add(neighbor)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
 <p>树模板只要把visited去掉，neighbor改成left和right  </p>
-<h2 id="计算最短距离的图遍历"><a href="#计算最短距离的图遍历" class="headerlink" title="计算最短距离的图遍历"></a>计算最短距离的图遍历</h2><p>只要加line 4和11<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">bfs_layer</span><span class="params">(self, graph, visited, start)</span> -&gt; List[int]:</span></span><br><span class="line">	queue = [start]</span><br><span class="line">	visited.add(start)</span><br><span class="line">	distance = &#123;start: <span class="number">1</span>&#125;</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.pop(<span class="number">0</span>)</span><br><span class="line">		<span class="keyword">for</span> neighbor <span class="keyword">in</span> graph[node]:</span><br><span class="line">			<span class="keyword">if</span> neighbor <span class="keyword">not</span> <span class="keyword">in</span> visited:</span><br><span class="line">				queue.append(neighbor)</span><br><span class="line">				visited.add(neighbor)</span><br><span class="line">				distance[neighbor] = distance[node] + <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> distance</span><br></pre></td></tr></table></figure></p>
+<h2 id="计算最短距离的图遍历"><a href="#计算最短距离的图遍历" class="headerlink" title="计算最短距离的图遍历"></a>计算最短距离的图遍历</h2><p>只要加line 4和11<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">bfs_layer</span><span class="params">(self, graph, start)</span> -&gt; List[int]:</span></span><br><span class="line">	queue = [start]</span><br><span class="line">	visited = &#123;start&#125;</span><br><span class="line">	distance = &#123;start: <span class="number">1</span>&#125;</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.pop(<span class="number">0</span>)</span><br><span class="line">		<span class="keyword">for</span> neighbor <span class="keyword">in</span> graph[node]:</span><br><span class="line">			<span class="keyword">if</span> neighbor <span class="keyword">not</span> <span class="keyword">in</span> visited:</span><br><span class="line">				queue.append(neighbor)</span><br><span class="line">				visited.add(neighbor)</span><br><span class="line">				distance[neighbor] = distance[node] + <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> distance</span><br></pre></td></tr></table></figure></p>
 <h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * graph: 邻接表</span></span><br><span class="line"><span class="comment"> * visited: 记录已访问节点，避免重复访问</span></span><br><span class="line"><span class="comment"> * start: BFS的根节点</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">bfs</span><span class="params">(HashMap&lt;Integer, LinkedList&lt;Integer&gt;&gt; graph, HashSet&lt;Integer&gt; visited, <span class="keyword">int</span> start)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> num=<span class="number">0</span>;</span><br><span class="line">	Queue&lt;Integer&gt; q=<span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">	q.offer(start);</span><br><span class="line">	visited.add(start);</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty())&#123;</span><br><span class="line">		<span class="keyword">int</span> node = q.poll();</span><br><span class="line">		LinkedList&lt;Integer&gt; children = graph.get(node);</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> child : children)&#123;</span><br><span class="line">			<span class="keyword">if</span> (!visited.contains(child))&#123;</span><br><span class="line">				q.offer(child);</span><br><span class="line">				visited.add(child);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h3 id="错误算法："><a href="#错误算法：" class="headerlink" title="错误算法："></a><strong>错误算法：</strong></h3><p>问题是加入到queue里面的child没有去重，这样容易queue爆炸式增长。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">bfs</span><span class="params">(HashMap&lt;Integer, LinkedList&lt;Integer&gt;&gt; graph, HashSet&lt;Integer&gt; visited, <span class="keyword">int</span> start)</span></span>&#123;</span><br><span class="line">	Queue&lt;Integer&gt; q=<span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">	q.offer(start);</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty())&#123;</span><br><span class="line">		<span class="keyword">int</span> node = q.poll();</span><br><span class="line">		visited.add(node);</span><br><span class="line">		LinkedList&lt;Integer&gt; children = graph.get(node);</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> child : children)&#123;</span><br><span class="line">			<span class="keyword">if</span> (!visited.contains(child))</span><br><span class="line">				q.offer(child);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <h3 id="按层次遍历："><a href="#按层次遍历：" class="headerlink" title="按层次遍历："></a><strong>按层次遍历：</strong></h3><p>第一个思路是三重循环，先queue，然后该层所有节点，最后该层每一个节点的儿子。关键在于size = q.size();</p>
@@ -3797,53 +3842,6 @@ In this case, no transaction is done, i.e. max profit = 0.
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2017/11/02/lee-557/">LeetCode 557 Reverse Words in a String III</a></h1>
-  
-
-      
-        <time datetime="2017-11-02T11:43:32.738Z">2017-11-02</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/reverse-words-in-a-string-iii/" target="_blank" rel="noopener">LeetCode 557 Reverse Words in a String III</a></strong></p>
-<p>Given a string, you need to reverse the order of characters in each word within a sentence while still preserving whitespace and initial word order.</p>
-<p><strong>Example 1:</strong></p>
-<pre>Input: "Let's take LeetCode contest"
-Output: "s'teL ekat edoCteeL tsetnoc"
-</pre>
-
-<p><strong>Note:</strong>In the string, each word is separated by single space and there will not be any extra space in the string.</p>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定字符串，将每个单词逐字符逆置，返回新字符串。注意：字符串中单词之间有且只有1个空格分开。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这里考到StringBuilder，对于字符串连接效率高。还有一个小技巧，就是往输入参数附加一个空格，这样for循环结束后不用特别处理边界情况。<br>第一种方法是以单词为扫描单位，把字符串分成单词字符串数组，然后把每个单词反转及一个空格加入到结果sb中。<br>第二种方法是以字符为扫描单位，遇到空格是，就把之前存入的word放入sb中，再进行下一轮word扫描。</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>用StringBuilder</li>
-<li>末尾加入空格</li>
-</ol>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><p>第一种方法<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">reverseWords</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">	String[] tokens = s.split(<span class="string">" "</span>);</span><br><span class="line">	StringBuilder sb = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">	<span class="keyword">for</span>(String token : tokens)</span><br><span class="line">		sb.append(<span class="keyword">new</span> StringBuilder(token).reverse().toString()+<span class="string">" "</span>);</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">return</span> sb.toString().trim();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>第二种方法<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">reverseWords</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">	s = s+<span class="string">" "</span>;</span><br><span class="line">	StringBuilder sb = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">	StringBuilder word = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">char</span> c : s.toCharArray())&#123;</span><br><span class="line">		<span class="keyword">if</span>(c!=<span class="string">' '</span>)</span><br><span class="line">			word.append(c);</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			sb.append(word.reverse().toString()+<span class="string">" "</span>);</span><br><span class="line">			word = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> sb.toString().trim();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>两种方法时间复杂度为<code>O(n)</code>，n为字符串长度。第一种方法空间复杂度为<code>O(n)</code>，而第二种方法为<code>O(1)</code>。</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -3868,6 +3866,10 @@ Output: "s'teL ekat edoCteeL tsetnoc"
   <ul class="entry">
     
       <li>
+        <a href="/2021/11/27/dp/">DP</a>
+      </li>
+    
+      <li>
         <a href="/2021/11/20/lee-2080/">LeetCode 2080 Range Frequency Queries</a>
       </li>
     
@@ -3883,10 +3885,6 @@ Output: "s'teL ekat edoCteeL tsetnoc"
         <a href="/2021/11/14/heap/">Heap</a>
       </li>
     
-      <li>
-        <a href="/2021/11/14/lee-378/">LeetCode 378 Kth Smallest Element in a Sorted Matrix</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -3897,7 +3895,7 @@ Output: "s'teL ekat edoCteeL tsetnoc"
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Array/" style="font-size: 19.23px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 10px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 15.38px;">Binary Search</a> <a href="/tags/Breadth-first-Search/" style="font-size: 14.62px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 16.15px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 12.31px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.54px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 16.92px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 10.77px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 10.77px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.15px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 10px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 16.15px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 17.69px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 12.31px;">Linked List</a> <a href="/tags/Math/" style="font-size: 11.54px;">Math</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 12.31px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Python-KB/" style="font-size: 18.46px;">Python KB</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 12.31px;">Sort</a> <a href="/tags/Stack/" style="font-size: 13.85px;">Stack</a> <a href="/tags/String/" style="font-size: 13.08px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.31px;">Tree</a> <a href="/tags/Two-Pointers/" style="font-size: 12.31px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 10.77px;">Union Find</a>
+    <a href="/tags/Array/" style="font-size: 19.17px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 10px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 15.83px;">Binary Search</a> <a href="/tags/Breadth-first-Search/" style="font-size: 15px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 16.67px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 12.5px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.67px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 17.5px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 10.83px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 10.83px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.67px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 10px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 16.67px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 18.33px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 12.5px;">Linked List</a> <a href="/tags/Math/" style="font-size: 11.67px;">Math</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 12.5px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Python-KB/" style="font-size: 18.33px;">Python KB</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 12.5px;">Sort</a> <a href="/tags/Stack/" style="font-size: 14.17px;">Stack</a> <a href="/tags/String/" style="font-size: 13.33px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.5px;">Tree</a> <a href="/tags/Two-Pointers/" style="font-size: 12.5px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 10.83px;">Union Find</a>
   </div>
 </div>
 
