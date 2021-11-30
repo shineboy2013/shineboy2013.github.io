@@ -1,0 +1,184 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+  
+  <title>LeetCode 269 Alien Dictionary › Jiajie&#39;s blog</title>
+  <meta name="author" content="KK Shum">
+  
+  <meta name="description" content="算法思路：N/A
+注意事项：
+题目要求： 空字符顺序前于非空字母，否则字典不合法，如abc -&amp;gt; ab, c不能前于空字符，无解。简而言之，后面单词不能是前面的前缀return False if len(word) &amp;gt; len(word2) else True     
+模板问题： gr">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="LeetCode 269 Alien Dictionary"/>
+  <meta property="og:site_name" content="Jiajie&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="Jiajie&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]--><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+</head>
+
+
+<body>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><header id="header"><div class="meta inner">
+  <h1><a href="/">Jiajie&#39;s blog</a></h1>
+  <h2><a href="/">每天积累多一些</a></h2>
+  <nav id="main-nav">
+    <ul>
+      
+      <li><a href="/about">About</a></li>
+      
+      <li><a href="/archives">Archives</a></li>
+      
+      <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+</div>
+<div class="clearfix"></div>
+
+	<script data-ad-client="ca-pub-3350210696528821" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  </header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title">LeetCode 269 Alien Dictionary</h1>
+  
+
+      
+        <time datetime="2021-11-30T06:09:47.410Z">2021-11-29</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>题目要求： 空字符顺序前于非空字母，否则字典不合法，如abc -&gt; ab, c不能前于空字符，无解。简而言之，后面单词不能是前面的前缀return False if len(word) &gt; len(word2) else True     </li>
+<li>模板问题： graph要含所有节点，包括没有边的节点。否则结果会有遗漏graph = Counter({c: [] for word in words for c in word})    </li>
+<li>模板问题： in_degree初始化要对所有节点赋0， in_degree[c] = 0。in_degree = collections.defaultdict(int)并不能产生key  </li>
+<li>模板问题： 第四步判断是否含循环必不可少，题目要求可能不合法，return res if len(graph) == len(res) else ‘’  </li>
+<li>语法错误： graph.items()记得加items。res是str不是list  </li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">alienOrder</span><span class="params">(self, words: List[str])</span> -&gt; str:</span></span><br><span class="line">	<span class="comment"># graph = collections.defaultdict(list)</span></span><br><span class="line">	graph = Counter(&#123;c: [] <span class="keyword">for</span> word <span class="keyword">in</span> words <span class="keyword">for</span> c <span class="keyword">in</span> word&#125;)</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, len(words)):</span><br><span class="line">		<span class="keyword">if</span> <span class="keyword">not</span> self.populate_one_order(words[i - <span class="number">1</span>], words[i], graph):</span><br><span class="line">			<span class="keyword">return</span> <span class="string">''</span></span><br><span class="line">	in_degree = collections.defaultdict(int)</span><br><span class="line">	<span class="keyword">for</span> c <span class="keyword">in</span> graph.keys():</span><br><span class="line">		in_degree[c] = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> key, li <span class="keyword">in</span> graph.items():</span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> range(len(li)):</span><br><span class="line">			in_degree[li[j]] += <span class="number">1</span></span><br><span class="line">	res = <span class="string">''</span></span><br><span class="line">	queue = deque([node <span class="keyword">for</span> node, in_degree_num <span class="keyword">in</span> in_degree.items() <span class="keyword">if</span> in_degree_num == <span class="number">0</span>])</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.popleft()</span><br><span class="line">		res += node</span><br><span class="line">		<span class="keyword">for</span> neighbor <span class="keyword">in</span> graph[node]:</span><br><span class="line">			in_degree[neighbor] -= <span class="number">1</span></span><br><span class="line">			<span class="keyword">if</span> in_degree[neighbor] == <span class="number">0</span>:</span><br><span class="line">				queue.append(neighbor)</span><br><span class="line">	<span class="keyword">return</span> res <span class="keyword">if</span> len(graph) == len(res) <span class="keyword">else</span> <span class="string">''</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">populate_one_order</span><span class="params">(self, word, word2, graph)</span>:</span></span><br><span class="line">	<span class="keyword">for</span> j <span class="keyword">in</span> range(min(len(word), len(word2))):</span><br><span class="line">		<span class="keyword">if</span> word[j] != word2[j]:</span><br><span class="line">			graph[word[j]].append(word2[j])</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">False</span> <span class="keyword">if</span> len(word) &gt; len(word2) <span class="keyword">else</span> <span class="keyword">True</span></span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(V + E)</code>，空间复杂度<code>O(O + E)</code>，V为节点数，E为边数，n为单词数，L为最长单词长度，O = nL， E = L，而空间复杂度图的空间为O + E<br>而queue空间最多为26条边，26个字母，in_degree空间为O(V)。所以总的时间复杂度为<code>O(nL)</code>，空间复杂度<code>O(nL)</code></p>
+
+      
+    </div>
+      
+      <footer>
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/Topological-Sort/">Topological Sort</a>, <a href="/tags/Breadth-First-Search/">Breadth-First Search</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  
+</section>
+
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="q" value="site:shineboy2013.github.com">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">Recent Posts</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2021/11/29/lee-269/">LeetCode 269 Alien Dictionary</a>
+      </li>
+    
+      <li>
+        <a href="/2021/11/29/trie/">Trie</a>
+      </li>
+    
+      <li>
+        <a href="/2021/11/27/lee-1048/">LeetCode 1048 Longest String Chain</a>
+      </li>
+    
+      <li>
+        <a href="/2021/11/27/dp/">DP</a>
+      </li>
+    
+      <li>
+        <a href="/2021/11/20/lee-2080/">LeetCode 2080 Range Frequency Queries</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">Tag Cloud</h3>
+  <div class="entry">
+    <a href="/tags/Array/" style="font-size: 19.17px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 10px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 15.83px;">Binary Search</a> <a href="/tags/Breadth-First-Search/" style="font-size: 10px;">Breadth-First Search</a> <a href="/tags/Breadth-first-Search/" style="font-size: 15px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 16.67px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 12.5px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.67px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 17.5px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 10.83px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 10.83px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.67px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 10px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 16.67px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 19.17px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 12.5px;">Linked List</a> <a href="/tags/Math/" style="font-size: 11.67px;">Math</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 12.5px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Python-KB/" style="font-size: 18.33px;">Python KB</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 12.5px;">Sort</a> <a href="/tags/Stack/" style="font-size: 14.17px;">Stack</a> <a href="/tags/String/" style="font-size: 13.33px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 10.83px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.5px;">Tree</a> <a href="/tags/Two-Pointers/" style="font-size: 12.5px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 10.83px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
+  </div>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2021 KK Shum
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+
+</body>
+</html>
+

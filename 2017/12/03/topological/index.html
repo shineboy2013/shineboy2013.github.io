@@ -8,8 +8,7 @@
   
   <meta name="description" content="算法思路：对于拓扑排序来说， 我们的中心思想是要我们可以找到一个顺序，每一次我们可以进行的工序是现在没有先序依赖的工序，按照这个顺序可以流畅的完成我们的任务。思路基于BFS的队列实现。区别在于统计每个节点的入度数。此法也可用于无向图。
 
-根据边统计每个节点的入度数记入in[i]
-找出度数为0的节点加">
+根据边统计每个节点的入度数记入in[i]，其他节点（含无边节点">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -68,15 +67,20 @@
       
         <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>对于拓扑排序来说， 我们的中心思想是要我们可以找到一个顺序，每一次我们可以进行的工序是现在没有先序依赖的工序，<br>按照这个顺序可以流畅的完成我们的任务。<br>思路基于BFS的队列实现。区别在于统计每个节点的入度数。此法也可用于无向图。</p>
 <ol>
-<li>根据边统计每个节点的入度数记入in[i]</li>
+<li>根据边统计每个节点的入度数记入in[i]，<strong>其他节点（含无边节点）入度数为0</strong></li>
 <li>找出度数为0的节点加入到Queue</li>
 <li>取出队首节点，把此节点邻接的节点度数减1，如果度数为0，加入到队列，循环直到队列为空</li>
-<li>如果队列为空但仍有节点度数不为0，存在循环，否则不存在</li>
+<li>如果队列为空但仍有节点度数不为0，<strong>存在循环，否则不存在</strong></li>
 </ol>
 <h3 id="应用："><a href="#应用：" class="headerlink" title="应用："></a><strong>应用：</strong></h3><ol>
 <li>求最长或最短路径(Leetcode 310)</li>
 <li>判断拓扑顺序(Leetcode外星人字典)</li>
 <li>判断循环(Python代码返回None)</li>
+</ol>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>graph要含所有节点，包括没有边的节点。否则结果会有遗漏  </li>
+<li>in_degree初始化要对所有节点赋0</li>
+<li>第四步判断是否含循环必不可少，要根据题目要求来处理。除非L310 min height明确一定有解，而L269外星人字典就明确可能无解  </li>
 </ol>
 <h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">topological_sort</span><span class="params">(self, graph: List[List[int]], n: int)</span> -&gt; List[int]:</span></span><br><span class="line">	in_degree = [<span class="number">0</span>] * n</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(graph)):</span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> range(len(graph[i])):</span><br><span class="line">			in_degree[graph[i][j]] += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">	start_nodes = [i <span class="keyword">for</span> i <span class="keyword">in</span> range(len(in_degree)) <span class="keyword">if</span> in_degree[i] == <span class="number">0</span>]</span><br><span class="line">	queue, res = deque(start_nodes), []</span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		root = queue.popleft()</span><br><span class="line">		res.append(root)</span><br><span class="line">		<span class="keyword">for</span> i <span class="keyword">in</span> graph[root]:</span><br><span class="line">			in_degree[i] -= <span class="number">1</span></span><br><span class="line">			<span class="keyword">if</span> in_degree[i] == <span class="number">0</span>:</span><br><span class="line">				queue.append(i)</span><br><span class="line">	<span class="keyword">return</span> res <span class="keyword">if</span> len(res) == n <span class="keyword">else</span> <span class="keyword">None</span></span><br></pre></td></tr></table></figure>
 <h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * graph: 邻接表</span></span><br><span class="line"><span class="comment"> * num: 节点个数 </span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">topologicalSort</span><span class="params">(ArrayList&lt;ArrayList&lt;Integer&gt;&gt; graph, <span class="keyword">int</span> num)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span>[] inDegree = <span class="keyword">new</span> <span class="keyword">int</span>[num];</span><br><span class="line">	<span class="comment">//populate inDegree</span></span><br><span class="line">	<span class="keyword">for</span>(ArrayList&lt;Integer&gt; adjacencyList : graph)&#123;</span><br><span class="line">		<span class="keyword">for</span>(Integer node : adjacencyList)&#123;</span><br><span class="line">			inDegree[node]++;</span><br><span class="line">		&#125;       	</span><br><span class="line">	&#125;</span><br><span class="line">	Queue&lt;Integer&gt; q = <span class="keyword">new</span> LinkedList&lt;Integer&gt;();</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;inDegree.length;i++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(inDegree[i]==<span class="number">0</span>)</span><br><span class="line">			q.offer(i);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty())&#123;</span><br><span class="line">		Integer v = q.poll();</span><br><span class="line">		count++;</span><br><span class="line">		System.out.print(v + <span class="string">"-&gt;"</span>);</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> neighbor : graph.get(v))&#123;</span><br><span class="line">			<span class="keyword">if</span>(--inDegree[neighbor]==<span class="number">0</span>)</span><br><span class="line">				q.offer(neighbor);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">/* check isCyclic  or not</span></span><br><span class="line"><span class="comment">	return count == num;;</span></span><br><span class="line"><span class="comment">	*/</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -138,6 +142,14 @@
   <ul class="entry">
     
       <li>
+        <a href="/2021/11/29/lee-269/">LeetCode 269 Alien Dictionary</a>
+      </li>
+    
+      <li>
+        <a href="/2021/11/29/trie/">Trie</a>
+      </li>
+    
+      <li>
         <a href="/2021/11/27/lee-1048/">LeetCode 1048 Longest String Chain</a>
       </li>
     
@@ -147,14 +159,6 @@
     
       <li>
         <a href="/2021/11/20/lee-2080/">LeetCode 2080 Range Frequency Queries</a>
-      </li>
-    
-      <li>
-        <a href="/2021/11/20/lee-2079/">LeetCode 2079 Watering Plants</a>
-      </li>
-    
-      <li>
-        <a href="/2021/11/15/merge-sort/">合并排序</a>
       </li>
     
   </ul>
@@ -167,7 +171,7 @@
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Array/" style="font-size: 19.17px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 10px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 15.83px;">Binary Search</a> <a href="/tags/Breadth-first-Search/" style="font-size: 15px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 16.67px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 12.5px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.67px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 17.5px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 10.83px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 10.83px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.67px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 10px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 16.67px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 18.33px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 12.5px;">Linked List</a> <a href="/tags/Math/" style="font-size: 11.67px;">Math</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 12.5px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Python-KB/" style="font-size: 18.33px;">Python KB</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 12.5px;">Sort</a> <a href="/tags/Stack/" style="font-size: 14.17px;">Stack</a> <a href="/tags/String/" style="font-size: 13.33px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 10px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.5px;">Tree</a> <a href="/tags/Two-Pointers/" style="font-size: 12.5px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 10.83px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
+    <a href="/tags/Array/" style="font-size: 19.17px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 10px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 15.83px;">Binary Search</a> <a href="/tags/Breadth-First-Search/" style="font-size: 10px;">Breadth-First Search</a> <a href="/tags/Breadth-first-Search/" style="font-size: 15px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 16.67px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 12.5px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.67px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 17.5px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 10.83px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 10.83px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.67px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 10px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 16.67px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 19.17px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 12.5px;">Linked List</a> <a href="/tags/Math/" style="font-size: 11.67px;">Math</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 12.5px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Python-KB/" style="font-size: 18.33px;">Python KB</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 12.5px;">Sort</a> <a href="/tags/Stack/" style="font-size: 14.17px;">Stack</a> <a href="/tags/String/" style="font-size: 13.33px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 10.83px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.5px;">Tree</a> <a href="/tags/Two-Pointers/" style="font-size: 12.5px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 10.83px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
   </div>
 </div>
 
