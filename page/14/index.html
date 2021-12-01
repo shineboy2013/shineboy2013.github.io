@@ -53,6 +53,186 @@
     <header>
       
   
+    <h1 class="title"><a href="/2018/01/27/lee-416/">LeetCode 416 Partition Equal Subset Sum</a></h1>
+  
+
+      
+        <time datetime="2018-01-28T04:36:12.780Z">2018-01-27</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/partition-equal-subset-sum" target="_blank" rel="noopener">LeetCode 416 Partition Equal Subset Sum</a></strong></p>
+<p>Given a <strong>non-empty</strong> array containing <strong>only positive integers</strong>, find if the array can be partitioned into two subsets such that the sum of elements in both subsets is equal.</p>
+<p><strong>Note:</strong>  </p>
+<ol>
+<li>Each of the array element will not exceed 100.</li>
+<li>The array size will not exceed 200.</li>
+</ol>
+<p><strong>Example 1:</strong></p>
+<pre>Input: [1, 5, 11, 5]
+
+Output: true
+
+Explanation: The array can be partitioned as [1, 5, 5] and [11].
+</pre>
+
+<p><strong>Example 2:</strong></p>
+<pre>Input: [1, 2, 3, 5]
+
+Output: false
+
+Explanation: The array cannot be partitioned into equal sum subsets.
+</pre>
+
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个只包含正整数的非空数组，判断数组是否可以分成两个和相等的子数组。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这题转化为求是否有子序列的和等于数组和的一半，这就是0-1背包问题。价值和重量是一样数组的背包问题。背包问题递归式：<br>f[j] = Math.max(f[j], f[j-w[i]]+v[i]);<br>背包问题最后的解为容量为C的背包能装的最大价值，也就是在这题中，容量为数组一半和的背包能装的最大价值是否为数组一半。如果能，即有解。<br>表示存在前i个数它的和（最大价值）等于和的一半。<br>举例说明，容量一半表示刚好可以凑到几个数和为一半，如[1,5,11,5]，容量为11，就可以凑到[1,5,5]重量和价值均为一半。<br>如[1,2,3,10]和为16，容量为8，只能找到[1,2,3]价值为6达不到一半。所以这里C是限制条件并不是一定要达到。但刚好达到即为解。  </p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>数组和为奇数，无解</li>
+<li>背包问题的解若为数组一半的和即有解</li>
+<li>背包问题解法C向前滚</li>
+</ol>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">canPartition</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> sum = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums.length;i++)</span><br><span class="line">		sum+=nums[i];</span><br><span class="line">	<span class="keyword">if</span>(sum%<span class="number">2</span>==<span class="number">1</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	<span class="keyword">int</span>[] result = knapsack(nums,nums,sum/<span class="number">2</span>);</span><br><span class="line">	<span class="keyword">if</span>(sum/<span class="number">2</span>==result[result.length-<span class="number">1</span>])</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] knapsack(<span class="keyword">int</span> v[], <span class="keyword">int</span> w[], <span class="keyword">int</span> C)&#123;</span><br><span class="line">	<span class="keyword">int</span> n = v.length;</span><br><span class="line">	<span class="comment">//int[][] re = new int[n][C+1];</span></span><br><span class="line">	<span class="keyword">int</span>[] f = <span class="keyword">new</span> <span class="keyword">int</span>[C+<span class="number">1</span>];</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++)&#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j=C;j&gt;=w[i];j--)&#123;</span><br><span class="line">			f[j] = Math.max(f[j], f[j-w[i]]+v[i]);</span><br><span class="line">			<span class="comment">//if(f[j]==f[j-w[i]]+v[i])</span></span><br><span class="line">			   <span class="comment">// re[i][j] = 1;</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> f;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nC)</code>，空间复杂度<code>O(C)</code>。C为数组和的一半，n为数组个数。</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2018/01/10/lee-329/">LeetCode 329 Longest Increasing Path in a Matrix</a></h1>
+  
+
+      
+        <time datetime="2018-01-10T09:46:52.076Z">2018-01-10</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/longest-increasing-path-in-a-matrix" target="_blank" rel="noopener">LeetCode 329 Longest Increasing Path in a Matrix</a></strong></p>
+<p>Given an integer matrix, find the length of the longest increasing path.</p>
+<p>From each cell, you can either move to four directions: left, right, up or down. You may NOT move diagonally or move outside of the boundary (i.e. wrap-around is not allowed).</p>
+<p><strong>Example 1:</strong></p>
+<pre>nums = [
+  [<font color="red">9</font>,9,4],
+  [<font color="red">6</font>,6,8],
+  [<font color="red">2</font>,<font color="red">1</font>,1]
+]
+</pre>
+
+<p>Return <code>4</code><br>The longest increasing path is <code>[1, 2, 6, 9]</code>.</p>
+<p><strong>Example 2:</strong></p>
+<pre>nums = [
+  [<font color="red">3</font>,<font color="red">4</font>,<font color="red">5</font>],
+  [3,2,<font color="red">6</font>],
+  [2,2,1]
+]
+</pre>
+
+<p>Return <code>4</code><br>The longest increasing path is <code>[3, 4, 5, 6]</code>. Moving diagonally is not allowed.</p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个整数矩阵，计算其最长递增路径的长度。<br>从每一个单元格出发，你可以向四个方向移动：左右上下。你不可以沿着对角线移动也不能移出边界。（亦即，环绕是不允许的）。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是经典题，类似于LIS题，只要将以每个点为终点的最长路径长度存起来，就可以类推它的邻近点的最长长度（DP）。f(x,y)=max{f(x,y),4个邻近点的f+1}<br>由于这是求最长路径题且为矩阵，可以考虑按步长计算，就是Floyd的思路，就是先计算步长为1,2一直到所以最长路径长度矩阵长度不再更新为止。<br>另一个思路也是用矩阵存起每个点最长路径长度，但用DFS搜索，直至这个点的值不为初始值为止，详见书影博客。</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>矩阵为空或长度为0</li>
+<li>当任何值没有更新时，Floyd停止计算</li>
+</ol>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">longestIncreasingPath</span><span class="params">(<span class="keyword">int</span>[][] matrix)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (matrix==<span class="keyword">null</span> || matrix.length==<span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span>[][] path = <span class="keyword">new</span> <span class="keyword">int</span>[matrix.length][matrix[<span class="number">0</span>].length];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;matrix.length;i++)</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;matrix[<span class="number">0</span>].length;j++)</span><br><span class="line">			path[i][j] = <span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">boolean</span> nextPath = <span class="keyword">true</span>;</span><br><span class="line">	<span class="keyword">while</span>(nextPath)&#123;</span><br><span class="line">		nextPath = <span class="keyword">false</span>;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;matrix.length;i++)</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;matrix[<span class="number">0</span>].length;j++)&#123;</span><br><span class="line">				<span class="keyword">if</span>(changeCell(matrix, path, i, j))</span><br><span class="line">					nextPath = <span class="keyword">true</span>;</span><br><span class="line">			&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">int</span> max = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;matrix.length;i++)</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;matrix[<span class="number">0</span>].length;j++)</span><br><span class="line">			<span class="keyword">if</span>(path[i][j]&gt;max)</span><br><span class="line">				max = path[i][j];</span><br><span class="line">	<span class="keyword">return</span> max;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">changeCell</span><span class="params">(<span class="keyword">int</span>[][] matrix, <span class="keyword">int</span>[][] path, <span class="keyword">int</span> i, <span class="keyword">int</span> j)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> pre = path[i][j];</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(i-<span class="number">1</span>&gt;=<span class="number">0</span> &amp;&amp; matrix[i-<span class="number">1</span>][j]&lt;matrix[i][j] &amp;&amp;  path[i-<span class="number">1</span>][j]+<span class="number">1</span>&gt;path[i][j])</span><br><span class="line">		path[i][j] = path[i-<span class="number">1</span>][j]+<span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(i+<span class="number">1</span>&lt;matrix.length &amp;&amp; matrix[i+<span class="number">1</span>][j]&lt;matrix[i][j] &amp;&amp;  path[i+<span class="number">1</span>][j]+<span class="number">1</span>&gt;path[i][j])</span><br><span class="line">		path[i][j] = path[i+<span class="number">1</span>][j]+<span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(j-<span class="number">1</span>&gt;=<span class="number">0</span> &amp;&amp; matrix[i][j-<span class="number">1</span>]&lt;matrix[i][j] &amp;&amp;  path[i][j-<span class="number">1</span>]+<span class="number">1</span>&gt;path[i][j])</span><br><span class="line">		path[i][j] = path[i][j-<span class="number">1</span>]+<span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(j+<span class="number">1</span>&lt;matrix[<span class="number">0</span>].length &amp;&amp; matrix[i][j+<span class="number">1</span>]&lt;matrix[i][j] &amp;&amp;  path[i][j+<span class="number">1</span>]+<span class="number">1</span>&gt;path[i][j])</span><br><span class="line">		path[i][j] = path[i][j+<span class="number">1</span>]+<span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(pre!=path[i][j])</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>k为最长路径长度，时间复杂度为<code>O(k<em>n</em><sup>2</sup>)</code>，空间复杂度<code>O(<em>n</em><sup>2</sup>)</code>。   </p>
+<hr>
+<h3 id="算法II解题思路："><a href="#算法II解题思路：" class="headerlink" title="算法II解题思路："></a><strong>算法II解题思路：</strong></h3><p>这题也可以额用记忆性搜索DFS来解。</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2018/01/09/lee-332/">LeetCode 332 Reconstruct Itinerary</a></h1>
+  
+
+      
+        <time datetime="2018-01-10T06:17:56.450Z">2018-01-09</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/reconstruct-itinerary" target="_blank" rel="noopener">LeetCode 332 Reconstruct Itinerary</a></strong></p>
+<p>Given a list of airline tickets represented by pairs of departure and arrival airports <code>[from, to]</code>, reconstruct the itinerary in order. All of the tickets belong to a man who departs from <code>JFK</code>. Thus, the itinerary must begin with <code>JFK</code>.</p>
+<p><strong>Note:</strong>  </p>
+<ol>
+<li>If there are multiple valid itineraries, you should return the itinerary that has the smallest lexical order when read as a single string. For example, the itinerary <code>[&quot;JFK&quot;, &quot;LGA&quot;]</code> has a smaller lexical order than <code>[&quot;JFK&quot;, &quot;LGB&quot;]</code>.</li>
+<li>All airports are represented by three capital letters (IATA code).</li>
+<li>You may assume all tickets form at least one valid itinerary.</li>
+</ol>
+<p><strong>Example 1:</strong><br><code>tickets</code> = <code>[[&quot;MUC&quot;, &quot;LHR&quot;], [&quot;JFK&quot;, &quot;MUC&quot;], [&quot;SFO&quot;, &quot;SJC&quot;], [&quot;LHR&quot;, &quot;SFO&quot;]]</code><br>Return <code>[&quot;JFK&quot;, &quot;MUC&quot;, &quot;LHR&quot;, &quot;SFO&quot;, &quot;SJC&quot;]</code>.  </p>
+<p><strong>Example 2:</strong><br><code>tickets</code> = <code>[[&quot;JFK&quot;,&quot;SFO&quot;],[&quot;JFK&quot;,&quot;ATL&quot;],[&quot;SFO&quot;,&quot;ATL&quot;],[&quot;ATL&quot;,&quot;JFK&quot;],[&quot;ATL&quot;,&quot;SFO&quot;]]</code><br>Return <code>[&quot;JFK&quot;,&quot;ATL&quot;,&quot;JFK&quot;,&quot;SFO&quot;,&quot;ATL&quot;,&quot;SFO&quot;]</code>.<br>Another possible reconstruction is <code>[&quot;JFK&quot;,&quot;SFO&quot;,&quot;ATL&quot;,&quot;JFK&quot;,&quot;ATL&quot;,&quot;SFO&quot;]</code>. But it is larger in lexical order.</p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一组机票，用出发机场和到达机场[from, to]来表示，重建行程的顺序。所有的机票都属于一个从JFK（肯尼迪国际机场）出发的旅客。因此，行程必须从JFK开始。</p>
+<p>注意：</p>
+<p>如果存在多重有效的行程，你应当返回字典序最小的那个。例如，行程[“JFK”, “LGA”]的字典序比[“JFK”, “LGB”]要小。<br>所有的机场用3个大写字母表示（IATA编码）。<br>你可以假设所有的机票均至少包含一条有效的行程。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这条题实质是记录DFS路径的题目，且对儿子节点的选择是有顺序的。值得注意的是并不是所有路径都是可形成回路，所以需要DFS搜索。<br>既然是要记录路径就需要用数组保存结果，而有顺序则表示要排序。</p>
+<ol>
+<li>建图，用邻接表来表示HashMap<string, linkedlist<string="">&gt; graph</string,></li>
+<li>对每个节点的邻节点LinkList进行排序</li>
+<li>从JFK开始dfs。1)终止条件为所有ticket都遍历了(达成回路)或者不能够遍历完。2)路径存在数组中。 3)通过删除节点表示已访问DFS该节点后图要恢复成原状态。</li>
+</ol>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>终止条件为所有ticket都遍历了(达成完整路)或者不能够遍历完Dfs API含ticketLeft。如{“JFK”,”KUL”},{“JFK”,”NRT”},{“NRT”,”JFK”}，虽然KUL在NRT前，但KUL不能组成回路。</li>
+<li>DFS路径尽量存在数组中，否则用ArrayList中就要先add再remove。</li>
+<li>通过删除节点表示已访问DFS该节点后图要恢复成原状态。</li>
+</ol>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;String&gt; <span class="title">findItinerary</span><span class="params">(String[][] tickets)</span> </span>&#123;</span><br><span class="line">	HashMap&lt;String, LinkedList&lt;String&gt;&gt; graph = <span class="keyword">new</span> HashMap&lt;String, LinkedList&lt;String&gt;&gt;();</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;tickets.length;i++)&#123;</span><br><span class="line">		LinkedList&lt;String&gt; neighbor = graph.get(tickets[i][<span class="number">0</span>]);</span><br><span class="line">		<span class="keyword">if</span>(neighbor==<span class="keyword">null</span>)</span><br><span class="line">			neighbor = <span class="keyword">new</span> LinkedList&lt;String&gt;();</span><br><span class="line">		neighbor.add(tickets[i][<span class="number">1</span>]);</span><br><span class="line">		graph.put(tickets[i][<span class="number">0</span>], neighbor);</span><br><span class="line">	&#125;</span><br><span class="line">	Iterator&lt;String&gt; it = graph.keySet().iterator();</span><br><span class="line">	<span class="keyword">while</span>(it.hasNext())&#123;</span><br><span class="line">		String key = it.next();</span><br><span class="line">		LinkedList&lt;String&gt; neighbor = graph.get(key);</span><br><span class="line">		Collections.sort(neighbor);</span><br><span class="line">		graph.put(key, neighbor);</span><br><span class="line">	&#125;</span><br><span class="line">	String[] re = <span class="keyword">new</span> String[tickets.length+<span class="number">1</span>];</span><br><span class="line">	String cur = <span class="string">"JFK"</span>;</span><br><span class="line">	re[<span class="number">0</span>] = cur;</span><br><span class="line">	isDFS(graph,cur,tickets.length,tickets.length,re);</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">new</span> ArrayList&lt;String&gt;(Arrays.asList(re));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isDFS</span><span class="params">(HashMap&lt;String, LinkedList&lt;String&gt;&gt; graph, String departCity</span></span></span><br><span class="line"><span class="function"><span class="params">		,<span class="keyword">int</span> ticketLeft, <span class="keyword">int</span> ticketNum, String[] re)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(ticketLeft==<span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;    	</span><br><span class="line">	LinkedList&lt;String&gt; desCity = graph.get(departCity);</span><br><span class="line">	<span class="keyword">if</span>(desCity==<span class="keyword">null</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;desCity.size();i++)&#123;</span><br><span class="line">		String cur = desCity.get(i);</span><br><span class="line">		re[ticketNum-ticketLeft+<span class="number">1</span>] = cur;</span><br><span class="line">		desCity.remove(i);</span><br><span class="line">		graph.put(departCity, desCity);</span><br><span class="line">		<span class="keyword">if</span>(isDFS(graph,cur,ticketLeft-<span class="number">1</span>,ticketNum,re))</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">true</span>;;</span><br><span class="line">		desCity.add(i,cur);</span><br><span class="line">		graph.put(departCity, desCity);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>。    </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2017/12/31/lee-347/">LeetCode 347 Top K Frequent Elements</a></h1>
   
 
@@ -185,153 +365,6 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2017/12/31/lee-349/">LeetCode 349 Intersection of Two Arrays</a></h1>
-  
-
-      
-        <time datetime="2017-12-31T20:40:30.982Z">2017-12-31</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/intersection-of-two-arrays" target="_blank" rel="noopener">LeetCode 349 Intersection of Two Arrays</a></strong></p>
-<p>Given two arrays, write a function to compute their intersection.</p>
-<p><strong>Example:</strong><br>Given <em>nums1</em> = <code>[1, 2, 2, 1]</code>, <em>nums2</em> = <code>[2, 2]</code>, return <code>[2]</code>.</p>
-<p><strong>Note:</strong>  </p>
-<ul>
-<li>Each element in the result must be unique.</li>
-<li>The result can be in any order.</li>
-</ul>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定两个数组，编写函数计算它们的交集。  </p>
-<p>注意：<br>结果中的每个元素一定是唯一的。<br>结果可以采用任意顺序。  </p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>将较小的数组的所有元素放入hashSet，然后遍历另一个数组判断是否相同，相同的话放入hashSet的结果集中。所以需要两个hashSet。</p>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] intersection(<span class="keyword">int</span>[] nums1, <span class="keyword">int</span>[] nums2) &#123;</span><br><span class="line">	<span class="comment">//swap and make sure length of nums1 is smaller</span></span><br><span class="line">	<span class="keyword">if</span>(nums1.length&gt;nums2.length)&#123;</span><br><span class="line">		<span class="keyword">int</span>[] tmp = nums1;</span><br><span class="line">		nums1 = nums2;</span><br><span class="line">		nums2 = tmp;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	Set&lt;Integer&gt; hash=<span class="keyword">new</span> HashSet();</span><br><span class="line">	Set&lt;Integer&gt; result=<span class="keyword">new</span> HashSet();</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums1.length;i++)</span><br><span class="line">		hash.add(nums1[i]);</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;nums2.length;i++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(hash.contains(nums2[i]))</span><br><span class="line">			result.add(nums2[i]);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">int</span>[] r=<span class="keyword">new</span> <span class="keyword">int</span>[result.size()];</span><br><span class="line">	<span class="keyword">int</span> k=<span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i : result)</span><br><span class="line">		r[k++]=i;</span><br><span class="line">	<span class="keyword">return</span> r;       </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>m和n为数组长度m&gt;n，时间复杂度为<code>O(m)</code>，空间复杂度<code>O(n)</code>。</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2017/12/31/lee-316/">LeetCode 316 Remove Duplicate Letters</a></h1>
-  
-
-      
-        <time datetime="2017-12-31T19:07:51.935Z">2017-12-31</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/remove-duplicate-letters" target="_blank" rel="noopener">LeetCode 316 Remove Duplicate Letters</a></strong></p>
-<p>Given a string which contains only lowercase letters, remove duplicate letters so that every letter appear once and only once. You must make sure your result is the smallest in lexicographical order among all possible results.</p>
-<p><strong>Example:</strong>  </p>
-<p>Given <code>&quot;bcabc&quot;</code><br>Return <code>&quot;abc&quot;</code></p>
-<p>Given <code>&quot;cbacdcbc&quot;</code><br>Return <code>&quot;acdb&quot;</code></p>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个只包含小写字母的字符串，从中移除重复字母使得每个字母只出现一次。你必须确保结果的字典序最小。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这题是保持原顺序输出结果，所以考虑用递减栈(递增栈，从栈底递增，求最小即用递增，如求k个最大用最小堆一样)。先看例子bcabc-&gt;abc，a入栈倒逼<br>bc出栈，可解此题。因为既然bc在栈外还有，就可以出栈，保证第一个字母最小（题目要求）。再看cbacdcbc，acd时候b入栈，不能倒逼cd出栈<br>因为d是唯一一个，所以还要维护一个hashMap来记录每个字母的词频。所以入栈条件为准入栈元素小于栈顶元素且栈顶元素为最后一个（频数&gt;0）。<br>hashMap作用有两个，第一个为统计词频，第二个为记录未入栈的字母的频数。<br>resultSet记录stack中所有唯一元素，用于判断是否需要入栈。这是难点，对于已在栈中的重复元素不需要再入栈，因为它在栈中的位置已经是目前<br>最小的位置，如果要出现更小的结果只能通过非栈内元素倒逼产生新结果。如acabc，第二个a不需要逼c出来，b可以做到这一点，a已在最小位置。  </p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>已在栈内的<strong>重复元素</strong>不入栈，也不倒逼任何元素出栈，也就是直接忽略它，只要将其频数减一即可，表示已处理。比如abacb，第二个a不能倒逼b。  </li>
-<li>进入循环后频数立刻减一，不要出列时候才做，参见BFS。  </li>
-<li>出栈条件：栈不为空，准入栈元素小于栈顶元素，栈顶元素频数&gt;0（表示栈外还有元素可以入栈）。  </li>
-</ol>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">removeDuplicateLetters</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">	Stack&lt;Character&gt; stack = <span class="keyword">new</span> Stack&lt;Character&gt;();</span><br><span class="line">	Map&lt;Character, Integer&gt; map = <span class="keyword">new</span> HashMap&lt;Character, Integer&gt;();</span><br><span class="line">	Set&lt;Character&gt; result = <span class="keyword">new</span> HashSet&lt;Character&gt;();</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;s.length();i++)&#123;</span><br><span class="line">		Character c = s.charAt(i);</span><br><span class="line">		<span class="keyword">if</span>(map.containsKey(c))</span><br><span class="line">			map.put(c, map.get(c)+<span class="number">1</span>);</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			map.put(c, <span class="number">1</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;s.length();i++)&#123;</span><br><span class="line">		Character c = s.charAt(i);</span><br><span class="line">		map.put(c, map.get(c)-<span class="number">1</span>);</span><br><span class="line">		</span><br><span class="line">		<span class="comment">//Stack已经有c就不加入</span></span><br><span class="line">		<span class="keyword">if</span>(result.contains(c))</span><br><span class="line">			<span class="keyword">continue</span>;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">while</span>(!stack.isEmpty() &amp;&amp; c&lt;stack.peek() &amp;&amp; map.get(stack.peek())&gt;<span class="number">0</span>)&#123;</span><br><span class="line">			result.remove(stack.peek());</span><br><span class="line">			stack.pop();</span><br><span class="line">		&#125;</span><br><span class="line">		stack.push(c);</span><br><span class="line">		result.add(c);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	StringBuilder sb = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">	<span class="keyword">while</span>(!stack.isEmpty())</span><br><span class="line">		sb.append(stack.pop());</span><br><span class="line">	<span class="keyword">return</span> sb.reverse().toString();  	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>所有元素入栈出栈最多一次，所以时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>。</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2017/12/28/lee-312/">LeetCode 312 Burst Balloons</a></h1>
-  
-
-      
-        <time datetime="2017-12-28T17:58:22.880Z">2017-12-28</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/burst-balloons" target="_blank" rel="noopener">LeetCode 312 Burst Balloons</a></strong></p>
-<p>Given <code>n</code> balloons, indexed from <code>0</code> to <code>n-1</code>. Each balloon is painted with a number on it represented by array <code>nums</code>. You are asked to burst all the balloons. If the you burst balloon <code>i</code> you will get <code>nums[left] * nums[i] * nums[right]</code> coins. Here <code>left</code> and <code>right</code> are adjacent indices of <code>i</code>. After the burst, the <code>left</code> and <code>right</code> then becomes adjacent.</p>
-<p>Find the maximum coins you can collect by bursting the balloons wisely.</p>
-<p><strong>Note:</strong><br>(1) You may imagine <code>nums[-1] = nums[n] = 1</code>. They are not real therefore you can not burst them.<br>(2) 0 ≤ <code>n</code> ≤ 500, 0 ≤ <code>nums[i]</code> ≤ 100</p>
-<p><strong>Example:</strong></p>
-<p>Given <code>[3, 1, 5, 8]</code></p>
-<p>Return <code>167</code></p>
-<pre>    nums = [3,1,5,8] --> [3,5,8] -->   [3,8]   -->  [8]  --> []
-   coins =  3*1*5      +  3*5*8    +  1*3*8      + 1*8*1   = 167
-</pre>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定n个气球，下标为0到n-1。每个气球上都标有一个数字，用数组nums表示。你被要求扎破所有气球。扎破第i个气球可以获得nums[left] &times; nums[i] &times; nums[right]枚硬币。这里left和right是与i相邻的下标。扎破气球以后，left和right就变成相邻的了。<br>寻找最优策略下可以获得的硬币数。</p>
-<p>注意：<br>(1) 你可以假设nums[-1] = nums[n] = 1. 它们并非真实的因此不能扎破。<br>(2) 0 ≤ n ≤ 500, 0 ≤ nums[i] ≤ 100</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><ol>
-<li>此题遍历所有可能性，所以考虑用DP  </li>
-<li>因为一个参数不足以描述问题，因为并不能固定nums左端或右端，所以考虑二元DP，左右边界为参数。DP流程一：定义函数f(i,j)为nums[i..j]之间的最大硬币数。  </li>
-<li>下一步写递归式，由于这是二元DP，参考Floyd和矩阵链乘法算法，一遍要定义一个k，二分法得到两个子问题的解f(i,k)和f(k,j)，求解它们的关系是难点。先写几个例子培养下思路：<br> 2,3,4<br> f([2,4])=2&times;3&times;4同时消去了3变成[2,4],再写一个<br> 2,3,4,5,6,7,8<br> k=5, 数组变成[2,5,8]所以我们定义中忽略了一个重要事实，修改为f(i,j)为nums[i..j]之间的最大硬币数<strong>及其它们之间的元素已经消去。</strong><br> 这样的话，关系就很明朗了，只要消去5就可以得到f([2,8])，k的定义要可以清晰了：最后一个消去的元素。<br> <strong>f(i,j)=max{f(i,m)+ nums[i]&times;nums[m]&times;nums[j] +f(m,j)}, i&lt;m&lt;j，m为整数</strong>  </li>
-<li>我们还要试试nums为单元素和双元素情况下是否适用。比如单元素5，根据题目意思首先前后补1<br>1,5,1 -&gt; f(1,5)+1&times;5&times;1+f(5,1)=5这是正确的因为f(x,y)默认为0.<br>1,5,3,1, k=5, f(1,5)+1&times;5&times;1+f(5,1)=0+5+(5&times;3&times;1)=20 | k=3, f(1,3)+1&times;3&times;1+f(3,1)=(1&times;5&times;3)+3+0=18.所以也是正确，且f(x,y)默认为0没问题。  </li>
-<li><p>遍历顺序。一开始我用i,j,m三重循环，但结果不对。主要因为这个计算过程与演算过程不一致，我们刚才的演算过程是先计算所有i和j之间的值。例如，<br>1,                      5,                               3,          1<br>i &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                   j<br>i &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;       j<br>&nbsp;&nbsp;&nbsp;&nbsp;i &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;       j  </p>
-<p>在第二次循环的时候f(i,j)已经计算出来很显然是不对的。</p>
-</li>
-</ol>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>二元DP([i,j],k的递归式)+二分法。 二元DP中k的引入参考Floyd按步长计算。nums[i] * nums[m] * nums[j]而不是nums[m-1] * nums[m] * nums[m+1]  </li>
-<li>原数组前后补1，这样巧妙地让递归式适用于一个元素的情况，避免特别处理。因此步长可以k=2开始，i&lt;m&lt;j不取等号。dp数组以新数组为边界    </li>
-<li>遍历顺序也类似于Floyd，先k(步长且至少为2)，再遍历矩阵i和j。<strong>特别注意i&lt;n-k</strong>而不是i&lt;n  </li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">maxCoins</span><span class="params">(self, nums: List[int])</span> -&gt; int:</span></span><br><span class="line">	ary = list(nums)</span><br><span class="line">	ary.insert(<span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">	ary.append(<span class="number">1</span>)</span><br><span class="line">	N = len(ary)</span><br><span class="line">	dp = [[<span class="number">0</span> <span class="keyword">for</span> _ <span class="keyword">in</span> range(N)] <span class="keyword">for</span> _ <span class="keyword">in</span> range(N)]</span><br><span class="line">	<span class="keyword">for</span> k <span class="keyword">in</span> range(<span class="number">2</span>, N):</span><br><span class="line">		<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>, N - k):</span><br><span class="line">			j = i + k</span><br><span class="line">			<span class="keyword">for</span> m <span class="keyword">in</span> range(i + <span class="number">1</span>, j):</span><br><span class="line">				dp[i][j] = max(dp[i][j], dp[i][m] + ary[i] * ary[m] * ary[j] + dp[m][j])</span><br><span class="line">	<span class="keyword">return</span> dp[<span class="number">0</span>][N - <span class="number">1</span>]</span><br></pre></td></tr></table></figure>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxCoins</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> n = nums.length+<span class="number">2</span>;</span><br><span class="line">	<span class="keyword">int</span>[] coins = <span class="keyword">new</span> <span class="keyword">int</span>[n];</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums.length;i++)</span><br><span class="line">		coins[i+<span class="number">1</span>]=nums[i];</span><br><span class="line">	coins[<span class="number">0</span>] = coins[n-<span class="number">1</span>] = <span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">int</span>[][] dp = <span class="keyword">new</span> <span class="keyword">int</span>[n][n];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> k=<span class="number">2</span>;k&lt;n;k++)</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n - k;i++)&#123;</span><br><span class="line">			<span class="keyword">int</span> j = i+k;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> m=i+<span class="number">1</span>;m&lt;j;m++)</span><br><span class="line">				dp[i][j] = Math.max(dp[i][j], dp[i][m]+coins[i]*coins[m]*coins[j] + dp[m][j]);</span><br><span class="line">				</span><br><span class="line">		&#125;</span><br><span class="line">	<span class="keyword">return</span> dp[<span class="number">0</span>][n-<span class="number">1</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>三重循环，时间复杂度为<code>O(n<sup>3</sup>)</code>，空间复杂度<code>O(n<sup>2</sup>)</code>。</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -356,23 +389,23 @@
   <ul class="entry">
     
       <li>
+        <a href="/2021/11/30/lee-264/">LeetCode 264 Ugly Number II</a>
+      </li>
+    
+      <li>
+        <a href="/2021/11/30/lee-1429/">LeetCode 1429 First Unique Number</a>
+      </li>
+    
+      <li>
+        <a href="/2021/11/30/lee-380/">LeetCode 380 Insert Delete GetRandom O(1)</a>
+      </li>
+    
+      <li>
         <a href="/2021/11/29/lee-269/">LeetCode 269 Alien Dictionary</a>
       </li>
     
       <li>
         <a href="/2021/11/29/trie/">Trie</a>
-      </li>
-    
-      <li>
-        <a href="/2021/11/27/lee-1048/">LeetCode 1048 Longest String Chain</a>
-      </li>
-    
-      <li>
-        <a href="/2021/11/27/dp/">DP</a>
-      </li>
-    
-      <li>
-        <a href="/2021/11/20/lee-2080/">LeetCode 2080 Range Frequency Queries</a>
       </li>
     
   </ul>
@@ -385,7 +418,7 @@
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Array/" style="font-size: 19.17px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 10px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 15.83px;">Binary Search</a> <a href="/tags/Breadth-First-Search/" style="font-size: 10px;">Breadth-First Search</a> <a href="/tags/Breadth-first-Search/" style="font-size: 15px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 16.67px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 12.5px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.67px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 17.5px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 10.83px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 10.83px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.67px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 10px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 16.67px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 19.17px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 12.5px;">Linked List</a> <a href="/tags/Math/" style="font-size: 11.67px;">Math</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 12.5px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Python-KB/" style="font-size: 18.33px;">Python KB</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 12.5px;">Sort</a> <a href="/tags/Stack/" style="font-size: 14.17px;">Stack</a> <a href="/tags/String/" style="font-size: 13.33px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 10.83px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.5px;">Tree</a> <a href="/tags/Two-Pointers/" style="font-size: 12.5px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 10.83px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
+    <a href="/tags/Array/" style="font-size: 19.23px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 10px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 15.38px;">Binary Search</a> <a href="/tags/Breadth-First-Search/" style="font-size: 10px;">Breadth-First Search</a> <a href="/tags/Breadth-first-Search/" style="font-size: 14.62px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 16.15px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 12.31px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.54px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 16.92px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 10.77px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 10.77px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.92px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 10.77px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 16.15px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 18.46px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 12.31px;">Linked List</a> <a href="/tags/Math/" style="font-size: 11.54px;">Math</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 12.31px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Python-KB/" style="font-size: 17.69px;">Python KB</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 12.31px;">Sort</a> <a href="/tags/Stack/" style="font-size: 13.85px;">Stack</a> <a href="/tags/String/" style="font-size: 13.08px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 10.77px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.31px;">Tree</a> <a href="/tags/Two-Pointers/" style="font-size: 12.31px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 10.77px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
   </div>
 </div>
 
