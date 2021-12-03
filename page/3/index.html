@@ -53,6 +53,95 @@
     <header>
       
   
+    <h1 class="title"><a href="/2021/11/20/lee-2079/">LeetCode 2079 Watering Plants</a></h1>
+  
+
+      
+        <time datetime="2021-11-21T04:54:04.268Z">2021-11-20</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/watering-plants/" target="_blank" rel="noopener">LeetCode 2079 Watering Plants</a></strong></p>
+<p>You want to water <code>n</code> plants in your garden with a watering can. The plants are arranged in a row and are labeled from <code>0</code> to <code>n - 1</code> from left to right where the <code>i&lt;sup&gt;th&lt;/sup&gt;</code> plant is located at <code>x = i</code>. There is a river at <code>x = -1</code> that you can refill your watering can at.</p>
+<p>Each plant needs a specific amount of water. You will water the plants in the following way:</p>
+<ul>
+<li>Water the plants in order from left to right.</li>
+<li>After watering the current plant, if you do not have enough water to <strong>completely</strong> water the next plant, return to the river to fully refill the watering can.</li>
+<li>You <strong>cannot</strong> refill the watering can early.</li>
+</ul>
+<p>You are initially at the river (i.e., <code>x = -1</code>). It takes <strong>one step</strong> to move <strong>one unit</strong> on the x-axis.</p>
+<p>Given a <strong>0-indexed</strong> integer array <code>plants</code> of <code>n</code> integers, where <code>plants[i]</code> is the amount of water the <code>i&lt;sup&gt;th&lt;/sup&gt;</code> plant needs, and an integer <code>capacity</code> representing the watering can capacity, return <em>the <strong>number of steps</strong> needed to water all the plants</em>.</p>
+<p><strong>Example 1:</strong></p>
+<pre>**Input:** plants = [2,2,3,3], capacity = 5
+**Output:** 14
+**Explanation:** Start at the river with a full watering can:
+- Walk to plant 0 (1 step) and water it. Watering can has 3 units of water.
+- Walk to plant 1 (1 step) and water it. Watering can has 1 unit of water.
+- Since you cannot completely water plant 2, walk back to the river to refill (2 steps).
+- Walk to plant 2 (3 steps) and water it. Watering can has 2 units of water.
+- Since you cannot completely water plant 3, walk back to the river to refill (3 steps).
+- Walk to plant 3 (4 steps) and water it.
+Steps needed = 1 + 1 + 2 + 3 + 3 + 4 = 14.
+</pre>
+
+<p><strong>Example 2:</strong></p>
+<pre>**Input:** plants = [1,1,1,4,2,3], capacity = 4
+**Output:** 30
+**Explanation:** Start at the river with a full watering can:
+- Water plants 0, 1, and 2 (3 steps). Return to river (3 steps).
+- Water plant 3 (4 steps). Return to river (4 steps).
+- Water plant 4 (5 steps). Return to river (5 steps).
+- Water plant 5 (6 steps).
+Steps needed = 3 + 3 + 4 + 4 + 5 + 5 + 6 = 30.
+</pre>
+
+<p><strong>Example 3:</strong></p>
+<pre>**Input:** plants = [7,7,7,7,7,7,7], capacity = 8
+**Output:** 49
+**Explanation:** You have to refill before watering each plant.
+Steps needed = 1 + 1 + 2 + 2 + 3 + 3 + 4 + 4 + 5 + 5 + 6 + 6 + 7 = 49.
+</pre>
+
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>n == plants.length</code></li>
+<li><code>1 &lt;= n &lt;= 1000</code></li>
+<li><code>1 &lt;= plants[i] &lt;= 10&lt;sup&gt;6&lt;/sup&gt;</code></li>
+<li><code>max(plants[i]) &lt;= capacity &lt;= 10&lt;sup&gt;9&lt;/sup&gt;</code></li>
+</ul>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>x坐标上分别是浇每棵植物需要的水量，用数组plants表示，-1上为河水可以打水，capacity是容器大小。若发现水不够，就要回到河里将容器打满水。问浇完所有植物的总步数  </p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>此题类似于Leetcode 2073，可以按部就班按每个plant计算，但是为了提高效率，一般采取归结为更高一层次计算。<br>这题更高层次是每次去洒水再回去河边作为一个循环。最后一个循环不用回河边所以是单程。       </p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><ol>
+<li>计算一次来回的距离，条件为剩余的水不够浇该次的植物  </li>
+<li>退出循环后，计算单程距离  </li>
+</ol>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>如果满足capacity也要递归到下一轮再计算，也就是Line 5取等号</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">wateringPlants</span><span class="params">(self, plants: List[int], capacity: int)</span> -&gt; int:</span></span><br><span class="line">	sum, steps = <span class="number">0</span>, <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i, n <span class="keyword">in</span> enumerate(plants):</span><br><span class="line">		sum += plants[i]</span><br><span class="line">		<span class="keyword">if</span> sum &lt;= capacity:</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		steps += i * <span class="number">2</span>  <span class="comment"># back to river</span></span><br><span class="line">		sum = plants[i]</span><br><span class="line">	<span class="keyword">if</span> sum &gt; <span class="number">0</span>:</span><br><span class="line">		steps += len(plants)</span><br><span class="line">	<span class="keyword">return</span> steps</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>。</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2021/11/15/merge-sort/">合并排序</a></h1>
   
 
@@ -240,55 +329,6 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2021/11/13/lee-2074/">LeetCode 2074 Reverse Nodes in Even Length Groups</a></h1>
-  
-
-      
-        <time datetime="2021-11-14T07:22:24.952Z">2021-11-13</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/reverse-nodes-in-even-length-groups/" target="_blank" rel="noopener">LeetCode 2074 Reverse Nodes in Even Length Groups</a></strong></p>
-<div><br><br>You are given the <code>head</code> of a linked list.<br><br>The nodes in the linked list are <strong>sequentially</strong> assigned to <strong>non-empty</strong> groups whose lengths form the sequence of the natural numbers (<code>1, 2, 3, 4, ...</code>). The <strong>length</strong> of a group is the number of nodes assigned to it. In other words,<br><br><em>   The <code>1&lt;sup&gt;st&lt;/sup&gt;</code> node is assigned to the first group.
-</em>   The <code>2&lt;sup&gt;nd&lt;/sup&gt;</code> and the <code>3&lt;sup&gt;rd&lt;/sup&gt;</code> nodes are assigned to the second group.<br><em>   The <code>4&lt;sup&gt;th&lt;/sup&gt;</code>, <code>5&lt;sup&gt;th&lt;/sup&gt;</code>, and <code>6&lt;sup&gt;th&lt;/sup&gt;</code> nodes are assigned to the third group, and so on.<br><br>Note that the length of the last group may be less than or equal to <code>1 + the length of the second to last group</code>.<br><br><strong>Reverse</strong> the nodes in each group with an <strong>even</strong> length, and return <em>the</em> <code>head</code> <em>of the modified linked list</em>.<br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/10/25/eg1.png" alt=""><br><br><pre><strong>Input:</strong> head = [5,2,6,3,9,1,7,3,8,4]<br><strong>Output:</strong> [5,6,2,3,9,1,4,8,3,7]<br><strong>Explanation:</strong><br>- The length of the first group is 1, which is odd, hence no reversal occurrs.<br>- The length of the second group is 2, which is even, hence the nodes are reversed.<br>- The length of the third group is 3, which is odd, hence no reversal occurrs.<br>- The length of the last group is 4, which is even, hence the nodes are reversed.<br></pre><br><br><strong>Example 2:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/10/25/eg2.png" alt=""><br><br><pre><strong>Input:</strong> head = [1,1,0,6]<br><strong>Output:</strong> [1,0,1,6]<br><strong>Explanation:</strong><br>- The length of the first group is 1. No reversal occurrs.<br>- The length of the second group is 2. The nodes are reversed.<br>- The length of the last group is 1. No reversal occurrs.<br></pre><br><br><strong>Example 3:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/10/28/eg3.png" alt=""><br><br><pre><strong>Input:</strong> head = [2,1]<br><strong>Output:</strong> [2,1]<br><strong>Explanation:</strong><br>- The length of the first group is 1. No reversal occurrs.<br>- The length of the last group is 1. No reversal occurrs.<br></pre><br><br><strong>Example 4:</strong><br><br><pre><strong>Input:</strong> head = [8]<br><strong>Output:</strong> [8]<br><strong>Explanation:</strong> There is only one group whose length is 1. No reversal occurrs.<br></pre><br><br><strong>Constraints:</strong>
-
-</em>   The number of nodes in the list is in the range <code>[1, 10&lt;sup&gt;5&lt;/sup&gt;]</code>.<br>*   <code>0 &lt;= Node.val &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code><br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>把链表分成1,2,3..n大小的组。若该组大小为偶数，反转链表。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>一开始考虑分奇偶组来处理，但忽略了最后一组也可能为偶数。用stack来，先做统计，若为偶数，就出栈且反转。<br>后来为了程序更加简洁，就独立一个函数出来按组处理。而每组用迭代将后续节点一个个加到上一组末节点和首节点之间。    </p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><ol>
-<li>按组处理  </li>
-<li>每组先统计个数，如果为偶数，反转链表  </li>
-</ol>
-<p>tail_of_last(group n) -&gt; tail(group n+1, head of group n+1 will become new tail after reversed)  -&gt; …<br>不断将tail后面的节点加到tail_of_last之后<br>tail_of_last(group n) -&gt; NodeA （新状态） -&gt; … -&gt; tail(group n+1)  -&gt; NodeA （前状态） -&gt; …   </p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>若最后一组不满为偶数，也要逆转。    </li>
-<li>反转链表时，个数为这组大小减一，因为该组的首节点不用反转。  </li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">reverseEvenLengthGroups</span><span class="params">(self, head: Optional[ListNode])</span> -&gt; Optional[ListNode]:</span></span><br><span class="line">	group, cur = <span class="number">2</span>, head</span><br><span class="line">	<span class="keyword">while</span> cur.next:</span><br><span class="line">		cur = self.process_one_group(cur, group)</span><br><span class="line">		group += <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> head</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">process_one_group</span><span class="params">(self, tail_of_last: ListNode, n: int)</span> -&gt; ListNode:</span></span><br><span class="line">	cur, count = tail_of_last, <span class="number">0</span></span><br><span class="line">	<span class="keyword">while</span> cur.next <span class="keyword">and</span> count &lt; n:</span><br><span class="line">		cur = cur.next</span><br><span class="line">		count += <span class="number">1</span></span><br><span class="line">	<span class="keyword">if</span> count % <span class="number">2</span> == <span class="number">0</span>:</span><br><span class="line">		tail = tail_of_last.next</span><br><span class="line">		<span class="keyword">for</span> i <span class="keyword">in</span> range(count - <span class="number">1</span>):</span><br><span class="line">			tmp = tail.next</span><br><span class="line">			tail.next = tmp.next</span><br><span class="line">			a = tail_of_last.next</span><br><span class="line">			tail_of_last.next = tmp</span><br><span class="line">			tmp.next = a</span><br><span class="line">	cur = tail_of_last</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(count):</span><br><span class="line">		cur = cur.next</span><br><span class="line">	<span class="keyword">return</span> cur</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>。</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -313,6 +353,10 @@
   <ul class="entry">
     
       <li>
+        <a href="/2021/12/02/lee-023/">LeetCode 023 Merge k Sorted Lists</a>
+      </li>
+    
+      <li>
         <a href="/2021/12/01/lee-300/">LeetCode 300 Longest Increasing Subsequence</a>
       </li>
     
@@ -328,10 +372,6 @@
         <a href="/2021/11/30/lee-380/">LeetCode 380 Insert Delete GetRandom O(1)</a>
       </li>
     
-      <li>
-        <a href="/2021/11/29/lee-269/">LeetCode 269 Alien Dictionary</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -342,7 +382,7 @@
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Array/" style="font-size: 19.23px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 10px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 15.38px;">Binary Search</a> <a href="/tags/Breadth-First-Search/" style="font-size: 10px;">Breadth-First Search</a> <a href="/tags/Breadth-first-Search/" style="font-size: 14.62px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15.38px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 12.31px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.54px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 16.92px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 10.77px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 10.77px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.15px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 10.77px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 15.38px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 18.46px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 12.31px;">Linked List</a> <a href="/tags/Math/" style="font-size: 11.54px;">Math</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 12.31px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Python-KB/" style="font-size: 17.69px;">Python KB</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 12.31px;">Sort</a> <a href="/tags/Stack/" style="font-size: 13.85px;">Stack</a> <a href="/tags/String/" style="font-size: 13.08px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 10.77px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.31px;">Tree</a> <a href="/tags/Two-Pointers/" style="font-size: 12.31px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 10.77px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
+    <a href="/tags/Array/" style="font-size: 19.23px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 10px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 15.38px;">Binary Search</a> <a href="/tags/Breadth-First-Search/" style="font-size: 10px;">Breadth-First Search</a> <a href="/tags/Breadth-first-Search/" style="font-size: 14.62px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15.38px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 12.31px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12.31px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 16.92px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 10.77px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 10.77px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.15px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 11.54px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 15.38px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 18.46px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 13.08px;">Linked List</a> <a href="/tags/Math/" style="font-size: 11.54px;">Math</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 12.31px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.77px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Python-KB/" style="font-size: 17.69px;">Python KB</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 12.31px;">Sort</a> <a href="/tags/Stack/" style="font-size: 13.85px;">Stack</a> <a href="/tags/String/" style="font-size: 13.08px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 10.77px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.31px;">Tree</a> <a href="/tags/Two-Pointers/" style="font-size: 12.31px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 10.77px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
   </div>
 </div>
 
