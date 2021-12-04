@@ -53,6 +53,134 @@
     <header>
       
   
+    <h1 class="title"><a href="/2018/04/30/lee-273/">LeetCode 273 Integer to English Words</a></h1>
+  
+
+      
+        <time datetime="2018-04-30T22:53:48.778Z">2018-04-30</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/integer-to-english-words" target="_blank" rel="noopener">LeetCode 273 Integer to English Words</a></strong></p>
+<p>Convert a non-negative integer to its english words representation. Given input is guaranteed to be less than 2<sup>31</sup> - 1.</p>
+<p><strong>Example 1:</strong></p>
+<pre>**Input:** 123
+**Output:** "One Hundred Twenty Three"
+</pre>
+
+<p><strong>Example 2:</strong></p>
+<pre>**Input:** 12345
+**Output:** "Twelve Thousand Three Hundred Forty Five"</pre>
+
+<p><strong>Example 3:</strong></p>
+<pre>**Input:** 1234567
+**Output:** "One Million Two Hundred Thirty Four Thousand Five Hundred Sixty Seven"
+</pre>
+
+<p><strong>Example 4:</strong></p>
+<pre>**Input:** 1234567891
+**Output:** "One Billion Two Hundred Thirty Four Million Five Hundred Sixty Seven Thousand Eight Hundred Ninety One"
+</pre>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>这是将非负整数转化为其英文单词表示。给定输入确保小于 2 ^ 31 - 1</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是logical and maintainable的经典题。按照英语的习惯，每三位是一组，所以实现的时候，也是按千为分组，有一个方法去处理一千<br>内的数。一千以内也分为三种情况，20以内，几十，其他。20以内和几十都是特殊情况的单词，所以可以放入数组或HashMap，数组比较<br>好，因为可以直接用索引读出。大于一千的数，可以用递归来做，从人的习惯，从低位到高位，每三位加一个逗号分隔。所以同样，算法<br>也是从低位开始，若千位内的数大于0，加入Thousand, Million等，每三位调用千位方法，再递归。<br>group的引入作为递归的层次来决定Thousand还是Million。<br>由于从低位递归，所以倒着做，要reverse地加入到结果，最终结果再reverse回来。  </p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>空格总加在新数前面，也就是append前先加空格</li>
+<li>低3位大于0才加Thousand, Million等词，也就是低三位在1-999之间，若为0如1 million。</li>
+</ol>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> String[] lows = &#123;<span class="string">""</span>, <span class="string">"One"</span>, <span class="string">"Two"</span>, <span class="string">"Three"</span>, <span class="string">"Four"</span>, <span class="string">"Five"</span>, <span class="string">"Six"</span>, <span class="string">"Seven"</span>, <span class="string">"Eight"</span>, <span class="string">"Nine"</span>, <span class="string">"Ten"</span>, </span><br><span class="line">   <span class="string">"Eleven"</span>, <span class="string">"Twelve"</span>,<span class="string">"Thirteen"</span>, <span class="string">"Fourteen"</span>,<span class="string">"Fifteen"</span>,<span class="string">"Sixteen"</span>,<span class="string">"Seventeen"</span>,<span class="string">"Eighteen"</span>, <span class="string">"Nineteen"</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> String[] tens = &#123;<span class="string">""</span>, <span class="string">""</span>, <span class="string">"Twenty"</span>, <span class="string">"Thirty"</span>, <span class="string">"Forty"</span>, <span class="string">"Fifty"</span>, <span class="string">"Sixty"</span>, <span class="string">"Seventy"</span>, <span class="string">"Eighty"</span>, <span class="string">"Ninety"</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">numberToWords</span><span class="params">(<span class="keyword">int</span> number)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(number == <span class="number">0</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"Zero"</span>;	</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	StringBuilder result = <span class="keyword">new</span> StringBuilder();</span><br><span class="line"></span><br><span class="line">	translateThreeR(number, result, <span class="number">0</span>);</span><br><span class="line">	<span class="keyword">return</span> result.reverse().toString().trim();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">translateThreeR</span><span class="params">(<span class="keyword">int</span> number, StringBuilder result, <span class="keyword">int</span> group)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> lower = number % <span class="number">1000</span>;</span><br><span class="line">	<span class="keyword">int</span> thousands = number / <span class="number">1000</span>;     </span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (group == <span class="number">1</span> &amp;&amp; lower &gt; <span class="number">0</span>)</span><br><span class="line">		result.append(reverse(<span class="string">" Thousand"</span>));</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (group==<span class="number">2</span> &amp;&amp; lower &gt; <span class="number">0</span>)</span><br><span class="line">		result.append(reverse(<span class="string">" Million"</span>));</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (group==<span class="number">3</span> &amp;&amp; lower &gt; <span class="number">0</span>)</span><br><span class="line">		result.append(reverse(<span class="string">" Billion"</span>));</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(lower&gt;<span class="number">0</span>)</span><br><span class="line">		result.append(reverse(translateThree(lower)));</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(thousands &gt;= <span class="number">1</span>) &#123;</span><br><span class="line">		translateThreeR(thousands, result, ++group);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">translateThree</span><span class="params">(<span class="keyword">int</span> number)</span> </span>&#123;</span><br><span class="line">	StringBuilder result = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">	<span class="keyword">if</span>(number &gt; <span class="number">99</span>) &#123;</span><br><span class="line">		result.append(<span class="string">" "</span>+lows[number / <span class="number">100</span>]);</span><br><span class="line">		result.append(<span class="string">" Hundred"</span>);</span><br><span class="line">		number = number % <span class="number">100</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span>(number &gt; <span class="number">19</span>) &#123;</span><br><span class="line">		result.append(<span class="string">" "</span>);</span><br><span class="line">		result.append(tens[number/<span class="number">10</span>]);</span><br><span class="line">		number = number % <span class="number">10</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Remainder is under 20</span></span><br><span class="line">	result.append(<span class="string">" "</span>+lows[number]);</span><br><span class="line">	<span class="keyword">return</span> <span class="string">" "</span>+result.toString().trim();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">reverse</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> (<span class="keyword">new</span> StringBuilder()).append(s).reverse().toString();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>n为位数，时间复杂度为O(n)，空间复杂度O(1)。  </p>
+<hr>
+<h3 id="算法II解题思路："><a href="#算法II解题思路：" class="headerlink" title="算法II解题思路："></a><strong>算法II解题思路：</strong></h3><p>上述方法是按千位递归的。下面的方法是按20以下，100以下，百位，千位…递归，递归的颗粒度更小，程序更简单。</p>
+<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>空格总加在新数前面，只需要加在有返回值的时候，也就是tens和lows中，其他如numberToWordsR(number/1000)<br>可能返回空值，此时不在前面加空格。</li>
+<li>在递归中，num为0要单独列出，因为0表示此位不存在，也就是无返回值。</li>
+<li>在入口方法中，若num为0，则返回Zero，要单独列出。</li>
+</ol>
+<h3 id="Java代码：-1"><a href="#Java代码：-1" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">numberToWords</span><span class="params">(<span class="keyword">int</span> number)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (number == <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"Zero"</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">return</span> numberToWordsR(number).trim();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">numberToWordsR</span><span class="params">(<span class="keyword">int</span> number)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(number == <span class="number">0</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">""</span>;</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> (number &lt; <span class="number">20</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">" "</span> + lows[number];</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> (number &lt; <span class="number">100</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">" "</span> + tens[number / <span class="number">10</span>] + numberToWordsR(number % <span class="number">10</span>);</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> (number &lt; <span class="number">1000</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">" "</span> + lows[number / <span class="number">100</span>] + <span class="string">" Hundred"</span> + numberToWordsR(number % <span class="number">100</span>);</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> (number &lt; <span class="number">1000000</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> numberToWordsR(number / <span class="number">1000</span>) + <span class="string">" Thousand"</span> + numberToWordsR(number % <span class="number">1000</span>);</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> (number &lt; <span class="number">1000000000</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> numberToWordsR(number / <span class="number">1000000</span>) + <span class="string">" Million"</span> + numberToWordsR(number % <span class="number">1000000</span>);</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> numberToWordsR(number / <span class="number">1000000000</span>) + <span class="string">" Billion"</span> + numberToWordsR(number % <span class="number">1000000000</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Follow-up："><a href="#Follow-up：" class="headerlink" title="Follow-up："></a><strong>Follow-up：</strong></h3><p>integer, minus, decimals, internationlization(localization)。  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2018/04/30/lee-493/">LeetCode 493 Reverse Pairs</a></h1>
+  
+
+      
+        <time datetime="2018-04-30T22:45:07.446Z">2018-04-30</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/reverse-pairs" target="_blank" rel="noopener">LeetCode 493 Reverse Pairs</a></strong></p>
+<p>Given an integer array <code>nums</code>, return <em>the number of <strong>reverse pairs</strong> in the array</em>.</p>
+<p>A reverse pair is a pair <code>(i, j)</code> where <code>0 &lt;= i &lt; j &lt; nums.length</code> and <code>nums[i] &gt; 2 * nums[j]</code>.</p>
+<p><strong>Example 1:</strong></p>
+<pre>**Input:** nums = [1,3,2,3,1]
+**Output:** 2
+</pre>
+
+<p><strong>Example 2:</strong></p>
+<pre>**Input:** nums = [2,4,3,5,1]
+**Output:** 3
+</pre>
+
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= nums.length &lt;= 5 * 10&lt;sup&gt;4&lt;/sup&gt;</code></li>
+<li><code>-2&lt;sup&gt;31&lt;/sup&gt; &lt;= nums[i] &lt;= 2&lt;sup&gt;31&lt;/sup&gt; - 1</code></li>
+</ul>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求数组的逆序数</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><ol>
+<li>Merge sort模板  </li>
+<li>merge分两部分写，一个部分比较求个数，另一部分排序</li>
+</ol>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>merge分两部分写，一个部分比较，另一部分排序</li>
+<li>计算个数由两部分组成，两指针部分和剩余元素部分。若以后半数组为主，就是前半数组指针i的后面个数(程序用此)<br> 若以前半数组为主(加入到res时候)，就是后半数组指针j的前面个数</li>
+<li>nums[start:end+1] = res，前面是nums不是res</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">reversePairs</span><span class="params">(self, nums: List[int])</span>:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> nums:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">	<span class="keyword">return</span> self.m_sort(nums, <span class="number">0</span>, len(nums) - <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">m_sort</span><span class="params">(self, nums, start, end)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> start &gt;= end:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">	mid = start + (end - start) // <span class="number">2</span></span><br><span class="line">	count = <span class="number">0</span></span><br><span class="line">	count += self.m_sort(nums, start, mid)</span><br><span class="line">	count += self.m_sort(nums, mid + <span class="number">1</span>, end)</span><br><span class="line">	count += self.merge(nums, start, mid, end)</span><br><span class="line">	<span class="keyword">return</span> count</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">merge</span><span class="params">(self, nums, start, mid, end)</span>:</span></span><br><span class="line">	i, j, res, count = start, mid + <span class="number">1</span>, [], <span class="number">0</span></span><br><span class="line">	<span class="keyword">while</span> i &lt;= mid <span class="keyword">and</span> j &lt;= end:</span><br><span class="line">		<span class="keyword">if</span> nums[i] &lt;= <span class="number">2</span> * nums[j]:</span><br><span class="line">			i += <span class="number">1</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			count += mid - i + <span class="number">1</span></span><br><span class="line">			j += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> i &lt;= mid:</span><br><span class="line">		i += <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> j &lt;= end:</span><br><span class="line">		count += mid - i + <span class="number">1</span></span><br><span class="line">		j += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">	i, j, res = start, mid + <span class="number">1</span>, []</span><br><span class="line">	<span class="keyword">while</span> i &lt;= mid <span class="keyword">and</span> j &lt;= end:</span><br><span class="line">		<span class="keyword">if</span> nums[i] &lt;= nums[j]:</span><br><span class="line">			res.append(nums[i])</span><br><span class="line">			i += <span class="number">1</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			res.append(nums[j])</span><br><span class="line">			j += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> i &lt;= mid:</span><br><span class="line">		res.append(nums[i])</span><br><span class="line">		i += <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> j &lt;= end:</span><br><span class="line">		res.append(nums[j])</span><br><span class="line">		j += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">	nums[start:end + <span class="number">1</span>] = res</span><br><span class="line">	<span class="keyword">return</span> count</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nlogn)</code>，空间复杂度<code>O(n)</code>。   </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2018/03/17/lee-019/">LeetCode 019 Remove Nth Node From End of List</a></h1>
   
 
@@ -203,113 +331,6 @@ return [0, 1].
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2018/01/31/lee-004/">LeetCode 004 Median of Two Sorted Arrays</a></h1>
-  
-
-      
-        <time datetime="2018-02-01T03:24:53.428Z">2018-01-31</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/median-of-two-sorted-arrays" target="_blank" rel="noopener">LeetCode 004 Median of Two Sorted Arrays</a></strong></p>
-<p>There are two sorted arrays <strong>nums1</strong> and <strong>nums2</strong> of size m and n respectively.</p>
-<p>Find the median of the two sorted arrays. The overall run time complexity should be O(log (m+n)).</p>
-<p><strong>Example 1:</strong>  </p>
-<pre>nums1 = [1, 3]
-nums2 = [2]
-
-The median is 2.0
-</pre>
-
-<p><strong>Example 2:</strong>  </p>
-<pre>nums1 = [1, 2]
-nums2 = [3, 4]
-
-The median is (2 + 3)/2 = 2.5
-</pre>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求两个有序数组中的中位数。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>题目要求log(m+n)复杂度，也就提示要对数组总长做二分法。因为要同时处理两个数组所以考虑用递归版二分法。因奇偶中位数有1-2个，<br>所以加强命题为求两有序数组的第k个数(k&gt;=1)。<br>对k的值进行二分k/2，先尝试num1数组的第k/2个数和num2数组的第k/2个数。若它们相等，表示它们即为第k个数。也就是比如求第4个数，<br>分别在两数组中取前两个，平均分配名额。此题类似于求前k大的数(算法文档4.1.13)用统计个数的方法来判断走左还是右。若它们不等，不妨假设<br>aKey&lt;bKey，这样表示第k个数一定不会是aKey，因为即使比bKey小的数均小于aKey的话（有k/2-1个），总共有k/2-1+k/2-1=k-2个数小于<br>aKey，也就是aKey为第k-1个数，不可能为第k个数，它只可能出现是bKey或者在num1中比aKey大的数。既然aKey不是解，比aKey小的数<br>更不可能是解。所以，可以抛掉num1[0, k/2]这部分，转而求num1[k/2+1,nums.length-1]以及nums2的第k-k/2个数，抛掉部分会影响结果<br>吗？答案是否定的。比如<br>1 2 3 4<br>0 6 7 8<br>k=4，比较2和6,2&lt;6抛掉1 2，转求[3,4],[0,6,7,8]的第2个数，答案仍为3，不影响结果，因为前k/2个数即使有些在nums2也不会影响<br>最后结果，求的是第k个。<br>1 2 3 4<br>0 6 7 8<br>第k=4数可能出现在num1[k/2+1,nums.length-1]=3或num2=6（下面例子），所以保留部分是正确的。<br>主要思路是<strong>每次递归抛掉k/2个数，数组规模减少k/2，k变成k-k/2</strong>, API为left, left2表示新数组的左边界(因为永远抛左边部分)以及k。<br>递归终止条件为</p>
-<ol>
-<li>left越界，这时此数组的数刚好用完或此数组为空(不会越界太多，否则aKey无穷大会递归到num2)。归结为求另一数组[left..]的第k个数.  </li>
-<li>k为1时候，是基本情况，表示求两数组的第1个数，只要返回左端的最小值即可。  </li>
-</ol>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>中位数有1-2两个。</li>
-<li>off by 1的问题。若API中的k定义为第k个数k&gt;=1，若总长len=5，中位数为第len/2+1=3个数。所以在递归函数中，数组下标用到k时<br>都要-1。抛掉[left, left+k/2-1],递归[left+k/2..]。</li>
-<li>若nums中left+k/2-1越界，不碰nums，右移left2，因为nums不能右移那么多。</li>
-</ol>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">findMedianSortedArrays</span><span class="params">(<span class="keyword">int</span>[] num1, <span class="keyword">int</span>[] num2)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> len = num1.length+num2.length;</span><br><span class="line">	<span class="keyword">if</span>(len%<span class="number">2</span>==<span class="number">1</span>)</span><br><span class="line">		<span class="keyword">return</span> findKth(num1,num2,<span class="number">0</span>,<span class="number">0</span>,len/<span class="number">2</span>+<span class="number">1</span>);</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">return</span> (findKth(num1,num2,<span class="number">0</span>,<span class="number">0</span>,len/<span class="number">2</span>)+findKth(num1,num2,<span class="number">0</span>,<span class="number">0</span>,len/<span class="number">2</span>+<span class="number">1</span>))/<span class="number">2.0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">findKth</span><span class="params">(<span class="keyword">int</span>[] num1, <span class="keyword">int</span>[] num2, <span class="keyword">int</span> left, <span class="keyword">int</span> left2, <span class="keyword">int</span> k)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(left&gt;=num1.length)</span><br><span class="line">		<span class="keyword">return</span> num2[left2+k-<span class="number">1</span>];</span><br><span class="line">	<span class="keyword">if</span>(left2&gt;=num2.length)</span><br><span class="line">		<span class="keyword">return</span> num1[left+k-<span class="number">1</span>];</span><br><span class="line">	<span class="keyword">if</span>(k==<span class="number">1</span>)</span><br><span class="line">		<span class="keyword">return</span> Math.min(num1[left], num2[left2]);;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">int</span> aKey = left+k/<span class="number">2</span>-<span class="number">1</span>&lt;num1.length?num1[left+k/<span class="number">2</span>-<span class="number">1</span>]:Integer.MAX_VALUE;</span><br><span class="line">	<span class="keyword">int</span> bKey = left2+k/<span class="number">2</span>-<span class="number">1</span>&lt;num2.length?num2[left2+k/<span class="number">2</span>-<span class="number">1</span>]:Integer.MAX_VALUE;</span><br><span class="line">	<span class="keyword">if</span>(aKey&lt;bKey)</span><br><span class="line">		<span class="keyword">return</span> findKth(num1,num2,left+k/<span class="number">2</span>,left2,k-k/<span class="number">2</span>);</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		<span class="keyword">return</span> findKth(num1,num2,left,left2+k/<span class="number">2</span>, k-k/<span class="number">2</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>假设两数组总长度为N，k为中位数即N/2，每次抛掉k/2也就是子问题规模为N-k/2=N-N/4=3N/4. f(N)=f(3N/4)+1.<br>利用master理论b=4/3, a=1, f(n)=1代入时间复杂度为<code>O(log(m+n))</code>，空间复杂度<code>O(1)</code>。</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2018/01/30/lee-006/">LeetCode 006 ZigZag Conversion</a></h1>
-  
-
-      
-        <time datetime="2018-01-31T06:11:31.903Z">2018-01-30</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/zigzag-conversion" target="_blank" rel="noopener">LeetCode 006 ZigZag Conversion</a></strong></p>
-<p>The string <code>&quot;PAYPALISHIRING&quot;</code> is written in a zigzag pattern on a given number of rows like this: (you may want to display this pattern in a fixed font for better legibility)</p>
-<pre>P   A   H   N
-A P L S I I G
-Y   I   R
-</pre>
-
-<p>And then read line by line: <code>&quot;PAHNAPLSIIGYIR&quot;</code></p>
-<p>Write the code that will take a string and make this conversion given a number of rows:</p>
-<pre>string convert(string text, int nRows);</pre>
-
-<p><code>convert(&quot;PAYPALISHIRING&quot;, 3)</code> should return <code>&quot;PAHNAPLSIIGYIR&quot;</code>.</p>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定字符串按如上的“Z”字锯齿形进行按行重排。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是一个周期性的字符串。周期是竖+折（不含首节点）。<br><img src="/images/L006.png" alt=""><br>首节点和竖的最后一点在每周期只会出现一次，其他点会出现两次。<br>T=2&times;numRows-2(因为不含竖节点最后一点+折线上的最后一点属于另一个周期)。nT是有几个周期，即使不完成的周期也算一个。<br>按行遍历（实质是周期上的每个点），再按周期遍历，非顶点有两个需加入到结果中：j&times;T+i,(j+1)&times;T-i。由于周期可能不完成，只要写一个API检查边界且加入字符即可。</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><p>一个字符的字符串。此时T=0.直接返回原字符串。</p>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">convert2</span><span class="params">(String s, <span class="keyword">int</span> numRows)</span> </span>&#123;</span><br><span class="line">	StringBuffer sb = <span class="keyword">new</span> StringBuffer();</span><br><span class="line">	<span class="keyword">int</span> T = numRows*<span class="number">2</span>-<span class="number">2</span>;</span><br><span class="line">	<span class="keyword">if</span>(T==<span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> s;</span><br><span class="line">	<span class="keyword">int</span> nT = (<span class="keyword">int</span>)Math.ceil((s.length()+<span class="number">0.0</span>)/T);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;numRows;i++)&#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;nT;j++)&#123;</span><br><span class="line">			<span class="keyword">if</span>(i==<span class="number">0</span> || i==numRows-<span class="number">1</span>)</span><br><span class="line">				sb.append(addChar(s, j*T+i));</span><br><span class="line">			<span class="keyword">else</span>&#123;</span><br><span class="line">				sb.append(addChar(s, j*T+i));</span><br><span class="line">				sb.append(addChar(s, (j+<span class="number">1</span>)*T-i));</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> sb.toString();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">addChar</span><span class="params">(String s, <span class="keyword">int</span> index)</span></span>&#123;</span><br><span class="line">	String a = <span class="string">""</span>;</span><br><span class="line">	<span class="keyword">if</span>(index&lt;s.length())</span><br><span class="line">		<span class="keyword">return</span> s.substring(index, index+<span class="number">1</span>);</span><br><span class="line">	<span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>。</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -334,6 +355,14 @@ Y   I   R
   <ul class="entry">
     
       <li>
+        <a href="/2021/12/03/lee-212/">LeetCode 212 Word Search II</a>
+      </li>
+    
+      <li>
+        <a href="/2021/12/03/lee-079/">LeetCode 079 Word Search</a>
+      </li>
+    
+      <li>
         <a href="/2021/12/02/lee-023/">LeetCode 023 Merge k Sorted Lists</a>
       </li>
     
@@ -343,14 +372,6 @@ Y   I   R
     
       <li>
         <a href="/2021/11/30/lee-264/">LeetCode 264 Ugly Number II</a>
-      </li>
-    
-      <li>
-        <a href="/2021/11/30/lee-1429/">LeetCode 1429 First Unique Number</a>
-      </li>
-    
-      <li>
-        <a href="/2021/11/30/lee-380/">LeetCode 380 Insert Delete GetRandom O(1)</a>
       </li>
     
   </ul>
@@ -363,7 +384,7 @@ Y   I   R
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Array/" style="font-size: 19.23px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 10px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 15.38px;">Binary Search</a> <a href="/tags/Breadth-First-Search/" style="font-size: 10px;">Breadth-First Search</a> <a href="/tags/Breadth-first-Search/" style="font-size: 14.62px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15.38px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 12.31px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12.31px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 16.92px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 10.77px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 10.77px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.15px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 11.54px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 15.38px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 18.46px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 13.08px;">Linked List</a> <a href="/tags/Math/" style="font-size: 11.54px;">Math</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 12.31px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.77px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Python-KB/" style="font-size: 17.69px;">Python KB</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 12.31px;">Sort</a> <a href="/tags/Stack/" style="font-size: 13.85px;">Stack</a> <a href="/tags/String/" style="font-size: 13.08px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 10.77px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.31px;">Tree</a> <a href="/tags/Two-Pointers/" style="font-size: 12.31px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 10.77px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
+    <a href="/tags/Array/" style="font-size: 19.23px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 11.54px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 15.38px;">Binary Search</a> <a href="/tags/Breadth-First-Search/" style="font-size: 10px;">Breadth-First Search</a> <a href="/tags/Breadth-first-Search/" style="font-size: 14.62px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15.38px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 12.31px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12.31px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 16.92px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 10.77px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 10.77px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.15px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 11.54px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 15.38px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 18.46px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 13.08px;">Linked List</a> <a href="/tags/Math/" style="font-size: 11.54px;">Math</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 12.31px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.77px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Python-KB/" style="font-size: 17.69px;">Python KB</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 12.31px;">Sort</a> <a href="/tags/Stack/" style="font-size: 13.85px;">Stack</a> <a href="/tags/String/" style="font-size: 13.08px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 10.77px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.31px;">Tree</a> <a href="/tags/Trie/" style="font-size: 10px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 12.31px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 10.77px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
   </div>
 </div>
 

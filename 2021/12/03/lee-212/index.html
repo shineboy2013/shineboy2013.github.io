@@ -1,0 +1,182 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+  
+  <title>LeetCode 212 Word Search II › Jiajie&#39;s blog</title>
+  <meta name="author" content="KK Shum">
+  
+  <meta name="description" content="算法思路：N/A  
+注意事项：
+用Trie来保存单词列表，这样每次DFS的每一步都可以O(1)时间知道是否和单词吻合，而不是O(n)
+难点1: Trie的接口有startswith, search, insert，仅insert可以用，其他两个不支持与DFS同步搜索。所以要写一个新函数：其实修改s">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="LeetCode 212 Word Search II"/>
+  <meta property="og:site_name" content="Jiajie&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="Jiajie&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]--><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+</head>
+
+
+<body>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><header id="header"><div class="meta inner">
+  <h1><a href="/">Jiajie&#39;s blog</a></h1>
+  <h2><a href="/">每天积累多一些</a></h2>
+  <nav id="main-nav">
+    <ul>
+      
+      <li><a href="/about">About</a></li>
+      
+      <li><a href="/archives">Archives</a></li>
+      
+      <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+</div>
+<div class="clearfix"></div>
+
+	<script data-ad-client="ca-pub-3350210696528821" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  </header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title">LeetCode 212 Word Search II</h1>
+  
+
+      
+        <time datetime="2021-12-04T04:40:24.094Z">2021-12-03</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>N/A  </p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>用Trie来保存单词列表，这样每次DFS的每一步都可以O(1)时间知道是否和单词吻合，而不是O(n)</li>
+<li>难点1: Trie的接口有startswith, search, insert，仅insert可以用，其他两个不支持与DFS同步搜索。所以要写一个新函数：其实修改startsWith将for循环去掉<br>当然DFS的API也要改，去掉word, word_index加入trie, trie_node, path, res  </li>
+<li>TLE错误，因为比如矩阵为[abc]，单词列表为abc, abc, abc，这样abc加入到结果后就不应该再搜abc，因为结果不能重且效率大打折扣。如果找到了单词，就应该<br>将它从Trie中去掉，避免无谓的搜索，条件是该节点children长度为0，就父节点就将key删除。如果还有儿子节点只能标记is_end为False。Line 29 - 31和35 - 36</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line">OFFSETS = [(<span class="number">0</span>, <span class="number">1</span>), (<span class="number">1</span>, <span class="number">0</span>), (<span class="number">-1</span>, <span class="number">0</span>), (<span class="number">0</span>, <span class="number">-1</span>)]</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span><span class="params">(TestCases)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">findWords</span><span class="params">(self, board: List[List[str]], words: List[str])</span> -&gt; List[str]:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> board <span class="keyword">or</span> <span class="keyword">not</span> board[<span class="number">0</span>] <span class="keyword">or</span> <span class="keyword">not</span> words:</span><br><span class="line">            <span class="keyword">return</span> []</span><br><span class="line">        trie, res = Trie(), []</span><br><span class="line">        <span class="keyword">for</span> word <span class="keyword">in</span> words:</span><br><span class="line">            trie.insert(word)</span><br><span class="line"></span><br><span class="line">        visited = [[<span class="keyword">False</span> <span class="keyword">for</span> _ <span class="keyword">in</span> range(len(board[<span class="number">0</span>]))] <span class="keyword">for</span> _ <span class="keyword">in</span> range(len(board))]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(len(board)):</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> range(len(board[<span class="number">0</span>])):</span><br><span class="line">                self.dfs(board, i, j, visited, trie, trie.get_head(), <span class="string">''</span>, res)</span><br><span class="line">        <span class="keyword">return</span> list(res)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">dfs</span><span class="params">(self, board, start_x, start_y, visited, trie, trie_node, path, res)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> start_x &lt; <span class="number">0</span> <span class="keyword">or</span> start_x &gt;= len(board) <span class="keyword">or</span> start_y &lt; <span class="number">0</span> <span class="keyword">or</span> start_y &gt;= len(board[<span class="number">0</span>]):</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        <span class="keyword">if</span> visited[start_x][start_y]:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        trie_child = trie.search_one_node(board[start_x][start_y], trie_node)</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> trie_child:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        visited[start_x][start_y] = <span class="keyword">True</span></span><br><span class="line">        path += board[start_x][start_y]</span><br><span class="line">        <span class="keyword">if</span> trie_child.is_end:</span><br><span class="line">            res.append(path)</span><br><span class="line">            trie_child.is_end = <span class="keyword">False</span></span><br><span class="line">            <span class="keyword">if</span> len(trie_child.children) == <span class="number">0</span> <span class="keyword">and</span> board[start_x][start_y] <span class="keyword">in</span> trie_node.children:</span><br><span class="line">                trie_node.children.pop(board[start_x][start_y])</span><br><span class="line">        <span class="keyword">for</span> dx, dy <span class="keyword">in</span> OFFSETS:</span><br><span class="line">            self.dfs(board, start_x + dx, start_y + dy, visited, trie, trie_child, path, res)</span><br><span class="line">        path = path[:<span class="number">-1</span>]</span><br><span class="line">        visited[start_x][start_y] = <span class="keyword">False</span></span><br><span class="line">        <span class="keyword">if</span> len(trie_child.children) == <span class="number">0</span> <span class="keyword">and</span> board[start_x][start_y] <span class="keyword">in</span> trie_node.children:</span><br><span class="line">            trie_node.children.pop(board[start_x][start_y])</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Trie</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.head = TrieNode()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">insert</span><span class="params">(self, word: str)</span> -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> word:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        it = self.head</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(len(word)):</span><br><span class="line">            it = it.children[word[i]]</span><br><span class="line">            <span class="keyword">if</span> i == len(word) - <span class="number">1</span>:</span><br><span class="line">                it.is_end = <span class="keyword">True</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search_one_node</span><span class="params">(self, c: str, trie_node)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> c <span class="keyword">not</span> <span class="keyword">in</span> trie_node.children:</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">None</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> trie_node.children[c]</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TrieNode</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.children = collections.defaultdict(TrieNode)  <span class="comment"># &#123;&#125;</span></span><br><span class="line">        self.is_end = <span class="keyword">False</span></span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(<em>n</em><sup>2</sup>*<em>3</em><sup>L</sup>)</code>，空间复杂度<code>O(<em>n</em><sup>2</sup>)</code>, n是矩阵长度，L是单词长度.<br>3是因为访问过的节点不合法，也就是来的节点不能再走一次，所以只能3个方向    </p>
+
+      
+    </div>
+      
+      <footer>
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/Array/">Array</a>, <a href="/tags/Backtracking/">Backtracking</a>, <a href="/tags/Trie/">Trie</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  
+</section>
+
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="q" value="site:shineboy2013.github.com">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">Recent Posts</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2021/12/03/lee-212/">LeetCode 212 Word Search II</a>
+      </li>
+    
+      <li>
+        <a href="/2021/12/03/lee-079/">LeetCode 079 Word Search</a>
+      </li>
+    
+      <li>
+        <a href="/2021/12/02/lee-023/">LeetCode 023 Merge k Sorted Lists</a>
+      </li>
+    
+      <li>
+        <a href="/2021/12/01/lee-300/">LeetCode 300 Longest Increasing Subsequence</a>
+      </li>
+    
+      <li>
+        <a href="/2021/11/30/lee-264/">LeetCode 264 Ugly Number II</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">Tag Cloud</h3>
+  <div class="entry">
+    <a href="/tags/Array/" style="font-size: 19.23px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 11.54px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 15.38px;">Binary Search</a> <a href="/tags/Breadth-First-Search/" style="font-size: 10px;">Breadth-First Search</a> <a href="/tags/Breadth-first-Search/" style="font-size: 14.62px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15.38px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 12.31px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12.31px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 16.92px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 10.77px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 10.77px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.15px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 11.54px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 15.38px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 18.46px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 13.08px;">Linked List</a> <a href="/tags/Math/" style="font-size: 11.54px;">Math</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 12.31px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.77px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Python-KB/" style="font-size: 17.69px;">Python KB</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 12.31px;">Sort</a> <a href="/tags/Stack/" style="font-size: 13.85px;">Stack</a> <a href="/tags/String/" style="font-size: 13.08px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 10.77px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.31px;">Tree</a> <a href="/tags/Trie/" style="font-size: 10px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 12.31px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 10.77px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
+  </div>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2021 KK Shum
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+
+</body>
+</html>
+
