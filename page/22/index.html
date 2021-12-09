@@ -53,6 +53,54 @@
     <header>
       
   
+    <h1 class="title"><a href="/2018/01/28/lee-056/">LeetCode 056 Merge Intervals</a></h1>
+  
+
+      
+        <time datetime="2018-01-29T07:52:23.474Z">2018-01-28</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/merge-interval" target="_blank" rel="noopener">LeetCode 056 Merge Intervals</a></strong></p>
+<p>Given a collection of intervals, merge all overlapping intervals.</p>
+<p>For example,<br>Given <code>[1,3],[2,6],[8,10],[15,18]</code>,<br>return <code>[1,6],[8,10],[15,18]</code>.</p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定几个区间，要求合并重叠区间，返回结果.</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>A公司的考题。这条题难点在于判断是否合并，怎么合并，新区间合并多个区间。</p>
+<ol>
+<li>按start排序。</li>
+<li>定义API：如何合并两个区间（两情况），两个区间是否可以合并</li>
+<li>遍历每个区间，产生新区间并将其带入到下一轮循环。这是难点，公式为 新区间=新区间+输入区间[i]，这也分为两种情况，可合并和不可合并<br>不可合并时，前状态的新区间成为结果，公式为新区间=输入区间[i]。  </li>
+<li>若不想特别处理循环边界，可加入空区间到末尾（见Java实现，它把新区间=输入区间[i]放入了下一轮）。若不如此做，可将空区间放入开头。  </li>
+</ol>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>区间的右端与另一个区间的左端一样，也算重叠，如[1,2],[2,3]。</li>
+<li>原输入末端加入空节点（左右端均为最大值，不能为最小值或0，表示不可能合并），避免1.处理单一区间输入。2. 最后一个区间的情况。</li>
+<li>合并后生成新区间，要与下一个继续尝试合并。</li>
+</ol>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;Interval&gt; <span class="title">merge</span><span class="params">(List&lt;Interval&gt; intervals)</span> </span>&#123;</span><br><span class="line">	Collections.sort(intervals, <span class="keyword">new</span> Comparator&lt;Interval&gt;()&#123;</span><br><span class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(Interval v1, Interval v2)</span></span>&#123;</span><br><span class="line">			<span class="keyword">return</span> v1.start - v2.start;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;);</span><br><span class="line">	intervals.add(<span class="keyword">new</span> Interval(Integer.MAX_VALUE, Integer.MAX_VALUE));</span><br><span class="line">	List&lt;Interval&gt; re = <span class="keyword">new</span> ArrayList&lt;Interval&gt;();</span><br><span class="line">	Interval newInterval = <span class="keyword">null</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;intervals.size();i++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(newInterval==<span class="keyword">null</span>)</span><br><span class="line">			newInterval = intervals.get(i-<span class="number">1</span>);</span><br><span class="line">		<span class="keyword">if</span>(canMerge(newInterval,intervals.get(i)))&#123;</span><br><span class="line">			newInterval = mergeIntervals(newInterval,intervals.get(i));</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span>&#123;</span><br><span class="line">			re.add(newInterval);</span><br><span class="line">			newInterval = <span class="keyword">null</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> re;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//假设in与in2按start排序，所以只有两情况：</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * In  -------</span></span><br><span class="line"><span class="comment"> * In2   ---</span></span><br><span class="line"><span class="comment"> * In2   -------- </span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">canMerge</span><span class="params">(Interval in, Interval in2)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(in2.start == Integer.MAX_VALUE)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	<span class="keyword">return</span> in.end&gt;=in2.start;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> Interval <span class="title">mergeIntervals</span><span class="params">(Interval in, Interval in2)</span></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">new</span> Interval(in.start, Math.max(in.end, in2.end));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nlogn)</code>，空间复杂度<code>O(1)</code>。</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2018/01/28/lee-503/">LeetCode 503 Next Greater Element II</a></h1>
   
 
@@ -300,69 +348,6 @@ Explanation: The array cannot be partitioned into equal sum subsets.
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2018/01/10/lee-329/">LeetCode 329 Longest Increasing Path in a Matrix</a></h1>
-  
-
-      
-        <time datetime="2018-01-10T09:46:52.076Z">2018-01-10</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/longest-increasing-path-in-a-matrix" target="_blank" rel="noopener">LeetCode 329 Longest Increasing Path in a Matrix</a></strong></p>
-<p>Given an integer matrix, find the length of the longest increasing path.</p>
-<p>From each cell, you can either move to four directions: left, right, up or down. You may NOT move diagonally or move outside of the boundary (i.e. wrap-around is not allowed).</p>
-<p><strong>Example 1:</strong></p>
-<pre>nums = [
-  [<font color="red">9</font>,9,4],
-  [<font color="red">6</font>,6,8],
-  [<font color="red">2</font>,<font color="red">1</font>,1]
-]
-</pre>
-
-<p>Return <code>4</code><br>The longest increasing path is <code>[1, 2, 6, 9]</code>.</p>
-<p><strong>Example 2:</strong></p>
-<pre>nums = [
-  [<font color="red">3</font>,<font color="red">4</font>,<font color="red">5</font>],
-  [3,2,<font color="red">6</font>],
-  [2,2,1]
-]
-</pre>
-
-<p>Return <code>4</code><br>The longest increasing path is <code>[3, 4, 5, 6]</code>. Moving diagonally is not allowed.</p>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个整数矩阵，计算其最长递增路径的长度。<br>从每一个单元格出发，你可以向四个方向移动：左右上下。你不可以沿着对角线移动也不能移出边界。（亦即，环绕是不允许的）。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是经典题，类似于LIS题，只要将以每个点为终点的最长路径长度存起来，就可以类推它的邻近点的最长长度（DP）。f(x,y)=max{f(x,y),4个邻近点的f+1}<br>由于这是求最长路径题且为矩阵，可以考虑按步长计算，就是Floyd的思路，就是先计算步长为1,2一直到所以最长路径长度矩阵长度不再更新为止。<br>另一个思路也是用矩阵存起每个点最长路径长度，但用DFS搜索，直至这个点的值不为初始值为止，详见书影博客。</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>矩阵为空或长度为0</li>
-<li>当任何值没有更新时，Floyd停止计算</li>
-</ol>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">longestIncreasingPath</span><span class="params">(<span class="keyword">int</span>[][] matrix)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (matrix==<span class="keyword">null</span> || matrix.length==<span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span>[][] path = <span class="keyword">new</span> <span class="keyword">int</span>[matrix.length][matrix[<span class="number">0</span>].length];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;matrix.length;i++)</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;matrix[<span class="number">0</span>].length;j++)</span><br><span class="line">			path[i][j] = <span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">boolean</span> nextPath = <span class="keyword">true</span>;</span><br><span class="line">	<span class="keyword">while</span>(nextPath)&#123;</span><br><span class="line">		nextPath = <span class="keyword">false</span>;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;matrix.length;i++)</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;matrix[<span class="number">0</span>].length;j++)&#123;</span><br><span class="line">				<span class="keyword">if</span>(changeCell(matrix, path, i, j))</span><br><span class="line">					nextPath = <span class="keyword">true</span>;</span><br><span class="line">			&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">int</span> max = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;matrix.length;i++)</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;matrix[<span class="number">0</span>].length;j++)</span><br><span class="line">			<span class="keyword">if</span>(path[i][j]&gt;max)</span><br><span class="line">				max = path[i][j];</span><br><span class="line">	<span class="keyword">return</span> max;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">changeCell</span><span class="params">(<span class="keyword">int</span>[][] matrix, <span class="keyword">int</span>[][] path, <span class="keyword">int</span> i, <span class="keyword">int</span> j)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> pre = path[i][j];</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(i-<span class="number">1</span>&gt;=<span class="number">0</span> &amp;&amp; matrix[i-<span class="number">1</span>][j]&lt;matrix[i][j] &amp;&amp;  path[i-<span class="number">1</span>][j]+<span class="number">1</span>&gt;path[i][j])</span><br><span class="line">		path[i][j] = path[i-<span class="number">1</span>][j]+<span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(i+<span class="number">1</span>&lt;matrix.length &amp;&amp; matrix[i+<span class="number">1</span>][j]&lt;matrix[i][j] &amp;&amp;  path[i+<span class="number">1</span>][j]+<span class="number">1</span>&gt;path[i][j])</span><br><span class="line">		path[i][j] = path[i+<span class="number">1</span>][j]+<span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(j-<span class="number">1</span>&gt;=<span class="number">0</span> &amp;&amp; matrix[i][j-<span class="number">1</span>]&lt;matrix[i][j] &amp;&amp;  path[i][j-<span class="number">1</span>]+<span class="number">1</span>&gt;path[i][j])</span><br><span class="line">		path[i][j] = path[i][j-<span class="number">1</span>]+<span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(j+<span class="number">1</span>&lt;matrix[<span class="number">0</span>].length &amp;&amp; matrix[i][j+<span class="number">1</span>]&lt;matrix[i][j] &amp;&amp;  path[i][j+<span class="number">1</span>]+<span class="number">1</span>&gt;path[i][j])</span><br><span class="line">		path[i][j] = path[i][j+<span class="number">1</span>]+<span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(pre!=path[i][j])</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>k为最长路径长度，时间复杂度为<code>O(k<em>n</em><sup>2</sup>)</code>，空间复杂度<code>O(<em>n</em><sup>2</sup>)</code>。   </p>
-<hr>
-<h3 id="算法II解题思路："><a href="#算法II解题思路：" class="headerlink" title="算法II解题思路："></a><strong>算法II解题思路：</strong></h3><p>先对所有数排序，然后用DP算每个点的往前4个方向的DP值+1，方向是按排序数从小到大。详见9zhang    </p>
-<hr>
-<h3 id="算法III解题思路："><a href="#算法III解题思路：" class="headerlink" title="算法III解题思路："></a><strong>算法III解题思路：</strong></h3><p>这题也可以额用记忆性搜索DFS来解。</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -387,6 +372,10 @@ Explanation: The array cannot be partitioned into equal sum subsets.
   <ul class="entry">
     
       <li>
+        <a href="/2021/12/09/lee-134/">LeetCode 134 Gas Station</a>
+      </li>
+    
+      <li>
         <a href="/2021/12/08/lee-224/">LeetCode 224 Basic Calculator</a>
       </li>
     
@@ -402,10 +391,6 @@ Explanation: The array cannot be partitioned into equal sum subsets.
         <a href="/2021/12/07/parenthesis/">括号题或者字符串运算题</a>
       </li>
     
-      <li>
-        <a href="/2021/12/07/lee-1249/">LeetCode 1249 Minimum Remove to Make Valid Parentheses</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -416,7 +401,7 @@ Explanation: The array cannot be partitioned into equal sum subsets.
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 12.86px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 17.86px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 12.14px;">Binary Tree</a> <a href="/tags/Breadth-First-Search/" style="font-size: 11.43px;">Breadth-First Search</a> <a href="/tags/Breadth-first-Search/" style="font-size: 14.29px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 12.14px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12.14px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 18.57px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 11.43px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 10.71px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.43px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 13.57px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 15px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 19.29px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 13.57px;">Linked List</a> <a href="/tags/Math/" style="font-size: 11.43px;">Math</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 12.14px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.71px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Python-KB/" style="font-size: 18.57px;">Python KB</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.71px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 12.14px;">Sort</a> <a href="/tags/Stack/" style="font-size: 17.14px;">Stack</a> <a href="/tags/String/" style="font-size: 13.57px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.43px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.86px;">Tree</a> <a href="/tags/Trie/" style="font-size: 10px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.29px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 10.71px;">Union Find</a> <a href="/tags/tik/" style="font-size: 15.71px;">tik</a> <a href="/tags/tiktok/" style="font-size: 12.14px;">tiktok</a>
+    <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.08px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 17.69px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 12.31px;">Binary Tree</a> <a href="/tags/Breadth-First-Search/" style="font-size: 11.54px;">Breadth-First Search</a> <a href="/tags/Breadth-first-Search/" style="font-size: 14.62px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15.38px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 12.31px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12.31px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 18.46px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 11.54px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 11.54px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.15px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 13.85px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 15.38px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 19.23px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 13.85px;">Linked List</a> <a href="/tags/Math/" style="font-size: 11.54px;">Math</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 12.31px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.77px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Python-KB/" style="font-size: 18.46px;">Python KB</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.77px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 12.31px;">Sort</a> <a href="/tags/Stack/" style="font-size: 16.92px;">Stack</a> <a href="/tags/String/" style="font-size: 13.85px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.54px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 13.08px;">Tree</a> <a href="/tags/Trie/" style="font-size: 10px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.62px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 10.77px;">Union Find</a> <a href="/tags/tik/" style="font-size: 15.38px;">tik</a> <a href="/tags/tiktok/" style="font-size: 12.31px;">tiktok</a>
   </div>
 </div>
 

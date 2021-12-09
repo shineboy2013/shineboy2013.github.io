@@ -53,6 +53,76 @@
     <header>
       
   
+    <h1 class="title"><a href="/2021/11/14/lee-378/">LeetCode 378 Kth Smallest Element in a Sorted Matrix</a></h1>
+  
+
+      
+        <time datetime="2021-11-14T10:06:23.335Z">2021-11-14</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/kth-smallest-element-in-a-sorted-matrix/" target="_blank" rel="noopener">LeetCode 378 Kth Smallest Element in a Sorted Matrix</a></strong></p>
+<p>Given an <code>n x n</code> <code>matrix</code> where each of the rows and columns is sorted in ascending order, return <em>the</em> <code>k&lt;sup&gt;th&lt;/sup&gt;</code> <em>smallest element in the matrix</em>.</p>
+<p>Note that it is the <code>k&lt;sup&gt;th&lt;/sup&gt;</code> smallest element <strong>in the sorted order</strong>, not the <code>k&lt;sup&gt;th&lt;/sup&gt;</code> <strong>distinct</strong> element.</p>
+<p>You must find a solution with complexity better than <code>O(n&lt;sup&gt;2&lt;/sup&gt;)</code>.</p>
+<p><strong>Example 1:</strong></p>
+<pre>**Input:** matrix = [[1,5,9],[10,11,13],[12,13,15]], k = 8
+**Output:** 13
+**Explanation:** The elements in the matrix are [1,5,9,10,11,12,13,<u>**13**</u>,15], and the 8<sup>th</sup> smallest number is 13
+</pre>
+
+<p><strong>Example 2:</strong></p>
+<pre>**Input:** matrix = [[-5]], k = 1
+**Output:** -5
+</pre>
+
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>n == matrix.length == matrix[i].length</code></li>
+<li><code>1 &lt;= n &lt;= 300</code></li>
+<li><code>-10&lt;sup&gt;9&lt;/sup&gt; &lt;= matrix[i][j] &lt;= 10&lt;sup&gt;9&lt;/sup&gt;</code></li>
+<li>All the rows and columns of <code>matrix</code> are <strong>guaranteed</strong> to be sorted in <strong>non-decreasing order</strong>.</li>
+<li><code>1 &lt;= k &lt;= n&lt;sup&gt;2&lt;/sup&gt;</code></li>
+</ul>
+<p><strong>Follow up:</strong> Could you solve the problem in <code>O(n)</code> time complexity?</p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>按行按列有序矩阵中，找第k大的数。  </p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>第k的数运用数值二分法  </p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><ol>
+<li>数值二分法  </li>
+<li>难点在于统计小于mid的个数。若遍历全矩阵比较慢，采用按行遍历，每行再用二分法找到小于mid的数的个数，再求和。  </li>
+</ol>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>注意k–, k从1开始</li>
+<li>每行统计小于mid个数用find smaller的模板。返回值要加1，因为下标转换成个数。     </li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">kthSmallest</span><span class="params">(self, matrix: List[List[int]], k: int)</span> -&gt; int:</span></span><br><span class="line">	k -= <span class="number">1</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> matrix <span class="keyword">or</span> <span class="keyword">not</span> matrix[<span class="number">0</span>]:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line">	N, M = len(matrix), len(matrix[<span class="number">0</span>])</span><br><span class="line">	start, end, epsilon = matrix[<span class="number">0</span>][<span class="number">0</span>], matrix[N - <span class="number">1</span>][M - <span class="number">1</span>], <span class="number">0.5</span></span><br><span class="line">	<span class="keyword">while</span> end - start &gt; epsilon:</span><br><span class="line">		mid = start + (end - start) / <span class="number">2</span></span><br><span class="line">		count = sum([self.get_count(matrix[i], mid) <span class="keyword">for</span> i <span class="keyword">in</span> range(N)])</span><br><span class="line">		<span class="keyword">if</span> k &lt; count:</span><br><span class="line">			end = mid</span><br><span class="line">		<span class="keyword">elif</span> k &gt; count:</span><br><span class="line">			start = mid</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			start = mid</span><br><span class="line">	<span class="keyword">return</span> math.floor(end)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_count</span><span class="params">(self, nums: List[int], target: float)</span> -&gt; int:</span></span><br><span class="line">	start, end = <span class="number">0</span>, len(nums) - <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> start + <span class="number">1</span> &lt; end:</span><br><span class="line">		mid = start + (end - start) // <span class="number">2</span></span><br><span class="line">		<span class="keyword">if</span> target &gt; nums[mid]:</span><br><span class="line">			start = mid</span><br><span class="line">		<span class="keyword">elif</span> target &lt; nums[mid]:</span><br><span class="line">			end = mid</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			end = mid</span><br><span class="line">	<span class="keyword">if</span> nums[end] &lt; target:</span><br><span class="line">		<span class="keyword">return</span> end + <span class="number">1</span></span><br><span class="line">	<span class="keyword">if</span> nums[start] &lt; target:</span><br><span class="line">		<span class="keyword">return</span> start + <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span></span><br></pre></td></tr></table></figure>
+<p>用bisect优化  </p>
+<h3 id="Python代码：-1"><a href="#Python代码：-1" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">kthSmallest</span><span class="params">(self, matrix: List[List[int]], k: int)</span> -&gt; int:</span></span><br><span class="line">	k -= <span class="number">1</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> matrix <span class="keyword">or</span> <span class="keyword">not</span> matrix[<span class="number">0</span>]:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line">	N, M = len(matrix), len(matrix[<span class="number">0</span>])</span><br><span class="line">	start, end, epsilon = matrix[<span class="number">0</span>][<span class="number">0</span>], matrix[N - <span class="number">1</span>][M - <span class="number">1</span>], <span class="number">0.5</span></span><br><span class="line">	<span class="keyword">while</span> end - start &gt; epsilon:</span><br><span class="line">		mid = start + (end - start) / <span class="number">2</span></span><br><span class="line">		count = sum([bisect.bisect(matrix[i], mid) + <span class="number">1</span> <span class="keyword">for</span> i <span class="keyword">in</span> range(N)])</span><br><span class="line">		<span class="keyword">if</span> k &lt; count:</span><br><span class="line">			end = mid</span><br><span class="line">		<span class="keyword">elif</span> k &gt; count:</span><br><span class="line">			start = mid</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			start = mid</span><br><span class="line">	<span class="keyword">return</span> math.floor(end)</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>while循环有log[(max - min)/epsilon]个，假设数字平均分布，复杂度是log(n), 每个循环按每行(n行)统计小于mid的个数，<br>每次统计调用get_count用了log(n)，<br>所以总时间复杂度为<code>O(log(n) * nlogn)</code>，空间复杂度<code>O(1)</code>。</p>
+<hr>
+<h3 id="算法II解题思路："><a href="#算法II解题思路：" class="headerlink" title="算法II解题思路："></a><strong>算法II解题思路：</strong></h3><p>见Heap知识点。 分别将(value, i, j)放入heap中，取出堆顶元素后，去(i, j)相邻右和下节点放入堆中</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2021/11/14/lee-2073/">LeetCode 2073 Time Needed to Buy Tickets</a></h1>
   
 
@@ -225,59 +295,20 @@ Since the researcher has 3 papers with at least 3 citations each and the remaini
 <h3 id="整数题"><a href="#整数题" class="headerlink" title="整数题"></a><strong>整数题</strong></h3><p><a href="https://shineboy2013.github.io/2021/10/21/lee-007/" target="_blank" rel="noopener">LeetCode 007 Reverse Integer</a>  </p>
 <h3 id="Map"><a href="#Map" class="headerlink" title="Map"></a><strong>Map</strong></h3><p><a href="https://shineboy2013.github.io/2021/07/27/lee-003/" target="_blank" rel="noopener">LeetCode 003 Longest Substring Without Repeating Characters</a>  </p>
 <h3 id="LinkedList"><a href="#LinkedList" class="headerlink" title="LinkedList"></a><strong>LinkedList</strong></h3><p><a href="https://shineboy2013.github.io/2021/07/27/lee-138/" target="_blank" rel="noopener">LeetCode 138 Copy List with Random Pointer</a><br><a href="https://shineboy2013.github.io/2021/11/13/lee-2074/" target="_blank" rel="noopener">LeetCode 2074 Reverse Nodes in Even Length Groups</a><br><a href="https://shineboy2013.github.io/2021/12/02/lee-023/" target="_blank" rel="noopener">LeetCode 023 Merge k Sorted Lists</a>  </p>
-<h3 id="Stack"><a href="#Stack" class="headerlink" title="Stack"></a><strong>Stack</strong></h3><p><a href="https://shineboy2013.github.io/2021/10/30/stack/" target="_blank" rel="noopener">Stack</a><br><a href="https://shineboy2013.github.io/2018/01/28/lee-503/" target="_blank" rel="noopener">LeetCode 503 Next Greater Element II</a><br><a href="https://shineboy2013.github.io/2018/07/12/lee-042/" target="_blank" rel="noopener">LeetCode 042 Trapping Rain Water</a><br><a href="https://shineboy2013.github.io/2021/12/07/parenthesis/" target="_blank" rel="noopener">括号题或者字符串运算题</a>优先用Stack<br><a href="https://shineboy2013.github.io/2021/12/06/lee-020/" target="_blank" rel="noopener">LeetCode 020 Valid Parentheses</a><br><a href="https://shineboy2013.github.io/2021/12/08/lee-032/" target="_blank" rel="noopener">LeetCode 032 Longest Valid Parentheses</a><br><a href="https://shineboy2013.github.io/2021/12/07/lee-1249/" target="_blank" rel="noopener">LeetCode 1249 Minimum Remove to Make Valid Parentheses</a> 括号下标<br><a href="https://shineboy2013.github.io/2021/12/08/lee-678/" target="_blank" rel="noopener">LeetCode 678 Valid Parenthesis String</a><br><a href="https://shineboy2013.github.io/2021/12/08/lee-227/" target="_blank" rel="noopener">LeetCode 227 Basic Calculator II</a><br><a href="https://shineboy2013.github.io/2021/12/08/lee-224/" target="_blank" rel="noopener">LeetCode 224 Basic Calculator</a> </p>
+<h3 id="Stack"><a href="#Stack" class="headerlink" title="Stack"></a><strong>Stack</strong></h3><p>递减栈<br><a href="https://shineboy2013.github.io/2021/10/30/stack/" target="_blank" rel="noopener">Stack</a><br><a href="https://shineboy2013.github.io/2018/01/28/lee-503/" target="_blank" rel="noopener">LeetCode 503 Next Greater Element II</a><br><a href="https://shineboy2013.github.io/2018/07/12/lee-042/" target="_blank" rel="noopener">LeetCode 042 Trapping Rain Water</a><br><a href="https://shineboy2013.github.io/2021/12/07/parenthesis/" target="_blank" rel="noopener">括号题或者字符串运算题</a>优先用Stack<br><a href="https://shineboy2013.github.io/2021/12/06/lee-020/" target="_blank" rel="noopener">LeetCode 020 Valid Parentheses</a><br><a href="https://shineboy2013.github.io/2021/12/08/lee-032/" target="_blank" rel="noopener">LeetCode 032 Longest Valid Parentheses</a><br><a href="https://shineboy2013.github.io/2021/12/07/lee-1249/" target="_blank" rel="noopener">LeetCode 1249 Minimum Remove to Make Valid Parentheses</a> 括号下标<br><a href="https://shineboy2013.github.io/2021/12/08/lee-678/" target="_blank" rel="noopener">LeetCode 678 Valid Parenthesis String</a><br><a href="http://localhost:4000/2021/12/06/lee-227/" target="_blank" rel="noopener">LeetCode 227 Basic Calculator II</a><br><a href="https://shineboy2013.github.io/2021/12/08/lee-224/" target="_blank" rel="noopener">LeetCode 224 Basic Calculator</a> </p>
 <h3 id="BST的非递归遍历"><a href="#BST的非递归遍历" class="headerlink" title="BST的非递归遍历"></a><strong>BST的非递归遍历</strong></h3><p><a href="https://shineboy2013.github.io/2020/04/26/bst-iterative/" target="_blank" rel="noopener">BST的非递归中序，前序，后序遍历</a><br>Iterator题目基本是List转Stack<br><a href="https://shineboy2013.github.io/2020/04/26/lee-173/" target="_blank" rel="noopener">LeetCode 173 Binary Search Tree Iterator</a></p>
 <h3 id="Heap"><a href="#Heap" class="headerlink" title="Heap"></a><strong>Heap</strong></h3><p><a href="https://shineboy2013.github.io/2021/11/14/heap/" target="_blank" rel="noopener">Heap</a><br><a href="https://shineboy2013.github.io/2017/12/31/lee-347/" target="_blank" rel="noopener">LeetCode 347 Top K Frequent Elements</a><br><a href="https://shineboy2013.github.io/2018/01/29/lee-253/" target="_blank" rel="noopener">LeetCode 253 Meeting Rooms II</a><br><a href="https://shineboy2013.github.io/2021/11/30/lee-264/" target="_blank" rel="noopener">LeetCode 264 Ugly Number II</a><br><a href="https://shineboy2013.github.io/2021/12/04/lee-373/" target="_blank" rel="noopener">LeetCode 373 Find K Pairs with Smallest Sums</a></p>
 <h3 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a><strong>数据结构</strong></h3><p>题目大多都是HashMap + LL 或 HashMap + List<br><a href="https://shineboy2013.github.io/2020/05/04/lee-146/" target="_blank" rel="noopener">LeetCode 146 LRU Cache</a><br><a href="https://shineboy2013.github.io/2021/11/30/lee-1429/" target="_blank" rel="noopener">LeetCode 1429 First Unique Number</a><br><a href="https://shineboy2013.github.io/2021/11/30/lee-380/" target="_blank" rel="noopener">LeetCode 380 Insert Delete GetRandom O(1)</a><br><a href="https://shineboy2013.github.io/2021/11/20/lee-2080/" target="_blank" rel="noopener">LeetCode 2080 Range Frequency Queries</a><br><a href="https://shineboy2013.github.io/2021/11/29/trie/" target="_blank" rel="noopener">Trie</a><br><a href="https://shineboy2013.github.io/2021/12/03/lee-212/" target="_blank" rel="noopener">LeetCode 212 Word Search II</a></p>
 <h3 id="Two-pointers"><a href="#Two-pointers" class="headerlink" title="Two pointers"></a><strong>Two pointers</strong></h3><p><a href="https://shineboy2013.github.io/2021/12/05/two-pointers/" target="_blank" rel="noopener">Two pointers</a><br><a href="https://shineboy2013.github.io/2021/12/05/lee-209/" target="_blank" rel="noopener">LeetCode 209 Minimum Size Subarray Sum</a></p>
 <h3 id="Sorting"><a href="#Sorting" class="headerlink" title="Sorting"></a><strong>Sorting</strong></h3><p><a href="https://shineboy2013.github.io/2020/04/26/quick-sort/" target="_blank" rel="noopener">Quick sort</a><br><a href="https://shineboy2013.github.io/2020/04/26/quick-sort/" target="_blank" rel="noopener">Quick select</a><br><a href="https://shineboy2013.github.io/2021/11/15/merge-sort/" target="_blank" rel="noopener">Merge sort</a><br><a href="https://shineboy2013.github.io/2018/04/30/lee-493/" target="_blank" rel="noopener">LeetCode 493 Reverse Pairs</a><br>Bucket sort<br><a href="https://shineboy2013.github.io/2017/12/31/lee-347/" target="_blank" rel="noopener">LeetCode 347 Top K Frequent Elements</a><br><a href="https://shineboy2013.github.io/2021/11/20/lee-2080/" target="_blank" rel="noopener">LeetCode 2080 Range Frequency Queries</a>  </p>
 <h3 id="Binary-Search"><a href="#Binary-Search" class="headerlink" title="Binary Search"></a><strong>Binary Search</strong></h3><p><a href="https://shineboy2013.github.io/2020/04/21/binary-search/" target="_blank" rel="noopener">Binary Search</a><br>[LeetCode 278 First Bad Version]<br>[LeetCode 153 Find Minimum in Rotated Sorted Array]<br>[LeetCode 033 Search in Rotated Sorted Array]<br><a href="https://shineboy2013.github.io/2021/11/13/lee-275/" target="_blank" rel="noopener">LeetCode 275 H-Index II</a><br><a href="https://shineboy2013.github.io/2021/11/20/lee-2080/" target="_blank" rel="noopener">LeetCode 2080 Range Frequency Queries</a><br><a href="https://shineboy2013.github.io/2021/11/14/lee-378/" target="_blank" rel="noopener">LeetCode 378 Kth Smallest Element in a Sorted Matrix</a>  </p>
-<h3 id="Tree"><a href="#Tree" class="headerlink" title="Tree"></a><strong>Tree</strong></h3><p><a href="https://shineboy2013.github.io/2021/07/27/lee-104/" target="_blank" rel="noopener">LeetCode 104 Maximum Depth of Binary Tree</a><br><a href="https://shineboy2013.github.io/2021/12/04/lee-236/" target="_blank" rel="noopener">LeetCode 236 Lowest Common Ancestor of a Binary Tree</a><br>[LeetCode 230 Kth Smallest Element in a BST]  </p>
+<h3 id="Tree"><a href="#Tree" class="headerlink" title="Tree"></a><strong>Tree</strong></h3><p><a href="https://shineboy2013.github.io/2021/07/27/lee-104/" target="_blank" rel="noopener">LeetCode 104 Maximum Depth of Binary Tree</a><br>[LeetCode 230 Kth Smallest Element in a BST]<br>方法：用Map记录子节点到父节点关系等价于形成双向Tree<br><a href="https://shineboy2013.github.io/2021/12/04/lee-236/" target="_blank" rel="noopener">LeetCode 236 Lowest Common Ancestor of a Binary Tree</a><br><a href="https://shineboy2013.github.io/2021/12/06/lee-863/" target="_blank" rel="noopener">LeetCode 863 All Nodes Distance K in Binary Tree</a></p>
 <h3 id="BFS"><a href="#BFS" class="headerlink" title="BFS"></a><strong>BFS</strong></h3><p><a href="https://shineboy2013.github.io/2017/12/03/bfs/" target="_blank" rel="noopener">图BFS</a><br><a href="https://shineboy2013.github.io/2017/12/23/lee-200/" target="_blank" rel="noopener">LeetCode 200 Number of Islands</a><br><a href="https://shineboy2013.github.io/2020/04/20/lee-1197/" target="_blank" rel="noopener">LeetCode 1197 Minimum Knight Moves</a><br><a href="https://shineboy2013.github.io/2020/04/19/lee-133/" target="_blank" rel="noopener">LeetCode 133 Clone Graph</a><br><a href="https://shineboy2013.github.io/2020/04/20/lee-297/" target="_blank" rel="noopener">LeetCode 297 Serialize and Deserialize Binary Tree</a><br><a href="https://shineboy2013.github.io/2020/04/20/lee-127/" target="_blank" rel="noopener">LeetCode 127 Word Ladder</a><br><a href="https://shineboy2013.github.io/2017/12/03/topological/" target="_blank" rel="noopener">拓扑排序</a><br>[LeetCode 210 Course Schedule II]<br><a href="https://shineboy2013.github.io/2021/11/29/lee-269/" target="_blank" rel="noopener">LeetCode 269 Alien Dictionary</a>  </p>
 <h3 id="DFS"><a href="#DFS" class="headerlink" title="DFS"></a><strong>DFS</strong></h3><p><a href="https://shineboy2013.github.io/2017/12/24/dfs/" target="_blank" rel="noopener">图DFS</a><br><a href="https://shineboy2013.github.io/2020/05/03/permutation/" target="_blank" rel="noopener">排列</a><br><a href="https://shineboy2013.github.io/2020/05/03/combination/" target="_blank" rel="noopener">组合</a><br><a href="https://shineboy2013.github.io/2021/10/21/lee-017/" target="_blank" rel="noopener">LeetCode 017 Letter Combinations of a Phone Number</a><br><a href="https://shineboy2013.github.io/2021/12/03/lee-212/" target="_blank" rel="noopener">LeetCode 291 Word Pattern II</a><br><a href="https://shineboy2013.github.io/2021/12/03/lee-079/" target="_blank" rel="noopener">LeetCode 079 Word Search</a><br><a href="https://shineboy2013.github.io/2020/05/03/lee-126/" target="_blank" rel="noopener">LeetCode 126 Word Ladder II</a><br><a href="https://shineboy2013.github.io/2020/05/09/memoization/" target="_blank" rel="noopener">记忆性搜索</a><br><a href="https://shineboy2013.github.io/2020/05/09/lee-140/" target="_blank" rel="noopener">LeetCode 140 Word Break II</a></p>
 <h3 id="DP"><a href="#DP" class="headerlink" title="DP"></a><strong>DP</strong></h3><p><a href="https://shineboy2013.github.io/2021/11/27/dp/" target="_blank" rel="noopener">DP</a><br>[LeetCode 198 House Robber] 单序列型<br><a href="https://shineboy2013.github.io/2021/12/01/lee-300/" target="_blank" rel="noopener">LeetCode 300 LIS</a> 匹配型DP<br><a href="https://shineboy2013.github.io/2020/05/09/lee-139/" target="_blank" rel="noopener">LeetCode 139 Word Break</a> 匹配型DP<br><a href="https://shineboy2013.github.io/2017/12/28/lee-312/" target="_blank" rel="noopener">LeetCode 312 Burst Balloons</a> 区间型DP<br><a href="https://shineboy2013.github.io/2020/05/10/lee-010/" target="_blank" rel="noopener">LeetCode 010 Regular Expression Matching</a> 匹配型DP</p>
 <h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a><strong>其他</strong></h3><p><a href="https://shineboy2013.github.io/2017/12/24/union-find/" target="_blank" rel="noopener">Union Find</a><br><a href="https://shineboy2013.github.io/2020/04/20/lee-127/" target="_blank" rel="noopener">双向BFS</a>  </p>
+<h2 id="累计思想"><a href="#累计思想" class="headerlink" title="累计思想"></a>累计思想</h2><p>将相连的批量计算提高效率或者满足累计条件<br>LeetCode 032 Longest Valid Parentheses  统计左括号个数  </p>
 <h2 id="Word相关题目"><a href="#Word相关题目" class="headerlink" title="Word相关题目"></a>Word相关题目</h2><p>DFS: word pattern, word search<br>BFS: word ladder<br>DP: word break  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2021/10/30/stack/">Stack</a></h1>
-  
-
-      
-        <time datetime="2021-10-30T08:10:59.930Z">2021-10-30</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>定义： 栈里元素维持由栈底到栈顶从大到小的顺序叫递减栈。跟最小堆一样，递减栈的<strong>栈首元素最小</strong>。<br><img src="/images/stack.png" alt="">  </p>
-<p>反之是递增栈，不过此法因为用递减栈比较多，所以统称递减栈。通常是将下标而不是值放入到栈中，这样还可以知道元素间的距离。  </p>
-<h3 id="应用："><a href="#应用：" class="headerlink" title="应用："></a><strong>应用：</strong></h3><ol>
-<li>数组不能打乱顺序且求极值</li>
-</ol>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>跟最小堆一样，当元素大于栈顶元素的时候才倒逼栈内元素出栈。    </li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">stack = []</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(len(li)):</span><br><span class="line">	<span class="keyword">while</span> stack <span class="keyword">and</span> li[i] &gt; li[stack[<span class="number">-1</span>]]:</span><br><span class="line">		index = stack.pop()</span><br><span class="line"></span><br><span class="line">	stack.append(i)</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>。</p>
 
       
     </div>
@@ -318,6 +349,10 @@ Since the researcher has 3 papers with at least 3 citations each and the remaini
   <ul class="entry">
     
       <li>
+        <a href="/2021/12/09/lee-134/">LeetCode 134 Gas Station</a>
+      </li>
+    
+      <li>
         <a href="/2021/12/08/lee-224/">LeetCode 224 Basic Calculator</a>
       </li>
     
@@ -333,10 +368,6 @@ Since the researcher has 3 papers with at least 3 citations each and the remaini
         <a href="/2021/12/07/parenthesis/">括号题或者字符串运算题</a>
       </li>
     
-      <li>
-        <a href="/2021/12/07/lee-1249/">LeetCode 1249 Minimum Remove to Make Valid Parentheses</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -347,7 +378,7 @@ Since the researcher has 3 papers with at least 3 citations each and the remaini
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 12.86px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 17.86px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 12.14px;">Binary Tree</a> <a href="/tags/Breadth-First-Search/" style="font-size: 11.43px;">Breadth-First Search</a> <a href="/tags/Breadth-first-Search/" style="font-size: 14.29px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 12.14px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12.14px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 18.57px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 11.43px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 10.71px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.43px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 13.57px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 15px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 19.29px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 13.57px;">Linked List</a> <a href="/tags/Math/" style="font-size: 11.43px;">Math</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 12.14px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.71px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Python-KB/" style="font-size: 18.57px;">Python KB</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.71px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 12.14px;">Sort</a> <a href="/tags/Stack/" style="font-size: 17.14px;">Stack</a> <a href="/tags/String/" style="font-size: 13.57px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.43px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.86px;">Tree</a> <a href="/tags/Trie/" style="font-size: 10px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.29px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 10.71px;">Union Find</a> <a href="/tags/tik/" style="font-size: 15.71px;">tik</a> <a href="/tags/tiktok/" style="font-size: 12.14px;">tiktok</a>
+    <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.08px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 17.69px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 12.31px;">Binary Tree</a> <a href="/tags/Breadth-First-Search/" style="font-size: 11.54px;">Breadth-First Search</a> <a href="/tags/Breadth-first-Search/" style="font-size: 14.62px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15.38px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 12.31px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12.31px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 18.46px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 11.54px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 11.54px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.15px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 13.85px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 15.38px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 19.23px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 13.85px;">Linked List</a> <a href="/tags/Math/" style="font-size: 11.54px;">Math</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 12.31px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.77px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Python-KB/" style="font-size: 18.46px;">Python KB</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.77px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 12.31px;">Sort</a> <a href="/tags/Stack/" style="font-size: 16.92px;">Stack</a> <a href="/tags/String/" style="font-size: 13.85px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.54px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 13.08px;">Tree</a> <a href="/tags/Trie/" style="font-size: 10px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.62px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 10.77px;">Union Find</a> <a href="/tags/tik/" style="font-size: 15.38px;">tik</a> <a href="/tags/tiktok/" style="font-size: 12.31px;">tiktok</a>
   </div>
 </div>
 

@@ -53,6 +53,46 @@
     <header>
       
   
+    <h1 class="title"><a href="/2018/06/17/design-distributed-id/">Design Distributed ID Generator</a></h1>
+  
+
+      
+        <time datetime="2018-06-18T06:16:29.341Z">2018-06-17</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>生成唯一ID如用户ID，订单ID。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>基本思路是将所有网站映射到一个整数。<br>三大核心需求：</p>
+<ol>
+<li>全局唯一(unique)</li>
+<li>按照时间粗略有序(sortable by time)。按时间查询是普遍的请求，如得到最新的1000个用户。</li>
+<li>尽可能短。省空间，查询要更有效率。</li>
+</ol>
+<h3 id="UUID："><a href="#UUID：" class="headerlink" title="UUID："></a><strong>UUID：</strong></h3><p>UUID是一类算法的统称，具体有不同的实现。UUID的有点是每台机器可以独立产生ID，理论上保证<br>不会重复，所以天然是分布式的，缺点是生成的ID太长，不仅占用内存，而且索引查询效率低。<br>4个字节表示的Unix timestamp,<br>3个字节表示的机器的ID<br>2个字节表示的进程ID<br>3个字节表示的计数器</p>
+<h3 id="多机器分别自增："><a href="#多机器分别自增：" class="headerlink" title="多机器分别自增："></a><strong>多机器分别自增：</strong></h3><p>假设用8台MySQL服务器协同工作，第一台MySQL初始值是1，每次自增8，第二台MySQL初始值是2，<br>每次自增8，依次类推。前面用一个 round-robin load balancer 挡着，每来一个请求，由<br>round-robin balancer 随机地将请求发给8台MySQL中的任意一个，然后返回一个ID。<br>load balance可以确保请求平均分配到不同的机器，所以粗略有序，缺点是加机器要re-hash这些Id<br>且顺序不够稳定。</p>
+<h3 id="Twitter-Snowflake："><a href="#Twitter-Snowflake：" class="headerlink" title="Twitter Snowflake："></a><strong>Twitter Snowflake：</strong></h3><p>原理与UUID基本一样。也是时间戳+机器id+自增序号。时间戳保证有序。<br><img src="/images/design-distributed-id.png" alt="">  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2018/06/14/lee-155/">LeetCode 155 Min Stack</a></h1>
   
 
@@ -332,74 +372,6 @@ minStack.getMin();   --> Returns -2.
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2018/04/30/lee-273/">LeetCode 273 Integer to English Words</a></h1>
-  
-
-      
-        <time datetime="2018-04-30T22:53:48.778Z">2018-04-30</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/integer-to-english-words" target="_blank" rel="noopener">LeetCode 273 Integer to English Words</a></strong></p>
-<p>Convert a non-negative integer to its english words representation. Given input is guaranteed to be less than 2<sup>31</sup> - 1.</p>
-<p><strong>Example 1:</strong></p>
-<pre>**Input:** 123
-**Output:** "One Hundred Twenty Three"
-</pre>
-
-<p><strong>Example 2:</strong></p>
-<pre>**Input:** 12345
-**Output:** "Twelve Thousand Three Hundred Forty Five"</pre>
-
-<p><strong>Example 3:</strong></p>
-<pre>**Input:** 1234567
-**Output:** "One Million Two Hundred Thirty Four Thousand Five Hundred Sixty Seven"
-</pre>
-
-<p><strong>Example 4:</strong></p>
-<pre>**Input:** 1234567891
-**Output:** "One Billion Two Hundred Thirty Four Million Five Hundred Sixty Seven Thousand Eight Hundred Ninety One"
-</pre>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>这是将非负整数转化为其英文单词表示。给定输入确保小于 2 ^ 31 - 1</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是logical and maintainable的经典题。按照英语的习惯，每三位是一组，所以实现的时候，也是按千为分组，有一个方法去处理一千<br>内的数。一千以内也分为三种情况，20以内，几十，其他。20以内和几十都是特殊情况的单词，所以可以放入数组或HashMap，数组比较<br>好，因为可以直接用索引读出。大于一千的数，可以用递归来做，从人的习惯，从低位到高位，每三位加一个逗号分隔。所以同样，算法<br>也是从低位开始，若千位内的数大于0，加入Thousand, Million等，每三位调用千位方法，再递归。<br>group的引入作为递归的层次来决定Thousand还是Million。<br>由于从低位递归，所以倒着做，要reverse地加入到结果，最终结果再reverse回来。  </p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>空格总加在新数前面，也就是append前先加空格</li>
-<li>低3位大于0才加Thousand, Million等词，也就是低三位在1-999之间，若为0如1 million。</li>
-</ol>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> String[] lows = &#123;<span class="string">""</span>, <span class="string">"One"</span>, <span class="string">"Two"</span>, <span class="string">"Three"</span>, <span class="string">"Four"</span>, <span class="string">"Five"</span>, <span class="string">"Six"</span>, <span class="string">"Seven"</span>, <span class="string">"Eight"</span>, <span class="string">"Nine"</span>, <span class="string">"Ten"</span>, </span><br><span class="line">   <span class="string">"Eleven"</span>, <span class="string">"Twelve"</span>,<span class="string">"Thirteen"</span>, <span class="string">"Fourteen"</span>,<span class="string">"Fifteen"</span>,<span class="string">"Sixteen"</span>,<span class="string">"Seventeen"</span>,<span class="string">"Eighteen"</span>, <span class="string">"Nineteen"</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> String[] tens = &#123;<span class="string">""</span>, <span class="string">""</span>, <span class="string">"Twenty"</span>, <span class="string">"Thirty"</span>, <span class="string">"Forty"</span>, <span class="string">"Fifty"</span>, <span class="string">"Sixty"</span>, <span class="string">"Seventy"</span>, <span class="string">"Eighty"</span>, <span class="string">"Ninety"</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">numberToWords</span><span class="params">(<span class="keyword">int</span> number)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(number == <span class="number">0</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"Zero"</span>;	</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	StringBuilder result = <span class="keyword">new</span> StringBuilder();</span><br><span class="line"></span><br><span class="line">	translateThreeR(number, result, <span class="number">0</span>);</span><br><span class="line">	<span class="keyword">return</span> result.reverse().toString().trim();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">translateThreeR</span><span class="params">(<span class="keyword">int</span> number, StringBuilder result, <span class="keyword">int</span> group)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> lower = number % <span class="number">1000</span>;</span><br><span class="line">	<span class="keyword">int</span> thousands = number / <span class="number">1000</span>;     </span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (group == <span class="number">1</span> &amp;&amp; lower &gt; <span class="number">0</span>)</span><br><span class="line">		result.append(reverse(<span class="string">" Thousand"</span>));</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (group==<span class="number">2</span> &amp;&amp; lower &gt; <span class="number">0</span>)</span><br><span class="line">		result.append(reverse(<span class="string">" Million"</span>));</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (group==<span class="number">3</span> &amp;&amp; lower &gt; <span class="number">0</span>)</span><br><span class="line">		result.append(reverse(<span class="string">" Billion"</span>));</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(lower&gt;<span class="number">0</span>)</span><br><span class="line">		result.append(reverse(translateThree(lower)));</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(thousands &gt;= <span class="number">1</span>) &#123;</span><br><span class="line">		translateThreeR(thousands, result, ++group);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">translateThree</span><span class="params">(<span class="keyword">int</span> number)</span> </span>&#123;</span><br><span class="line">	StringBuilder result = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">	<span class="keyword">if</span>(number &gt; <span class="number">99</span>) &#123;</span><br><span class="line">		result.append(<span class="string">" "</span>+lows[number / <span class="number">100</span>]);</span><br><span class="line">		result.append(<span class="string">" Hundred"</span>);</span><br><span class="line">		number = number % <span class="number">100</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span>(number &gt; <span class="number">19</span>) &#123;</span><br><span class="line">		result.append(<span class="string">" "</span>);</span><br><span class="line">		result.append(tens[number/<span class="number">10</span>]);</span><br><span class="line">		number = number % <span class="number">10</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Remainder is under 20</span></span><br><span class="line">	result.append(<span class="string">" "</span>+lows[number]);</span><br><span class="line">	<span class="keyword">return</span> <span class="string">" "</span>+result.toString().trim();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">reverse</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> (<span class="keyword">new</span> StringBuilder()).append(s).reverse().toString();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>n为位数，时间复杂度为O(n)，空间复杂度O(1)。  </p>
-<hr>
-<h3 id="算法II解题思路："><a href="#算法II解题思路：" class="headerlink" title="算法II解题思路："></a><strong>算法II解题思路：</strong></h3><p>上述方法是按千位递归的。下面的方法是按20以下，100以下，百位，千位…递归，递归的颗粒度更小，程序更简单。</p>
-<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>空格总加在新数前面，只需要加在有返回值的时候，也就是tens和lows中，其他如numberToWordsR(number/1000)<br>可能返回空值，此时不在前面加空格。</li>
-<li>在递归中，num为0要单独列出，因为0表示此位不存在，也就是无返回值。</li>
-<li>在入口方法中，若num为0，则返回Zero，要单独列出。</li>
-</ol>
-<h3 id="Java代码：-1"><a href="#Java代码：-1" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">numberToWords</span><span class="params">(<span class="keyword">int</span> number)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (number == <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"Zero"</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">return</span> numberToWordsR(number).trim();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">numberToWordsR</span><span class="params">(<span class="keyword">int</span> number)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(number == <span class="number">0</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">""</span>;</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> (number &lt; <span class="number">20</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">" "</span> + lows[number];</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> (number &lt; <span class="number">100</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">" "</span> + tens[number / <span class="number">10</span>] + numberToWordsR(number % <span class="number">10</span>);</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> (number &lt; <span class="number">1000</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">" "</span> + lows[number / <span class="number">100</span>] + <span class="string">" Hundred"</span> + numberToWordsR(number % <span class="number">100</span>);</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> (number &lt; <span class="number">1000000</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> numberToWordsR(number / <span class="number">1000</span>) + <span class="string">" Thousand"</span> + numberToWordsR(number % <span class="number">1000</span>);</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> (number &lt; <span class="number">1000000000</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> numberToWordsR(number / <span class="number">1000000</span>) + <span class="string">" Million"</span> + numberToWordsR(number % <span class="number">1000000</span>);</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> numberToWordsR(number / <span class="number">1000000000</span>) + <span class="string">" Billion"</span> + numberToWordsR(number % <span class="number">1000000000</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="Follow-up："><a href="#Follow-up：" class="headerlink" title="Follow-up："></a><strong>Follow-up：</strong></h3><p>integer, minus, decimals, internationlization(localization)。  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -424,6 +396,10 @@ minStack.getMin();   --> Returns -2.
   <ul class="entry">
     
       <li>
+        <a href="/2021/12/09/lee-134/">LeetCode 134 Gas Station</a>
+      </li>
+    
+      <li>
         <a href="/2021/12/08/lee-224/">LeetCode 224 Basic Calculator</a>
       </li>
     
@@ -439,10 +415,6 @@ minStack.getMin();   --> Returns -2.
         <a href="/2021/12/07/parenthesis/">括号题或者字符串运算题</a>
       </li>
     
-      <li>
-        <a href="/2021/12/07/lee-1249/">LeetCode 1249 Minimum Remove to Make Valid Parentheses</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -453,7 +425,7 @@ minStack.getMin();   --> Returns -2.
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 12.86px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 17.86px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 12.14px;">Binary Tree</a> <a href="/tags/Breadth-First-Search/" style="font-size: 11.43px;">Breadth-First Search</a> <a href="/tags/Breadth-first-Search/" style="font-size: 14.29px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 12.14px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12.14px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 18.57px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 11.43px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 10.71px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.43px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 13.57px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 15px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 19.29px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 13.57px;">Linked List</a> <a href="/tags/Math/" style="font-size: 11.43px;">Math</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 12.14px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.71px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Python-KB/" style="font-size: 18.57px;">Python KB</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.71px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 12.14px;">Sort</a> <a href="/tags/Stack/" style="font-size: 17.14px;">Stack</a> <a href="/tags/String/" style="font-size: 13.57px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.43px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.86px;">Tree</a> <a href="/tags/Trie/" style="font-size: 10px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.29px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 10.71px;">Union Find</a> <a href="/tags/tik/" style="font-size: 15.71px;">tik</a> <a href="/tags/tiktok/" style="font-size: 12.14px;">tiktok</a>
+    <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.08px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 17.69px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 12.31px;">Binary Tree</a> <a href="/tags/Breadth-First-Search/" style="font-size: 11.54px;">Breadth-First Search</a> <a href="/tags/Breadth-first-Search/" style="font-size: 14.62px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15.38px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 12.31px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12.31px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 18.46px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 11.54px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 11.54px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.15px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 13.85px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 15.38px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 19.23px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 13.85px;">Linked List</a> <a href="/tags/Math/" style="font-size: 11.54px;">Math</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 12.31px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.77px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Python-KB/" style="font-size: 18.46px;">Python KB</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.77px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 12.31px;">Sort</a> <a href="/tags/Stack/" style="font-size: 16.92px;">Stack</a> <a href="/tags/String/" style="font-size: 13.85px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.54px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 13.08px;">Tree</a> <a href="/tags/Trie/" style="font-size: 10px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.62px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 10.77px;">Union Find</a> <a href="/tags/tik/" style="font-size: 15.38px;">tik</a> <a href="/tags/tiktok/" style="font-size: 12.31px;">tiktok</a>
   </div>
 </div>
 

@@ -53,6 +53,60 @@
     <header>
       
   
+    <h1 class="title"><a href="/2021/11/27/dp/">DP</a></h1>
+  
+
+      
+        <time datetime="2021-11-27T20:32:31.335Z">2021-11-27</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><ol>
+<li>定义状态/函数： </li>
+<li>递归式，从培养思路开始，写n = 1， k = 1， k = 2写几个例子方便写递归式  </li>
+<li>1)遍历方向： 与递归式有关 -&gt; 坐标型(二维，与相邻状态相关，L010正则表达式及字符串题), 一维步长型(很常见与该状态的所有前状态相关，硬币个数，word break，LIS)，二维步长型或区间型(第一个循环是步长，戳破气球)<br>2)初始值<br>3)滚动内存省空间</li>
+<li>答案，如果dp[-1], dp[0], max_len<br>DP边界问题是难点  </li>
+</ol>
+<h3 id="类型："><a href="#类型：" class="headerlink" title="类型："></a><strong>类型：</strong></h3><ol>
+<li>区间型。最后求[0,n-1] 这样一个区间。递归式与左右两个子区间有关     </li>
+<li>匹配型。initialize: f[i][0] 和 f[0][i]  </li>
+</ol>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><p>按照DP四部曲  </p>
+<ol>
+<li>[初始化]dp数组大小比原数组大1，因为令边界计算方便. 遍历从多少开始，<strong>取决于前状态多少个，若递归式含dp[i-1],从1开始，如果dp[i-2]就从2开始</strong>.数值型DP，如硬币个数DP长度是数值amount，不是数组长度   </li>
+<li>[实现]实现时候<strong>递归式和条件要合法，保证边界内</strong>，如dp[i - t] =&gt; i - t &gt;=0和s[i - 1 - dp[i - 1] - 1]，见最长括号数  </li>
+<li>[答案]不一定是dp[-1]，如果以某位结束的答案而不是累积结果，一般就用max_len  </li>
+</ol>
+<p>其他：<br>[初始化]初始化矩阵Python用dp = [[0 for _ in range(M)] for _ in range(N)], <strong>M为col数，再row数</strong><br>[优化]是否可以用滚动内存优化空间</p>
+<h2 id="典型递归式："><a href="#典型递归式：" class="headerlink" title="典型递归式："></a>典型递归式：</h2><p>单序列型(与一个或多个前状态有关)<br>硬币个数(数值型)： dp[i] = min(dp[i], dp[i - j] + 1)<br>偷房子： dp[i] = max(dp[i-1], dp[i-2] + nums[i - 1])<br>LIS： dp[i] = max(dp[i], dp[j] + 1)  1 &lt;= j &lt; i<br>Work break： dp[i] |= dp[j] and s[j:i] in word_set, 0 &lt;= j &lt; i    </p>
+<p>匹配型(与上、左、左上等三个前状态有关)<br>正则： dp[i][j] = dp[i-1][j-1] &amp;&amp; (p[j-1] == . || s[i-1] == p[j-1])<br>OR ((dp[i-1][j] &amp;&amp; (s[i-1] == p[j-2] || p[j-2] == .)) || dp[i][j-2]) &amp;&amp; p[j-1] == *</p>
+<p>区间型(与该区间内以k为划分的两个子区间有关)<br>dp[i][j] = max{dp[i][m] + nums[i]×nums[m]×nums[j] + dp[m][j]}, i &lt; m &lt; j</p>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dp</span><span class="params">(self, s)</span>:</span></span><br><span class="line">	dp = [<span class="keyword">False</span>] * (len(s) + <span class="number">1</span>)</span><br><span class="line">	dp[<span class="number">0</span>] = <span class="keyword">True</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, len(dp)):</span><br><span class="line">		...</span><br><span class="line">	<span class="keyword">return</span> dp[<span class="number">-1</span>]</span><br></pre></td></tr></table></figure>
+<p>打印路径： path为以最大值为结尾的数组（已截取）   </p>
+<h3 id="Python代码：-1"><a href="#Python代码：-1" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">print_path</span><span class="params">(self, nums, path, dp_value)</span>:</span></span><br><span class="line">	pos, res = len(path) - <span class="number">1</span>, []</span><br><span class="line">	<span class="keyword">for</span> _ <span class="keyword">in</span> range(dp_value):</span><br><span class="line">		res.append(nums[pos])</span><br><span class="line">		pos = path[pos]</span><br><span class="line">	<span class="keyword">return</span> res[::<span class="number">-1</span>]</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>。</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2021/11/20/lee-2080/">LeetCode 2080 Range Frequency Queries</a></h1>
   
 
@@ -285,76 +339,6 @@ Steps needed = 1 + 1 + 2 + 2 + 3 + 3 + 4 + 4 + 5 + 5 + 6 + 6 + 7 = 49.
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2021/11/14/lee-378/">LeetCode 378 Kth Smallest Element in a Sorted Matrix</a></h1>
-  
-
-      
-        <time datetime="2021-11-14T10:06:23.335Z">2021-11-14</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/kth-smallest-element-in-a-sorted-matrix/" target="_blank" rel="noopener">LeetCode 378 Kth Smallest Element in a Sorted Matrix</a></strong></p>
-<p>Given an <code>n x n</code> <code>matrix</code> where each of the rows and columns is sorted in ascending order, return <em>the</em> <code>k&lt;sup&gt;th&lt;/sup&gt;</code> <em>smallest element in the matrix</em>.</p>
-<p>Note that it is the <code>k&lt;sup&gt;th&lt;/sup&gt;</code> smallest element <strong>in the sorted order</strong>, not the <code>k&lt;sup&gt;th&lt;/sup&gt;</code> <strong>distinct</strong> element.</p>
-<p>You must find a solution with complexity better than <code>O(n&lt;sup&gt;2&lt;/sup&gt;)</code>.</p>
-<p><strong>Example 1:</strong></p>
-<pre>**Input:** matrix = [[1,5,9],[10,11,13],[12,13,15]], k = 8
-**Output:** 13
-**Explanation:** The elements in the matrix are [1,5,9,10,11,12,13,<u>**13**</u>,15], and the 8<sup>th</sup> smallest number is 13
-</pre>
-
-<p><strong>Example 2:</strong></p>
-<pre>**Input:** matrix = [[-5]], k = 1
-**Output:** -5
-</pre>
-
-<p><strong>Constraints:</strong></p>
-<ul>
-<li><code>n == matrix.length == matrix[i].length</code></li>
-<li><code>1 &lt;= n &lt;= 300</code></li>
-<li><code>-10&lt;sup&gt;9&lt;/sup&gt; &lt;= matrix[i][j] &lt;= 10&lt;sup&gt;9&lt;/sup&gt;</code></li>
-<li>All the rows and columns of <code>matrix</code> are <strong>guaranteed</strong> to be sorted in <strong>non-decreasing order</strong>.</li>
-<li><code>1 &lt;= k &lt;= n&lt;sup&gt;2&lt;/sup&gt;</code></li>
-</ul>
-<p><strong>Follow up:</strong> Could you solve the problem in <code>O(n)</code> time complexity?</p>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>按行按列有序矩阵中，找第k大的数。  </p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>第k的数运用数值二分法  </p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><ol>
-<li>数值二分法  </li>
-<li>难点在于统计小于mid的个数。若遍历全矩阵比较慢，采用按行遍历，每行再用二分法找到小于mid的数的个数，再求和。  </li>
-</ol>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>注意k–, k从1开始</li>
-<li>每行统计小于mid个数用find smaller的模板。返回值要加1，因为下标转换成个数。     </li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">kthSmallest</span><span class="params">(self, matrix: List[List[int]], k: int)</span> -&gt; int:</span></span><br><span class="line">	k -= <span class="number">1</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> matrix <span class="keyword">or</span> <span class="keyword">not</span> matrix[<span class="number">0</span>]:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line">	N, M = len(matrix), len(matrix[<span class="number">0</span>])</span><br><span class="line">	start, end, epsilon = matrix[<span class="number">0</span>][<span class="number">0</span>], matrix[N - <span class="number">1</span>][M - <span class="number">1</span>], <span class="number">0.5</span></span><br><span class="line">	<span class="keyword">while</span> end - start &gt; epsilon:</span><br><span class="line">		mid = start + (end - start) / <span class="number">2</span></span><br><span class="line">		count = sum([self.get_count(matrix[i], mid) <span class="keyword">for</span> i <span class="keyword">in</span> range(N)])</span><br><span class="line">		<span class="keyword">if</span> k &lt; count:</span><br><span class="line">			end = mid</span><br><span class="line">		<span class="keyword">elif</span> k &gt; count:</span><br><span class="line">			start = mid</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			start = mid</span><br><span class="line">	<span class="keyword">return</span> math.floor(end)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_count</span><span class="params">(self, nums: List[int], target: float)</span> -&gt; int:</span></span><br><span class="line">	start, end = <span class="number">0</span>, len(nums) - <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> start + <span class="number">1</span> &lt; end:</span><br><span class="line">		mid = start + (end - start) // <span class="number">2</span></span><br><span class="line">		<span class="keyword">if</span> target &gt; nums[mid]:</span><br><span class="line">			start = mid</span><br><span class="line">		<span class="keyword">elif</span> target &lt; nums[mid]:</span><br><span class="line">			end = mid</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			end = mid</span><br><span class="line">	<span class="keyword">if</span> nums[end] &lt; target:</span><br><span class="line">		<span class="keyword">return</span> end + <span class="number">1</span></span><br><span class="line">	<span class="keyword">if</span> nums[start] &lt; target:</span><br><span class="line">		<span class="keyword">return</span> start + <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span></span><br></pre></td></tr></table></figure>
-<p>用bisect优化  </p>
-<h3 id="Python代码：-1"><a href="#Python代码：-1" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">kthSmallest</span><span class="params">(self, matrix: List[List[int]], k: int)</span> -&gt; int:</span></span><br><span class="line">	k -= <span class="number">1</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> matrix <span class="keyword">or</span> <span class="keyword">not</span> matrix[<span class="number">0</span>]:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line">	N, M = len(matrix), len(matrix[<span class="number">0</span>])</span><br><span class="line">	start, end, epsilon = matrix[<span class="number">0</span>][<span class="number">0</span>], matrix[N - <span class="number">1</span>][M - <span class="number">1</span>], <span class="number">0.5</span></span><br><span class="line">	<span class="keyword">while</span> end - start &gt; epsilon:</span><br><span class="line">		mid = start + (end - start) / <span class="number">2</span></span><br><span class="line">		count = sum([bisect.bisect(matrix[i], mid) + <span class="number">1</span> <span class="keyword">for</span> i <span class="keyword">in</span> range(N)])</span><br><span class="line">		<span class="keyword">if</span> k &lt; count:</span><br><span class="line">			end = mid</span><br><span class="line">		<span class="keyword">elif</span> k &gt; count:</span><br><span class="line">			start = mid</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			start = mid</span><br><span class="line">	<span class="keyword">return</span> math.floor(end)</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>while循环有log[(max - min)/epsilon]个，假设数字平均分布，复杂度是log(n), 每个循环按每行(n行)统计小于mid的个数，<br>每次统计调用get_count用了log(n)，<br>所以总时间复杂度为<code>O(log(n) * nlogn)</code>，空间复杂度<code>O(1)</code>。</p>
-<hr>
-<h3 id="算法II解题思路："><a href="#算法II解题思路：" class="headerlink" title="算法II解题思路："></a><strong>算法II解题思路：</strong></h3><p>见Heap知识点。 分别将(value, i, j)放入heap中，取出堆顶元素后，去(i, j)相邻右和下节点放入堆中</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -379,6 +363,10 @@ Steps needed = 1 + 1 + 2 + 2 + 3 + 3 + 4 + 4 + 5 + 5 + 6 + 6 + 7 = 49.
   <ul class="entry">
     
       <li>
+        <a href="/2021/12/09/lee-134/">LeetCode 134 Gas Station</a>
+      </li>
+    
+      <li>
         <a href="/2021/12/08/lee-224/">LeetCode 224 Basic Calculator</a>
       </li>
     
@@ -394,10 +382,6 @@ Steps needed = 1 + 1 + 2 + 2 + 3 + 3 + 4 + 4 + 5 + 5 + 6 + 6 + 7 = 49.
         <a href="/2021/12/07/parenthesis/">括号题或者字符串运算题</a>
       </li>
     
-      <li>
-        <a href="/2021/12/07/lee-1249/">LeetCode 1249 Minimum Remove to Make Valid Parentheses</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -408,7 +392,7 @@ Steps needed = 1 + 1 + 2 + 2 + 3 + 3 + 4 + 4 + 5 + 5 + 6 + 6 + 7 = 49.
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 12.86px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 17.86px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 12.14px;">Binary Tree</a> <a href="/tags/Breadth-First-Search/" style="font-size: 11.43px;">Breadth-First Search</a> <a href="/tags/Breadth-first-Search/" style="font-size: 14.29px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 12.14px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12.14px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 18.57px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 11.43px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 10.71px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.43px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 13.57px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 15px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 19.29px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 13.57px;">Linked List</a> <a href="/tags/Math/" style="font-size: 11.43px;">Math</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 12.14px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.71px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Python-KB/" style="font-size: 18.57px;">Python KB</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.71px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 12.14px;">Sort</a> <a href="/tags/Stack/" style="font-size: 17.14px;">Stack</a> <a href="/tags/String/" style="font-size: 13.57px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.43px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.86px;">Tree</a> <a href="/tags/Trie/" style="font-size: 10px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.29px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 10.71px;">Union Find</a> <a href="/tags/tik/" style="font-size: 15.71px;">tik</a> <a href="/tags/tiktok/" style="font-size: 12.14px;">tiktok</a>
+    <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.08px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 17.69px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 12.31px;">Binary Tree</a> <a href="/tags/Breadth-First-Search/" style="font-size: 11.54px;">Breadth-First Search</a> <a href="/tags/Breadth-first-Search/" style="font-size: 14.62px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15.38px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 12.31px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12.31px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 18.46px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 11.54px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 11.54px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.15px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 13.85px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 15.38px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 19.23px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 13.85px;">Linked List</a> <a href="/tags/Math/" style="font-size: 11.54px;">Math</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 12.31px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.77px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Python-KB/" style="font-size: 18.46px;">Python KB</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.77px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 12.31px;">Sort</a> <a href="/tags/Stack/" style="font-size: 16.92px;">Stack</a> <a href="/tags/String/" style="font-size: 13.85px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.54px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 13.08px;">Tree</a> <a href="/tags/Trie/" style="font-size: 10px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.62px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 10.77px;">Union Find</a> <a href="/tags/tik/" style="font-size: 15.38px;">tik</a> <a href="/tags/tiktok/" style="font-size: 12.31px;">tiktok</a>
   </div>
 </div>
 
