@@ -1,0 +1,192 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+  
+  <title>LeetCode 678 Valid Parenthesis String › Jiajie&#39;s blog</title>
+  <meta name="author" content="KK Shum">
+  
+  <meta name="description" content="LeetCode
+题目大意：求给定字符串带星号是否合法括号配对。
+Stack算法思路(推荐)：括号题优先考虑用Stack。如果不带星号，回忆合法括号题，有三种不合法情况，此题只需考虑两种，不需考虑多种括号类型三种不合法情况： ‘[‘ (stack有余), ‘]’ (要匹配的时候stack为空)难点：">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="LeetCode 678 Valid Parenthesis String"/>
+  <meta property="og:site_name" content="Jiajie&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="Jiajie&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]--><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+</head>
+
+
+<body>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><header id="header"><div class="meta inner">
+  <h1><a href="/">Jiajie&#39;s blog</a></h1>
+  <h2><a href="/">每天积累多一些</a></h2>
+  <nav id="main-nav">
+    <ul>
+      
+      <li><a href="/about">About</a></li>
+      
+      <li><a href="/archives">Archives</a></li>
+      
+      <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+</div>
+<div class="clearfix"></div>
+
+	<script data-ad-client="ca-pub-3350210696528821" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  </header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title">LeetCode 678 Valid Parenthesis String</h1>
+  
+
+      
+        <time datetime="2021-12-08T08:51:34.872Z">2021-12-08</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/valid-parenthesis-string/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求给定字符串带星号是否合法括号配对。</p>
+<h3 id="Stack算法思路-推荐-："><a href="#Stack算法思路-推荐-：" class="headerlink" title="Stack算法思路(推荐)："></a><strong>Stack算法思路(推荐)：</strong></h3><p>括号题优先考虑用Stack。如果不带星号，回忆合法括号题，有三种不合法情况，此题只需考虑两种，不需考虑多种括号类型<br>三种不合法情况： ‘[‘ (stack有余), ‘]’ (要匹配的时候stack为空)<br>难点： 1. 在于要去想<strong>多一个栈来存星号</strong>，因为星号可以作为左括号备选去match右括号。右括号在两个栈中优先配对左括号，星号可以为空。如果两个栈均为空，处理了第一种不合法情况  </p>
+<pre><code>2. 循环后，如果两栈有余，分4中情况讨论： 1) 左括号栈有余星号栈空，正是第二种不合法情况 2) 左括号栈空星号栈空，合法 2) 左括号栈空星号栈有余，合法，星号可为空 
+   4) 都有余，这是难点二。星号可以作为右括号去配对左括号，前提条件是**星号在左括号之后**，考虑\*(，这是不合法 
+</code></pre><h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>for loop后，L18 - Line 19记得pop，否则死循环  </li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">checkValidString</span><span class="params">(self, s: str)</span> -&gt; bool:</span></span><br><span class="line">	stack_left, stack_star = [], []</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(s)):</span><br><span class="line">		<span class="keyword">if</span> s[i] == <span class="string">'('</span>:</span><br><span class="line">			stack_left.append(i)</span><br><span class="line">		<span class="keyword">if</span> s[i] == <span class="string">'*'</span>:</span><br><span class="line">			stack_star.append(i)</span><br><span class="line">		<span class="keyword">if</span> s[i] == <span class="string">')'</span>:</span><br><span class="line">			<span class="keyword">if</span> stack_left:  <span class="comment"># match ( first rather than * because * can be empty</span></span><br><span class="line">				stack_left.pop()</span><br><span class="line">			<span class="keyword">elif</span> stack_star:</span><br><span class="line">				stack_star.pop()</span><br><span class="line">			<span class="keyword">else</span>:</span><br><span class="line">				<span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">	<span class="keyword">while</span> stack_left <span class="keyword">and</span> stack_star:  <span class="comment"># use * to match (</span></span><br><span class="line">		<span class="keyword">if</span> stack_left[<span class="number">-1</span>] &gt; stack_star[<span class="number">-1</span>]:  <span class="comment"># consider *(</span></span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">		stack_left.pop()</span><br><span class="line">		stack_star.pop()</span><br><span class="line">	<span class="keyword">return</span> len(stack_left) == <span class="number">0</span>  <span class="comment"># stack_star can be non empty</span></span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>  </p>
+<hr>
+<h3 id="统计算法II解题思路："><a href="#统计算法II解题思路：" class="headerlink" title="统计算法II解题思路："></a><strong>统计算法II解题思路：</strong></h3><p>括号题另一个常用思路是用统计左右括号数。此题较难想到是用一个<strong>左括号数量范围</strong>去验证。<br>lo为左括号的最少合法个数，hi为左括号的最大合法个数，有范围是因为星号可以变成左右括号或空。<br>遇到左括号，都加1，遇到右括号，都减1，遇到星号，假设星号为右括号，所以lo减1，hi加1.<br>如果hi小于0，表示最大左括号数小于右括号数，不满足此法的规则一，不合法  </p>
+<p>难点在于<strong>lo设为非负</strong>。因为lo是最少且合法，合法意思是lo不是单纯地将所有星号变成右括号，而是当左括号不足时，用提高下限，将星号变成空，体现在令lo为非负。<br>for循环后，lo必须为0，运用了法则二，左右括号相等。  </p>
+<h3 id="Python代码：-1"><a href="#Python代码：-1" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">checkValidString</span><span class="params">(self, s: str)</span> -&gt; bool:</span></span><br><span class="line">	lo = hi = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> char <span class="keyword">in</span> s:</span><br><span class="line">		<span class="keyword">if</span> char == <span class="string">'('</span>:</span><br><span class="line">			lo += <span class="number">1</span></span><br><span class="line">			hi += <span class="number">1</span></span><br><span class="line">		<span class="keyword">if</span> char == <span class="string">'*'</span>:</span><br><span class="line">			<span class="keyword">if</span> lo &gt; <span class="number">0</span>:  <span class="comment"># treat * as empty space</span></span><br><span class="line">				lo -= <span class="number">1</span></span><br><span class="line">			hi += <span class="number">1</span></span><br><span class="line">		<span class="keyword">if</span> char == <span class="string">')'</span>:</span><br><span class="line">			<span class="keyword">if</span> lo &gt; <span class="number">0</span>:  <span class="comment"># treat the previous * as empty space</span></span><br><span class="line">				lo -= <span class="number">1</span></span><br><span class="line">			hi -= <span class="number">1</span></span><br><span class="line">		<span class="keyword">if</span> hi &lt; <span class="number">0</span>:  <span class="comment"># the num of right parenthesis &gt; left ones</span></span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">	<span class="keyword">return</span> lo == <span class="number">0</span>  <span class="comment"># the num of right parenthesis should equal to left ones</span></span><br></pre></td></tr></table></figure>
+<h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>  </p>
+<hr>
+<h3 id="DP算法III解题思路："><a href="#DP算法III解题思路：" class="headerlink" title="DP算法III解题思路："></a><strong>DP算法III解题思路：</strong></h3><p>基本情况为s[i], s[j] 分别在(*, )* 就合法<br>如果用单边DP，并不能确定区间内那些合法，所以只能用区间型DP<br>dp[i][j] = s[i-1] == ‘*‘ and dp[i+1][j] 星号不匹配<br>         = s[i-1] in ‘(*‘ and dp[i+1][k-1] and s[k-1] in (‘)*‘) and dp[k+1][j] 星号匹配  </p>
+<p>具体参考leetcode答案<br>DP基本情况比较难想出来且递归是复杂，实现易错，不推荐。不过可以多了解区间型DP的模式  </p>
+<h3 id="算法分析：-2"><a href="#算法分析：-2" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n^3)</code>，空间复杂度<code>O(n^2)</code>  </p>
+
+      
+    </div>
+      
+      <footer>
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/Stack/">Stack</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  
+</section>
+
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="q" value="site:shineboy2013.github.com">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">Recent Posts</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2021/12/08/lee-032/">LeetCode 032 Longest Valid Parentheses</a>
+      </li>
+    
+      <li>
+        <a href="/2021/12/08/lee-678/">LeetCode 678 Valid Parenthesis String</a>
+      </li>
+    
+      <li>
+        <a href="/2021/12/07/parenthesis/">括号题或者字符串运算题</a>
+      </li>
+    
+      <li>
+        <a href="/2021/12/07/lee-1249/">LeetCode 1249 Minimum Remove to Make Valid Parentheses</a>
+      </li>
+    
+      <li>
+        <a href="/2021/12/06/lee-020/">LeetCode 020 Valid Parentheses</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">Tag Cloud</h3>
+  <div class="entry">
+    <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.08px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 17.69px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 12.31px;">Binary Tree</a> <a href="/tags/Breadth-First-Search/" style="font-size: 11.54px;">Breadth-First Search</a> <a href="/tags/Breadth-first-Search/" style="font-size: 14.62px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15.38px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 12.31px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12.31px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 18.46px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 11.54px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 10.77px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.15px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 13.85px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 15.38px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 19.23px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 13.85px;">Linked List</a> <a href="/tags/Math/" style="font-size: 11.54px;">Math</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 12.31px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.77px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Python-KB/" style="font-size: 18.46px;">Python KB</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.77px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 12.31px;">Sort</a> <a href="/tags/Stack/" style="font-size: 16.92px;">Stack</a> <a href="/tags/String/" style="font-size: 13.85px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.54px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 13.08px;">Tree</a> <a href="/tags/Trie/" style="font-size: 10px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.62px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 10.77px;">Union Find</a> <a href="/tags/tik/" style="font-size: 16.15px;">tik</a> <a href="/tags/tiktok/" style="font-size: 12.31px;">tiktok</a>
+  </div>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2021 KK Shum
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+
+</body>
+</html>
+
