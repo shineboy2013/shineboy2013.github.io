@@ -53,21 +53,26 @@
     <header>
       
   
-    <h1 class="title"><a href="/2021/12/05/lee-516/">LeetCode 516 Longest Palindromic Subsequence</a></h1>
+    <h1 class="title"><a href="/2021/12/06/lee-322/">LeetCode 322 Coin Change</a></h1>
   
 
       
-        <time datetime="2021-12-06T07:27:35.791Z">2021-12-05</time>
+        <time datetime="2021-12-07T02:58:45.149Z">2021-12-06</time>
       
     </header>
     <div class="entry">
       
-        <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>一开始看到子序列就想用DP，dp[i]表示以s[i]为结尾的最长回文子序列。但不容易推导公式，难点是没有限制左边界<br>所以应该扩展到二维dp[i][j]表示[i, j]之间的最长回文子序列。公式就简单多了<br>dp[i][j] = dp[i+1][j-1], j = start[i-1], s[i] == s[j]<br>           max(dp[i+1][j], dp[i][j-1]),  s[i] != s[j]    </p>
+        <h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>N/A</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>N/A</p>
 <h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li></li>
+<li>amount为0时候，返回0，表示不用coin也能满足，属于合法情况, dp[0] = 0  </li>
+<li>返回值，若dp[-1]为初始值，表示无解，返回-1  </li>
+<li>dp数组引用的边界情况： 代码调转i和j的遍历顺序，可以避免边界检查，且i=[j, len(dp)]，i包含j，表示dp[0], 包含了初始化dp[for coin in coins] = 1的情况  </li>
+<li>实现中dp[i] = min(dp[i], dp[i - j] + 1), +1在min内而不是min外。  </li>
 </ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n*n)</code>，空间复杂度<code>O(n*n)</code>  </p>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">coinChange</span><span class="params">(self, coins: List[int], amount: int)</span> -&gt; int:</span></span><br><span class="line">	dp = [sys.maxsize] * (amount + <span class="number">1</span>)</span><br><span class="line">	dp[<span class="number">0</span>] = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> j <span class="keyword">in</span> coins:</span><br><span class="line">		<span class="keyword">for</span> i <span class="keyword">in</span> range(j, len(dp)):  <span class="comment"># i = [1..3]</span></span><br><span class="line">			dp[i] = min(dp[i], dp[i - j] + <span class="number">1</span>)  <span class="comment"># remember</span></span><br><span class="line">	<span class="keyword">return</span> dp[<span class="number">-1</span>] <span class="keyword">if</span> dp[<span class="number">-1</span>] &lt; sys.maxsize <span class="keyword">else</span> <span class="number">-1</span>  <span class="comment"># remember</span></span><br></pre></td></tr></table></figure>
+<p>我的实现，要注意dp[i]边界检查, Line 7 - 8, 12<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># dp[n] = min(dp[n-coins[j]]) + 1, 0 &lt;= j &lt;= len(coins)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">coinChange</span><span class="params">(self, coins: List[int], amount: int)</span> -&gt; int:</span></span><br><span class="line">	<span class="keyword">if</span> amount == <span class="number">0</span>:  <span class="comment"># remember</span></span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">	dp = [sys.maxsize] * (amount + <span class="number">1</span>)</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> coins:</span><br><span class="line">		<span class="keyword">if</span> i &lt; len(dp):  <span class="comment"># remember</span></span><br><span class="line">			dp[i] = <span class="number">1</span></span><br><span class="line">	<span class="comment"># [3], amount = 3, dp[3] = 1</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, len(dp)):  <span class="comment"># i = [1..3]</span></span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> coins:</span><br><span class="line">			<span class="keyword">if</span> i &gt; j:  <span class="comment"># remember</span></span><br><span class="line">				dp[i] = min(dp[i], dp[i - j] + <span class="number">1</span>)  <span class="comment"># remember</span></span><br><span class="line">	<span class="keyword">return</span> dp[<span class="number">-1</span>] <span class="keyword">if</span> dp[<span class="number">-1</span>] &lt; sys.maxsize <span class="keyword">else</span> <span class="number">-1</span>  <span class="comment"># remember</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>。</p>
 
       
     </div>
@@ -89,16 +94,16 @@
     <header>
       
   
-    <h1 class="title"><a href="/2021/12/05/lee-731/">LeetCode 731 My Calendar II</a></h1>
+    <h1 class="title"><a href="/2021/12/06/lee-239/">LeetCode 239 Sliding Window Maximum</a></h1>
   
 
       
-        <time datetime="2021-12-06T06:41:18.204Z">2021-12-05</time>
+        <time datetime="2021-12-06T19:57:45.766Z">2021-12-06</time>
       
     </header>
     <div class="entry">
       
-        <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>有重复区间，考虑用meeting rooms的方法二同时差分再求和的方法。用一个map来存储endpoint包括start和end的频率，若遇到start，map[start]++, 若遇到end, map[end]–，插入一个区间后，遍历所有endpoints，若超过3就返回False  </p>
+        <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>LL + 递减栈</p>
 <h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
 <li></li>
 </ol>
@@ -125,21 +130,24 @@
     <header>
       
   
-    <h1 class="title"><a href="/2021/12/05/lee-729/">LeetCode 490 The Maze</a></h1>
+    <h1 class="title"><a href="/2021/12/06/lee-863/">LeetCode 863 All Nodes Distance K in Binary Tree</a></h1>
   
 
       
-        <time datetime="2021-12-06T06:13:20.726Z">2021-12-05</time>
+        <time datetime="2021-12-06T19:49:23.856Z">2021-12-06</time>
       
     </header>
     <div class="entry">
       
-        <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>N/A </p>
+        <p><strong><a href="https://leetcode.com/problems/all-nodes-distance-k-in-binary-tree/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>有三种情况，都容易忽略： 1. 儿子节点 2. 所有父节点路劲上 3. 兄弟节点路径上。而第三种情况要搜另一边的儿子节点（左右不确定）要用visited记录，而且不一定是父亲的兄弟节点，可能爷爷的非父亲的儿子节点。<br>既然不是单向搜索，不妨转换为图，然后用计算距离BFS模板，只要用map来记录某节点的父亲节点或者增加一个域。BFS中for neighbor in [node.left, node, right, node.parent]  </p>
 <h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>题意比较复杂但是等价于一个球从某个点向任何方向滚，因为四边都是墙，所以总会使得这个点的四个方向都能滚一次。所以是简单的BFS      </li>
+<li>root的parent是None，所以从root去赋值parent，而不是从parent root给儿子赋parent  </li>
+<li>Line 13 node.left, node.right, node.parent都可能为None，所以Line14要加not neighbor      </li>
+<li>BFS从target开始而不是root</li>
 </ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nm)</code>，空间复杂度<code>O(nm)</code>  </p>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">distanceK</span><span class="params">(self, root: TreeNode, target: TreeNode, k: int)</span> -&gt; List[int]:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> root:</span><br><span class="line">		<span class="keyword">return</span> []</span><br><span class="line">	self.dfs(root, <span class="keyword">None</span>)</span><br><span class="line">	queue, visited, distance_to_tgt,  = collections.deque([target]), set([target]), collections.defaultdict(int)</span><br><span class="line">	distance_to_tgt[target], res = <span class="number">0</span>, []</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.popleft()</span><br><span class="line">		<span class="keyword">if</span> distance_to_tgt[node] == k:</span><br><span class="line">			res.append(node.val)</span><br><span class="line">		<span class="keyword">if</span> distance_to_tgt[node] &gt; k:</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		<span class="keyword">for</span> neighbor <span class="keyword">in</span> [node.left, node.right, node.parent]:</span><br><span class="line">			<span class="keyword">if</span> <span class="keyword">not</span> neighbor <span class="keyword">or</span> neighbor <span class="keyword">in</span> visited:  <span class="comment"># remember not neighbor</span></span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			queue.append(neighbor)</span><br><span class="line">			visited.add(neighbor)</span><br><span class="line">			distance_to_tgt[neighbor] = distance_to_tgt[node] + <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dfs</span><span class="params">(self, root, parent)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> root:</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">None</span></span><br><span class="line">	root.parent = parent</span><br><span class="line">	<span class="string">'''if root.left:</span></span><br><span class="line"><span class="string">		root.left.parent = root</span></span><br><span class="line"><span class="string">	if root.right:</span></span><br><span class="line"><span class="string">		root.right.parent = root'''</span></span><br><span class="line">	self.dfs(root.left, root)  <span class="comment"># remember to pass parent</span></span><br><span class="line">	self.dfs(root.right, root)</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>  </p>
 
       
     </div>
@@ -161,21 +169,21 @@
     <header>
       
   
-    <h1 class="title"><a href="/2021/12/05/lee-490/">LeetCode 729 My Calendar I</a></h1>
+    <h1 class="title"><a href="/2021/12/06/lee-295/">LeetCode 295 Find Median from Data Stream</a></h1>
   
 
       
-        <time datetime="2021-12-06T05:41:01.328Z">2021-12-05</time>
+        <time datetime="2021-12-06T17:48:27.935Z">2021-12-06</time>
       
     </header>
     <div class="entry">
       
-        <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>题目似meeting rooms，考虑用heap，但不能online处理。考虑用start, end排序，二分法查找，只能处理单次，因为插入不方便。<br>要查找和插入都能低于O(n)，就只能用TreeMap。类似于线段树存储区间和，此题每个Node存储一个区间。新区间的end，start分别与root的start和end比较，若不重合，就递归到左右子树。此树投影为离散且不重合的区间。   </p>
+        <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>用max_heap, min_heap, 保证min_heap个数永远等于max_heap或多一个。插入元素先进max_heap, 再heappop将堆顶元素加入min_heap, 若此时比max_heap多2个，就再heappop加入到max_heap. </p>
 <h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
 <li></li>
 </ol>
 <h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(logn)</code>，空间复杂度<code>O(logn)</code>  </p>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(logn)</code>，空间复杂度<code>O(n)</code>  </p>
 
       
     </div>
@@ -197,22 +205,26 @@
     <header>
       
   
-    <h1 class="title"><a href="/2021/12/05/lee-105/">LeetCode 105 Construct Binary Tree from Preorder and Inorder Traversal</a></h1>
+    <h1 class="title"><a href="/2021/12/06/lee-227/">LeetCode 227 Basic Calculator II</a></h1>
   
 
       
-        <time datetime="2021-12-06T05:36:22.387Z">2021-12-05</time>
+        <time datetime="2021-12-06T08:35:57.253Z">2021-12-06</time>
       
     </header>
     <div class="entry">
       
-        <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>N/A </p>
+        <p><strong><a href="https://leetcode.com/problems/basic-calculator-ii/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>实现字符串加减乘除，但无括号。</p>
+<h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>逆波兰式的实现用Stack。Stack只存数，而且<strong>只存加号操作符</strong>的数，也就是说，<br>如果是减，就将-num入栈，<br>如果是乘除，立刻计算stack[-1]乘除num的结果再压入栈，因为乘除是最高优先级可以直接计算，而加减不可以。<br>所以用<strong>一个stack</strong>  </p>
+<p>代码中含三种情况：空格，运算符，数字</p>
 <h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>用递归实现，in_order字符串分左右两段递归到左右儿子，pre_order字符串每轮递归用pop原地去除首位，再递归到儿子节点  </li>
-<li>终止条件为in_order字符串为空。    </li>
+<li>op记录前一个运算符，char为运算符或当前字符。计算时候根据op，因为char只是第二个操作数的终结符合，此时表明操作数stack[-1], num以及操作符op均已完成，可以计算         </li>
+<li>最容易错的是向下取整Line 17, 题目返回要求整数。14-3/2=13但程序运行得到12，因为14+(-3)/2=12, -3/2结果为-2，所以<strong>要取正数后才做除法</strong></li>
+<li>s末尾加入加号，方便parse最后一个num  </li>
 </ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">calculate</span><span class="params">(self, s: str)</span> -&gt; int:</span></span><br><span class="line">	stack = []  <span class="comment"># for add only</span></span><br><span class="line">	num, op = <span class="number">0</span>, <span class="string">'+'</span></span><br><span class="line">	s += <span class="string">'+'</span></span><br><span class="line">	<span class="keyword">for</span> char <span class="keyword">in</span> s:</span><br><span class="line">		<span class="keyword">if</span> char == <span class="string">' '</span>:</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		<span class="keyword">if</span> char.isdigit():</span><br><span class="line">			num = num * <span class="number">10</span> + int(char)</span><br><span class="line">		<span class="keyword">if</span> char <span class="keyword">in</span> <span class="string">'+-*/'</span>:</span><br><span class="line">			<span class="keyword">if</span> op <span class="keyword">in</span> <span class="string">'*/'</span>:</span><br><span class="line">				operand = stack.pop()</span><br><span class="line">				<span class="keyword">if</span> op == <span class="string">'*'</span>:</span><br><span class="line">					stack.append(operand * num)</span><br><span class="line">				<span class="keyword">if</span> op == <span class="string">'/'</span>:</span><br><span class="line">					<span class="keyword">if</span> operand &lt; <span class="number">0</span>:</span><br><span class="line">						stack.append(-(-operand // num))  <span class="comment"># remember</span></span><br><span class="line">					<span class="keyword">else</span>:</span><br><span class="line">						stack.append(operand // num)</span><br><span class="line">			<span class="keyword">else</span>:</span><br><span class="line">				<span class="keyword">if</span> op == <span class="string">'-'</span>:</span><br><span class="line">					num = -num</span><br><span class="line">				stack.append(num)</span><br><span class="line">			op = char</span><br><span class="line">			num = <span class="number">0</span></span><br><span class="line">	num = <span class="number">0</span></span><br><span class="line">	<span class="keyword">while</span> stack:</span><br><span class="line">		value = stack.pop()</span><br><span class="line">		num += value</span><br><span class="line">	<span class="keyword">return</span> num</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>  </p>
 
       
     </div>
@@ -253,23 +265,23 @@
   <ul class="entry">
     
       <li>
-        <a href="/2021/12/11/lee-423/">LeetCode 423 Reconstruct Original Digits from English</a>
+        <a href="/2021/12/12/lee-2106/">LeetCode 2106 Maximum Fruits Harvested After at Most K Steps</a>
       </li>
     
       <li>
-        <a href="/2021/12/11/lee-049/">LeetCode 049 Group Anagrams</a>
+        <a href="/2021/12/12/lee-2104/">LeetCode 2104 Sum of Subarray Ranges</a>
       </li>
     
       <li>
-        <a href="/2021/12/09/lee-134/">LeetCode 134 Gas Station</a>
+        <a href="/2021/12/12/lee-907/">LeetCode 907 Sum of Subarray Minimums</a>
       </li>
     
       <li>
-        <a href="/2021/12/08/lee-224/">LeetCode 224 Basic Calculator</a>
+        <a href="/2021/12/11/lee-215/">LeetCode 215 Kth Largest Element in an Array</a>
       </li>
     
       <li>
-        <a href="/2021/12/08/lee-032/">LeetCode 032 Longest Valid Parentheses</a>
+        <a href="/2021/12/11/lee-022/">LeetCode 022 Generate Parentheses</a>
       </li>
     
   </ul>
@@ -282,7 +294,7 @@
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 12.86px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 17.86px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 12.14px;">Binary Tree</a> <a href="/tags/Breadth-First-Search/" style="font-size: 11.43px;">Breadth-First Search</a> <a href="/tags/Breadth-first-Search/" style="font-size: 15px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 20px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15.71px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 12.14px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12.14px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 18.57px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 11.43px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 10.71px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.43px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 13.57px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 15.71px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 19.29px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 13.57px;">Linked List</a> <a href="/tags/Math/" style="font-size: 12.86px;">Math</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 12.14px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.71px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Python-KB/" style="font-size: 18.57px;">Python KB</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.71px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 12.14px;">Sort</a> <a href="/tags/Stack/" style="font-size: 17.14px;">Stack</a> <a href="/tags/String/" style="font-size: 14.29px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.43px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.86px;">Tree</a> <a href="/tags/Trie/" style="font-size: 10px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 15px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 10.71px;">Union Find</a> <a href="/tags/tik/" style="font-size: 15.71px;">tik</a> <a href="/tags/tiktok/" style="font-size: 12.14px;">tiktok</a>
+    <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.33px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 16.67px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 12px;">Binary Tree</a> <a href="/tags/Breadth-First-Search/" style="font-size: 11.33px;">Breadth-First Search</a> <a href="/tags/Breadth-first-Search/" style="font-size: 14.67px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 19.33px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15.33px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 12px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 18px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 11.33px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 10.67px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 14px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 15.33px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 18.67px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 13.33px;">Linked List</a> <a href="/tags/Math/" style="font-size: 12.67px;">Math</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 12px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.67px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Python-KB/" style="font-size: 17.33px;">Python KB</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.67px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 12px;">Sort</a> <a href="/tags/Stack/" style="font-size: 16.67px;">Stack</a> <a href="/tags/String/" style="font-size: 14px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.33px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.67px;">Tree</a> <a href="/tags/Trie/" style="font-size: 10px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.67px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 10.67px;">Union Find</a> <a href="/tags/tik/" style="font-size: 15.33px;">tik</a> <a href="/tags/tiktok/" style="font-size: 12px;">tiktok</a>
   </div>
 </div>
 
