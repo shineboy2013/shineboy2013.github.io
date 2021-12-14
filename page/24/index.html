@@ -53,6 +53,109 @@
     <header>
       
   
+    <h1 class="title"><a href="/2018/01/30/lee-006/">LeetCode 006 ZigZag Conversion</a></h1>
+  
+
+      
+        <time datetime="2018-01-31T06:11:31.903Z">2018-01-30</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/zigzag-conversion" target="_blank" rel="noopener">LeetCode 006 ZigZag Conversion</a></strong></p>
+<p>The string <code>&quot;PAYPALISHIRING&quot;</code> is written in a zigzag pattern on a given number of rows like this: (you may want to display this pattern in a fixed font for better legibility)</p>
+<pre>P   A   H   N
+A P L S I I G
+Y   I   R
+</pre>
+
+<p>And then read line by line: <code>&quot;PAHNAPLSIIGYIR&quot;</code></p>
+<p>Write the code that will take a string and make this conversion given a number of rows:</p>
+<pre>string convert(string text, int nRows);</pre>
+
+<p><code>convert(&quot;PAYPALISHIRING&quot;, 3)</code> should return <code>&quot;PAHNAPLSIIGYIR&quot;</code>.</p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定字符串按如上的“Z”字锯齿形进行按行重排。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是一个周期性的字符串。周期是竖+折（不含首节点）。<br><img src="/images/L006.png" alt=""><br>首节点和竖的最后一点在每周期只会出现一次，其他点会出现两次。<br>T=2&times;numRows-2(因为不含竖节点最后一点+折线上的最后一点属于另一个周期)。nT是有几个周期，即使不完成的周期也算一个。<br>按行遍历（实质是周期上的每个点），再按周期遍历，非顶点有两个需加入到结果中：j&times;T+i,(j+1)&times;T-i。由于周期可能不完成，只要写一个API检查边界且加入字符即可。</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><p>一个字符的字符串。此时T=0.直接返回原字符串。</p>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">convert2</span><span class="params">(String s, <span class="keyword">int</span> numRows)</span> </span>&#123;</span><br><span class="line">	StringBuffer sb = <span class="keyword">new</span> StringBuffer();</span><br><span class="line">	<span class="keyword">int</span> T = numRows*<span class="number">2</span>-<span class="number">2</span>;</span><br><span class="line">	<span class="keyword">if</span>(T==<span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> s;</span><br><span class="line">	<span class="keyword">int</span> nT = (<span class="keyword">int</span>)Math.ceil((s.length()+<span class="number">0.0</span>)/T);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;numRows;i++)&#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;nT;j++)&#123;</span><br><span class="line">			<span class="keyword">if</span>(i==<span class="number">0</span> || i==numRows-<span class="number">1</span>)</span><br><span class="line">				sb.append(addChar(s, j*T+i));</span><br><span class="line">			<span class="keyword">else</span>&#123;</span><br><span class="line">				sb.append(addChar(s, j*T+i));</span><br><span class="line">				sb.append(addChar(s, (j+<span class="number">1</span>)*T-i));</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> sb.toString();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">addChar</span><span class="params">(String s, <span class="keyword">int</span> index)</span></span>&#123;</span><br><span class="line">	String a = <span class="string">""</span>;</span><br><span class="line">	<span class="keyword">if</span>(index&lt;s.length())</span><br><span class="line">		<span class="keyword">return</span> s.substring(index, index+<span class="number">1</span>);</span><br><span class="line">	<span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>。</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2018/01/29/lee-253/">LeetCode 253 Meeting Rooms II</a></h1>
+  
+
+      
+        <time datetime="2018-01-30T06:07:55.171Z">2018-01-29</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/meeting-rooms-ii/" target="_blank" rel="noopener">LeetCode 253 Meeting Rooms II</a></strong></p>
+<p>Given an array of meeting time intervals consisting of start and end times <code>[[s1,e1],[s2,e2],...]</code> (si &lt; ei), find the minimum number of conference rooms required.</p>
+<p>For example,<br>Given <code>[[0, 30],[5, 10],[15, 20]]</code>,<br>return <code>2</code>.</p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>输入[[0, 30],[5, 10],[15, 20]]表示每个会议的开始结束时间，求最少需要多少会议室能够安排所有的会议。</p>
+<h3 id="最小堆解题思路："><a href="#最小堆解题思路：" class="headerlink" title="最小堆解题思路："></a><strong>最小堆解题思路：</strong></h3><p>基于merging interval题目，首先按start排序。并且merge条件是start小于上一个会议的end。</p>
+<ol>
+<li>写几个例子感受一下。<br><img src="/images/L253.png" alt=""><br>有两个重叠的会议，现在插入新的会议。是否再需要一个会议室取决于该新会议的开始时间小于这两个目前会议的终止时间的最小值。<br>所以思路是用End time min-heap维护目前会议End time。若新会议start time小于堆顶元素，入栈且activeMeeting++，否则循环地出栈且activeMeeting–直到<br>start time小于堆顶。<br>这过程activeMeeting的最大值即所求。<br>最坏情况是所有会议都重叠，复杂度为n* 2logn因为n个元素入堆出堆各一次，所以复杂度为nlogn，但会议一般不会集中，平均情况比排序法稍优。 </li>
+</ol>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>Heap为结束时间的heap。 </li>
+<li>类似于递减栈模板，用开始时间与堆顶的结束时间比较（表示这些会议均已结束），若大于堆顶，连续出堆。  </li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">minMeetingRooms</span><span class="params">(self, intervals: List[List[int]])</span> -&gt; int:</span></span><br><span class="line">	intervals.sort()</span><br><span class="line">	heap = [] <span class="comment"># heap for end time</span></span><br><span class="line">	max = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(intervals)):</span><br><span class="line">		<span class="comment"># start time of the new meeting is earlier than on-going endtime</span></span><br><span class="line">		<span class="keyword">while</span> heap <span class="keyword">and</span> intervals[i][<span class="number">0</span>] &gt; heap[<span class="number">0</span>]:</span><br><span class="line">			heappop(heap)</span><br><span class="line">		heappush(heap, (intervals[i][<span class="number">1</span>]))</span><br><span class="line">		<span class="keyword">if</span> len(heap) &gt; max:</span><br><span class="line">			max = len(heap)</span><br><span class="line">	<span class="keyword">return</span> max</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>由于输入无序，所以先要排序O(nlogn), 而循环复杂度为O(nlogk), 所以总时间复杂度为<code>O(nlogn)</code>，空间复杂度<code>O(k)</code>, k为所求也就是需要的会议室数。     </p>
+<h3 id="排序法解题思路："><a href="#排序法解题思路：" class="headerlink" title="排序法解题思路："></a><strong>排序法解题思路：</strong></h3><ol>
+<li>证明解与具体间隔无关，只与end time的值有关。<br><img src="/images/L253-2.png" alt=""></li>
+<li>基于1和2，对end time进行排序，题解只与start-end的相对顺序有关。既然这样，我们可以把所有start，end一起排序，也就是按时间轴排列，排成一个2n大小的数组，<br>遇到start，activeMeeting++，遇到end，activeMeeting–。 这过程activeMeeting的最大值即所求。<br>当然，上述方法直观，但实现起来需要建立一个class Node{value, startOrEnd}。本质上等价于对排序后的start数组和排序后的end数组进行<strong>合并排序</strong>。<br>合并排序的结果等价于时间轴上两个数组的统一排序。当然，不需要剩余部分的合并排序，因为这部分不会增加activeMeeting的值。</li>
+</ol>
+<p>解题步骤：</p>
+<ol>
+<li>排序start</li>
+<li>排序end</li>
+<li>合并排序，start小就activeMeeting++，否则activeMeeting–。求activeMeeting的最大值。</li>
+</ol>
+<h3 id="Python代码：-1"><a href="#Python代码：-1" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">minMeetingRooms</span><span class="params">(self, intervals: List[List[int]])</span> -&gt; int:</span></span><br><span class="line">	start = [(i[<span class="number">0</span>], <span class="number">1</span>) <span class="keyword">for</span> i <span class="keyword">in</span> intervals]</span><br><span class="line">	ends = [(i[<span class="number">1</span>], <span class="number">-1</span>) <span class="keyword">for</span> i <span class="keyword">in</span> intervals]</span><br><span class="line">	endpoints = start + ends</span><br><span class="line">	endpoints.sort()</span><br><span class="line">	active_meetings, max = <span class="number">0</span>, <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(endpoints)):</span><br><span class="line">		<span class="keyword">if</span> endpoints[i][<span class="number">1</span>] == <span class="number">1</span>:</span><br><span class="line">			active_meetings += <span class="number">1</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			active_meetings -= <span class="number">1</span></span><br><span class="line">		<span class="keyword">if</span> active_meetings &gt; max:</span><br><span class="line">			max = active_meetings</span><br><span class="line">	<span class="keyword">return</span> max</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nlogn)</code>，空间复杂度<code>O(n)</code>。</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2018/01/29/lee-572/">LeetCode 572 Subtree of Another Tree</a></h1>
   
 
@@ -225,129 +328,6 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2018/01/28/lee-503/">LeetCode 503 Next Greater Element II</a></h1>
-  
-
-      
-        <time datetime="2018-01-29T05:24:19.538Z">2018-01-28</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/next-greater-element-ii" target="_blank" rel="noopener">LeetCode 503 Next Greater Element II</a></strong></p>
-<p>Given a circular array (the next element of the last element is the first element of the array), print the Next Greater Number for every element. The Next Greater Number of a number x is the first greater number to its traversing-order next in the array, which means you could search circularly to find its next greater number. If it doesn’t exist, output -1 for this number.</p>
-<p><strong>Example 1:</strong>  </p>
-<pre><b>Input:</b> [1,2,1]
-<b>Output:</b> [2,-1,2]
-<b>Explanation:</b> The first 1's next greater number is 2;   
-The number 2 can't find next greater number;   
-The second 1's next greater number needs to search circularly, which is also 2.
-</pre>
-
-<p><strong>Note:</strong> The length of given array won’t exceed 10000.</p>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个循环数组（末尾元素的下一个元素为起始元素），输出每一个元素的下一个更大的数字（Next Greater Number）。Next Greater Number是指位于某元素右侧，大于该元素，且距离最近的元素。如果不存在这样的元素，则输出-1。</p>
-<p>注意：给定数组长度不超过10000。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>最直接的思路是遍历每个元素，对每个元素，遍历它的后面所有元素。最差情况是递减数列，时间复杂度为<code>O(<em>n</em><sup>2</sup>)</code>。<br>这题关于局部递增数组，所以考虑用递减栈。首先不考虑循环数组的情况，例如8,5,4,6,栈存入8,5,4，当6准备进栈时，5,4比6小，它们都出栈且它们的结果集为6。<br>循环数组其实只要将原数组复制一倍，按原算法处理，结果集取前n个元素即可。</p>
-<ol>
-<li>栈不为空，准入栈元素逼出比其小的元素且赋予其结果。</li>
-<li>该元素入栈。、</li>
-<li>栈剩下元素的结果集赋值为-1</li>
-</ol>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>栈存储元素下标，结果集存储元素值。</li>
-<li>栈剩下元素的结果集赋值为-1</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">nextGreaterElements</span><span class="params">(self, nums: List[int])</span> -&gt; List[int]:</span></span><br><span class="line">	num_list = nums * <span class="number">2</span></span><br><span class="line">	result, stack = [<span class="number">0</span>] * len(num_list), []</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(num_list)):</span><br><span class="line">		<span class="keyword">while</span> stack <span class="keyword">and</span> num_list[i] &gt; num_list[stack[<span class="number">-1</span>]]:</span><br><span class="line">			index = stack.pop()</span><br><span class="line">			result[index] = num_list[i]</span><br><span class="line">		stack.append(i)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> stack:</span><br><span class="line">		index = stack.pop()</span><br><span class="line">		result[index] = <span class="number">-1</span></span><br><span class="line">	<span class="keyword">return</span> result[:len(nums)]</span><br></pre></td></tr></table></figure>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] nextGreaterElements(<span class="keyword">int</span>[] nums) &#123;</span><br><span class="line">	Stack s = <span class="keyword">new</span> Stack();</span><br><span class="line">	<span class="keyword">int</span>[] nums2 = <span class="keyword">new</span> <span class="keyword">int</span>[nums.length*<span class="number">2</span>];</span><br><span class="line">	<span class="keyword">int</span>[] re2 = <span class="keyword">new</span> <span class="keyword">int</span>[nums2.length];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums2.length;i++)&#123;</span><br><span class="line">		nums2[i] = nums[i%nums.length];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums2.length;i++)&#123;</span><br><span class="line">		<span class="keyword">while</span>(!s.isEmpty() &amp;&amp; nums2[i]&gt;nums2[(<span class="keyword">int</span>)s.peek()])&#123;</span><br><span class="line">			<span class="keyword">int</span> topIdx = (<span class="keyword">int</span>)s.pop();</span><br><span class="line">			re2[topIdx] = nums2[i];</span><br><span class="line">		&#125;</span><br><span class="line">		s.add(i);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">while</span>(!s.isEmpty())&#123;</span><br><span class="line">		<span class="keyword">int</span> topIdx = (<span class="keyword">int</span>)s.pop();</span><br><span class="line">		re2[topIdx] = -<span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">int</span>[] re = <span class="keyword">new</span> <span class="keyword">int</span>[nums.length];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums.length;i++)</span><br><span class="line">		re[i] = re2[i];</span><br><span class="line">	<span class="keyword">return</span> re;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>。</p>
-<p>有人考虑用TreeMap，<br> 2<br>1 3<br>但TreeMap不能保留顺序，如这个TreeMap可以对应两种数组,[2,1,3], [2,3,1]并非一一对应。</p>
-<h3 id="Follow-up"><a href="#Follow-up" class="headerlink" title="Follow-up:"></a><strong>Follow-up:</strong></h3><ol>
-<li>Given an integer array, print the Next Greater Number for every element.先从不循环数组考起。<br>3,8,5,4,6,7 =&gt; 8,-1,6,6,7,-1</li>
-<li>先让其写出暴力法brute force</li>
-<li>再优化，第0个提示是考虑用一些数据结构，第一个提示为Stack。第二个提示，给定两个stack，怎么排序一个数组。如1,4,3,2.<br>一个stack用于维护当前递增栈，另一个用于缓冲。过程：栈1从底到顶14，3准入，因为比4小，不能维持递增顺序，4入栈2，然后3入栈1，再把栈2所有元素入栈1。同理4,3入栈2,2入栈1。</li>
-<li>最后如果是循环数组circular array，如果解决。<br>3,8,5,4,6,7 =&gt; 8,-1,6,6,7,8</li>
-<li>第一个层次暴力法，第二层次思路从第二个提示到联系到此题解法，Meets bar。最后能实现且解决follow-up，raise bar。</li>
-</ol>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2018/01/28/lee-658/">LeetCode 658 Find K Closest Elements</a></h1>
-  
-
-      
-        <time datetime="2018-01-29T03:26:02.137Z">2018-01-28</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/find-k-closest-elements" target="_blank" rel="noopener">LeetCode 658 Find K Closest Elements</a></strong></p>
-<p>Given a sorted array, two integers <code>k</code> and <code>x</code>, find the <code>k</code> closest elements to <code>x</code> in the array. The result should also be sorted in ascending order. If there is a tie, the smaller elements are always preferred.</p>
-<p><strong>Example 1:</strong>  </p>
-<pre><b>Input:</b> [1,2,3,4,5], k=4, x=3
-<b>Output:</b> [1,2,3,4]
-</pre>
-
-<p><strong>Example 2:</strong>  </p>
-<pre><b>Input:</b> [1,2,3,4,5], k=4, x=-1
-<b>Output:</b> [1,2,3,4]
-</pre>
-
-<p><strong>Note:</strong>  </p>
-<ol>
-<li>The value k is positive and will always be smaller than the length of the sorted array.</li>
-<li>Length of the given array is positive and will not exceed 10<sup>4</sup></li>
-<li>Absolute value of elements in the array and x will not exceed 10<sup>4</sup></li>
-</ol>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个排序数组，两个整数k和x，求数组中距离x最近的k个数字。结果应该有序，距离相同时优先选择较小的数字。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><ol>
-<li>进阶二分法找出第一个大于等于key值的元素。</li>
-<li>左右两指针搜索k个元素。</li>
-</ol>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>指针不能越界</li>
-<li>根据题意，与key距离一样时，取较小元素。</li>
-</ol>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;Integer&gt; <span class="title">findClosestElements</span><span class="params">(<span class="keyword">int</span>[] arr, <span class="keyword">int</span> k, <span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> upperIdx = firstEqualOrGreater(arr, x);</span><br><span class="line">	<span class="keyword">int</span> lowerIdx = upperIdx-<span class="number">1</span>;</span><br><span class="line">	List result = <span class="keyword">new</span> ArrayList();</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=k;i&gt;<span class="number">0</span>;i--)&#123;</span><br><span class="line">		<span class="keyword">if</span>(lowerIdx&lt;<span class="number">0</span>)</span><br><span class="line">			result.add(arr[upperIdx++]);</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(upperIdx&gt;=arr.length)</span><br><span class="line">			result.add(arr[lowerIdx--]);</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(x-arr[lowerIdx]&lt;=arr[upperIdx]-x)</span><br><span class="line">			result.add(arr[lowerIdx--]);</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			result.add(arr[upperIdx++]);</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	Collections.sort(result);</span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">firstEqualOrGreater</span><span class="params">(<span class="keyword">int</span>[] a, <span class="keyword">int</span> key)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> lo = <span class="number">0</span>, hi = a.length-<span class="number">1</span>;</span><br><span class="line">	<span class="keyword">while</span>(lo&lt;=hi)&#123;</span><br><span class="line">		<span class="keyword">int</span> mid =  lo + (hi - lo) / <span class="number">2</span>;</span><br><span class="line">		<span class="keyword">if</span>(a[mid]&lt;key)</span><br><span class="line">			lo = mid+<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			hi = mid-<span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> lo;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(logn+k)</code>，空间复杂度<code>O(1)</code>。</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -372,7 +352,15 @@ The second 1's next greater number needs to search circularly, which is also 2.
   <ul class="entry">
     
       <li>
-        <a href="/2021/12/13/lee-031/">LeetCode</a>
+        <a href="/2021/12/13/lee-394/">LeetCode 394 Decode String</a>
+      </li>
+    
+      <li>
+        <a href="/2021/12/13/lee-560/">LeetCode 560 Subarray Sum Equals K</a>
+      </li>
+    
+      <li>
+        <a href="/2021/12/13/lee-031/">LeetCode 031 Next Permutation</a>
       </li>
     
       <li>
@@ -381,14 +369,6 @@ The second 1's next greater number needs to search circularly, which is also 2.
     
       <li>
         <a href="/2021/12/13/lee-014/">LeetCode 014 Longest Common Prefix</a>
-      </li>
-    
-      <li>
-        <a href="/2021/12/12/lee-002/">LeetCode 002 Add Two Numbers</a>
-      </li>
-    
-      <li>
-        <a href="/2021/12/12/lee-2106/">LeetCode 2106 Maximum Fruits Harvested After at Most K Steps</a>
       </li>
     
   </ul>
@@ -401,7 +381,7 @@ The second 1's next greater number needs to search circularly, which is also 2.
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.33px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 16.67px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 12px;">Binary Tree</a> <a href="/tags/Breadth-First-Search/" style="font-size: 11.33px;">Breadth-First Search</a> <a href="/tags/Breadth-first-Search/" style="font-size: 14.67px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 19.33px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15.33px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 12px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 18px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 11.33px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 10.67px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 14px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 15.33px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 18.67px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 14px;">Linked List</a> <a href="/tags/Math/" style="font-size: 12.67px;">Math</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 12px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.67px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Python-KB/" style="font-size: 17.33px;">Python KB</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.67px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 12px;">Sort</a> <a href="/tags/Stack/" style="font-size: 16.67px;">Stack</a> <a href="/tags/String/" style="font-size: 14.67px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.33px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.67px;">Tree</a> <a href="/tags/Trie/" style="font-size: 10px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.67px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 10.67px;">Union Find</a> <a href="/tags/tik/" style="font-size: 15.33px;">tik</a> <a href="/tags/tiktok/" style="font-size: 12px;">tiktok</a>
+    <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.13px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 16.25px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 11.88px;">Binary Tree</a> <a href="/tags/Breadth-First-Search/" style="font-size: 11.25px;">Breadth-First Search</a> <a href="/tags/Breadth-first-Search/" style="font-size: 14.38px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 19.38px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.88px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.88px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 18.13px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 11.25px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 10.63px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 15.63px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 13.75px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 15px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 18.75px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 13.75px;">Linked List</a> <a href="/tags/Math/" style="font-size: 12.5px;">Math</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.88px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.63px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Python-KB/" style="font-size: 17.5px;">Python KB</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.63px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.88px;">Sort</a> <a href="/tags/Stack/" style="font-size: 16.88px;">Stack</a> <a href="/tags/String/" style="font-size: 15px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.25px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.5px;">Tree</a> <a href="/tags/Trie/" style="font-size: 10px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.38px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 10.63px;">Union Find</a> <a href="/tags/tik/" style="font-size: 15px;">tik</a> <a href="/tags/tiktok/" style="font-size: 11.88px;">tiktok</a>
   </div>
 </div>
 
