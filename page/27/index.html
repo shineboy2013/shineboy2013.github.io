@@ -53,6 +53,245 @@
     <header>
       
   
+    <h1 class="title"><a href="/2018/01/28/lee-056/">LeetCode 056 Merge Intervals</a></h1>
+  
+
+      
+        <time datetime="2018-01-29T07:52:23.474Z">2018-01-28</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/merge-interval" target="_blank" rel="noopener">LeetCode 056 Merge Intervals</a></strong></p>
+<p>Given a collection of intervals, merge all overlapping intervals.</p>
+<p>For example,<br>Given <code>[1,3],[2,6],[8,10],[15,18]</code>,<br>return <code>[1,6],[8,10],[15,18]</code>.</p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定几个区间，要求合并重叠区间，返回结果.</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>A公司的考题。这条题难点在于判断是否合并，怎么合并，新区间合并多个区间。</p>
+<ol>
+<li>按start排序。</li>
+<li>定义API：如何合并两个区间（两情况），两个区间是否可以合并</li>
+<li>遍历每个区间，产生新区间并将其带入到下一轮循环。这是难点，公式为 新区间=新区间+输入区间[i]，这也分为两种情况，可合并和不可合并<br>不可合并时，前状态的新区间成为结果，公式为新区间=输入区间[i]。  </li>
+<li>若不想特别处理循环边界，可加入空区间到末尾（见Java实现，它把新区间=输入区间[i]放入了下一轮）。若不如此做，可将空区间放入开头。  </li>
+</ol>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>先按左节点排序  </li>
+<li>区间的右端与另一个区间的左端一样，也算重叠，如[1,2],[2,3]。</li>
+<li>原输入加入首节点的左边界fake区间。避免for循环的特殊处理。2. 最后一个区间的情况。</li>
+<li>合并后生成新区间，要与下一个继续尝试合并。</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">merge</span><span class="params">(self, intervals: List[List[int]])</span> -&gt; List[List[int]]:</span></span><br><span class="line">	intervals.sort(key=<span class="keyword">lambda</span> x: x[<span class="number">0</span>])</span><br><span class="line">	new_interval = [intervals[<span class="number">0</span>][<span class="number">0</span>], intervals[<span class="number">0</span>][<span class="number">0</span>]]</span><br><span class="line">	res = []</span><br><span class="line">	<span class="keyword">for</span> interval <span class="keyword">in</span> intervals:</span><br><span class="line">		<span class="keyword">if</span> self.can_merge(new_interval, interval):</span><br><span class="line">			new_interval = self.merge_two_intervals(new_interval, interval)</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			res.append(new_interval)</span><br><span class="line">			new_interval = interval</span><br><span class="line">	res.append(new_interval)</span><br><span class="line">	<span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">can_merge</span><span class="params">(self, interval, interval2)</span>:</span></span><br><span class="line">	<span class="keyword">return</span> interval[<span class="number">1</span>] &gt;= interval2[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">merge_two_intervals</span><span class="params">(self, interval, interval2)</span>:</span></span><br><span class="line">	<span class="keyword">return</span> [interval[<span class="number">0</span>], max(interval[<span class="number">1</span>], interval2[<span class="number">1</span>])]</span><br></pre></td></tr></table></figure>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;Interval&gt; <span class="title">merge</span><span class="params">(List&lt;Interval&gt; intervals)</span> </span>&#123;</span><br><span class="line">	Collections.sort(intervals, <span class="keyword">new</span> Comparator&lt;Interval&gt;()&#123;</span><br><span class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(Interval v1, Interval v2)</span></span>&#123;</span><br><span class="line">			<span class="keyword">return</span> v1.start - v2.start;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;);</span><br><span class="line">	intervals.add(<span class="keyword">new</span> Interval(Integer.MAX_VALUE, Integer.MAX_VALUE));</span><br><span class="line">	List&lt;Interval&gt; re = <span class="keyword">new</span> ArrayList&lt;Interval&gt;();</span><br><span class="line">	Interval newInterval = <span class="keyword">null</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;intervals.size();i++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(newInterval==<span class="keyword">null</span>)</span><br><span class="line">			newInterval = intervals.get(i-<span class="number">1</span>);</span><br><span class="line">		<span class="keyword">if</span>(canMerge(newInterval,intervals.get(i)))&#123;</span><br><span class="line">			newInterval = mergeIntervals(newInterval,intervals.get(i));</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span>&#123;</span><br><span class="line">			re.add(newInterval);</span><br><span class="line">			newInterval = <span class="keyword">null</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> re;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//假设in与in2按start排序，所以只有两情况：</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * In  -------</span></span><br><span class="line"><span class="comment"> * In2   ---</span></span><br><span class="line"><span class="comment"> * In2   -------- </span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">canMerge</span><span class="params">(Interval in, Interval in2)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(in2.start == Integer.MAX_VALUE)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	<span class="keyword">return</span> in.end&gt;=in2.start;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> Interval <span class="title">mergeIntervals</span><span class="params">(Interval in, Interval in2)</span></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">new</span> Interval(in.start, Math.max(in.end, in2.end));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nlogn)</code>，空间复杂度<code>O(1)</code>。</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2018/01/28/lee-503/">LeetCode 503 Next Greater Element II</a></h1>
+  
+
+      
+        <time datetime="2018-01-29T05:24:19.538Z">2018-01-28</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/next-greater-element-ii" target="_blank" rel="noopener">LeetCode 503 Next Greater Element II</a></strong></p>
+<p>Given a circular array (the next element of the last element is the first element of the array), print the Next Greater Number for every element. The Next Greater Number of a number x is the first greater number to its traversing-order next in the array, which means you could search circularly to find its next greater number. If it doesn’t exist, output -1 for this number.</p>
+<p><strong>Example 1:</strong>  </p>
+<pre><b>Input:</b> [1,2,1]
+<b>Output:</b> [2,-1,2]
+<b>Explanation:</b> The first 1's next greater number is 2;   
+The number 2 can't find next greater number;   
+The second 1's next greater number needs to search circularly, which is also 2.
+</pre>
+
+<p><strong>Note:</strong> The length of given array won’t exceed 10000.</p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个循环数组（末尾元素的下一个元素为起始元素），输出每一个元素的下一个更大的数字（Next Greater Number）。Next Greater Number是指位于某元素右侧，大于该元素，且距离最近的元素。如果不存在这样的元素，则输出-1。</p>
+<p>注意：给定数组长度不超过10000。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>最直接的思路是遍历每个元素，对每个元素，遍历它的后面所有元素。最差情况是递减数列，时间复杂度为<code>O(<em>n</em><sup>2</sup>)</code>。<br>这题关于局部递增数组，所以考虑用递减栈。首先不考虑循环数组的情况，例如8,5,4,6,栈存入8,5,4，当6准备进栈时，5,4比6小，它们都出栈且它们的结果集为6。<br>循环数组其实只要将原数组复制一倍，按原算法处理，结果集取前n个元素即可。</p>
+<ol>
+<li>栈不为空，准入栈元素逼出比其小的元素且赋予其结果。</li>
+<li>该元素入栈。、</li>
+<li>栈剩下元素的结果集赋值为-1</li>
+</ol>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>栈存储元素下标，结果集存储元素值。</li>
+<li>栈剩下元素的结果集赋值为-1</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">nextGreaterElements</span><span class="params">(self, nums: List[int])</span> -&gt; List[int]:</span></span><br><span class="line">	num_list = nums * <span class="number">2</span></span><br><span class="line">	result, stack = [<span class="number">0</span>] * len(num_list), []</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(num_list)):</span><br><span class="line">		<span class="keyword">while</span> stack <span class="keyword">and</span> num_list[i] &gt; num_list[stack[<span class="number">-1</span>]]:</span><br><span class="line">			index = stack.pop()</span><br><span class="line">			result[index] = num_list[i]</span><br><span class="line">		stack.append(i)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> stack:</span><br><span class="line">		index = stack.pop()</span><br><span class="line">		result[index] = <span class="number">-1</span></span><br><span class="line">	<span class="keyword">return</span> result[:len(nums)]</span><br></pre></td></tr></table></figure>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] nextGreaterElements(<span class="keyword">int</span>[] nums) &#123;</span><br><span class="line">	Stack s = <span class="keyword">new</span> Stack();</span><br><span class="line">	<span class="keyword">int</span>[] nums2 = <span class="keyword">new</span> <span class="keyword">int</span>[nums.length*<span class="number">2</span>];</span><br><span class="line">	<span class="keyword">int</span>[] re2 = <span class="keyword">new</span> <span class="keyword">int</span>[nums2.length];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums2.length;i++)&#123;</span><br><span class="line">		nums2[i] = nums[i%nums.length];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums2.length;i++)&#123;</span><br><span class="line">		<span class="keyword">while</span>(!s.isEmpty() &amp;&amp; nums2[i]&gt;nums2[(<span class="keyword">int</span>)s.peek()])&#123;</span><br><span class="line">			<span class="keyword">int</span> topIdx = (<span class="keyword">int</span>)s.pop();</span><br><span class="line">			re2[topIdx] = nums2[i];</span><br><span class="line">		&#125;</span><br><span class="line">		s.add(i);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">while</span>(!s.isEmpty())&#123;</span><br><span class="line">		<span class="keyword">int</span> topIdx = (<span class="keyword">int</span>)s.pop();</span><br><span class="line">		re2[topIdx] = -<span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">int</span>[] re = <span class="keyword">new</span> <span class="keyword">int</span>[nums.length];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums.length;i++)</span><br><span class="line">		re[i] = re2[i];</span><br><span class="line">	<span class="keyword">return</span> re;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>。</p>
+<p>有人考虑用TreeMap，<br> 2<br>1 3<br>但TreeMap不能保留顺序，如这个TreeMap可以对应两种数组,[2,1,3], [2,3,1]并非一一对应。</p>
+<h3 id="Follow-up"><a href="#Follow-up" class="headerlink" title="Follow-up:"></a><strong>Follow-up:</strong></h3><ol>
+<li>Given an integer array, print the Next Greater Number for every element.先从不循环数组考起。<br>3,8,5,4,6,7 =&gt; 8,-1,6,6,7,-1</li>
+<li>先让其写出暴力法brute force</li>
+<li>再优化，第0个提示是考虑用一些数据结构，第一个提示为Stack。第二个提示，给定两个stack，怎么排序一个数组。如1,4,3,2.<br>一个stack用于维护当前递增栈，另一个用于缓冲。过程：栈1从底到顶14，3准入，因为比4小，不能维持递增顺序，4入栈2，然后3入栈1，再把栈2所有元素入栈1。同理4,3入栈2,2入栈1。</li>
+<li>最后如果是循环数组circular array，如果解决。<br>3,8,5,4,6,7 =&gt; 8,-1,6,6,7,8</li>
+<li>第一个层次暴力法，第二层次思路从第二个提示到联系到此题解法，Meets bar。最后能实现且解决follow-up，raise bar。</li>
+</ol>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2018/01/28/lee-658/">LeetCode 658 Find K Closest Elements</a></h1>
+  
+
+      
+        <time datetime="2018-01-29T03:26:02.137Z">2018-01-28</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/find-k-closest-elements" target="_blank" rel="noopener">LeetCode 658 Find K Closest Elements</a></strong></p>
+<p>Given a sorted array, two integers <code>k</code> and <code>x</code>, find the <code>k</code> closest elements to <code>x</code> in the array. The result should also be sorted in ascending order. If there is a tie, the smaller elements are always preferred.</p>
+<p><strong>Example 1:</strong>  </p>
+<pre><b>Input:</b> [1,2,3,4,5], k=4, x=3
+<b>Output:</b> [1,2,3,4]
+</pre>
+
+<p><strong>Example 2:</strong>  </p>
+<pre><b>Input:</b> [1,2,3,4,5], k=4, x=-1
+<b>Output:</b> [1,2,3,4]
+</pre>
+
+<p><strong>Note:</strong>  </p>
+<ol>
+<li>The value k is positive and will always be smaller than the length of the sorted array.</li>
+<li>Length of the given array is positive and will not exceed 10<sup>4</sup></li>
+<li>Absolute value of elements in the array and x will not exceed 10<sup>4</sup></li>
+</ol>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个排序数组，两个整数k和x，求数组中距离x最近的k个数字。结果应该有序，距离相同时优先选择较小的数字。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><ol>
+<li>进阶二分法找出第一个大于等于key值的元素。</li>
+<li>左右两指针搜索k个元素。</li>
+</ol>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>指针不能越界</li>
+<li>根据题意，与key距离一样时，取较小元素。</li>
+</ol>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;Integer&gt; <span class="title">findClosestElements</span><span class="params">(<span class="keyword">int</span>[] arr, <span class="keyword">int</span> k, <span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> upperIdx = firstEqualOrGreater(arr, x);</span><br><span class="line">	<span class="keyword">int</span> lowerIdx = upperIdx-<span class="number">1</span>;</span><br><span class="line">	List result = <span class="keyword">new</span> ArrayList();</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=k;i&gt;<span class="number">0</span>;i--)&#123;</span><br><span class="line">		<span class="keyword">if</span>(lowerIdx&lt;<span class="number">0</span>)</span><br><span class="line">			result.add(arr[upperIdx++]);</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(upperIdx&gt;=arr.length)</span><br><span class="line">			result.add(arr[lowerIdx--]);</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(x-arr[lowerIdx]&lt;=arr[upperIdx]-x)</span><br><span class="line">			result.add(arr[lowerIdx--]);</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			result.add(arr[upperIdx++]);</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	Collections.sort(result);</span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">firstEqualOrGreater</span><span class="params">(<span class="keyword">int</span>[] a, <span class="keyword">int</span> key)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> lo = <span class="number">0</span>, hi = a.length-<span class="number">1</span>;</span><br><span class="line">	<span class="keyword">while</span>(lo&lt;=hi)&#123;</span><br><span class="line">		<span class="keyword">int</span> mid =  lo + (hi - lo) / <span class="number">2</span>;</span><br><span class="line">		<span class="keyword">if</span>(a[mid]&lt;key)</span><br><span class="line">			lo = mid+<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			hi = mid-<span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> lo;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(logn+k)</code>，空间复杂度<code>O(1)</code>。</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2018/01/28/lee-698/">LeetCode 698 Partition to K Equal Sum Subsets</a></h1>
+  
+
+      
+        <time datetime="2018-01-28T19:18:14.135Z">2018-01-28</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/partition-to-k-equal-sum-subsets" target="_blank" rel="noopener">LeetCode 698 Partition to K Equal Sum Subsets</a></strong></p>
+<p>Given an array of integers <code>nums</code> and a positive integer <code>k</code>, find whether it’s possible to divide this array into <code>k</code> non-empty subsets whose sums are all equal.</p>
+<p><strong>Example 1:</strong>  </p>
+<pre><b>Input:</b> nums = [4, 3, 2, 3, 5, 2, 1], k = 4
+<b>Output:</b> True
+<b>Explanation:</b> It's possible to divide it into 4 subsets (5), (1, 4), (2,3), (2,3) with equal sums.
+</pre>
+
+<p><strong>Note:</strong></p>
+<ul>
+<li><code>1 &lt;= k &lt;= len(nums) &lt;= 16</code>.</li>
+<li><code>0 &lt; nums[i] &lt; 10000</code>.</li>
+</ul>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>判断数组nums是否可以划分为k个和相等的子数组</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这题与416类似，所以一开始考虑用0-1背包问题思路，但是0-1背包问题得出的解为2,2,1，与答案不同。因为背包问题只能求出第一个解，并不能求出k个解。所以类似于排列组合，<br>需要DFS来一个个数来试。参数为visited数组为记录该数是否用了，curSum，k，若curSum等于target(sum/k)，找到第一个解，k–，curSum=0，找下一个解。这个方法是用k次排列组合法组成最终解。</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>数组和为不能被k整除，无解</li>
+<li>引入st，排列组合必须，用于for循环的起始点。</li>
+<li>k=1立刻剪枝，因为前三个解都是等于sum/k,最后一个也一定是sum/k</li>
+<li>当curSum==target时，进行k-1，curSum=0的下一轮dfs。</li>
+</ol>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">canPartitionKSubsets0</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> sum = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i : nums)</span><br><span class="line">		sum+=i;</span><br><span class="line">	<span class="keyword">if</span>(sum%k!=<span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	<span class="keyword">boolean</span>[] visited = <span class="keyword">new</span> <span class="keyword">boolean</span>[nums.length];</span><br><span class="line">	<span class="keyword">return</span> dfs0(nums, k, sum/k, <span class="number">0</span>, visited, <span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">dfs0</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> k, <span class="keyword">int</span> target, <span class="keyword">int</span> curSum, <span class="keyword">boolean</span>[] visited, <span class="keyword">int</span> start)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(k==<span class="number">1</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">	<span class="keyword">if</span>(curSum==target)</span><br><span class="line">		<span class="keyword">return</span> dfs0(nums, k-<span class="number">1</span>, target, <span class="number">0</span>, visited, <span class="number">0</span>);</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=start;i&lt;nums.length;i++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(visited[i])</span><br><span class="line">			<span class="keyword">continue</span>;</span><br><span class="line">		<span class="keyword">if</span>(curSum+nums[i]&lt;=target)&#123;</span><br><span class="line">			visited[i] = <span class="keyword">true</span>;</span><br><span class="line">			<span class="keyword">if</span>(dfs0(nums, k, target, curSum+nums[i], visited, i+<span class="number">1</span>))</span><br><span class="line">				<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">			visited[i] = <span class="keyword">false</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>这是NP问题。  </p>
+<hr>
+<p>另一个方法是，将k次排列组合法整合成一次，途径是开一个k大小数组，每一个数肯定属于其中一个。visited数组替换成ksum数组和idx控制遍历数组顺序。某一个数肯定是属于ksum数组的任一个，<br>所以所有可能性都考虑到，可以求得解。先对原数组排序方便从后往前遍历，贪心算法可以帮助剪枝，因为先填大的数，容易获得结果或排除结果。如[1….1, 4], target=4, k=2，从前往后的话，<br>多个1可以有非常多的可能。提高算法效率但若不排序的话会得到LTE。<br>这个方法比第一个方法的优势在于它用ksum数组取代visited和curSum参数，第一种方法要从头开始扫k遍数组，而此法只需扫一遍数组+每个元素试k次。   </p>
+<ol>
+<li>数组和为不能被k整除，无解</li>
+<li>对数组排序</li>
+<li>DFS四部曲，从后往前遍历数组加入ksum</li>
+</ol>
+<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>数组和为不能被k整除，无解</li>
+<li>从后往前遍历数组</li>
+</ol>
+<h3 id="Java代码：-1"><a href="#Java代码：-1" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">canPartitionKSubsets</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> sum = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i : nums)</span><br><span class="line">		sum+=i;</span><br><span class="line">	<span class="keyword">if</span>(sum%k!=<span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	Arrays.sort(nums);</span><br><span class="line">	<span class="keyword">int</span>[] ksum = <span class="keyword">new</span> <span class="keyword">int</span>[k];</span><br><span class="line">	<span class="keyword">return</span> dfs(nums, k, sum/k, ksum, nums.length-<span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> k, <span class="keyword">int</span> target, <span class="keyword">int</span>[] ksum, <span class="keyword">int</span> idx)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(idx==-<span class="number">1</span>)&#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> a : ksum)</span><br><span class="line">			<span class="keyword">if</span>(a!=target)</span><br><span class="line">				<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;k; i++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(ksum[i]+nums[idx]&lt;=target)&#123;</span><br><span class="line">			ksum[i] += nums[idx];</span><br><span class="line">			<span class="keyword">if</span>(dfs(nums, k, target, ksum, idx-<span class="number">1</span>))</span><br><span class="line">				<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">			ksum[i] -= nums[idx];</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>这是NP问题。</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2018/01/27/lee-416/">LeetCode 416 Partition Equal Subset Sum</a></h1>
   
 
@@ -111,263 +350,6 @@ Explanation: The array cannot be partitioned into equal sum subsets.
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2018/01/10/lee-329/">LeetCode 329 Longest Increasing Path in a Matrix</a></h1>
-  
-
-      
-        <time datetime="2018-01-10T09:46:52.076Z">2018-01-10</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/longest-increasing-path-in-a-matrix" target="_blank" rel="noopener">LeetCode 329 Longest Increasing Path in a Matrix</a></strong></p>
-<p>Given an integer matrix, find the length of the longest increasing path.</p>
-<p>From each cell, you can either move to four directions: left, right, up or down. You may NOT move diagonally or move outside of the boundary (i.e. wrap-around is not allowed).</p>
-<p><strong>Example 1:</strong></p>
-<pre>nums = [
-  [<font color="red">9</font>,9,4],
-  [<font color="red">6</font>,6,8],
-  [<font color="red">2</font>,<font color="red">1</font>,1]
-]
-</pre>
-
-<p>Return <code>4</code><br>The longest increasing path is <code>[1, 2, 6, 9]</code>.</p>
-<p><strong>Example 2:</strong></p>
-<pre>nums = [
-  [<font color="red">3</font>,<font color="red">4</font>,<font color="red">5</font>],
-  [3,2,<font color="red">6</font>],
-  [2,2,1]
-]
-</pre>
-
-<p>Return <code>4</code><br>The longest increasing path is <code>[3, 4, 5, 6]</code>. Moving diagonally is not allowed.</p>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个整数矩阵，计算其最长递增路径的长度。<br>从每一个单元格出发，你可以向四个方向移动：左右上下。你不可以沿着对角线移动也不能移出边界。（亦即，环绕是不允许的）。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是经典题，类似于LIS题，只要将以每个点为终点的最长路径长度存起来，就可以类推它的邻近点的最长长度（DP）。f(x,y)=max{f(x,y),4个邻近点的f+1}<br>由于这是求最长路径题且为矩阵，可以考虑按步长计算，就是Floyd的思路，就是先计算步长为1,2一直到所以最长路径长度矩阵长度不再更新为止。<br>另一个思路也是用矩阵存起每个点最长路径长度，但用DFS搜索，直至这个点的值不为初始值为止，详见书影博客。</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>矩阵为空或长度为0</li>
-<li>当任何值没有更新时，Floyd停止计算</li>
-</ol>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">longestIncreasingPath</span><span class="params">(<span class="keyword">int</span>[][] matrix)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (matrix==<span class="keyword">null</span> || matrix.length==<span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span>[][] path = <span class="keyword">new</span> <span class="keyword">int</span>[matrix.length][matrix[<span class="number">0</span>].length];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;matrix.length;i++)</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;matrix[<span class="number">0</span>].length;j++)</span><br><span class="line">			path[i][j] = <span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">boolean</span> nextPath = <span class="keyword">true</span>;</span><br><span class="line">	<span class="keyword">while</span>(nextPath)&#123;</span><br><span class="line">		nextPath = <span class="keyword">false</span>;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;matrix.length;i++)</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;matrix[<span class="number">0</span>].length;j++)&#123;</span><br><span class="line">				<span class="keyword">if</span>(changeCell(matrix, path, i, j))</span><br><span class="line">					nextPath = <span class="keyword">true</span>;</span><br><span class="line">			&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">int</span> max = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;matrix.length;i++)</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;matrix[<span class="number">0</span>].length;j++)</span><br><span class="line">			<span class="keyword">if</span>(path[i][j]&gt;max)</span><br><span class="line">				max = path[i][j];</span><br><span class="line">	<span class="keyword">return</span> max;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">changeCell</span><span class="params">(<span class="keyword">int</span>[][] matrix, <span class="keyword">int</span>[][] path, <span class="keyword">int</span> i, <span class="keyword">int</span> j)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> pre = path[i][j];</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(i-<span class="number">1</span>&gt;=<span class="number">0</span> &amp;&amp; matrix[i-<span class="number">1</span>][j]&lt;matrix[i][j] &amp;&amp;  path[i-<span class="number">1</span>][j]+<span class="number">1</span>&gt;path[i][j])</span><br><span class="line">		path[i][j] = path[i-<span class="number">1</span>][j]+<span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(i+<span class="number">1</span>&lt;matrix.length &amp;&amp; matrix[i+<span class="number">1</span>][j]&lt;matrix[i][j] &amp;&amp;  path[i+<span class="number">1</span>][j]+<span class="number">1</span>&gt;path[i][j])</span><br><span class="line">		path[i][j] = path[i+<span class="number">1</span>][j]+<span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(j-<span class="number">1</span>&gt;=<span class="number">0</span> &amp;&amp; matrix[i][j-<span class="number">1</span>]&lt;matrix[i][j] &amp;&amp;  path[i][j-<span class="number">1</span>]+<span class="number">1</span>&gt;path[i][j])</span><br><span class="line">		path[i][j] = path[i][j-<span class="number">1</span>]+<span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(j+<span class="number">1</span>&lt;matrix[<span class="number">0</span>].length &amp;&amp; matrix[i][j+<span class="number">1</span>]&lt;matrix[i][j] &amp;&amp;  path[i][j+<span class="number">1</span>]+<span class="number">1</span>&gt;path[i][j])</span><br><span class="line">		path[i][j] = path[i][j+<span class="number">1</span>]+<span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(pre!=path[i][j])</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>k为最长路径长度，时间复杂度为<code>O(k<em>n</em><sup>2</sup>)</code>，空间复杂度<code>O(<em>n</em><sup>2</sup>)</code>。   </p>
-<hr>
-<h3 id="算法II解题思路："><a href="#算法II解题思路：" class="headerlink" title="算法II解题思路："></a><strong>算法II解题思路：</strong></h3><p>先对所有数排序，然后用DP算每个点的往前4个方向的DP值+1，方向是按排序数从小到大。详见9zhang<br>如题第一个例子, 元祖里第一个为值，后两个为xy坐标<br>[(1, 2, 1), (1, 2, 2)…]<br>遍历这个数组，计算dp[(x, y)] = dp[(x + dx, y + dy)] + 1, 若递增，dx, dy分别为四个方向<br>最后计算max(dp)  </p>
-<h2 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h2><p>排序是n^2logn^2 = n^2logn, dp计算是n^2<br>所以时间复杂度为<code>O(<em>n</em><sup>2</sup>logn)</code>，空间复杂度<code>O(<em>n</em><sup>2</sup>)</code></p>
-<hr>
-<h3 id="算法III解题思路："><a href="#算法III解题思路：" class="headerlink" title="算法III解题思路："></a><strong>算法III解题思路：</strong></h3><p>这题也可以额用记忆性搜索DFS来解。</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2018/01/09/lee-332/">LeetCode 332 Reconstruct Itinerary</a></h1>
-  
-
-      
-        <time datetime="2018-01-10T06:17:56.450Z">2018-01-09</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/reconstruct-itinerary" target="_blank" rel="noopener">LeetCode 332 Reconstruct Itinerary</a></strong></p>
-<p>Given a list of airline tickets represented by pairs of departure and arrival airports <code>[from, to]</code>, reconstruct the itinerary in order. All of the tickets belong to a man who departs from <code>JFK</code>. Thus, the itinerary must begin with <code>JFK</code>.</p>
-<p><strong>Note:</strong>  </p>
-<ol>
-<li>If there are multiple valid itineraries, you should return the itinerary that has the smallest lexical order when read as a single string. For example, the itinerary <code>[&quot;JFK&quot;, &quot;LGA&quot;]</code> has a smaller lexical order than <code>[&quot;JFK&quot;, &quot;LGB&quot;]</code>.</li>
-<li>All airports are represented by three capital letters (IATA code).</li>
-<li>You may assume all tickets form at least one valid itinerary.</li>
-</ol>
-<p><strong>Example 1:</strong><br><code>tickets</code> = <code>[[&quot;MUC&quot;, &quot;LHR&quot;], [&quot;JFK&quot;, &quot;MUC&quot;], [&quot;SFO&quot;, &quot;SJC&quot;], [&quot;LHR&quot;, &quot;SFO&quot;]]</code><br>Return <code>[&quot;JFK&quot;, &quot;MUC&quot;, &quot;LHR&quot;, &quot;SFO&quot;, &quot;SJC&quot;]</code>.  </p>
-<p><strong>Example 2:</strong><br><code>tickets</code> = <code>[[&quot;JFK&quot;,&quot;SFO&quot;],[&quot;JFK&quot;,&quot;ATL&quot;],[&quot;SFO&quot;,&quot;ATL&quot;],[&quot;ATL&quot;,&quot;JFK&quot;],[&quot;ATL&quot;,&quot;SFO&quot;]]</code><br>Return <code>[&quot;JFK&quot;,&quot;ATL&quot;,&quot;JFK&quot;,&quot;SFO&quot;,&quot;ATL&quot;,&quot;SFO&quot;]</code>.<br>Another possible reconstruction is <code>[&quot;JFK&quot;,&quot;SFO&quot;,&quot;ATL&quot;,&quot;JFK&quot;,&quot;ATL&quot;,&quot;SFO&quot;]</code>. But it is larger in lexical order.</p>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一组机票，用出发机场和到达机场[from, to]来表示，重建行程的顺序。所有的机票都属于一个从JFK（肯尼迪国际机场）出发的旅客。因此，行程必须从JFK开始。</p>
-<p>注意：</p>
-<p>如果存在多重有效的行程，你应当返回字典序最小的那个。例如，行程[“JFK”, “LGA”]的字典序比[“JFK”, “LGB”]要小。<br>所有的机场用3个大写字母表示（IATA编码）。<br>你可以假设所有的机票均至少包含一条有效的行程。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这条题实质是记录DFS路径的题目，且对儿子节点的选择是有顺序的。值得注意的是并不是所有路径都是可形成回路，所以需要DFS搜索。<br>既然是要记录路径就需要用数组保存结果，而有顺序则表示要排序。</p>
-<ol>
-<li>建图，用邻接表来表示HashMap<string, linkedlist<string="">&gt; graph</string,></li>
-<li>对每个节点的邻节点LinkList进行排序</li>
-<li>从JFK开始dfs。1)终止条件为所有ticket都遍历了(达成回路)或者不能够遍历完。2)路径存在数组中。 3)通过删除节点表示已访问DFS该节点后图要恢复成原状态。</li>
-</ol>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>终止条件为所有ticket都遍历了(达成完整路)或者不能够遍历完Dfs API含ticketLeft。如{“JFK”,”KUL”},{“JFK”,”NRT”},{“NRT”,”JFK”}，虽然KUL在NRT前，但KUL不能组成回路。</li>
-<li>DFS路径尽量存在数组中，否则用ArrayList中就要先add再remove。</li>
-<li>通过删除节点表示已访问DFS该节点后图要恢复成原状态。</li>
-</ol>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;String&gt; <span class="title">findItinerary</span><span class="params">(String[][] tickets)</span> </span>&#123;</span><br><span class="line">	HashMap&lt;String, LinkedList&lt;String&gt;&gt; graph = <span class="keyword">new</span> HashMap&lt;String, LinkedList&lt;String&gt;&gt;();</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;tickets.length;i++)&#123;</span><br><span class="line">		LinkedList&lt;String&gt; neighbor = graph.get(tickets[i][<span class="number">0</span>]);</span><br><span class="line">		<span class="keyword">if</span>(neighbor==<span class="keyword">null</span>)</span><br><span class="line">			neighbor = <span class="keyword">new</span> LinkedList&lt;String&gt;();</span><br><span class="line">		neighbor.add(tickets[i][<span class="number">1</span>]);</span><br><span class="line">		graph.put(tickets[i][<span class="number">0</span>], neighbor);</span><br><span class="line">	&#125;</span><br><span class="line">	Iterator&lt;String&gt; it = graph.keySet().iterator();</span><br><span class="line">	<span class="keyword">while</span>(it.hasNext())&#123;</span><br><span class="line">		String key = it.next();</span><br><span class="line">		LinkedList&lt;String&gt; neighbor = graph.get(key);</span><br><span class="line">		Collections.sort(neighbor);</span><br><span class="line">		graph.put(key, neighbor);</span><br><span class="line">	&#125;</span><br><span class="line">	String[] re = <span class="keyword">new</span> String[tickets.length+<span class="number">1</span>];</span><br><span class="line">	String cur = <span class="string">"JFK"</span>;</span><br><span class="line">	re[<span class="number">0</span>] = cur;</span><br><span class="line">	isDFS(graph,cur,tickets.length,tickets.length,re);</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">new</span> ArrayList&lt;String&gt;(Arrays.asList(re));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isDFS</span><span class="params">(HashMap&lt;String, LinkedList&lt;String&gt;&gt; graph, String departCity</span></span></span><br><span class="line"><span class="function"><span class="params">		,<span class="keyword">int</span> ticketLeft, <span class="keyword">int</span> ticketNum, String[] re)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(ticketLeft==<span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;    	</span><br><span class="line">	LinkedList&lt;String&gt; desCity = graph.get(departCity);</span><br><span class="line">	<span class="keyword">if</span>(desCity==<span class="keyword">null</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;desCity.size();i++)&#123;</span><br><span class="line">		String cur = desCity.get(i);</span><br><span class="line">		re[ticketNum-ticketLeft+<span class="number">1</span>] = cur;</span><br><span class="line">		desCity.remove(i);</span><br><span class="line">		graph.put(departCity, desCity);</span><br><span class="line">		<span class="keyword">if</span>(isDFS(graph,cur,ticketLeft-<span class="number">1</span>,ticketNum,re))</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">true</span>;;</span><br><span class="line">		desCity.add(i,cur);</span><br><span class="line">		graph.put(departCity, desCity);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>。    </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2017/12/31/lee-347/">LeetCode 347 Top K Frequent Elements</a></h1>
-  
-
-      
-        <time datetime="2018-01-01T00:16:23.506Z">2017-12-31</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/top-k-frequent-elements" target="_blank" rel="noopener">LeetCode 347 Top K Frequent Elements</a></strong></p>
-<p>Given a non-empty array of integers, return the <strong><em>k</em></strong> most frequent elements.</p>
-<p>For example,<br>Given <code>[1,1,1,2,2,3]</code> and k = 2, return <code>[1,2]</code>.</p>
-<p><strong>Note:</strong>  </p>
-<ul>
-<li>You may assume <em>k</em> is always valid, 1 ≤ <em>k</em> ≤ number of unique elements.</li>
-<li>Your algorithm’s time complexity <strong>must be</strong> better than O(<em>n</em> log <em>n</em>), where <em>n</em> is the array’s size.</li>
-</ul>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个非空整数数组，返回其前k个出现次数最多的元素。</p>
-<p>注意：<br>你可以假设k总是有效的，1 ≤ k ≤ 独立元素的个数。<br>你的算法时间复杂度必须优于O(n log n)，其中n是数组的长度。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是经典题，解法是HeapSelect：求最大k个数，就先对前k个元素建最小堆，然后遍历k到最后一个数，若它大于栈顶就替换且做minHeapify。最后结果是<br>最大的k个数在数组的前k个位置且堆顶（数组第一个数）为k个数的最小。堆并没有排序。<br>结果并不需要从大到小输出。</p>
-<ol>
-<li>统计词频</li>
-<li>建key-value数组</li>
-<li>heapSelect</li>
-<li>把数组前k个数加入到结果集中</li>
-</ol>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>如果需要按大到小输出结果，需要对result进行排序O(klogk)，数组第一个也就是最小堆堆顶是这k个数中最小。</li>
-<li>key-pair版堆选择算法。</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> heapq <span class="keyword">import</span> heapreplace, heappush</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">topKFrequent</span><span class="params">(self, nums: List[int], k: int)</span> -&gt; List[int]:</span></span><br><span class="line">	dict = &#123;&#125;</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(nums)):</span><br><span class="line">		<span class="keyword">if</span> nums[i] <span class="keyword">not</span> <span class="keyword">in</span> dict:</span><br><span class="line">			dict[nums[i]] = <span class="number">1</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			dict[nums[i]] += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">	freq_dict = [(v, k) <span class="keyword">for</span> k, v <span class="keyword">in</span> dict.items()]</span><br><span class="line">	res = []</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(freq_dict)):</span><br><span class="line">		<span class="keyword">if</span> i &lt; k:</span><br><span class="line">			heappush(res, freq_dict[i])</span><br><span class="line">		<span class="keyword">elif</span> freq_dict[i][<span class="number">0</span>] &gt; res[<span class="number">0</span>][<span class="number">0</span>]:</span><br><span class="line">			heapreplace(res, freq_dict[i])</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> [v <span class="keyword">for</span> k, v <span class="keyword">in</span> res]</span><br></pre></td></tr></table></figure>
-<p>统计词频部分可以用Counter优化。freq_dict有两个作用：将key和频率互换，还可以将dict转换成list方便和k比较<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> heapq <span class="keyword">import</span> heapreplace, heappush</span><br><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> Counter</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">topKFrequent</span><span class="params">(self, nums: List[int], k: int)</span> -&gt; List[int]:</span></span><br><span class="line">	dict = Counter(nums)</span><br><span class="line">	freq_dict = [(v, k) <span class="keyword">for</span> k, v <span class="keyword">in</span> dict.items()]</span><br><span class="line">	res = []</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(freq_dict)):</span><br><span class="line">		<span class="keyword">if</span> i &lt; k:</span><br><span class="line">			heappush(res, freq_dict[i])</span><br><span class="line">		<span class="keyword">elif</span> freq_dict[i][<span class="number">0</span>] &gt; res[<span class="number">0</span>][<span class="number">0</span>]:</span><br><span class="line">			heapreplace(res, freq_dict[i])</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> [v <span class="keyword">for</span> k, v <span class="keyword">in</span> res]</span><br></pre></td></tr></table></figure></p>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;Integer&gt; <span class="title">topKFrequent</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">	List&lt;Integer&gt; result = <span class="keyword">new</span> ArrayList&lt;Integer&gt;();</span><br><span class="line">	HashMap&lt;Integer, Integer&gt; map = <span class="keyword">new</span> HashMap&lt;Integer, Integer&gt;();</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums.length;i++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(map.containsKey(nums[i]))</span><br><span class="line">			map.put(nums[i], map.get(nums[i])+<span class="number">1</span>);</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			map.put(nums[i], <span class="number">1</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	Node[] f = <span class="keyword">new</span> Node[map.size()];</span><br><span class="line">	Iterator it = map.entrySet().iterator();</span><br><span class="line">	<span class="keyword">int</span> j=<span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span>(it.hasNext())&#123;</span><br><span class="line">		Map.Entry pair = (Map.Entry)it.next();</span><br><span class="line">		Node node = <span class="keyword">new</span> Node((<span class="keyword">int</span>)pair.getKey(), (<span class="keyword">int</span>)pair.getValue());</span><br><span class="line">		f[j++] = node;</span><br><span class="line">	&#125;</span><br><span class="line">	hselect(f, k);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;k;i++)</span><br><span class="line">		result.add(f[i].key);</span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line">  </span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">hselect</span><span class="params">(Node a[], <span class="keyword">int</span> k)</span></span>&#123;</span><br><span class="line">	<span class="comment">// min heap with size=k</span></span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = k / <span class="number">2</span>; i &gt;= <span class="number">0</span>; i--) &#123;</span><br><span class="line">		minHeapify(a, i, k);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = k; i &lt; a.length; i++) &#123;</span><br><span class="line">		<span class="keyword">if</span> (a[i].value &gt; a[<span class="number">0</span>].value) &#123;</span><br><span class="line">			swap(a, i, <span class="number">0</span>);</span><br><span class="line">			minHeapify(a, <span class="number">0</span>, k);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">minHeapify</span><span class="params">(Node[] arr, <span class="keyword">int</span> i, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> smallest = i;</span><br><span class="line">	<span class="keyword">int</span> l = left(i);</span><br><span class="line">	<span class="keyword">int</span> r = l + <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">if</span> (l &lt; n &amp;&amp; arr[l].key &lt; arr[smallest].key)</span><br><span class="line">		smallest = l;</span><br><span class="line">	<span class="keyword">if</span> (r &lt; n &amp;&amp; arr[r].key &lt; arr[smallest].key)</span><br><span class="line">		smallest = r;</span><br><span class="line">	<span class="keyword">if</span> (smallest != i) &#123;</span><br><span class="line">		swap(arr, i, smallest);</span><br><span class="line">		minHeapify(arr, smallest, n);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">left</span><span class="params">(<span class="keyword">int</span> i)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">2</span> * i + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">swap</span><span class="params">(Node[] arr, <span class="keyword">int</span> index1, <span class="keyword">int</span> index2)</span> </span>&#123;</span><br><span class="line">	Node tmp = arr[index1];</span><br><span class="line">	arr[index1] = arr[index2];</span><br><span class="line">	arr[index2] = tmp;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Node</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> key;</span><br><span class="line">	<span class="keyword">int</span> value;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">Node</span><span class="params">(<span class="keyword">int</span> k, <span class="keyword">int</span> v)</span></span>&#123;</span><br><span class="line">		key = k;</span><br><span class="line">		value = v;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span></span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"("</span>+key+<span class="string">","</span>+value+<span class="string">")"</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nlogk)</code>，空间复杂度<code>O(1)</code>。时间复杂度是O(n)+O(nlogk),空间复杂度为O(m)+O(1),m为不重复的元素个数(unique element)。</p>
-<hr>
-<h3 id="算法II解题思路："><a href="#算法II解题思路：" class="headerlink" title="算法II解题思路："></a><strong>算法II解题思路：</strong></h3><p>此题关于数组频数，所以考虑用桶排序(bucket sort)</p>
-<ol>
-<li>统计词频（元素-&gt;频数）</li>
-<li>桶排序：n+1个桶（n为原数组大小），把元素放入频数对应的桶号（频数-&gt;元素），用List把这些元素串起来。</li>
-<li>逆序（从大到小）遍历不为空的桶，输入结果直至k个。<br>与上面算法不同的是结果是从大到小输出。数据类型有两个HashMap存储元素对应的频数，而List数组List<integer>[]反过来存储频数对应的元素。</integer></li>
-</ol>
-<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>桶排序要用List串联起元素，例如[1,2],k=2，频数为1的元素有两个，所以桶的内容应该是List。Python用[[] for _ in range(len(nums) + 1)]  </li>
-<li>桶数量为原数组大小+1，例如一个元素[1], 它的频数为1，而频数为0是不会出现。  </li>
-<li>逆序遍历所有桶，只要结果集个数为k，就停止循环。  </li>
-</ol>
-<h3 id="Python代码：-1"><a href="#Python代码：-1" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> Counter</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">topKFrequent</span><span class="params">(self, nums: List[int], k: int)</span> -&gt; List[int]:</span></span><br><span class="line">	di = Counter(nums)</span><br><span class="line">	freq = [[] <span class="keyword">for</span> _ <span class="keyword">in</span> range(len(nums) + <span class="number">1</span>)]</span><br><span class="line">	<span class="keyword">for</span> key, val <span class="keyword">in</span> di.items():</span><br><span class="line">		freq[val].append(key)</span><br><span class="line">	res = []</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(freq) - <span class="number">1</span>, <span class="number">0</span>, <span class="number">-1</span>):</span><br><span class="line">		<span class="keyword">for</span> n <span class="keyword">in</span> freq[i]:</span><br><span class="line">			<span class="keyword">if</span> k &gt; <span class="number">0</span>:</span><br><span class="line">				res.append(n)</span><br><span class="line">				k -= <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-<h3 id="Java代码：-1"><a href="#Java代码：-1" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;Integer&gt; <span class="title">topKFrequent2</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">	 List&lt;Integer&gt; result = <span class="keyword">new</span> ArrayList&lt;Integer&gt;();</span><br><span class="line">	 HashMap&lt;Integer, Integer&gt; map = <span class="keyword">new</span> HashMap&lt;Integer, Integer&gt;();</span><br><span class="line">	 <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums.length;i++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(map.containsKey(nums[i]))</span><br><span class="line">			map.put(nums[i], map.get(nums[i])+<span class="number">1</span>);</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			map.put(nums[i], <span class="number">1</span>);</span><br><span class="line">	 &#125;</span><br><span class="line">	 List&lt;Integer&gt;[] f = <span class="keyword">new</span> List[nums.length+<span class="number">1</span>];</span><br><span class="line">	 Iterator it = map.entrySet().iterator();</span><br><span class="line">	 <span class="keyword">while</span>(it.hasNext())&#123;</span><br><span class="line">		 Map.Entry pair = (Map.Entry)it.next();</span><br><span class="line">		 <span class="keyword">if</span>(f[(<span class="keyword">int</span>)pair.getValue()]==<span class="keyword">null</span>)</span><br><span class="line">			 f[(<span class="keyword">int</span>)pair.getValue()] = <span class="keyword">new</span> ArrayList();</span><br><span class="line">		 f[(<span class="keyword">int</span>)pair.getValue()].add((<span class="keyword">int</span>)pair.getKey());</span><br><span class="line">	 &#125;</span><br><span class="line">	 <span class="keyword">for</span>(<span class="keyword">int</span> i=f.length-<span class="number">1</span>;i&gt;<span class="number">0</span> &amp;&amp; result.size()&lt;k;i--)</span><br><span class="line">		 <span class="keyword">if</span>(f[i]!=<span class="keyword">null</span>)&#123;</span><br><span class="line">			 result.addAll(f[i]);</span><br><span class="line">		 &#125;</span><br><span class="line">	 <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>。时间复杂度是O(n)+O(n),空间复杂度为O(m)+O(n),m为不重复的元素个数(unique element)。</p>
-<h3 id="Follow-up"><a href="#Follow-up" class="headerlink" title="Follow-up:"></a><strong>Follow-up:</strong></h3><ol>
-<li>题目可以包装成：给定一个文档，返回其前k个出现次数最多的单词。<br>Given a document, return the k most frequent words. Assume punctuation are removed.<br>Given a non-empty array of strings, return the k most frequent elements.  </li>
-<li>如果写出了桶排序，可以考虑假设机器memory有限，只够O(m)，不能一次性读出整个文档，也就是不能用桶排序，只能用堆选择。</li>
-<li>如果写出了堆选择，可以考虑k比较大，如果进一步提高时间复杂度，也就是只能O(n),符合这个要求就只有计数排序，基数排序和桶排序。</li>
-</ol>
-<p>这是priorityQueue实现的Heap（对于基本数据类型默认是最小堆，但由于Node是自定义，必须实现Comparator），由于PQ需要额外空间，所以<br>较少用。</p>
-<h3 id="Java代码：-2"><a href="#Java代码：-2" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;Integer&gt; <span class="title">topKFrequent3</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">	 List&lt;Integer&gt; result = <span class="keyword">new</span> ArrayList&lt;Integer&gt;();</span><br><span class="line">	 HashMap&lt;Integer, Integer&gt; map = <span class="keyword">new</span> HashMap&lt;Integer, Integer&gt;();</span><br><span class="line">	 <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums.length;i++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(map.containsKey(nums[i]))</span><br><span class="line">			map.put(nums[i], map.get(nums[i])+<span class="number">1</span>);</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			map.put(nums[i], <span class="number">1</span>);</span><br><span class="line">	 &#125;</span><br><span class="line">	 Node[] f = <span class="keyword">new</span> Node[map.size()];</span><br><span class="line">	 Iterator it = map.entrySet().iterator();</span><br><span class="line">	 <span class="keyword">int</span> j=<span class="number">0</span>;</span><br><span class="line">	 <span class="keyword">while</span>(it.hasNext())&#123;</span><br><span class="line">		Map.Entry pair = (Map.Entry)it.next();</span><br><span class="line">		Node node = <span class="keyword">new</span> Node((<span class="keyword">int</span>)pair.getKey(), (<span class="keyword">int</span>)pair.getValue());</span><br><span class="line">		f[j++] = node;</span><br><span class="line">	 &#125;</span><br><span class="line">	 </span><br><span class="line">	 PriorityQueue&lt;Node&gt; minHeap = <span class="keyword">new</span> PriorityQueue&lt;Node&gt;(k,</span><br><span class="line">			<span class="keyword">new</span> Comparator&lt;Node&gt;() &#123;</span><br><span class="line">				<span class="meta">@Override</span></span><br><span class="line">				<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(Node o1, Node o2)</span> </span>&#123;</span><br><span class="line">					<span class="keyword">return</span> o1.value - o2.value;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">	);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; f.length; i++) &#123;</span><br><span class="line">		<span class="keyword">if</span> (i &lt; k) &#123;</span><br><span class="line">			minHeap.offer(f[i]);</span><br><span class="line">		&#125; </span><br><span class="line">		<span class="keyword">else</span> &#123;</span><br><span class="line">			Node minNode = minHeap.peek();</span><br><span class="line">			<span class="keyword">if</span> (f[i].value &gt; minNode.value) &#123;</span><br><span class="line">				minHeap.poll();</span><br><span class="line">				minHeap.offer(f[i]);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span>(!minHeap.isEmpty())</span><br><span class="line">		result.add(minHeap.poll().key);</span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2017/12/31/lee-350/">LeetCode 350 Intersection of Two Arrays II</a></h1>
-  
-
-      
-        <time datetime="2017-12-31T21:41:43.968Z">2017-12-31</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/intersection-of-two-arrays-ii" target="_blank" rel="noopener">LeetCode 350 Intersection of Two Arrays II</a></strong></p>
-<p>Given two arrays, write a function to compute their intersection.</p>
-<p><strong>Example:</strong><br>Given <em>nums1</em> = <code>[1, 2, 2, 1]</code>, <em>nums2</em> = <code>[2, 2]</code>, return <code>[2, 2]</code>.</p>
-<p><strong>Note:</strong>  </p>
-<ul>
-<li>Each element in the result should appear as many times as it shows in both arrays.</li>
-<li>The result can be in any order.</li>
-</ul>
-<p><strong>Follow up:</strong>  </p>
-<ul>
-<li>What if the given array is already sorted? How would you optimize your algorithm?</li>
-<li>What if <em>nums1</em>‘s size is small compared to <em>nums2</em>‘s size? Which algorithm is better?</li>
-<li>What if elements of <em>nums2</em> are stored on disk, and the memory is limited such that you cannot load all elements into the memory at once?</li>
-</ul>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定两个数组，编写函数计算它们的交集。  </p>
-<p>注意：<br>结果中的每个元素的出现次数应与其在两个数组中同时出现的次数一样多。 结果可以采用任意顺序。  </p>
-<p>进一步思考：<br>如果数组已经排好序，怎样优化你的算法？<br>如果nums1的长度＜nums2的长度？哪一种算法更好？<br>如果nums2的元素存储在磁盘上，并且内存大小有限，不足以将其一次性的加载到内存中。此时应当怎样做？  </p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>类似于L349，但由于可允许重复，所以改hashSet成hashMap记录频数。具体而言，将较小的数组的所有元素放入hashMap且统计频数，<br>然后遍历另一个数组判断是否相同，相同的话放入ArrayList的结果集中且频数减一。</p>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] intersect(<span class="keyword">int</span>[] nums1, <span class="keyword">int</span>[] nums2) &#123;</span><br><span class="line">	<span class="comment">//swap and make sure length of nums1 is smaller</span></span><br><span class="line">	<span class="keyword">if</span>(nums1.length&gt;nums2.length)&#123;</span><br><span class="line">		<span class="keyword">int</span>[] tmp = nums1;</span><br><span class="line">		nums1 = nums2;</span><br><span class="line">		nums2 = tmp;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	Map&lt;Integer, Integer&gt; map=<span class="keyword">new</span> HashMap&lt;Integer, Integer&gt;();</span><br><span class="line">	List&lt;Integer&gt; result=<span class="keyword">new</span> ArrayList();</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums1.length;i++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(map.containsKey(nums1[i]))</span><br><span class="line">			map.put(nums1[i], map.get(nums1[i])+<span class="number">1</span>);</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			map.put(nums1[i],<span class="number">1</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;nums2.length;i++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(map.containsKey(nums2[i]) &amp;&amp; map.get(nums2[i])&gt;<span class="number">0</span>)&#123;</span><br><span class="line">			result.add(nums2[i]);</span><br><span class="line">			map.put(nums2[i], map.get(nums2[i])-<span class="number">1</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result.stream().mapToInt(i-&gt;i).toArray();      </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>m和n为数组长度m&gt;n，时间复杂度为<code>O(m)</code>，空间复杂度<code>O(n)</code>。    </p>
-<hr>
-<h3 id="算法II解题思路："><a href="#算法II解题思路：" class="headerlink" title="算法II解题思路："></a><strong>算法II解题思路：</strong></h3><p>另一个解题思路是，先对它们排序，然后类似于mergeSort算法维持两个指针分别在两个数组搜索相同元素。</p>
-<h3 id="Java代码：-1"><a href="#Java代码：-1" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] intersect(<span class="keyword">int</span>[] nums1, <span class="keyword">int</span>[] nums2) &#123;</span><br><span class="line">	List&lt;Integer&gt; result=<span class="keyword">new</span> ArrayList();</span><br><span class="line">	Arrays.sort(nums1);</span><br><span class="line">	Arrays.sort(nums2);</span><br><span class="line">	<span class="keyword">int</span> i=<span class="number">0</span>, j=<span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span>(i&lt;nums1.length &amp;&amp; j&lt;nums2.length)&#123;</span><br><span class="line">		<span class="keyword">if</span>(nums1[i]==nums2[j])&#123;</span><br><span class="line">			result.add(nums1[i]);</span><br><span class="line">			i++;</span><br><span class="line">			j++;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(nums1[i]&lt;nums2[j])</span><br><span class="line">			i++;</span><br><span class="line">		<span class="keyword">else</span> j++;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result.stream().mapToInt(k-&gt;k).toArray();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>m和n为数组长度m&gt;n，时间复杂度为<code>O(mlogm)</code>，空间复杂度<code>O(1)</code>。此算法空间较优，但时间稍逊。</p>
-<ol>
-<li>如果数组已经排好序，怎样优化你的算法？<br>用第二个算法，时间复杂度为O(m),但空间复杂度可以优化为O(1)  </li>
-<li>如果nums1的长度＜nums2的长度？哪一种算法更好？<br>方法一更优，因为nums1空间用的比较少情况下</li>
-<li>如果nums2的元素存储在磁盘上，并且内存大小有限，不足以将其一次性的加载到内存中。此时应当怎样做？<br>也应该用方法一，因为它不需要把nums2数组一次性加载到内存中。假设内存大小为L，每次L大小的内存可解决<br>部分问题，时间复杂度为O(m),然后有n/L次，最后结果为<code>O(mn)</code>，表示空间有限时候，hashSet的方法不比先排序快。</li>
-</ol>
-<p>第三种方法是一个数组排序，另一个可以不排序。不排序数组的每个元素在排序数组中用二分法查找。</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -392,23 +374,23 @@ Explanation: The array cannot be partitioned into equal sum subsets.
   <ul class="entry">
     
       <li>
+        <a href="/2021/12/16/lee-829/">LeetCode 829 Consecutive Numbers Sum</a>
+      </li>
+    
+      <li>
+        <a href="/2021/12/16/lee-041/">LeetCode 041 First Missing Positive</a>
+      </li>
+    
+      <li>
+        <a href="/2021/12/16/lee-588/">LeetCode 588 Design In-Memory File System</a>
+      </li>
+    
+      <li>
+        <a href="/2021/12/16/lee-1041/">LeetCode 1041 Robot Bounded In Circle</a>
+      </li>
+    
+      <li>
         <a href="/2021/12/16/lee-680/">LeetCode 680 Valid Palindrome II</a>
-      </li>
-    
-      <li>
-        <a href="/2021/12/15/lee-811/">LeetCode 811 Subdomain Visit Count</a>
-      </li>
-    
-      <li>
-        <a href="/2021/12/15/lee-1326/">LeetCode 1326 Minimum Number of Taps to Open to Water a Garden</a>
-      </li>
-    
-      <li>
-        <a href="/2021/12/15/lee-055/">LeetCode 055 Jump Game</a>
-      </li>
-    
-      <li>
-        <a href="/2021/12/15/lee-045/">LeetCode 045 Jump Game II</a>
       </li>
     
   </ul>
@@ -421,7 +403,7 @@ Explanation: The array cannot be partitioned into equal sum subsets.
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.33px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 16.67px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 12px;">Binary Tree</a> <a href="/tags/Bloomberg/" style="font-size: 10px;">Bloomberg</a> <a href="/tags/Breadth-First-Search/" style="font-size: 11.33px;">Breadth-First Search</a> <a href="/tags/Breadth-first-Search/" style="font-size: 14.67px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 19.33px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15.33px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 12px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 18px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 11.33px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 11.33px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 14px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 15.33px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 18.67px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 14px;">Linked List</a> <a href="/tags/Math/" style="font-size: 12.67px;">Math</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 12px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.67px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Python-KB/" style="font-size: 17.33px;">Python KB</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.67px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 12px;">Sort</a> <a href="/tags/Stack/" style="font-size: 16.67px;">Stack</a> <a href="/tags/String/" style="font-size: 15.33px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.33px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.67px;">Tree</a> <a href="/tags/Trie/" style="font-size: 10px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 15.33px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 10.67px;">Union Find</a> <a href="/tags/tik/" style="font-size: 15.33px;">tik</a> <a href="/tags/tiktok/" style="font-size: 12px;">tiktok</a>
+    <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.33px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 16.67px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 12px;">Binary Tree</a> <a href="/tags/Bloomberg/" style="font-size: 10px;">Bloomberg</a> <a href="/tags/Breadth-First-Search/" style="font-size: 11.33px;">Breadth-First Search</a> <a href="/tags/Breadth-first-Search/" style="font-size: 14.67px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 19.33px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15.33px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 12px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 18px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 11.33px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 11.33px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 14px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 15.33px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 18.67px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 14px;">Linked List</a> <a href="/tags/Math/" style="font-size: 14px;">Math</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 12px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.67px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Python-KB/" style="font-size: 17.33px;">Python KB</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.67px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 12px;">Sort</a> <a href="/tags/Stack/" style="font-size: 16.67px;">Stack</a> <a href="/tags/String/" style="font-size: 15.33px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.33px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.67px;">Tree</a> <a href="/tags/Trie/" style="font-size: 10.67px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 15.33px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 10.67px;">Union Find</a> <a href="/tags/tik/" style="font-size: 14.67px;">tik</a> <a href="/tags/tiktok/" style="font-size: 12px;">tiktok</a>
   </div>
 </div>
 
