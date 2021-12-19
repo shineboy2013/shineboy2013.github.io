@@ -53,6 +53,63 @@
     <header>
       
   
+    <h1 class="title"><a href="/2020/04/26/quick-sort/">快速排序</a></h1>
+  
+
+      
+        <time datetime="2020-04-27T06:45:44.547Z">2020-04-26</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><ol>
+<li>递归找pivot，然后按小于pivot和大于等于pivot分成两组。每轮递归，pivot肯定在正确（最终）位置上</li>
+<li>partition方法类似于Leetcode75的sort colors一样用两个指针i和noSmallerIdx。i是循环指针，而<br>noSmallerIdx是第二组大于等于pivot的首元素，或者理解为比pivot小的元素（指针i指着）将要被交换<br>的位置（比pivot大的元素）=比pivot小的元素的最后一个+1.  </li>
+<li>循环结束后，将pivot交换到正确的位置上。  </li>
+</ol>
+<p><img src="/images/quicksort.png" alt=""><br>i指向4，因为4小于pivot，所以要换到前面去，跟6置换，noSmallerIdx向后移。  </p>
+<h3 id="应用："><a href="#应用：" class="headerlink" title="应用："></a><strong>应用：</strong></h3><ol>
+<li>排序</li>
+<li>快速选择quick select</li>
+<li>partition，如Leetcode 75</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">quick_sort</span><span class="params">(self, nums: List[int])</span>:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> nums:</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	self.q_sort(nums, <span class="number">0</span>, len(nums) - <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">q_sort</span><span class="params">(self, nums: List[int], start: int, end: int)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> start &gt;= end:</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	pivot = self.partition(nums, start, end)</span><br><span class="line">	self.q_sort(nums, start, pivot - <span class="number">1</span>)</span><br><span class="line">	self.q_sort(nums, pivot + <span class="number">1</span>, end)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">partition</span><span class="params">(self, nums: List[int], start: int, end: int)</span>:</span></span><br><span class="line">	no_smaller_index, pivot = start, end</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(start, end):</span><br><span class="line">		<span class="keyword">if</span> nums[i] &lt; nums[pivot]:</span><br><span class="line">			nums[no_smaller_index], nums[i] = nums[i], nums[no_smaller_index]</span><br><span class="line">			no_smaller_index += <span class="number">1</span></span><br><span class="line">	nums[no_smaller_index], nums[end] = nums[end], nums[no_smaller_index]</span><br><span class="line">	<span class="keyword">return</span> no_smaller_index</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nlogn)</code>，空间复杂度<code>O(1)</code>。</p>
+<h2 id="Quick-Select"><a href="#Quick-Select" class="headerlink" title="Quick Select"></a>Quick Select</h2><p>选择第k小的数(下标从0开始)  </p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>left &gt; right不再是等于，因为几个数相等的情况，排序的时候不用再移动，但第k小里面需要继续递归。  </li>
+<li>binary select是单边递归，而不是双边。要判断pivot是否等于k。  </li>
+<li>递归调用仍用k，而不是跟pivot_pos相关，因为k是下标位置  </li>
+<li>partition中range用[start, end)而不是len </li>
+</ol>
+<h3 id="Python代码：-1"><a href="#Python代码：-1" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">quick_select</span><span class="params">(self, nums: List[int], k: int)</span> -&gt; int:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> nums:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line">	<span class="keyword">return</span> self.q_select(nums, <span class="number">0</span>, len(nums) - <span class="number">1</span>, k)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">q_select</span><span class="params">(self, nums: List[int], start: int, end: int, k: int)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> start &gt; end:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line">	pivot = self.partition(nums, start, end)</span><br><span class="line">	<span class="keyword">if</span> k == pivot:</span><br><span class="line">		<span class="keyword">return</span> nums[pivot]</span><br><span class="line">	<span class="keyword">if</span> k &lt; pivot:</span><br><span class="line">		<span class="keyword">return</span> self.q_select(nums, start, pivot - <span class="number">1</span>, k)</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		<span class="keyword">return</span> self.q_select(nums, pivot + <span class="number">1</span>, end, k)</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>。</p>
+<h2 id="Partition"><a href="#Partition" class="headerlink" title="Partition"></a>Partition</h2><p>用于原位排序，将相应的元素放入该放的位置直到不满足条件为止  </p>
+<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li><strong>i不一定会移动</strong>，放在else里面    </li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sort</span><span class="params">(self, nums: List[int])</span> -&gt; int:</span></span><br><span class="line">	i = <span class="number">0</span></span><br><span class="line">	<span class="keyword">while</span> i &lt; len(nums):</span><br><span class="line">		<span class="keyword">if</span> &lt;condition&gt;</span><br><span class="line">			self.swap(nums, i, j)</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			i += <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">swap</span><span class="params">(self, nums, i, j)</span>:</span></span><br><span class="line">	nums[i], nums[j] = nums[j], nums[i]</span><br><span class="line">``` </span><br><span class="line"></span><br><span class="line"><span class="comment">### **Java代码：**</span></span><br><span class="line">``` java</span><br><span class="line">public void sort(int[] arr) &#123;</span><br><span class="line">	<span class="keyword">if</span>(arr == null || arr.length == <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	quickSort(arr, <span class="number">0</span>, arr.length - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void quickSort(int[] arr, int left, int right) &#123;</span><br><span class="line">	<span class="keyword">if</span>(left &gt;= right)</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	int pivotPos = partition(arr, left, right);</span><br><span class="line">	quickSort(arr, left, pivotPos - <span class="number">1</span>);</span><br><span class="line">	quickSort(arr, pivotPos + <span class="number">1</span>, right);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int partition(int[] arr, int left, int right) &#123;</span><br><span class="line">	int noSmallerIdx = left;</span><br><span class="line">	int pivot = arr[right];</span><br><span class="line">	<span class="keyword">for</span>(int i = left; i &lt; right; i++) &#123;</span><br><span class="line">		<span class="keyword">if</span>(arr[i] &lt; pivot) </span><br><span class="line">			swap(arr, noSmallerIdx++, i);</span><br><span class="line">	&#125;</span><br><span class="line">	swap(arr, noSmallerIdx, right);</span><br><span class="line">	<span class="keyword">return</span> noSmallerIdx;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void swap(int[] arr, int i, int j) &#123;</span><br><span class="line">	int temp = arr[i];</span><br><span class="line">	arr[i] = arr[j];</span><br><span class="line">	arr[j] = temp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2020/04/26/bst-iterative/">BST的非递归中序，前序，后序遍历</a></h1>
   
 
@@ -302,80 +359,6 @@ Output: [4,3]</pre>
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2020/04/20/lee-1197/">LeetCode 1197 Minimum Knight Moves</a></h1>
-  
-
-      
-        <time datetime="2020-04-21T02:01:15.387Z">2020-04-20</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/minimum-knight-moves/" target="_blank" rel="noopener">LeetCode 1197 Minimum Knight Moves</a></strong></p>
-<p>In an infinite chess board with coordinates from <code>-infinity</code> to <code>+infinity</code>, you have a knight at square <code>[0, 0]</code>.</p>
-<p>A knight has 8 possible moves it can make, as illustrated below. Each move is two squares in a cardinal direction, then one square in an orthogonal direction.</p>
-<p><img src="https://assets.leetcode.com/uploads/2018/10/12/knight.png" alt=""></p>
-<p>Return the minimum number of steps needed to move the knight to the square <code>[x, y]</code>.  It is guaranteed the answer exists.</p>
-<p>Example 1:</p>
-<pre>Input: x = 2, y = 1
-Output: 1
-Explanation: [0, 0] → [2, 1]
-</pre>
-
-<p>Example 2:</p>
-<pre>Input: x = 5, y = 5
-Output: 4
-Explanation: [0, 0] → [2, 1] → [4, 2] → [3, 4] → [5, 5]
-</pre>
-
-<p>Constraints:</p>
-<ul>
-<li><code>|x| + |y| &lt;= 300</code></li>
-</ul>
-<p>Because x and y are constrained to be in range[-300, 300], we can use BFS to find the minimum steps needed to reach target(x, y). Furthermore, we can only consider the case that x &gt;=0 &amp;&amp; y &gt;=0 since the chess board is symmetric.  The bfs implementation is pretty straightforward. There are two important points you need to be careful with.</p>
-<ol>
-<li>Pruning. We can limit the search dimension within 310 * 310. Any moves that lead to a position that is outside this box will not yield an optimal result.</li>
-</ol>
-<p>2. Initially, you used a Set of type int[] to track visited positions. This caused TLE because you didn’t overwrite the hashCode and equals methods for int[]. As a result, Set uses the default hashCode and equals method when checking if an element is already in the set. For equals(), The default implementation provided by the JDK is based on memory location — two objects are equal if and only if they are stored in the same memory address. For a comprehensive reading, refer to <a href="https://dzone.com/articles/working-with-hashcode-and-equals-in-java" target="_blank" rel="noopener">https://dzone.com/articles/working-with-hashcode-and-equals-in-java</a></p>
-<p>O(x * y) runtime and space</p>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>象棋一样，走日字到达目标点的最小次数。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这题是最短路径题，第一时间想到BFS。</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>这题是最短路径题，第一时间想到BFS。这是一条典型的单源最短路径问题。用Distance BFS模板</p>
-<ol>
-<li>建距离map。  </li>
-<li>BFS访问。  </li>
-</ol>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>有边界限制</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">minKnightMoves</span><span class="params">(self, x: int, y: int)</span> -&gt; int:</span></span><br><span class="line">	<span class="keyword">return</span> self.bfs(<span class="number">0</span>, <span class="number">0</span>, x, y)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">bfs</span><span class="params">(self, start_x, start_y, target_x, target_y)</span>:</span></span><br><span class="line">	directions = &#123;(<span class="number">2</span>, <span class="number">1</span>), (<span class="number">1</span>, <span class="number">2</span>), (<span class="number">-1</span>, <span class="number">2</span>), (<span class="number">-2</span>, <span class="number">1</span>), (<span class="number">-2</span>, <span class="number">-1</span>), (<span class="number">-1</span>, <span class="number">-2</span>), (<span class="number">1</span>, <span class="number">-2</span>), (<span class="number">2</span>, <span class="number">-1</span>)&#125;</span><br><span class="line">	queue = deque([(start_x, start_y)])</span><br><span class="line">	visited = &#123;(start_x, start_y)&#125;</span><br><span class="line">	distance = &#123;(start_x, start_y): <span class="number">0</span>&#125;</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.popleft()</span><br><span class="line">		<span class="keyword">if</span> node == (target_x, target_y):</span><br><span class="line">			<span class="keyword">return</span> distance[node]</span><br><span class="line"></span><br><span class="line">		<span class="keyword">for</span> direction <span class="keyword">in</span> directions:</span><br><span class="line">			neighbor = (node[<span class="number">0</span>] + direction[<span class="number">0</span>], node[<span class="number">1</span>] + direction[<span class="number">1</span>])</span><br><span class="line">			<span class="keyword">if</span> neighbor <span class="keyword">in</span> visited:</span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			queue.append(neighbor)</span><br><span class="line">			visited.add(neighbor)</span><br><span class="line">			distance[neighbor] = distance[node] + <span class="number">1</span></span><br></pre></td></tr></table></figure>
-<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li><strong>用map记录距离一定要将首节点加入到map中，否则求距离时候会NPE。</strong>  </li>
-<li>visited我一开始实现用HashSet但因为没有实现equals导致LTE，改成矩阵即可。  </li>
-</ol>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span>[] directX = <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;<span class="number">1</span>, <span class="number">1</span>,-<span class="number">1</span>,-<span class="number">1</span>,<span class="number">2</span>,<span class="number">2</span>,-<span class="number">2</span>,-<span class="number">2</span>&#125;;</span><br><span class="line"><span class="keyword">int</span>[] directY = <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;<span class="number">2</span>,-<span class="number">2</span>,<span class="number">2</span>,-<span class="number">2</span>,<span class="number">1</span>,-<span class="number">1</span>,<span class="number">1</span>,-<span class="number">1</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">shortestPath</span><span class="params">(<span class="keyword">boolean</span>[][] grid, Point source, Point destination)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(grid == <span class="keyword">null</span> || grid.length == <span class="number">0</span> || grid[<span class="number">0</span>].length == <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	Queue&lt;Point&gt; q = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">	Map&lt;Point, Integer&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">	map.put(source, <span class="number">0</span>); <span class="comment">// remember</span></span><br><span class="line">	<span class="keyword">boolean</span>[][] visited = <span class="keyword">new</span> <span class="keyword">boolean</span>[grid.length][grid[<span class="number">0</span>].length];</span><br><span class="line">	q.offer(source);</span><br><span class="line">	visited[source.x][source.y] = <span class="keyword">true</span>; <span class="comment">// use hashSet is wrong.</span></span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty()) &#123;</span><br><span class="line">		Point p = q.poll();</span><br><span class="line">		<span class="keyword">if</span>(p.x == destination.x &amp;&amp; p.y == destination.y)</span><br><span class="line">			<span class="keyword">return</span> map.get(p);</span><br><span class="line">		<span class="keyword">for</span>(Point neighbor : getNeighbors(p)) &#123;</span><br><span class="line">			<span class="keyword">if</span>(!isValid(grid, neighbor) || visited[neighbor.x][neighbor.y])</span><br><span class="line">				<span class="keyword">continue</span>;</span><br><span class="line">			q.offer(neighbor);</span><br><span class="line">			visited[neighbor.x][neighbor.y] = <span class="keyword">true</span>;</span><br><span class="line">			map.put(neighbor, map.get(p) + <span class="number">1</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">List&lt;Point&gt; <span class="title">getNeighbors</span><span class="params">(Point point)</span> </span>&#123;</span><br><span class="line">	List&lt;Point&gt; result = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">8</span>; i++) &#123;</span><br><span class="line">		result.add(<span class="keyword">new</span> Point(point.x + directX[i], point.y + directY[i]));</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">isValid</span><span class="params">(<span class="keyword">boolean</span>[][] grid, Point point)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(point.x &gt;= <span class="number">0</span> &amp;&amp; point.x &lt; grid.length &amp;&amp; point.y &gt;= <span class="number">0</span> &amp;&amp; point.y &lt; grid[<span class="number">0</span>].length </span><br><span class="line">			&amp;&amp; !grid[point.x][point.y])</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为棋盘大小<code>O(n*m)</code>，空间复杂度<code>O(n)</code>。  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -400,6 +383,10 @@ Explanation: [0, 0] → [2, 1] → [4, 2] → [3, 4] → [5, 5]
   <ul class="entry">
     
       <li>
+        <a href="/2021/12/19/lee-815/">LeetCode 815 Bus Routes</a>
+      </li>
+    
+      <li>
         <a href="/2021/12/18/lee-809/">LeetCode 809 Expressive Words</a>
       </li>
     
@@ -415,10 +402,6 @@ Explanation: [0, 0] → [2, 1] → [4, 2] → [3, 4] → [5, 5]
         <a href="/2021/12/16/lee-588/">LeetCode 588 Design In-Memory File System</a>
       </li>
     
-      <li>
-        <a href="/2021/12/16/lee-1041/">LeetCode 1041 Robot Bounded In Circle</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -429,7 +412,7 @@ Explanation: [0, 0] → [2, 1] → [4, 2] → [3, 4] → [5, 5]
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.33px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 16.67px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 12px;">Binary Tree</a> <a href="/tags/Bloomberg/" style="font-size: 10px;">Bloomberg</a> <a href="/tags/Breadth-First-Search/" style="font-size: 11.33px;">Breadth-First Search</a> <a href="/tags/Breadth-first-Search/" style="font-size: 14.67px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 19.33px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15.33px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 12px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 18px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 11.33px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 11.33px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 14px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 15.33px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 18.67px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 14px;">Linked List</a> <a href="/tags/Math/" style="font-size: 14px;">Math</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 12px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.67px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Python-KB/" style="font-size: 17.33px;">Python KB</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.67px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 12px;">Sort</a> <a href="/tags/Stack/" style="font-size: 16.67px;">Stack</a> <a href="/tags/String/" style="font-size: 15.33px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.33px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.67px;">Tree</a> <a href="/tags/Trie/" style="font-size: 10.67px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 15.33px;">Two Pointers</a> <a href="/tags/Union-Find/" style="font-size: 10.67px;">Union Find</a> <a href="/tags/tik/" style="font-size: 14.67px;">tik</a> <a href="/tags/tiktok/" style="font-size: 12px;">tiktok</a>
+    <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.33px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 16.67px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 12px;">Binary Tree</a> <a href="/tags/Bloomberg/" style="font-size: 10px;">Bloomberg</a> <a href="/tags/Breadth-First-Search/" style="font-size: 11.33px;">Breadth-First Search</a> <a href="/tags/Breadth-first-Search/" style="font-size: 15.33px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 19.33px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15.33px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 12px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 18px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 11.33px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 11.33px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 14px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 15.33px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 18.67px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 14px;">Linked List</a> <a href="/tags/Math/" style="font-size: 14px;">Math</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 12px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.67px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Python-KB/" style="font-size: 17.33px;">Python KB</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.67px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 12px;">Sort</a> <a href="/tags/Stack/" style="font-size: 16.67px;">Stack</a> <a href="/tags/String/" style="font-size: 15.33px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.33px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.67px;">Tree</a> <a href="/tags/Trie/" style="font-size: 10.67px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 15.33px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.67px;">Union Find</a> <a href="/tags/tik/" style="font-size: 14.67px;">tik</a> <a href="/tags/tiktok/" style="font-size: 12px;">tiktok</a>
   </div>
 </div>
 
