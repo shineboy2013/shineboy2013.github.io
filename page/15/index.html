@@ -53,6 +53,106 @@
     <header>
       
   
+    <h1 class="title"><a href="/2021/12/03/lee-079/">LeetCode 079 Word Search</a></h1>
+  
+
+      
+        <time datetime="2021-12-03T22:10:46.406Z">2021-12-03</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/word-search/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>Given an <code>m x n</code> grid of characters <code>board</code> and a string <code>word</code>, return <code>true</code> <em>if</em> <code>word</code> <em>exists in the grid</em>.<br><br>The word can be constructed from letters of sequentially adjacent cells, where adjacent cells are horizontally or vertically neighboring. The same letter cell may not be used more than once.<br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2020/11/04/word2.jpg" alt=""><br><br><pre><strong>Input:</strong> board = [[“A”,”B”,”C”,”E”],[“S”,”F”,”C”,”S”],[“A”,”D”,”E”,”E”]], word = “ABCCED”<br><strong>Output:</strong> true<br></pre><br><br><strong>Example 2:</strong><br><br><img src="https://assets.leetcode.com/uploads/2020/11/04/word-1.jpg" alt=""><br><br><pre><strong>Input:</strong> board = [[“A”,”B”,”C”,”E”],[“S”,”F”,”C”,”S”],[“A”,”D”,”E”,”E”]], word = “SEE”<br><strong>Output:</strong> true<br></pre><br><br><strong>Example 3:</strong><br><br><img src="https://assets.leetcode.com/uploads/2020/10/15/word3.jpg" alt=""><br><br><pre><strong>Input:</strong> board = [[“A”,”B”,”C”,”E”],[“S”,”F”,”C”,”S”],[“A”,”D”,”E”,”E”]], word = “ABCB”<br><strong>Output:</strong> false<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>m == board.length</code>
+</em>   <code>n = board[i].length</code><br><em>   <code>1 &lt;= m, n &lt;= 6</code>
+</em>   <code>1 &lt;= word.length &lt;= 15</code><br><em>   <code>board</code> and <code>word</code> consists of only lowercase and uppercase English letters.<br><br><em>*Follow up:</em></em> Could you use search pruning to make your solution faster with a larger <code>board</code>?<br><br></div>
+
+<h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>N/A  </p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>难点在于判断不合法情况的顺序，比DFS模板稍复杂。这些语句都在for循环外，按此顺序： word_index和(start_x, start_y)不合法，该点访问过(模板)，字母不等。<br>然后visited为True，循环后visited为False      </li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">OFFSETS = [(<span class="number">0</span>, <span class="number">1</span>), (<span class="number">1</span>, <span class="number">0</span>), (<span class="number">-1</span>, <span class="number">0</span>), (<span class="number">0</span>, <span class="number">-1</span>)]</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span><span class="params">(TestCases)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">exist</span><span class="params">(self, board: List[List[str]], word: str)</span> -&gt; bool:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> board <span class="keyword">or</span> <span class="keyword">not</span> board[<span class="number">0</span>] <span class="keyword">or</span> <span class="keyword">not</span> word:</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">        visited = [[<span class="keyword">False</span> <span class="keyword">for</span> _ <span class="keyword">in</span> range(len(board[<span class="number">0</span>]))] <span class="keyword">for</span> _ <span class="keyword">in</span> range(len(board))]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(len(board)):</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> range(len(board[<span class="number">0</span>])):</span><br><span class="line">                <span class="keyword">if</span> self.dfs(board, i, j, word, <span class="number">0</span>, visited):</span><br><span class="line">                    <span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">dfs</span><span class="params">(self, board, start_x, start_y, word, word_index, visited)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> word_index &gt;= len(word):</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line">        <span class="keyword">if</span> start_x &lt; <span class="number">0</span> <span class="keyword">or</span> start_x &gt;= len(board) <span class="keyword">or</span> start_y &lt; <span class="number">0</span> <span class="keyword">or</span> start_y &gt;= len(board[<span class="number">0</span>]):</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">        <span class="keyword">if</span> visited[start_x][start_y]:</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">        <span class="keyword">if</span> board[start_x][start_y] != word[word_index]:</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">        visited[start_x][start_y] = <span class="keyword">True</span></span><br><span class="line">        <span class="keyword">for</span> dx, dy <span class="keyword">in</span> OFFSETS:</span><br><span class="line">            <span class="keyword">if</span> self.dfs(board, start_x + dx, start_y + dy, word, word_index + <span class="number">1</span>, visited):</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line">        visited[start_x][start_y] = <span class="keyword">False</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">False</span></span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(<em>n</em><sup>2</sup>*<em>3</em><sup>L</sup>)</code>，空间复杂度<code>O(<em>n</em><sup>2</sup>)</code>, n是矩阵长度，L是最大单词长度.<br>3是因为访问过的节点不合法，也就是来的节点不能再走一次，所以只能3个方向    </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2021/12/02/lee-023/">LeetCode 023 Merge k Sorted Lists</a></h1>
+  
+
+      
+        <time datetime="2021-12-03T05:12:37.578Z">2021-12-02</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/merge-k-sorted-lists/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>You are given an array of <code>k</code> linked-lists <code>lists</code>, each linked-list is sorted in ascending order.<br><br><em>Merge all the linked-lists into one sorted linked-list and return it.</em><br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> lists = [[1,4,5],[1,3,4],[2,6]]<br><strong>Output:</strong> [1,1,2,3,4,4,5,6]<br><strong>Explanation:</strong> The linked-lists are:<br>[<br>  1-&gt;4-&gt;5,<br>  1-&gt;3-&gt;4,<br>  2-&gt;6<br>]<br>merging them into one sorted list:<br>1-&gt;1-&gt;2-&gt;3-&gt;4-&gt;4-&gt;5-&gt;6<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> lists = []<br><strong>Output:</strong> []<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> lists = [[]]<br><strong>Output:</strong> []<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>k == lists.length</code>
+</em>   <code>0 &lt;= k &lt;= 10^4</code><br><em>   <code>0 &lt;= lists[i].length &lt;= 500</code>
+</em>   <code>-10^4 &lt;= lists[i][j] &lt;= 10^4</code><br><em>   <code>lists[i]</code> is sorted in <strong>ascending order</strong>.
+</em>   The sum of <code>lists[i].length</code> won’t exceed <code>10^4</code>.<br><br></div>
+
+<h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>N/A  </p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>heap不能比较ListNode大小，要实现<strong>lt</strong>函数或者将(node.val, node)对加入到heap中(此法Leetcode有编译错误但PyCharm可过)  </li>
+<li>出堆后node的next赋None    </li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">ListNode.__lt__ = <span class="keyword">lambda</span> x, y: (x.val &lt; y.val)</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">mergeKLists</span><span class="params">(self, lists: List[Optional[ListNode]])</span> -&gt; Optional[ListNode]:</span></span><br><span class="line">        heap = []</span><br><span class="line">        fake_head = ListNode(<span class="number">0</span>)</span><br><span class="line">        <span class="keyword">for</span> head <span class="keyword">in</span> lists:</span><br><span class="line">            <span class="keyword">if</span> head:</span><br><span class="line">                heappush(heap, head)</span><br><span class="line">        it = fake_head</span><br><span class="line">        <span class="keyword">while</span> heap:</span><br><span class="line">            node = heappop(heap)</span><br><span class="line">            <span class="keyword">if</span> node.next:</span><br><span class="line">                heappush(heap, node.next)</span><br><span class="line">            node.next = <span class="keyword">None</span></span><br><span class="line">            it.next = node</span><br><span class="line">            it = it.next</span><br><span class="line">        <span class="keyword">return</span> fake_head.next</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nlogk)</code>，空间复杂度<code>O(k)</code>.</p>
+<hr>
+<h3 id="算法II解题思路："><a href="#算法II解题思路：" class="headerlink" title="算法II解题思路："></a><strong>算法II解题思路：</strong></h3><p>Devide and Conquer  </p>
+<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>k.next = None因为删除节点，所以赋None，这句不加也行，但作为良好习惯建议加，且不能在i = i.next前加，否则i会变空。      </li>
+<li>查lists是否为空</li>
+</ol>
+<h3 id="Python代码：-1"><a href="#Python代码：-1" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">mergeKLists2</span><span class="params">(self, lists: List[List[<span class="string">'ListNode'</span>]])</span> -&gt; 'ListNode':</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> lists:</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">None</span></span><br><span class="line">	<span class="keyword">return</span> self.merge_sort(lists, <span class="number">0</span>, len(lists) - <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">merge_sort</span><span class="params">(self, lists, start, end)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> start &gt;= end:</span><br><span class="line">		<span class="keyword">return</span> lists[start]</span><br><span class="line">	mid = start + (end - start) // <span class="number">2</span></span><br><span class="line">	li = self.merge_sort(lists, start, mid)</span><br><span class="line">	li2 = self.merge_sort(lists, mid + <span class="number">1</span>, end)</span><br><span class="line">	<span class="keyword">return</span> self.merge_two_lists(li, li2)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">merge_two_lists</span><span class="params">(self, li, li2)</span>:</span></span><br><span class="line">	i, j, res = li, li2, ListNode(<span class="number">0</span>)</span><br><span class="line">	k = res</span><br><span class="line">	<span class="keyword">while</span> i <span class="keyword">and</span> j:</span><br><span class="line">		<span class="keyword">if</span> i.val &lt; j.val:</span><br><span class="line">			k.next = i</span><br><span class="line">			i = i.next</span><br><span class="line">			k = k.next</span><br><span class="line">			k.next = <span class="keyword">None</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			k.next = j</span><br><span class="line">			j = j.next</span><br><span class="line">			k = k.next</span><br><span class="line">			k.next = <span class="keyword">None</span></span><br><span class="line">	<span class="keyword">if</span> i:</span><br><span class="line">		k.next = i</span><br><span class="line">	<span class="keyword">if</span> j:</span><br><span class="line">		k.next = j</span><br><span class="line">	<span class="keyword">return</span> res.next</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>不管多少次递归，每次递归的一层总的节点数为n，而对k做二分，所以递归数为logk, 时间复杂度为<code>O(nlogk)</code>，空间复杂度<code>O(1)</code>.</p>
+<hr>
+<h3 id="算法III解题思路："><a href="#算法III解题思路：" class="headerlink" title="算法III解题思路："></a><strong>算法III解题思路：</strong></h3><p>算法二的迭代法  </p>
+<h3 id="注意事项：-2"><a href="#注意事项：-2" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>输入大小的奇偶处理      </li>
+<li>返回值是lists[0]而不是lists</li>
+</ol>
+<h3 id="Python代码：-2"><a href="#Python代码：-2" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">mergeKLists3</span><span class="params">(self, lists: List[List[<span class="string">'ListNode'</span>]])</span> -&gt; 'ListNode':</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> lists:</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">None</span></span><br><span class="line">	<span class="keyword">while</span> len(lists) &gt; <span class="number">1</span>:</span><br><span class="line">		tmp = []</span><br><span class="line">		<span class="keyword">if</span> len(lists) % <span class="number">2</span> == <span class="number">1</span>:</span><br><span class="line">			lists.append([])</span><br><span class="line">		<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>, len(lists), <span class="number">2</span>):</span><br><span class="line">			tmp.append(self.merge_two_lists(lists[i], lists[i + <span class="number">1</span>]))</span><br><span class="line">		lists = tmp</span><br><span class="line">	<span class="keyword">return</span> lists[<span class="number">0</span>]</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析：-2"><a href="#算法分析：-2" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>同算法二.</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2021/12/01/lee-300/">LeetCode 300 Longest Increasing Subsequence</a></h1>
   
 
@@ -197,92 +297,6 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2021/11/30/lee-380/">LeetCode 380 Insert Delete GetRandom O(1)</a></h1>
-  
-
-      
-        <time datetime="2021-12-01T03:04:29.750Z">2021-11-30</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/insert-delete-getrandom-o1/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>Implement the <code>RandomizedSet</code> class:<br><br><em>   <code>RandomizedSet()</code> Initializes the <code>RandomizedSet</code> object.
-</em>   <code>bool insert(int val)</code> Inserts an item <code>val</code> into the set if not present. Returns <code>true</code> if the item was not present, <code>false</code> otherwise.<br><em>   <code>bool remove(int val)</code> Removes an item <code>val</code> from the set if present. Returns <code>true</code> if the item was present, <code>false</code> otherwise.
-</em>   <code>int getRandom()</code> Returns a random element from the current set of elements (it’s guaranteed that at least one element exists when this method is called). Each element must have the <strong>same probability</strong> of being returned.<br><br>You must implement the functions of the class such that each function works in <strong>average</strong> <code>O(1)</code> time complexity.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input</strong><br>[“RandomizedSet”, “insert”, “remove”, “insert”, “getRandom”, “remove”, “insert”, “getRandom”]<br>[[], [1], [2], [2], [], [1], [2], []]<br><strong>Output</strong><br>[null, true, false, true, 2, true, false, 2]<br><br><strong>Explanation</strong><br>RandomizedSet randomizedSet = new RandomizedSet();<br>randomizedSet.insert(1); // Inserts 1 to the set. Returns true as 1 was inserted successfully.<br>randomizedSet.remove(2); // Returns false as 2 does not exist in the set.<br>randomizedSet.insert(2); // Inserts 2 to the set, returns true. Set now contains [1,2].<br>randomizedSet.getRandom(); // getRandom() should return either 1 or 2 randomly.<br>randomizedSet.remove(1); // Removes 1 from the set, returns true. Set now contains [2].<br>randomizedSet.insert(2); // 2 was already in the set, so return false.<br>randomizedSet.getRandom(); // Since 2 is the only number in the set, getRandom() will always return 2.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>-2&lt;sup&gt;31&lt;/sup&gt; &lt;= val &lt;= 2&lt;sup&gt;31&lt;/sup&gt; - 1</code>
-</em>   At most <code>2 * ``10&lt;sup&gt;5&lt;/sup&gt;</code> calls will be made to <code>insert</code>, <code>remove</code>, and <code>getRandom</code>.<br><em>   There will be <em>*at least one</em></em> element in the data structure when <code>getRandom</code> is called.<br><br></div>
-
-<h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>Dict + List  </p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>检查若删除最后一个元素发现问题，remove中删除key要放在最后，不能放中间  </li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">RandomizedSet</span><span class="params">(TestCases)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.nums = []</span><br><span class="line">        self.key_to_index = &#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">insert</span><span class="params">(self, val: int)</span> -&gt; bool:</span></span><br><span class="line">        <span class="keyword">if</span> val <span class="keyword">in</span> self.key_to_index:</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">        self.nums.append(val)</span><br><span class="line">        self.key_to_index[val] = len(self.nums) - <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">remove</span><span class="params">(self, val: int)</span> -&gt; bool:</span></span><br><span class="line">        <span class="keyword">if</span> val <span class="keyword">not</span> <span class="keyword">in</span> self.key_to_index:</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">        index = self.key_to_index[val]</span><br><span class="line">        last_val = self.nums[len(self.nums) - <span class="number">1</span>]</span><br><span class="line">        self.nums[index] = last_val</span><br><span class="line">        self.key_to_index[last_val] = index</span><br><span class="line">        self.key_to_index.pop(val)  <span class="comment"># remember to put it last</span></span><br><span class="line">        self.nums.pop()</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">getRandom</span><span class="params">(self)</span> -&gt; int:</span></span><br><span class="line">        <span class="keyword">return</span> self.nums[random.randint(<span class="number">0</span>, len(self.nums) - <span class="number">1</span>)]</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(1)</code>，空间复杂度<code>O(n)</code>.</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2021/11/29/lee-269/">LeetCode 269 Alien Dictionary</a></h1>
-  
-
-      
-        <time datetime="2021-11-30T06:09:47.410Z">2021-11-29</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/alien-dictionary/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>There is a new alien language that uses the English alphabet. However, the order among the letters is unknown to you.<br><br>You are given a list of strings <code>words</code> from the alien language’s dictionary, where the strings in <code>words</code> are <strong>sorted lexicographically</strong> by the rules of this new language.<br><br>Return <em>a string of the unique letters in the new alien language sorted in <strong>lexicographically increasing order</strong> by the new language’s rules. If there is no solution, return</em> <code>&quot;&quot;</code><em>. If there are multiple solutions, return <strong>any of them</strong></em>.<br><br>A string <code>s</code> is <strong>lexicographically smaller</strong> than a string <code>t</code> if at the first letter where they differ, the letter in <code>s</code> comes before the letter in <code>t</code> in the alien language. If the first <code>min(s.length, t.length)</code> letters are the same, then <code>s</code> is smaller if and only if <code>s.length &lt; t.length</code>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> words = [“wrt”,”wrf”,”er”,”ett”,”rftt”]<br><strong>Output:</strong> “wertf”<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> words = [“z”,”x”]<br><strong>Output:</strong> “zx”<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> words = [“z”,”x”,”z”]<br><strong>Output:</strong> “”<br><strong>Explanation:</strong> The order is invalid, so return <code>&quot;&quot;</code>.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= words.length &lt;= 100</code>
-</em>   <code>1 &lt;= words[i].length &lt;= 100</code><br>*   <code>words[i]</code> consists of only lowercase English letters.<br><br></div>
-
-<h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>题目要求： 空字符顺序前于非空字母，否则字典不合法，如abc -&gt; ab, c不能前于空字符，无解。简而言之，后面单词不能是前面的前缀return False if len(word) &gt; len(word2) else True     </li>
-<li>模板问题： graph要含所有节点，包括没有边的节点。否则结果会有遗漏graph = Counter({c: [] for word in words for c in word})    </li>
-<li>模板问题： in_degree初始化要对所有节点赋0， in_degree[c] = 0。in_degree = collections.defaultdict(int)并不能产生key  </li>
-<li>模板问题： 第四步判断是否含循环必不可少，题目要求可能不合法，return res if len(graph) == len(res) else ‘’  </li>
-<li>语法错误： graph.items()记得加items。res是str不是list  </li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">alienOrder</span><span class="params">(self, words: List[str])</span> -&gt; str:</span></span><br><span class="line">	<span class="comment"># graph = collections.defaultdict(list)</span></span><br><span class="line">	graph = Counter(&#123;c: [] <span class="keyword">for</span> word <span class="keyword">in</span> words <span class="keyword">for</span> c <span class="keyword">in</span> word&#125;)</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, len(words)):</span><br><span class="line">		<span class="keyword">if</span> <span class="keyword">not</span> self.populate_one_order(words[i - <span class="number">1</span>], words[i], graph):</span><br><span class="line">			<span class="keyword">return</span> <span class="string">''</span></span><br><span class="line">	in_degree = collections.defaultdict(int)</span><br><span class="line">	<span class="keyword">for</span> c <span class="keyword">in</span> graph.keys():</span><br><span class="line">		in_degree[c] = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> key, li <span class="keyword">in</span> graph.items():</span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> range(len(li)):</span><br><span class="line">			in_degree[li[j]] += <span class="number">1</span></span><br><span class="line">	res = <span class="string">''</span></span><br><span class="line">	queue = deque([node <span class="keyword">for</span> node, in_degree_num <span class="keyword">in</span> in_degree.items() <span class="keyword">if</span> in_degree_num == <span class="number">0</span>])</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.popleft()</span><br><span class="line">		res += node</span><br><span class="line">		<span class="keyword">for</span> neighbor <span class="keyword">in</span> graph[node]:</span><br><span class="line">			in_degree[neighbor] -= <span class="number">1</span></span><br><span class="line">			<span class="keyword">if</span> in_degree[neighbor] == <span class="number">0</span>:</span><br><span class="line">				queue.append(neighbor)</span><br><span class="line">	<span class="keyword">return</span> res <span class="keyword">if</span> len(graph) == len(res) <span class="keyword">else</span> <span class="string">''</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">populate_one_order</span><span class="params">(self, word, word2, graph)</span>:</span></span><br><span class="line">	<span class="keyword">for</span> j <span class="keyword">in</span> range(min(len(word), len(word2))):</span><br><span class="line">		<span class="keyword">if</span> word[j] != word2[j]:</span><br><span class="line">			graph[word[j]].append(word2[j])</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">False</span> <span class="keyword">if</span> len(word) &gt; len(word2) <span class="keyword">else</span> <span class="keyword">True</span></span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(V + E)</code>，空间复杂度<code>O(O + E)</code>，V为节点数，E为边数，n为单词数，L为最长单词长度，O = nL， E = L，而空间复杂度图的空间为O + E，而queue空间最多为26条边，26个字母，in_degree空间为O(V)。所以总的时间复杂度为<code>O(nL)</code>，空间复杂度<code>O(nL)</code></p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -307,6 +321,14 @@
   <ul class="entry">
     
       <li>
+        <a href="/2021/12/19/lee-068/">LeetCode 068 Text Justification</a>
+      </li>
+    
+      <li>
+        <a href="/2021/12/19/lee-005/">LeetCode 005 Longest Palindromic Substring</a>
+      </li>
+    
+      <li>
         <a href="/2021/12/19/lee-815/">LeetCode 815 Bus Routes</a>
       </li>
     
@@ -316,14 +338,6 @@
     
       <li>
         <a href="/2021/12/16/lee-829/">LeetCode 829 Consecutive Numbers Sum</a>
-      </li>
-    
-      <li>
-        <a href="/2021/12/16/lee-041/">LeetCode 041 First Missing Positive</a>
-      </li>
-    
-      <li>
-        <a href="/2021/12/16/lee-588/">LeetCode 588 Design In-Memory File System</a>
       </li>
     
   </ul>
@@ -336,7 +350,7 @@
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.33px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 16.67px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 12px;">Binary Tree</a> <a href="/tags/Bloomberg/" style="font-size: 10px;">Bloomberg</a> <a href="/tags/Breadth-First-Search/" style="font-size: 11.33px;">Breadth-First Search</a> <a href="/tags/Breadth-first-Search/" style="font-size: 15.33px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 19.33px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15.33px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 12px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 18px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 11.33px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 11.33px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 14px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 15.33px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 18.67px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 14px;">Linked List</a> <a href="/tags/Math/" style="font-size: 14px;">Math</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 12px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.67px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Python-KB/" style="font-size: 17.33px;">Python KB</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.67px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 12px;">Sort</a> <a href="/tags/Stack/" style="font-size: 16.67px;">Stack</a> <a href="/tags/String/" style="font-size: 15.33px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.33px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.67px;">Tree</a> <a href="/tags/Trie/" style="font-size: 10.67px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 15.33px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.67px;">Union Find</a> <a href="/tags/tik/" style="font-size: 14.67px;">tik</a> <a href="/tags/tiktok/" style="font-size: 12px;">tiktok</a>
+    <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.57px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 16.43px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 12.14px;">Binary Tree</a> <a href="/tags/Bloomberg/" style="font-size: 10px;">Bloomberg</a> <a href="/tags/Breadth-First-Search/" style="font-size: 11.43px;">Breadth-First Search</a> <a href="/tags/Breadth-first-Search/" style="font-size: 15px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 19.29px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 12.14px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12.14px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 10px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 17.86px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 10px;">Facebook</a> <a href="/tags/Graph/" style="font-size: 11.43px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 11.43px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 15.71px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 14.29px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 15px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 18.57px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 14.29px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 10px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 14.29px;">Math</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 12.14px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.71px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Python-KB/" style="font-size: 17.14px;">Python KB</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.71px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 12.14px;">Sort</a> <a href="/tags/Stack/" style="font-size: 16.43px;">Stack</a> <a href="/tags/String/" style="font-size: 15px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.43px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.86px;">Tree</a> <a href="/tags/Trie/" style="font-size: 10.71px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 15px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.71px;">Union Find</a> <a href="/tags/tik/" style="font-size: 14.29px;">tik</a> <a href="/tags/tiktok/" style="font-size: 12.14px;">tiktok</a>
   </div>
 </div>
 

@@ -53,6 +53,92 @@
     <header>
       
   
+    <h1 class="title"><a href="/2021/12/15/lee-1326/">LeetCode 1326 Minimum Number of Taps to Open to Water a Garden</a></h1>
+  
+
+      
+        <time datetime="2021-12-16T05:18:45.763Z">2021-12-15</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/minimum-number-of-taps-to-open-to-water-a-garden/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>There is a one-dimensional garden on the x-axis. The garden starts at the point <code>0</code> and ends at the point <code>n</code>. (i.e The length of the garden is <code>n</code>).<br><br>There are <code>n + 1</code> taps located at points <code>[0, 1, ..., n]</code> in the garden.<br><br>Given an integer <code>n</code> and an integer array <code>ranges</code> of length <code>n + 1</code> where <code>ranges[i]</code> (0-indexed) means the <code>i-th</code> tap can water the area <code>[i - ranges[i], i + ranges[i]]</code> if it was open.<br><br>Return <em>the minimum number of taps</em> that should be open to water the whole garden, If the garden cannot be watered return <strong>-1</strong>.<br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2020/01/16/1685_example_1.png" alt=""><br><br><pre><strong>Input:</strong> n = 5, ranges = [3,4,1,1,0,0]<br><strong>Output:</strong> 1<br><strong>Explanation:</strong> The tap at point 0 can cover the interval [-3,3]<br>The tap at point 1 can cover the interval [-3,5]<br>The tap at point 2 can cover the interval [1,3]<br>The tap at point 3 can cover the interval [2,4]<br>The tap at point 4 can cover the interval [4,4]<br>The tap at point 5 can cover the interval [5,5]<br>Opening Only the second tap will water the whole garden [0,5]<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> n = 3, ranges = [0,0,0,0]<br><strong>Output:</strong> -1<br><strong>Explanation:</strong> Even if you activate all the four taps you cannot water the whole garden.<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> n = 7, ranges = [1,2,1,0,2,1,0,1]<br><strong>Output:</strong> 3<br></pre><br><br><strong>Example 4:</strong><br><br><pre><strong>Input:</strong> n = 8, ranges = [4,0,0,0,0,0,0,0,4]<br><strong>Output:</strong> 2<br></pre><br><br><strong>Example 5:</strong><br><br><pre><strong>Input:</strong> n = 8, ranges = [4,0,0,0,4,0,0,0,4]<br><strong>Output:</strong> 1<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= n &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code>
+</em>   <code>ranges.length == n + 1</code><br>*   <code>0 &lt;= ranges[i] &lt;= 100</code><br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>用多少个水龙头覆盖整个花园</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>两个难点，此题类似于jump game，这一层某个水龙头浇到最远点的水龙头也就是这一层的水龙头，这是难点一。<br>难点二是跟jump game不同，这题可以往前跳，也就是如例子中，点2表示从1跳到3，因为它的范围是1. 所以要重新计算每个水龙头的起点=它的左半范围起点  </p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>第一步转化成jump game，jump game每个数值都是长度。若左半范围起点小于等于0，所有这些水龙头归结到起点0，长度为i + ranges[i], 其余情况是ranges[i] * 2    </li>
+<li>完全用jump game的程序</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">minTaps</span><span class="params">(self, n: int, ranges: List[int])</span> -&gt; int:</span></span><br><span class="line">	end, next_end, res = <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span></span><br><span class="line">	nums = [<span class="number">0</span>] * len(ranges)</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(ranges)):</span><br><span class="line">		<span class="keyword">if</span> i - ranges[i] &lt;= <span class="number">0</span>:</span><br><span class="line">			nums[<span class="number">0</span>] = max(nums[<span class="number">0</span>], ranges[i] + i)</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			nums[i - ranges[i]] = max(nums[i - ranges[i]], ranges[i] * <span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(nums) - <span class="number">1</span>): <span class="comment"># remember</span></span><br><span class="line">		<span class="keyword">if</span> i &lt;= end:  <span class="comment"># -3 &lt;= 0</span></span><br><span class="line">			next_end = max(next_end, i + nums[i])  <span class="comment"># 3</span></span><br><span class="line">		<span class="keyword">if</span> i == end:</span><br><span class="line">			end = next_end</span><br><span class="line">			res += <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> res <span class="keyword">if</span> next_end &gt;= len(nums) - <span class="number">1</span> <span class="keyword">else</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2021/12/15/lee-055/">LeetCode 055 Jump Game</a></h1>
+  
+
+      
+        <time datetime="2021-12-16T03:20:34.603Z">2021-12-15</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/jump-game/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>You are given an integer array <code>nums</code>. You are initially positioned at the array’s <strong>first index</strong>, and each element in the array represents your maximum jump length at that position.<br><br>Return <code>true</code> <em>if you can reach the last index, or</em> <code>false</code> <em>otherwise</em>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> nums = [2,3,1,1,4]<br><strong>Output:</strong> true<br><strong>Explanation:</strong> Jump 1 step from index 0 to 1, then 3 steps to the last index.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> nums = [3,2,1,0,4]<br><strong>Output:</strong> false<br><strong>Explanation:</strong> You will always arrive at index 3 no matter what. Its maximum jump length is 0, which makes it impossible to reach the last index.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= nums.length &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code>
+</em>   <code>0 &lt;= nums[i] &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code><br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>N/A</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>BFS，但不需要用queue</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>参考Jump game II，区别在于如果i &lt;= end才更新，</li>
+<li>返回next_end要大于等于(可以cover)最后一个元素下标  </li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">canJump</span><span class="params">(self, nums: List[int])</span> -&gt; bool:</span></span><br><span class="line">	end, next_end = <span class="number">0</span>, <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(nums) - <span class="number">1</span>):</span><br><span class="line">		<span class="keyword">if</span> i &lt;= end:</span><br><span class="line">			next_end = max(next_end, i + nums[i]) <span class="comment"># 4</span></span><br><span class="line">		<span class="keyword">if</span> i == end: <span class="comment">#</span></span><br><span class="line">			end = next_end <span class="comment"># 8</span></span><br><span class="line">	<span class="keyword">return</span> next_end &gt;= len(nums) - <span class="number">1</span></span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2021/12/15/lee-045/">LeetCode 045 Jump Game II</a></h1>
   
 
@@ -184,96 +270,6 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2021/12/13/lee-394/">LeetCode 394 Decode String</a></h1>
-  
-
-      
-        <time datetime="2021-12-14T02:34:58.198Z">2021-12-13</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/decode-string/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>Given an encoded string, return its decoded string.<br><br>The encoding rule is: <code>k[encoded_string]</code>, where the <code>encoded_string</code> inside the square brackets is being repeated exactly <code>k</code> times. Note that <code>k</code> is guaranteed to be a positive integer.<br><br>You may assume that the input string is always valid; No extra white spaces, square brackets are well-formed, etc.<br><br>Furthermore, you may assume that the original data does not contain any digits and that digits are only for those repeat numbers, <code>k</code>. For example, there won’t be input like <code>3a</code> or <code>2[4]</code>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> s = “3[a]2[bc]”<br><strong>Output:</strong> “aaabcbc”<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> s = “3[a2[c]]”<br><strong>Output:</strong> “accaccacc”<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> s = “2[abc]3[cd]ef”<br><strong>Output:</strong> “abcabccdcdcdef”<br></pre><br><br><strong>Example 4:</strong><br><br><pre><strong>Input:</strong> s = “abc3[cd]xyz”<br><strong>Output:</strong> “abccdcdcdxyz”<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= s.length &lt;= 30</code>
-</em>   <code>s</code> consists of lowercase English letters, digits, and square brackets <code>&#39;[]&#39;</code>.<br><em>   <code>s</code> is guaranteed to be <strong>a valid</strong> input.
-</em>   All the integers in <code>s</code> are in the range <code>[1, 300]</code>.<br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>将循环体表示展开</p>
-<h3 id="Stack解题思路-推荐-："><a href="#Stack解题思路-推荐-：" class="headerlink" title="Stack解题思路(推荐)："></a><strong>Stack解题思路(推荐)：</strong></h3><p>见到括号就考虑用Stack，此题有字符和数字，所以考虑用<strong>两个Stack</strong>  </p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>运用模板</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>同级相加如a2[c]b3[d]x，所以一发现左括号，就将空字符入char_stack栈，方便同级相加     </li>
-<li>有两个地方需要与栈顶字符串相加，也就是同级相加，遇到右括号和遇到数字</li>
-<li>避免特殊化处理，初始字符串加上1[s]</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">decodeString</span><span class="params">(self, s: str)</span> -&gt; str:</span></span><br><span class="line">	res, num, stack_num, stack_str = <span class="string">''</span>, <span class="number">0</span>, [], []</span><br><span class="line">	<span class="keyword">for</span> char <span class="keyword">in</span> s:</span><br><span class="line">		<span class="keyword">if</span> char.isdigit():</span><br><span class="line">			num = num * <span class="number">10</span> + int(char)</span><br><span class="line">		<span class="keyword">if</span> char.isalpha():</span><br><span class="line">			res += char</span><br><span class="line">		<span class="keyword">if</span> char == <span class="string">'['</span>:</span><br><span class="line">			stack_num.append(num) <span class="comment"># [3]</span></span><br><span class="line">			stack_str.append(res) <span class="comment"># 2c</span></span><br><span class="line">			num = <span class="number">0</span></span><br><span class="line">			res = <span class="string">''</span></span><br><span class="line">		<span class="keyword">if</span> char == <span class="string">']'</span>:</span><br><span class="line">			tmp = stack_str.pop() <span class="comment"># '2c'</span></span><br><span class="line">			n = stack_num.pop() <span class="comment"># 3</span></span><br><span class="line">			res = tmp + n * res <span class="comment"># 2c + 3*d=ccddd</span></span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>  </p>
-<hr>
-<h3 id="递归算法II解题思路-不推荐-："><a href="#递归算法II解题思路-不推荐-：" class="headerlink" title="递归算法II解题思路(不推荐)："></a><strong>递归算法II解题思路(不推荐)：</strong></h3><p>用index作为全局变量，扫每一个字符，类似于Leetcode 297。<br>遇到字符append到result，遇到数字记录次数k，遇到左括号就递归decodeString(s), 递归返回decodedString, 跳过右括号，result.append(decodedString) k次，最后返回result。  </p>
-<p>如3[a2[c]]  </p>
-<h3 id="伪代码："><a href="#伪代码：" class="headerlink" title="伪代码："></a><strong>伪代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">decodeString(<span class="string">'3[a2[c]]'</span>)</span><br><span class="line">    k = <span class="number">3</span>  </span><br><span class="line">    acc = decodeString(<span class="string">'a2[c]'</span>)</span><br><span class="line">         result = a</span><br><span class="line">         k = <span class="number">2</span></span><br><span class="line">         <span class="string">'c'</span>  = decodeString(<span class="string">'c'</span>)</span><br><span class="line">         result = acc</span><br><span class="line">   result = accaccacc</span><br></pre></td></tr></table></figure>
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2021/12/13/lee-560/">LeetCode 560 Subarray Sum Equals K</a></h1>
-  
-
-      
-        <time datetime="2021-12-13T22:53:34.279Z">2021-12-13</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/subarray-sum-equals-k/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>Given an array of integers <code>nums</code> and an integer <code>k</code>, return <em>the total number of continuous subarrays whose sum equals to <code>k</code></em>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> nums = [1,1,1], k = 2<br><strong>Output:</strong> 2<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> nums = [1,2,3], k = 3<br><strong>Output:</strong> 2<br></pre><br><br><strong>Constraints:</strong><br><br><em>   `1 &lt;= nums.length &lt;= 2 </em> 10<sup>4</sup><code>*</code>-1000 &lt;= nums[i] &lt;= 1000<code>*</code>-10<sup>7</sup> &lt;= k &lt;= 10<sup>7</sup>`<br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>子数组和等于k</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>子数组和第一时间想到presum，而数组元素之间关系也应该想到two sum  </p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>加0到presum中或者加0到sum_to_idx字典中，确保presum本身可以等于k     </li>
-<li>数组含负数，也即是presum中可以含有多个相同的值，所以sum_to_idx要转成频数而不是下标。如[-1, 1, -1, 1], k=0结果为4，而不是3, 容易漏整个数组和     </li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># presum = [0, 1, 2, 3], target = presum[i] - k = presum[j]</span></span><br><span class="line"><span class="comment"># add 0 to presum so that presum[i] = k</span></span><br><span class="line"><span class="comment"># [0, -1, 0, -1, 0]</span></span><br><span class="line"><span class="comment"># [0, 1]</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">subarraySum</span><span class="params">(self, nums: List[int], k: int)</span> -&gt; int:</span></span><br><span class="line">	presum, res = [<span class="number">0</span>], <span class="number">0</span> <span class="comment">#</span></span><br><span class="line">	<span class="keyword">for</span> n <span class="keyword">in</span> nums:</span><br><span class="line">		presum.append(presum[<span class="number">-1</span>] + n) <span class="comment"># 0, 1, 2, 3</span></span><br><span class="line">	sum_to_idx = collections.defaultdict(int)</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(presum)): <span class="comment">#</span></span><br><span class="line">		<span class="keyword">if</span> presum[i] - k <span class="keyword">in</span> sum_to_idx: <span class="comment"># 1-1</span></span><br><span class="line">			res += sum_to_idx[presum[i] - k] <span class="comment">#4</span></span><br><span class="line">		sum_to_idx[presum[i]] += <span class="number">1</span> <span class="comment"># &#123;0:2, -1:2, 2:2&#125;</span></span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -298,6 +294,14 @@
   <ul class="entry">
     
       <li>
+        <a href="/2021/12/19/lee-068/">LeetCode 068 Text Justification</a>
+      </li>
+    
+      <li>
+        <a href="/2021/12/19/lee-005/">LeetCode 005 Longest Palindromic Substring</a>
+      </li>
+    
+      <li>
         <a href="/2021/12/19/lee-815/">LeetCode 815 Bus Routes</a>
       </li>
     
@@ -307,14 +311,6 @@
     
       <li>
         <a href="/2021/12/16/lee-829/">LeetCode 829 Consecutive Numbers Sum</a>
-      </li>
-    
-      <li>
-        <a href="/2021/12/16/lee-041/">LeetCode 041 First Missing Positive</a>
-      </li>
-    
-      <li>
-        <a href="/2021/12/16/lee-588/">LeetCode 588 Design In-Memory File System</a>
       </li>
     
   </ul>
@@ -327,7 +323,7 @@
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.33px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 16.67px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 12px;">Binary Tree</a> <a href="/tags/Bloomberg/" style="font-size: 10px;">Bloomberg</a> <a href="/tags/Breadth-First-Search/" style="font-size: 11.33px;">Breadth-First Search</a> <a href="/tags/Breadth-first-Search/" style="font-size: 15.33px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 19.33px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15.33px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 12px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12px;">Divide and Conquer</a> <a href="/tags/Dynamic-Programming/" style="font-size: 18px;">Dynamic Programming</a> <a href="/tags/Graph/" style="font-size: 11.33px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 11.33px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 14px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 15.33px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 18.67px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 14px;">Linked List</a> <a href="/tags/Math/" style="font-size: 14px;">Math</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 12px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.67px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Python-KB/" style="font-size: 17.33px;">Python KB</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.67px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 12px;">Sort</a> <a href="/tags/Stack/" style="font-size: 16.67px;">Stack</a> <a href="/tags/String/" style="font-size: 15.33px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.33px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.67px;">Tree</a> <a href="/tags/Trie/" style="font-size: 10.67px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 15.33px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.67px;">Union Find</a> <a href="/tags/tik/" style="font-size: 14.67px;">tik</a> <a href="/tags/tiktok/" style="font-size: 12px;">tiktok</a>
+    <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.57px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 16.43px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 12.14px;">Binary Tree</a> <a href="/tags/Bloomberg/" style="font-size: 10px;">Bloomberg</a> <a href="/tags/Breadth-First-Search/" style="font-size: 11.43px;">Breadth-First Search</a> <a href="/tags/Breadth-first-Search/" style="font-size: 15px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 19.29px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 12.14px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12.14px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 10px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 17.86px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 10px;">Facebook</a> <a href="/tags/Graph/" style="font-size: 11.43px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 11.43px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 15.71px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 14.29px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 15px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 18.57px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 14.29px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 10px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 14.29px;">Math</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 12.14px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.71px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Python-KB/" style="font-size: 17.14px;">Python KB</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.71px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 12.14px;">Sort</a> <a href="/tags/Stack/" style="font-size: 16.43px;">Stack</a> <a href="/tags/String/" style="font-size: 15px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.43px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.86px;">Tree</a> <a href="/tags/Trie/" style="font-size: 10.71px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 15px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.71px;">Union Find</a> <a href="/tags/tik/" style="font-size: 14.29px;">tik</a> <a href="/tags/tiktok/" style="font-size: 12.14px;">tiktok</a>
   </div>
 </div>
 
