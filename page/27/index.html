@@ -53,6 +53,145 @@
     <header>
       
   
+    <h1 class="title"><a href="/2018/02/22/lee-054/">LeetCode 054 Spiral Matrix</a></h1>
+  
+
+      
+        <time datetime="2018-02-23T06:12:22.319Z">2018-02-22</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/spiral-matrix" target="_blank" rel="noopener">LeetCode 054 Spiral Matrix</a></strong></p>
+<p>Given a matrix of <em>m</em> x <em>n</em> elements (<em>m</em> rows, <em>n</em> columns), return all elements of the matrix in spiral order.</p>
+<p>For example,<br>Given the following matrix:</p>
+<pre>[
+ [ 1, 2, 3 ],
+ [ 4, 5, 6 ],
+ [ 7, 8, 9 ]
+]
+</pre>
+
+<p>You should return <code>[1,2,3,6,9,8,7,4,5]</code>.</p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个mxn的矩阵（m行 n列），以螺旋状返回矩阵中的所有元素。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>打印方法主要是以下两种：第一种四边对称打印，实现起来边际情况很多，不推荐。因为要不断向内遍历，所以对称打印不合适。第二种方法是每条边比上一条少一个，<br>用四个指针，top, bottom, left, right来记录四个边界，每打印完一条边该边界向内扩展。注意有些回路不是完整比如[1,2]或上面例子中5就不是完整回路，此情况，<br>注意判断top和bottom以及left和right关系即可。四指针法可以进一步升级到两指针法甚至一个指针法，其实都是大同小异。<br><img src="/images/L054.png" alt=""></p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>注意不是所有矩阵都有完整回路。所以后两个for循环要加if语句  </li>
+<li>右边和左边，遍历矩阵用matrix[i][right]，而不是matrix[right][i]</li>
+<li>Python中从后往前遍历要注意始点-1，range(right, left - 1, -1):</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">spiralOrder</span><span class="params">(self, matrix: List[List[int]])</span> -&gt; List[int]:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> matrix <span class="keyword">or</span> <span class="keyword">not</span> matrix[<span class="number">0</span>]:</span><br><span class="line">		<span class="keyword">return</span> []</span><br><span class="line">	res = []</span><br><span class="line">	top, bottom, left, right = <span class="number">0</span>, len(matrix) - <span class="number">1</span>, <span class="number">0</span>, len(matrix[<span class="number">0</span>]) - <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> top &lt;= bottom <span class="keyword">and</span> left &lt;= right:</span><br><span class="line">		<span class="keyword">for</span> i <span class="keyword">in</span> range(left, right + <span class="number">1</span>):</span><br><span class="line">			res.append(matrix[top][i])</span><br><span class="line">		top += <span class="number">1</span></span><br><span class="line">		<span class="keyword">for</span> i <span class="keyword">in</span> range(top, bottom + <span class="number">1</span>):</span><br><span class="line">			res.append(matrix[i][right])  <span class="comment"># remember [i[[right] not [right][i]</span></span><br><span class="line">		right -= <span class="number">1</span></span><br><span class="line">		<span class="keyword">if</span> top &lt;= bottom:</span><br><span class="line">			<span class="keyword">for</span> i <span class="keyword">in</span> range(right, left - <span class="number">1</span>, <span class="number">-1</span>):</span><br><span class="line">				res.append(matrix[bottom][i])</span><br><span class="line">			bottom -= <span class="number">1</span></span><br><span class="line">		<span class="keyword">if</span> left &lt;= right:</span><br><span class="line">			<span class="keyword">for</span> i <span class="keyword">in</span> range(bottom, top - <span class="number">1</span>, <span class="number">-1</span>):</span><br><span class="line">				res.append(matrix[i][left])</span><br><span class="line">			left += <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">spiral2</span><span class="params">(<span class="keyword">int</span>[][] a)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> rowTop = <span class="number">0</span>, rowBottom = a.length-<span class="number">1</span>, colLeft = <span class="number">0</span>, colRight = a[<span class="number">0</span>].length-<span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">while</span>(rowTop&lt;=rowBottom &amp;&amp; colLeft&lt;=colRight)&#123;</span><br><span class="line">		<span class="comment">//topRow</span></span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=colLeft;i&lt;=colRight;i++)</span><br><span class="line">			System.out.print(a[rowTop][i]+<span class="string">" "</span>);</span><br><span class="line">		rowTop++;</span><br><span class="line">		<span class="comment">//rightCol</span></span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=rowTop;i&lt;=rowBottom;i++)</span><br><span class="line">			System.out.print(a[i][colRight]+<span class="string">" "</span>);</span><br><span class="line">		colRight--;</span><br><span class="line">		<span class="keyword">if</span>(rowTop&lt;=rowBottom)&#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> i=colRight;i&gt;=colLeft;i--)</span><br><span class="line">				System.out.print(a[rowBottom][i]+<span class="string">" "</span>);</span><br><span class="line">			rowBottom--;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(colLeft&lt;=colRight)&#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> i=rowBottom;i&gt;=rowTop;i--)</span><br><span class="line">				System.out.print(a[i][colLeft]+<span class="string">" "</span>);</span><br><span class="line">			colLeft++;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">spiral3</span><span class="params">(<span class="keyword">int</span>[][] a)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> rowTop = <span class="number">0</span>, colLeft = <span class="number">0</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">while</span>(rowTop&lt;=a.length-rowTop-<span class="number">1</span> &amp;&amp; colLeft&lt;=a[<span class="number">0</span>].length-colLeft-<span class="number">1</span>)&#123;</span><br><span class="line">		<span class="comment">//topRow</span></span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=colLeft;i&lt;=a[<span class="number">0</span>].length-colLeft-<span class="number">1</span>;i++)</span><br><span class="line">			System.out.print(a[rowTop][i]+<span class="string">" "</span>);</span><br><span class="line">		rowTop++;</span><br><span class="line">		<span class="comment">//rightCol</span></span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=rowTop;i&lt;=a.length-rowTop;i++)</span><br><span class="line">			System.out.print(a[i][a[<span class="number">0</span>].length-colLeft-<span class="number">1</span>]+<span class="string">" "</span>);</span><br><span class="line">		<span class="comment">//colRight--;</span></span><br><span class="line">		<span class="keyword">if</span>(rowTop&lt;=a.length-rowTop)&#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> i=a[<span class="number">0</span>].length-colLeft-<span class="number">2</span>;i&gt;=colLeft;i--)</span><br><span class="line">				System.out.print(a[a.length-rowTop][i]+<span class="string">" "</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(colLeft&lt;=a[<span class="number">0</span>].length-colLeft-<span class="number">2</span>)&#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> i=a.length-rowTop-<span class="number">1</span>;i&gt;=rowTop;i--)</span><br><span class="line">				System.out.print(a[i][colLeft]+<span class="string">" "</span>);</span><br><span class="line">			colLeft++;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">spiral4</span><span class="params">(<span class="keyword">int</span>[][] a)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> num = Math.min(a.length, a[<span class="number">0</span>].length);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> st=<span class="number">0</span>;st&lt;(num+<span class="number">1</span>)/<span class="number">2</span>;st++)&#123;</span><br><span class="line">		<span class="comment">//complete edge(top)</span></span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=st;i&lt;a[<span class="number">0</span>].length-st;i++)</span><br><span class="line">			System.out.print(a[st][i]+<span class="string">" "</span>);</span><br><span class="line">		<span class="comment">//complete edge-top (right)</span></span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=st+<span class="number">1</span>;i&lt;a.length-st;i++)</span><br><span class="line">			System.out.print(a[i][a[<span class="number">0</span>].length-<span class="number">1</span>-st]+<span class="string">" "</span>);</span><br><span class="line">		<span class="keyword">if</span>(a[<span class="number">0</span>].length-<span class="number">2</span>-st&gt;st)</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> i=a[<span class="number">0</span>].length-<span class="number">2</span>-st;i&gt;=st;i--)</span><br><span class="line">				System.out.print(a[a.length-st-<span class="number">1</span>][i]+<span class="string">" "</span>);</span><br><span class="line">		<span class="keyword">if</span>(a.length-<span class="number">2</span>-st&gt;st+<span class="number">1</span>)</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> i=a.length-<span class="number">2</span>-st;i&gt;=st+<span class="number">1</span>;i--)</span><br><span class="line">				System.out.print(a[i][st]+<span class="string">" "</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(mn)</code>，空间复杂度<code>O(1)</code>。   </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2018/01/31/lee-004/">LeetCode 004 Median of Two Sorted Arrays</a></h1>
+  
+
+      
+        <time datetime="2018-02-01T03:24:53.428Z">2018-01-31</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/median-of-two-sorted-arrays" target="_blank" rel="noopener">LeetCode 004 Median of Two Sorted Arrays</a></strong></p>
+<p>There are two sorted arrays <strong>nums1</strong> and <strong>nums2</strong> of size m and n respectively.</p>
+<p>Find the median of the two sorted arrays. The overall run time complexity should be O(log (m+n)).</p>
+<p><strong>Example 1:</strong>  </p>
+<pre>nums1 = [1, 3]
+nums2 = [2]
+
+The median is 2.0
+</pre>
+
+<p><strong>Example 2:</strong>  </p>
+<pre>nums1 = [1, 2]
+nums2 = [3, 4]
+
+The median is (2 + 3)/2 = 2.5
+</pre>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求两个有序数组中的中位数。</p>
+<h3 id="数值二分法解题思路-推荐-："><a href="#数值二分法解题思路-推荐-：" class="headerlink" title="数值二分法解题思路(推荐)："></a><strong>数值二分法解题思路(推荐)：</strong></h3><p>由于是求中位数或第k小的数，根据题型分类用Heap或binary select。Heap的话，由于是有序，所以优势不大，复杂度为O[(m+n)log2].<br>考虑用binary select，思路比较直接，就是将两个数组看成一个，统计个数的时候由于有序，分别在两数组用二分法统计。  </p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>中位数有1-2两个。用单一元素数组的例子来确定+1还是-1，Line 6  </li>
+<li>统计最大最小值，注意空数组  </li>
+<li>统计count用bisect不需要+1</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">findMedianSortedArrays</span><span class="params">(self, nums1: List[int], nums2: List[int])</span> -&gt; float:</span></span><br><span class="line">	m, n = len(nums1), len(nums2)</span><br><span class="line">	<span class="keyword">if</span> (m + n) % <span class="number">2</span> == <span class="number">1</span>:</span><br><span class="line">		<span class="keyword">return</span> self.find_kth_smallest(nums1, nums2, (m + n) // <span class="number">2</span>)</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		<span class="keyword">return</span> (self.find_kth_smallest(nums1, nums2, (m + n) // <span class="number">2</span>) + self.find_kth_smallest(nums1, nums2, (m + n) // <span class="number">2</span> - <span class="number">1</span>)) / <span class="number">2</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">find_kth_smallest</span><span class="params">(self, nums1, nums2, k)</span>:</span></span><br><span class="line">	min_val, min_val2 = nums1[<span class="number">0</span>] <span class="keyword">if</span> nums1 <span class="keyword">else</span> sys.maxsize, nums2[<span class="number">0</span>] <span class="keyword">if</span> nums2 <span class="keyword">else</span> sys.maxsize</span><br><span class="line">	max_val, max_val2 = nums1[<span class="number">-1</span>] <span class="keyword">if</span> nums1 <span class="keyword">else</span> -sys.maxsize, nums2[<span class="number">-1</span>] <span class="keyword">if</span> nums2 <span class="keyword">else</span> -sys.maxsize</span><br><span class="line">	start, end, epsilon = min(min_val, min_val2), max(max_val, max_val2), <span class="number">0.5</span></span><br><span class="line">	<span class="keyword">while</span> end - start &gt; epsilon:</span><br><span class="line">		mid = start + (end - start) / <span class="number">2</span></span><br><span class="line">		count = self.count(nums1, nums2, mid)</span><br><span class="line">		<span class="keyword">if</span> k &lt; count:</span><br><span class="line">			end = mid</span><br><span class="line">		<span class="keyword">elif</span> k &gt; count:</span><br><span class="line">			start = mid</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			start = mid</span><br><span class="line">	<span class="keyword">return</span> math.floor(end)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">count</span><span class="params">(self, nums1, nums2, mid)</span>:</span></span><br><span class="line">	<span class="keyword">return</span> bisect.bisect(nums1, mid) + bisect.bisect(nums2, mid)  <span class="comment"># remember</span></span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nlog(|hi-lo|/delta))</code>，由于数据大小范围是10^6, 而前面的n是基于全数组扫描，这里用二分法，n变成log(m)+log(n)<br>时间复杂度为<code>O(logm + logn)</code>，空间复杂度<code>O(1)</code>  </p>
+<hr>
+<h3 id="Merge-sort算法II解题思路："><a href="#Merge-sort算法II解题思路：" class="headerlink" title="Merge sort算法II解题思路："></a><strong>Merge sort算法II解题思路：</strong></h3><p>既然是有序，考虑用merge sort中的merge步骤<br>merge sort里面的数组是无序，但这里是有序，所以merge这个步骤可以改进，不是一个个数比较，可以分别取第k/2进行比较，原理是一样的，但效率更高。<br>若num1[k/2] &lt; num2[k/2]相当于nums1[i] &lt;= nums2[j]，此时表示num1[0..k/2]都满足小于等于第k个数的结果数组中。i移位，不是移一位，而是移k/4.<br>这样得到方法三。方法三解释比较难懂，用mergesort模拟较易懂。<br>一般是对数组二分，<strong>此法采用对k二分</strong>  </p>
+<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>若i或j用完，返回另一个数组的元素，下标是j+k或i+k，k此时是剩余的k  </li>
+</ol>
+<h3 id="Python代码：-1"><a href="#Python代码：-1" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">findMedianSortedArrays2</span><span class="params">(self, nums1: List[int], nums2: List[int])</span> -&gt; float:</span></span><br><span class="line">	m, n = len(nums1), len(nums2)</span><br><span class="line">	<span class="keyword">if</span> (m + n) % <span class="number">2</span> == <span class="number">1</span>:</span><br><span class="line">		<span class="keyword">return</span> self.find_kth_smallest2(nums1, nums2, (m + n) // <span class="number">2</span>)</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		<span class="keyword">return</span> (self.find_kth_smallest2(nums1, nums2, (m + n) // <span class="number">2</span>) + self.find_kth_smallest2(nums1, nums2, (m + n) // <span class="number">2</span> - <span class="number">1</span>)) / <span class="number">2</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">find_kth_smallest2</span><span class="params">(self, nums1, nums2, k)</span>:</span></span><br><span class="line">	i, j = <span class="number">0</span>, <span class="number">0</span></span><br><span class="line">	<span class="keyword">while</span> i &lt; len(nums1) <span class="keyword">and</span> j &lt; len(nums2) <span class="keyword">and</span> k &gt; <span class="number">0</span>:</span><br><span class="line">		<span class="keyword">if</span> nums1[i] &lt;= nums2[j]:</span><br><span class="line">			i += <span class="number">1</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			j += <span class="number">1</span></span><br><span class="line">		k -= <span class="number">1</span></span><br><span class="line">	<span class="keyword">if</span> i == len(nums1):  <span class="comment"># remember dont use (not nums1)</span></span><br><span class="line">		<span class="keyword">return</span> nums2[j + k]  <span class="comment"># remember use j+k rather than k</span></span><br><span class="line">	<span class="keyword">if</span> j == len(nums2):</span><br><span class="line">		<span class="keyword">return</span> nums1[i + k]</span><br><span class="line">	<span class="keyword">return</span> min(nums1[i], nums2[j])</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(m + n)</code>，空间复杂度<code>O(1)</code>。</p>
+<hr>
+<h3 id="二分法算法III解题思路："><a href="#二分法算法III解题思路：" class="headerlink" title="二分法算法III解题思路："></a><strong>二分法算法III解题思路：</strong></h3><p>将上面的方法换成递归，if判断语句换成递归终止条件，+1变成+k/2，注意判断越界<br>说起来轻松，但非常容易错，不推荐  </p>
+<h3 id="注意事项：-2"><a href="#注意事项：-2" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>中位数有1-2两个。</li>
+<li>off by 1的问题。递归子函数要用(k+1)//2而不是k//2因为若k=1时候，k//2就不能移动一位。</li>
+<li>若nums中i + k // 2越界，不碰nums，右移j，因为nums不能右移那么多, 所以num1赋最大值不是最小值  </li>
+<li>终止条件i &gt;= len(nums1)取大于号，跟上面不同，因为可能越界  </li>
+</ol>
+<h3 id="Python代码：-2"><a href="#Python代码：-2" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">findMedianSortedArrays3</span><span class="params">(self, nums1: List[int], nums2: List[int])</span> -&gt; float:</span></span><br><span class="line">	m, n = len(nums1), len(nums2)</span><br><span class="line">	<span class="keyword">if</span> (m + n) % <span class="number">2</span> == <span class="number">1</span>:</span><br><span class="line">		<span class="keyword">return</span> self.find_kth_smallest3(nums1, nums2, <span class="number">0</span>, <span class="number">0</span>, (m + n) // <span class="number">2</span>)</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		aa = self.find_kth_smallest3(nums1, nums2, <span class="number">0</span>, <span class="number">0</span>, (m + n) // <span class="number">2</span>)</span><br><span class="line">		bb = self.find_kth_smallest3(nums1, nums2, <span class="number">0</span>, <span class="number">0</span>, (m + n) // <span class="number">2</span> - <span class="number">1</span>)</span><br><span class="line">		<span class="keyword">return</span> (self.find_kth_smallest3(nums1, nums2, <span class="number">0</span>, <span class="number">0</span>, (m + n) // <span class="number">2</span>)</span><br><span class="line">				+ self.find_kth_smallest3(nums1, nums2, <span class="number">0</span>, <span class="number">0</span>, (m + n) // <span class="number">2</span> - <span class="number">1</span>)) / <span class="number">2</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">find_kth_smallest3</span><span class="params">(self, nums1, nums2, i, j, k)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> i &gt;= len(nums1):  <span class="comment"># remember to use &gt;= rather than ==</span></span><br><span class="line">		<span class="keyword">return</span> nums2[j + k]</span><br><span class="line">	<span class="keyword">if</span> j == len(nums2):</span><br><span class="line">		<span class="keyword">return</span> nums1[i + k]</span><br><span class="line">	<span class="keyword">if</span> k == <span class="number">0</span>:</span><br><span class="line">		<span class="keyword">return</span> min(nums1[i], nums2[j])</span><br><span class="line">	num1 = nums1[i + k // <span class="number">2</span>] <span class="keyword">if</span> i + k // <span class="number">2</span> &lt; len(nums1) <span class="keyword">else</span> sys.maxsize  <span class="comment"># remember sys.maxsize not minus</span></span><br><span class="line">	num2 = nums2[j + k // <span class="number">2</span>] <span class="keyword">if</span> j + k // <span class="number">2</span> &lt; len(nums2) <span class="keyword">else</span> sys.maxsize</span><br><span class="line">	<span class="keyword">if</span> num1 &lt;= num2:  <span class="comment"># remember the steps are same by moving i and k, k + 1</span></span><br><span class="line">		<span class="keyword">return</span> self.find_kth_smallest3(nums1, nums2, i + (k + <span class="number">1</span>) // <span class="number">2</span>, j, k - (k + <span class="number">1</span>) // <span class="number">2</span>)</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		<span class="keyword">return</span> self.find_kth_smallest3(nums1, nums2, i, j + (k + <span class="number">1</span>) // <span class="number">2</span>, k - (k + <span class="number">1</span>) // <span class="number">2</span>)</span><br></pre></td></tr></table></figure>
+<hr>
+<p>Java实现  </p>
+<p>题目要求log(m+n)复杂度，也就提示要对数组总长做二分法。因为要同时处理两个数组所以考虑用递归版二分法。因奇偶中位数有1-2个，<br>所以加强命题为求两有序数组的第k个数(k&gt;=1)。<br>对k的值进行二分k/2，先尝试num1数组的第k/2个数和num2数组的第k/2个数。若它们相等，表示它们即为第k个数。也就是比如求第4个数，<br>分别在两数组中取前两个，平均分配名额。此题类似于求前k大的数(算法文档4.1.13)用统计个数的方法来判断走左还是右。若它们不等，不妨假设<br>aKey&lt;bKey，这样表示第k个数一定不会是aKey，因为即使比bKey小的数均小于aKey的话（有k/2-1个），总共有k/2-1+k/2-1=k-2个数小于<br>aKey，也就是aKey为第k-1个数，不可能为第k个数，它只可能出现是bKey或者在num1中比aKey大的数。既然aKey不是解，比aKey小的数<br>更不可能是解。所以，可以抛掉num1[0, k/2]这部分，转而求num1[k/2+1,nums.length-1]以及nums2的第k-k/2个数，抛掉部分会影响结果<br>吗？答案是否定的。比如<br>1 2 3 4<br>0 6 7 8<br>k=4，比较2和6,2&lt;6抛掉1 2，转求[3,4],[0,6,7,8]的第2个数，答案仍为3，不影响结果，因为前k/2个数即使有些在nums2也不会影响<br>最后结果，求的是第k个。<br>1 2 3 4<br>0 6 7 8<br>第k=4数可能出现在num1[k/2+1,nums.length-1]=3或num2=6（下面例子），所以保留部分是正确的。<br>主要思路是<strong>每次递归抛掉k/2个数，数组规模减少k/2，k变成k-k/2</strong>, API为left, left2表示新数组的左边界(因为永远抛左边部分)以及k。<br>递归终止条件为</p>
+<ol>
+<li>left越界，这时此数组的数刚好用完或此数组为空(不会越界太多，否则aKey无穷大会递归到num2)。归结为求另一数组[left..]的第k个数.  </li>
+<li>k为1时候，是基本情况，表示求两数组的第1个数，只要返回左端的最小值即可。  </li>
+</ol>
+<h3 id="注意事项：-3"><a href="#注意事项：-3" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>中位数有1-2两个。</li>
+<li>off by 1的问题。若API中的k定义为第k个数k&gt;=1，若总长len=5，中位数为第len/2+1=3个数。所以在递归函数中，数组下标用到k时<br>都要-1。抛掉[left, left+k/2-1],递归[left+k/2..]。</li>
+<li>若nums中left+k/2-1越界，不碰nums，右移left2，因为nums不能右移那么多。</li>
+</ol>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">findMedianSortedArrays</span><span class="params">(<span class="keyword">int</span>[] num1, <span class="keyword">int</span>[] num2)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> len = num1.length+num2.length;</span><br><span class="line">	<span class="keyword">if</span>(len%<span class="number">2</span>==<span class="number">1</span>)</span><br><span class="line">		<span class="keyword">return</span> findKth(num1,num2,<span class="number">0</span>,<span class="number">0</span>,len/<span class="number">2</span>+<span class="number">1</span>);</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">return</span> (findKth(num1,num2,<span class="number">0</span>,<span class="number">0</span>,len/<span class="number">2</span>)+findKth(num1,num2,<span class="number">0</span>,<span class="number">0</span>,len/<span class="number">2</span>+<span class="number">1</span>))/<span class="number">2.0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">findKth</span><span class="params">(<span class="keyword">int</span>[] num1, <span class="keyword">int</span>[] num2, <span class="keyword">int</span> left, <span class="keyword">int</span> left2, <span class="keyword">int</span> k)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(left&gt;=num1.length)</span><br><span class="line">		<span class="keyword">return</span> num2[left2+k-<span class="number">1</span>];</span><br><span class="line">	<span class="keyword">if</span>(left2&gt;=num2.length)</span><br><span class="line">		<span class="keyword">return</span> num1[left+k-<span class="number">1</span>];</span><br><span class="line">	<span class="keyword">if</span>(k==<span class="number">1</span>)</span><br><span class="line">		<span class="keyword">return</span> Math.min(num1[left], num2[left2]);;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">int</span> aKey = left+k/<span class="number">2</span>-<span class="number">1</span>&lt;num1.length?num1[left+k/<span class="number">2</span>-<span class="number">1</span>]:Integer.MAX_VALUE;</span><br><span class="line">	<span class="keyword">int</span> bKey = left2+k/<span class="number">2</span>-<span class="number">1</span>&lt;num2.length?num2[left2+k/<span class="number">2</span>-<span class="number">1</span>]:Integer.MAX_VALUE;</span><br><span class="line">	<span class="keyword">if</span>(aKey&lt;bKey)</span><br><span class="line">		<span class="keyword">return</span> findKth(num1,num2,left+k/<span class="number">2</span>,left2,k-k/<span class="number">2</span>);</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		<span class="keyword">return</span> findKth(num1,num2,left,left2+k/<span class="number">2</span>, k-k/<span class="number">2</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析：-2"><a href="#算法分析：-2" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>假设两数组总长度为N，k为中位数即N/2，每次抛掉k/2也就是子问题规模为N-k/2=N-N/4=3N/4. f(N)=f(3N/4)+1.<br>利用master理论b=4/3, a=1, f(n)=1代入时间复杂度为<code>O(log(m+n))</code>，空间复杂度<code>O(1)</code>。</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2018/01/30/lee-006/">LeetCode 006 ZigZag Conversion</a></h1>
   
 
@@ -229,105 +368,6 @@ Y   I   R
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2018/01/29/lee-057/">LeetCode 057 Insert Interval</a></h1>
-  
-
-      
-        <time datetime="2018-01-29T08:54:24.407Z">2018-01-29</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/insert-interval" target="_blank" rel="noopener">LeetCode 057 Insert Interval</a></strong></p>
-<p>Given a set of <em>non-overlapping</em> intervals, insert a new interval into the intervals (merge if necessary).</p>
-<p>You may assume that the intervals were initially sorted according to their start times.</p>
-<p><strong>Example 1:</strong><br>Given intervals <code>[1,3],[6,9]</code>, insert and merge <code>[2,5]</code> in as <code>[1,5],[6,9]</code>.</p>
-<p><strong>Example 2:</strong><br>Given <code>[1,2],[3,5],[6,7],[8,10],[12,16]</code>, insert and merge <code>[4,9]</code> in as <code>[1,2],[3,10],[12,16]</code>.</p>
-<p>This is because the new interval <code>[4,9]</code> overlaps with <code>[3,5],[6,7],[8,10]</code>.</p>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>对于给出的互不重叠且按照左端点排序的区间序列，将一个新的区间插入到这个序列当中（合并重叠的区间），使其仍然保持原本的性质。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>与L56题基本一致，但单元测试更加严格，加入含最大整数值的区间。</p>
-<ol>
-<li>先找到start大于等于待插入区间的区间，然后待插入区间插入其前。</li>
-<li>归结成L56题</li>
-</ol>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><p>判断是否合并的API中，加入in2.start == Integer.MAX_VALUE返回false。</p>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;Interval&gt; <span class="title">insert</span><span class="params">(List&lt;Interval&gt; intervals, Interval newInterval)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> st = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(;st&lt;intervals.size();st++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(intervals.get(st).start&gt;=newInterval.start)&#123;</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	intervals.add(st, newInterval);</span><br><span class="line">	</span><br><span class="line">	intervals.add(<span class="keyword">new</span> Interval(Integer.MAX_VALUE, Integer.MAX_VALUE));</span><br><span class="line">	List&lt;Interval&gt; re = <span class="keyword">new</span> ArrayList&lt;Interval&gt;();</span><br><span class="line">	Interval newInterval2 = <span class="keyword">null</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;intervals.size();i++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(newInterval2==<span class="keyword">null</span>)</span><br><span class="line">			newInterval2 = intervals.get(i-<span class="number">1</span>);</span><br><span class="line">		<span class="keyword">if</span>(canMerge(newInterval2,intervals.get(i)))&#123;</span><br><span class="line">			newInterval2 = mergeIntervals(newInterval2,intervals.get(i));</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span>&#123;</span><br><span class="line">			re.add(newInterval2);</span><br><span class="line">			newInterval2 = <span class="keyword">null</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> re;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>，因为不用排序。</p>
-<h3 id="Follow-up"><a href="#Follow-up" class="headerlink" title="Follow-up:"></a><strong>Follow-up:</strong></h3><ol>
-<li>先解出L56</li>
-<li>再解此题</li>
-</ol>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2018/01/28/lee-056/">LeetCode 056 Merge Intervals</a></h1>
-  
-
-      
-        <time datetime="2018-01-29T07:52:23.474Z">2018-01-28</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/merge-interval" target="_blank" rel="noopener">LeetCode 056 Merge Intervals</a></strong></p>
-<p>Given a collection of intervals, merge all overlapping intervals.</p>
-<p>For example,<br>Given <code>[1,3],[2,6],[8,10],[15,18]</code>,<br>return <code>[1,6],[8,10],[15,18]</code>.</p>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定几个区间，要求合并重叠区间，返回结果.</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>A公司的考题。这条题难点在于判断是否合并，怎么合并，新区间合并多个区间。</p>
-<ol>
-<li>按start排序。</li>
-<li>定义API：如何合并两个区间（两情况），两个区间是否可以合并</li>
-<li>遍历每个区间，产生新区间并将其带入到下一轮循环。这是难点，公式为 新区间=新区间+输入区间[i]，这也分为两种情况，可合并和不可合并<br>不可合并时，前状态的新区间成为结果，公式为新区间=输入区间[i]。  </li>
-<li>若不想特别处理循环边界，可加入空区间到末尾（见Java实现，它把新区间=输入区间[i]放入了下一轮）。若不如此做，可将空区间放入开头。  </li>
-</ol>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>先按左节点排序  </li>
-<li>区间的右端与另一个区间的左端一样，也算重叠，如[1,2],[2,3]。</li>
-<li>原输入加入首节点的左边界fake区间。避免for循环的特殊处理。2. 最后一个区间的情况。</li>
-<li>合并后生成新区间，要与下一个继续尝试合并。</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">merge</span><span class="params">(self, intervals: List[List[int]])</span> -&gt; List[List[int]]:</span></span><br><span class="line">	intervals.sort(key=<span class="keyword">lambda</span> x: x[<span class="number">0</span>])</span><br><span class="line">	new_interval = [intervals[<span class="number">0</span>][<span class="number">0</span>], intervals[<span class="number">0</span>][<span class="number">0</span>]]</span><br><span class="line">	res = []</span><br><span class="line">	<span class="keyword">for</span> interval <span class="keyword">in</span> intervals:</span><br><span class="line">		<span class="keyword">if</span> self.can_merge(new_interval, interval):</span><br><span class="line">			new_interval = self.merge_two_intervals(new_interval, interval)</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			res.append(new_interval)</span><br><span class="line">			new_interval = interval</span><br><span class="line">	res.append(new_interval)</span><br><span class="line">	<span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">can_merge</span><span class="params">(self, interval, interval2)</span>:</span></span><br><span class="line">	<span class="keyword">return</span> interval[<span class="number">1</span>] &gt;= interval2[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">merge_two_intervals</span><span class="params">(self, interval, interval2)</span>:</span></span><br><span class="line">	<span class="keyword">return</span> [interval[<span class="number">0</span>], max(interval[<span class="number">1</span>], interval2[<span class="number">1</span>])]</span><br></pre></td></tr></table></figure>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;Interval&gt; <span class="title">merge</span><span class="params">(List&lt;Interval&gt; intervals)</span> </span>&#123;</span><br><span class="line">	Collections.sort(intervals, <span class="keyword">new</span> Comparator&lt;Interval&gt;()&#123;</span><br><span class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(Interval v1, Interval v2)</span></span>&#123;</span><br><span class="line">			<span class="keyword">return</span> v1.start - v2.start;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;);</span><br><span class="line">	intervals.add(<span class="keyword">new</span> Interval(Integer.MAX_VALUE, Integer.MAX_VALUE));</span><br><span class="line">	List&lt;Interval&gt; re = <span class="keyword">new</span> ArrayList&lt;Interval&gt;();</span><br><span class="line">	Interval newInterval = <span class="keyword">null</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;intervals.size();i++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(newInterval==<span class="keyword">null</span>)</span><br><span class="line">			newInterval = intervals.get(i-<span class="number">1</span>);</span><br><span class="line">		<span class="keyword">if</span>(canMerge(newInterval,intervals.get(i)))&#123;</span><br><span class="line">			newInterval = mergeIntervals(newInterval,intervals.get(i));</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span>&#123;</span><br><span class="line">			re.add(newInterval);</span><br><span class="line">			newInterval = <span class="keyword">null</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> re;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//假设in与in2按start排序，所以只有两情况：</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * In  -------</span></span><br><span class="line"><span class="comment"> * In2   ---</span></span><br><span class="line"><span class="comment"> * In2   -------- </span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">canMerge</span><span class="params">(Interval in, Interval in2)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(in2.start == Integer.MAX_VALUE)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	<span class="keyword">return</span> in.end&gt;=in2.start;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> Interval <span class="title">mergeIntervals</span><span class="params">(Interval in, Interval in2)</span></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">new</span> Interval(in.start, Math.max(in.end, in2.end));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nlogn)</code>，空间复杂度<code>O(1)</code>。</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -352,6 +392,14 @@ Y   I   R
   <ul class="entry">
     
       <li>
+        <a href="/2021/12/20/lee-011/">LeetCode 011 Container With Most Water</a>
+      </li>
+    
+      <li>
+        <a href="/2021/12/20/lee-1762/">LeetCode 1762 Buildings With an Ocean View</a>
+      </li>
+    
+      <li>
         <a href="/2021/12/19/lee-068/">LeetCode 068 Text Justification</a>
       </li>
     
@@ -361,14 +409,6 @@ Y   I   R
     
       <li>
         <a href="/2021/12/19/lee-815/">LeetCode 815 Bus Routes</a>
-      </li>
-    
-      <li>
-        <a href="/2021/12/18/lee-809/">LeetCode 809 Expressive Words</a>
-      </li>
-    
-      <li>
-        <a href="/2021/12/16/lee-829/">LeetCode 829 Consecutive Numbers Sum</a>
       </li>
     
   </ul>
@@ -381,7 +421,7 @@ Y   I   R
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.57px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 16.43px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 12.14px;">Binary Tree</a> <a href="/tags/Bloomberg/" style="font-size: 10px;">Bloomberg</a> <a href="/tags/Breadth-First-Search/" style="font-size: 11.43px;">Breadth-First Search</a> <a href="/tags/Breadth-first-Search/" style="font-size: 15px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 19.29px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 12.14px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12.14px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 10px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 17.86px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 10px;">Facebook</a> <a href="/tags/Graph/" style="font-size: 11.43px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 11.43px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 15.71px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 14.29px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 15px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 18.57px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 14.29px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 10px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 14.29px;">Math</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 12.14px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.71px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Python-KB/" style="font-size: 17.14px;">Python KB</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.71px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 12.14px;">Sort</a> <a href="/tags/Stack/" style="font-size: 16.43px;">Stack</a> <a href="/tags/String/" style="font-size: 15px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.43px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.86px;">Tree</a> <a href="/tags/Trie/" style="font-size: 10.71px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 15px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.71px;">Union Find</a> <a href="/tags/tik/" style="font-size: 14.29px;">tik</a> <a href="/tags/tiktok/" style="font-size: 12.14px;">tiktok</a>
+    <a href="/tags/Amazon/" style="font-size: 10px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.33px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 16px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 12px;">Binary Tree</a> <a href="/tags/Bloomberg/" style="font-size: 10px;">Bloomberg</a> <a href="/tags/Breadth-First-Search/" style="font-size: 11.33px;">Breadth-First Search</a> <a href="/tags/Breadth-first-Search/" style="font-size: 14.67px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 19.33px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 14.67px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 12px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 10px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 18px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 10.67px;">Facebook</a> <a href="/tags/Graph/" style="font-size: 11.33px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 15.33px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 14px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 14.67px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 18.67px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 14px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 10px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 14px;">Math</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 12px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.67px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Python-KB/" style="font-size: 17.33px;">Python KB</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.67px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 12px;">Sort</a> <a href="/tags/Stack/" style="font-size: 16.67px;">Stack</a> <a href="/tags/String/" style="font-size: 14.67px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.33px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.67px;">Tree</a> <a href="/tags/Trie/" style="font-size: 10.67px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.67px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.67px;">Union Find</a> <a href="/tags/tik/" style="font-size: 13.33px;">tik</a> <a href="/tags/tiktok/" style="font-size: 11.33px;">tiktok</a>
   </div>
 </div>
 
