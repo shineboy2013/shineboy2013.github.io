@@ -53,6 +53,230 @@
     <header>
       
   
+    <h1 class="title"><a href="/2020/05/09/memoization/">记忆性搜索</a></h1>
+  
+
+      
+        <time datetime="2020-05-09T23:28:48.775Z">2020-05-09</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>DFS将子问题的解存于结果中。cache[st] = result. st是子问题边界。  </p>
+<h3 id="应用："><a href="#应用：" class="headerlink" title="应用："></a><strong>应用：</strong></h3><p>用于求所有可能性，且这些可能性有重复，记忆性搜索可以用于剪枝。  </p>
+<ol>
+<li>Leetcode 139</li>
+<li>Leetcode 140</li>
+</ol>
+<p>与DP的界线：  </p>
+<ol>
+<li>状态转移特别麻烦如有循环依赖, 不是顺序性。如棋盘，上下左右四个方向如1197 Minimum Knight Moves和word ladder  </li>
+<li>初始化状态不是特别容易找到</li>
+</ol>
+<h3 id="算法步骤："><a href="#算法步骤：" class="headerlink" title="算法步骤："></a><strong>算法步骤：</strong></h3><ol>
+<li>key为子问题索引st，value为子问题的解。不含path和res因为类似于Catalan，用子问题返回结果来组成此轮结果。f(input, st, endIndex, cache) -&gt; List    </li>
+<li>紧跟终结条件，若在cache中，返回子问题的解。  </li>
+<li>循环结束，将子问题的结果存于cache。  </li>
+</ol>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(解大小)</code>，空间复杂度<code>O(解大小)</code>.</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2020/05/09/lee-140/">LeetCode 140 Word Break II</a></h1>
+  
+
+      
+        <time datetime="2020-05-09T23:22:25.398Z">2020-05-09</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/word-break-ii/" target="_blank" rel="noopener">LeetCode 140 Word Break II</a></strong></p>
+<div><br><br>Given a <strong>non-empty</strong> string <em>s</em> and a dictionary <em>wordDict</em> containing a list of <strong>non-empty</strong> words, add spaces in <em>s</em> to construct a sentence where each word is a valid dictionary word. Return all such possible sentences.<br><br><strong>Note:</strong><br><br><em>   The same word in the dictionary may be reused multiple times in the segmentation.
+</em>   You may assume the dictionary does not contain duplicate words.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> s = “<code>catsanddog</code>“<br>wordDict = <code>[&quot;cat&quot;, &quot;cats&quot;, &quot;and&quot;, &quot;sand&quot;, &quot;dog&quot;]</code><br><strong>Output:</strong> <code>[
+  &quot;cats and dog&quot;,
+  &quot;cat sand dog&quot;
+]</code><br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> s = “pineapplepenapple”<br>wordDict = [“apple”, “pen”, “applepen”, “pine”, “pineapple”]<br><strong>Output:</strong> [<br>  “pine apple pen apple”,<br>  “pineapple pen apple”,<br>  “pine applepen apple”<br>]<br><strong>Explanation:</strong> Note that you are allowed to reuse a dictionary word.<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> s = “catsandog”<br>wordDict = [“cats”, “dog”, “sand”, “and”, “cat”]<br><strong>Output:</strong> []</pre><br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>一个字符串s，求被“字典集合”（wordDict）中的单词拼接的所有方案。  </p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是经典题。求所有可能性想到DFS，前面Lintcode 683提到可能会有重复解。所以用Cache。    </p>
+<p><strong>Cache模板：</strong>  </p>
+<ol>
+<li>key为子问题索引st，value为子问题的解。不含path和res因为类似于Catalan，用子问题返回结果来组成此轮结果。f(input, st, endIndex, cache)  </li>
+<li>紧跟终结条件，若在cache中，返回子问题的解。  </li>
+<li>循环结束，将子问题的结果存于cache。  </li>
+</ol>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>终止条件返回[‘’]而不是[]，正如L017，空字符串作为初始结果。返回到上层要strip()    </li>
+<li>子问题用f=word + f并不是f=f + word, 这样最后结果避免反转。</li>
+<li>s[:i + 1]判断是否在字典中，而不是s[:i]，单词包括整个字符串。  </li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">wordBreak</span><span class="params">(self, s: str, wordDict: List[str])</span> -&gt; List[str]:</span></span><br><span class="line">	wordSet = set()</span><br><span class="line">	<span class="keyword">for</span> word <span class="keyword">in</span> wordDict:</span><br><span class="line">		wordSet.add(word)</span><br><span class="line">	cache = &#123;&#125;</span><br><span class="line">	res = self.dfs(s, wordSet, cache)</span><br><span class="line">	<span class="keyword">return</span> [] <span class="keyword">if</span> len(res) == <span class="number">1</span> <span class="keyword">and</span> <span class="keyword">not</span> res[<span class="number">0</span>] <span class="keyword">else</span> res</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dfs</span><span class="params">(self, s, wordSet, cache)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> s:</span><br><span class="line">		<span class="keyword">return</span> [<span class="string">''</span>]</span><br><span class="line">	<span class="keyword">if</span> s <span class="keyword">in</span> cache:</span><br><span class="line">		<span class="keyword">return</span> cache[s]</span><br><span class="line">	res = []</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(s)):</span><br><span class="line">		<span class="keyword">if</span> s[:i + <span class="number">1</span>] <span class="keyword">not</span> <span class="keyword">in</span> wordSet:</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		li = self.dfs(s[i + <span class="number">1</span>:], wordSet, cache)</span><br><span class="line">		<span class="keyword">for</span> ss <span class="keyword">in</span> li:</span><br><span class="line">			res.append((s[:i + <span class="number">1</span>] + <span class="string">' '</span> + ss).strip())</span><br><span class="line"></span><br><span class="line">	cache[s] = res</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>将两个输入都转换成小写。  </li>
+<li>复制子问题的解，不能直接在解List<string>上编辑。</string></li>
+</ol>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;String&gt; <span class="title">wordBreak</span><span class="params">(String s, List&lt;String&gt; wordDict)</span> </span>&#123;</span><br><span class="line">	List&lt;String&gt; res = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">	<span class="keyword">if</span>(s == <span class="keyword">null</span> || s.isEmpty())</span><br><span class="line">		<span class="keyword">return</span> res;</span><br><span class="line">	Set&lt;String&gt; wordDictLower = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">	<span class="keyword">for</span>(String c : wordDict)</span><br><span class="line">		wordDictLower.add(c.toLowerCase());</span><br><span class="line">	s = s.toLowerCase();</span><br><span class="line">	Map&lt;Integer, List&lt;String&gt;&gt; cache = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">	<span class="keyword">return</span> dfs(s, wordDictLower, s.length(), cache);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">List&lt;String&gt; <span class="title">dfs</span><span class="params">(String s, Set&lt;String&gt; wordDict, <span class="keyword">int</span> st, Map&lt;Integer, List&lt;String&gt;&gt; cache)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(st == <span class="number">0</span>) </span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">new</span> ArrayList&lt;&gt;(Arrays.asList(<span class="string">""</span>));</span><br><span class="line">	<span class="keyword">if</span>(cache.containsKey(st))</span><br><span class="line">		<span class="keyword">return</span> cache.get(st);</span><br><span class="line">	List&lt;String&gt; result = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; st; i++) &#123;</span><br><span class="line">		String word = s.substring(i, st);</span><br><span class="line">		<span class="keyword">if</span>(!wordDict.contains(word))</span><br><span class="line">			<span class="keyword">continue</span>;</span><br><span class="line"></span><br><span class="line">		List&lt;String&gt; sub = dfs(s, wordDict, i, cache); </span><br><span class="line">		<span class="comment">// copy solution for subproblem, don't edit on sub</span></span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; sub.size(); j++)</span><br><span class="line">			result.add((sub.get(j) + <span class="string">" "</span> + word).trim());</span><br><span class="line">	&#125;</span><br><span class="line">	cache.put(st, result);</span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(解大小)</code>，空间复杂度为<code>O(解大小)</code>。</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2020/05/09/lin-683/">LintCode 683 Word Break III</a></h1>
+  
+
+      
+        <time datetime="2020-05-09T20:05:20.549Z">2020-05-09</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://www.lintcode.com/problem/word-break-iii/" target="_blank" rel="noopener">LintCode 683 Word Break III</a></strong></p>
+<div><br><br>Give a dictionary of words and a sentence with all whitespace removed, return the number of sentences you can form by inserting whitespaces to the sentence so that each word can be found in the dictionary.<br><br><strong>Example 1:</strong><br><br><pre><br>Input:<br>“CatMat”<br>[“Cat”, “Mat”, “Ca”, “tM”, “at”, “C”, “Dog”, “og”, “Do”]<br>Output: 3<br>Explanation:<br>we can form 3 sentences, as follows:<br>“CatMat” = “Cat” + “Mat”<br>“CatMat” = “Ca” + “tM” + “at”<br>“CatMat” = “C” + “at” + “Mat”<br></pre><br><br><strong>Example 2:</strong><br><br><pre><br>Input:<br>“a”<br>[]<br>Output: 0<br></pre><br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>一个字符串s，被“字典集合”（wordDict）中的单词拼接而成的可能性种数。  </p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是经典题。如果知道s[0:n-1)很容易知道s[0:n)是否有解，既然和子问题有关，就用DP。  </p>
+<ol>
+<li>定义dp[i]为字符串s[0,i)是合法分解种数。</li>
+<li>判断一个字符串是否可以合法分解，方案是尝试在每一位进行分解，若其中一个可分解，即有解，加入到dp[i]中。<br>递归式为dp[i] += dp[k] * isWord(s[k:i)), 0 &lt;= k &lt; i. </li>
+<li>方向为从左到右i=0..n, 初始值为dp[0] = 1. </li>
+</ol>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>将两个输入都转换成小写。 </li>
+<li>dp[n+1]而不是dp[n]，而for循环从1开始。  </li>
+<li>递归中dp[i]用+操作符。  </li>
+</ol>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">wordBreak3</span><span class="params">(String s, Set&lt;String&gt; dict)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(s == <span class="keyword">null</span> || <span class="string">""</span>.equals(s))</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	</span><br><span class="line">	Set&lt;String&gt; lowerDict = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">	<span class="keyword">for</span>(String c : dict)</span><br><span class="line">		lowerDict.add(c.toLowerCase());</span><br><span class="line">	dict = lowerDict;</span><br><span class="line">	s = s.toLowerCase();</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">int</span>[] dp = <span class="keyword">new</span> <span class="keyword">int</span>[s.length() + <span class="number">1</span>];</span><br><span class="line">	dp[<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// dp[i][j] = sum(dp[i][k] * isWord(s[k,j])), i=0..n-1, j=i..n-1</span></span><br><span class="line">	<span class="comment">// dp[0][n-1] = sum(dp[0][k] * isWord(s[k,n-1]))</span></span><br><span class="line">	<span class="comment">// dp[n] = sum(dp[k] * isWord(s[k,n]))</span></span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= s.length(); i++) &#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; i; k++) &#123;</span><br><span class="line">			dp[i] += dp[k] * (dict.contains(s.substring(k, i)) ? <span class="number">1</span> : <span class="number">0</span>); </span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> dp[s.length()];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n<sup>2</sup>)</code>，空间复杂度为<code>O(n)</code>。  </p>
+<p>这道题一开始走过一些弯路，首先我觉得类似于Catalan算法，左右半部都是子问题，但其实这属于单边问题。所以写了以下算法：  </p>
+<h3 id="Java代码：-1"><a href="#Java代码：-1" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">wordBreak3_wrong</span><span class="params">(String s, Set&lt;String&gt; dict)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(s == <span class="keyword">null</span> || <span class="string">""</span>.equals(s))</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// dp[i][j] = sum(dp[i][k] * dp[k][j])</span></span><br><span class="line">	<span class="keyword">int</span>[][] dp = <span class="keyword">new</span> <span class="keyword">int</span>[s.length() + <span class="number">1</span>][s.length() + <span class="number">1</span>];</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// use "ab" as an example</span></span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> len = <span class="number">1</span>; len &lt;= s.length(); len++) &#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; s.length() - len + <span class="number">1</span>; i++) &#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt; i + len; j++) &#123;</span><br><span class="line">				<span class="comment">//"a","b"</span></span><br><span class="line">				dp[i][i+len] += dp[i][j] * dp[j][i+len];    		</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="comment">//"ab"</span></span><br><span class="line">			<span class="keyword">if</span>(dict.contains(s.substring(i, i+len)))</span><br><span class="line">				dp[i][i+len]++;</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> dp[<span class="number">0</span>][s.length()];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>但这个方法会有重复解，比如<br>“abc”, “a”,”b”,”c”<br>-&gt; <code>dp[&quot;ab&quot;] * dp[&quot;c&quot;] = 1</code><br>-&gt; <code>dp[&quot;a&quot;] * dp[&quot;bc&quot;] = 1</code><br>所以解重复，因为这问题是单边子问题而不是Catalan问题。<br>更改版本为单边子问题，一开始用dp[n]导致初始化稍复杂，其实初始化可以并入到递归式，只要用dp[n+1]即可。  </p>
+<h3 id="Java代码：-2"><a href="#Java代码：-2" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">wordBreak32</span><span class="params">(String s, Set&lt;String&gt; dict)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(s == <span class="keyword">null</span> || <span class="string">""</span>.equals(s))</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">int</span>[] dp = <span class="keyword">new</span> <span class="keyword">int</span>[s.length()];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; s.length(); i++)</span><br><span class="line">		dp[i] = dict.contains(s.substring(<span class="number">0</span>, i + <span class="number">1</span>)) ? <span class="number">1</span> : <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; s.length(); i++) &#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; i; k++) &#123;</span><br><span class="line">			dp[i] += dp[k] * (dict.contains(s.substring(k + <span class="number">1</span>, i + <span class="number">1</span>)) ? <span class="number">1</span> : <span class="number">0</span>); </span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> dp[s.length() - <span class="number">1</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2020/05/09/lee-139/">LeetCode 139 Word Break</a></h1>
+  
+
+      
+        <time datetime="2020-05-09T18:13:14.876Z">2020-05-09</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/word-break/" target="_blank" rel="noopener">LeetCode 139 Word Break</a></strong></p>
+<div><br><br>Given a <strong>non-empty</strong> string <em>s</em> and a dictionary <em>wordDict</em> containing a list of <strong>non-empty</strong> words, determine if <em>s</em> can be segmented into a space-separated sequence of one or more dictionary words.<br><br><strong>Note:</strong><br><br><em>   The same word in the dictionary may be reused multiple times in the segmentation.
+</em>   You may assume the dictionary does not contain duplicate words.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> s = “leetcode”, wordDict = [“leet”, “code”]<br><strong>Output:</strong> true<br><strong>Explanation:</strong> Return true because <code>&quot;leetcode&quot;</code> can be segmented as <code>&quot;leet code&quot;</code>.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> s = “applepenapple”, wordDict = [“apple”, “pen”]<br><strong>Output:</strong> true<br><strong>Explanation:</strong> Return true because <code>&quot;</code>applepenapple<code>&quot;</code> can be segmented as <code>&quot;</code>apple pen apple<code>&quot;</code>.<br>             Note that you are allowed to reuse a dictionary word.<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> s = “catsandog”, wordDict = [“cats”, “dog”, “sand”, “and”, “cat”]<br><strong>Output:</strong> false<br></pre><br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>一个字符串s，是否能够被“字典集合”（wordDict）中的单词拼接而成。  </p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是经典题。如果知道s[0:n-1)很容易知道s[0:n)是否有解，既然和子问题有关，就用DP。  </p>
+<ol>
+<li>定义dp[i]为字符串s[0,i)是否可以合法分解。</li>
+<li>判断一个字符串是否可以合法分解，方案是尝试在每一位进行分解，若其中一个可分解，即有解。<br>递归式为dp[i] |= dp[k] &amp;&amp; isWord(s[k:i)), 0 &lt;= k &lt; i. </li>
+<li>方向为从左到右i=0..n, 初始值为dp[0] = true. </li>
+</ol>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>初始值dp[0] = True。  </li>
+<li>递归中dp[i]用或操作符。</li>
+<li>s[j:i] in word_set不要忘记上限为i</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">wordBreak</span><span class="params">(self, s: str, wordDict: List[str])</span> -&gt; bool:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> s:</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">	word_set = set(wordDict)</span><br><span class="line">	dp = [<span class="keyword">False</span>] * (len(s) + <span class="number">1</span>)</span><br><span class="line">	dp[<span class="number">0</span>] = <span class="keyword">True</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, len(dp)):</span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">0</span>, i):</span><br><span class="line">			dp[i] |= dp[j] <span class="keyword">and</span> s[j:i] <span class="keyword">in</span> word_set</span><br><span class="line">	<span class="keyword">return</span> dp[len(dp) - <span class="number">1</span>]</span><br></pre></td></tr></table></figure>
+<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>将两个输入都转换成小写。  </li>
+<li>递归中dp[i]用或操作符。</li>
+</ol>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">wordBreak</span><span class="params">(String s, List&lt;String&gt; wordDict)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(s == <span class="keyword">null</span> || s.isEmpty() || wordDict == <span class="keyword">null</span> || wordDict.size() == <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	Set&lt;String&gt; wordDictLower = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">	<span class="keyword">for</span>(String c : wordDict)</span><br><span class="line">		wordDictLower.add(c.toLowerCase());</span><br><span class="line">	s = s.toLowerCase();</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">boolean</span>[] dp = <span class="keyword">new</span> <span class="keyword">boolean</span>[s.length() + <span class="number">1</span>];</span><br><span class="line">	dp[<span class="number">0</span>] = <span class="keyword">true</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; dp.length; i++)</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; i; k++) &#123;<span class="comment">//"a"</span></span><br><span class="line">			dp[i] |= dp[k] &amp;&amp; wordDictLower.contains(s.substring(k, i));</span><br><span class="line">		&#125;</span><br><span class="line">	<span class="keyword">return</span> dp[dp.length - <span class="number">1</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n<sup>2</sup>)</code>，空间复杂度为<code>O(n)</code>。</p>
+<hr>
+<h3 id="算法II解题思路："><a href="#算法II解题思路：" class="headerlink" title="算法II解题思路："></a><strong>算法II解题思路：</strong></h3><p>这题也可以额用DFS来解。如果可以用DP就尽量用DP，只有求所有可能性才只能用DFS而不能用DP。<br>这道题递归子问题dfs[:n]为子串[0:n)是否可合法拆解。对于子问题而言，需要对其范围内i=[0:st)的每个可能位置分解<br>dfs[:i) + word[i:st)从而求出dfs(st)的解，只有任一分解成功，dfs(st)=true，否则false。 </p>
+<p>Cache的应用场景： 如果子问题重复就要用Cache。<br>例如dfs(10)=dfs(9)+s[9:9] = (dfs(8) + s[8:8]) + s[9:9]<br>           =dfs(8)+s[8:9]<br>dfs(8)由第一层递归第二个循环s[8:9]和第二层递归s[9:9]达到，这是重复的子问题dfs(8)。如果不cache，dfs(8)的求解<br>是重复的。  </p>
+<p><strong>Cache模板：</strong>  </p>
+<ol>
+<li>key为子问题索引st，value为子问题的解。  </li>
+<li>紧跟终结条件，若在cache中，返回子问题的解。  </li>
+<li>循环结束，将子问题的结果存于cache。  </li>
+</ol>
+<h3 id="注意事项：-2"><a href="#注意事项：-2" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>将两个输入都转换成小写。</li>
+<li>递归中先查询词是否在字典中再递归。如果顺序调转就会LTE，因为这些子问题是白费的。  </li>
+<li>递归终结条件为st==0而不是st==s.length()因为子问题递归从右到左。  </li>
+</ol>
+<h3 id="Java代码：-1"><a href="#Java代码：-1" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">wordBreakDFS</span><span class="params">(String s, List&lt;String&gt; wordDict)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(s == <span class="keyword">null</span> || s.isEmpty() || wordDict == <span class="keyword">null</span> || wordDict.size() == <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	Set&lt;String&gt; wordDictLower = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">	<span class="keyword">for</span>(String c : wordDict)</span><br><span class="line">		wordDictLower.add(c.toLowerCase());</span><br><span class="line">	s = s.toLowerCase();</span><br><span class="line">	Map&lt;Integer, Boolean&gt; cache = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">	<span class="keyword">return</span> dfs(s, wordDictLower, s.length(), cache);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// subproblem's answer dfs[:st)</span></span><br><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">dfs</span><span class="params">(String s, Set&lt;String&gt; wordDict, <span class="keyword">int</span> st, Map&lt;Integer, Boolean&gt; cache)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(st == <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">	<span class="keyword">if</span>(cache.containsKey(st))</span><br><span class="line">		<span class="keyword">return</span> cache.get(st);</span><br><span class="line">	<span class="keyword">boolean</span> re = <span class="keyword">false</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; st; i++) &#123;</span><br><span class="line">		<span class="keyword">if</span>(wordDict.contains(s.substring(i, st)) &amp;&amp; dfs(s, wordDict, i, cache))</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	cache.put(st, re);</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n<sup>2</sup>)</code>，空间复杂度为<code>O(n)</code>。</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2020/05/04/lee-146/">LeetCode 146 LRU Cache</a></h1>
   
 
@@ -110,212 +334,6 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2020/05/03/lee-126/">LeetCode 126 Word Ladder II</a></h1>
-  
-
-      
-        <time datetime="2020-05-04T01:09:53.727Z">2020-05-03</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/word-ladder-ii/" target="_blank" rel="noopener">LeetCode 126 Word Ladder</a></strong></p>
-<div><br><br>Given two words (<em>beginWord</em> and <em>endWord</em>), and a dictionary’s word list, find all shortest transformation sequence(s) from <em>beginWord</em> to <em>endWord</em>, such that:<br><br>1.  Only one letter can be changed at a time<br>2.  Each transformed word must exist in the word list. Note that <em>beginWord</em> is <em>not</em> a transformed word.<br><br><strong>Note:</strong><br><br><em>   Return an empty list if there is no such transformation sequence.
-</em>   All words have the same length.<br><em>   All words contain only lowercase alphabetic characters.
-</em>   You may assume no duplicates in the word list.<br><em>   You may assume <em>beginWord</em> and <em>endWord</em> are non-empty and are not the same.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong><br>beginWord = “hit”,<br>endWord = “cog”,<br>wordList = [“hot”,”dot”,”dog”,”lot”,”log”,”cog”]<br><br><strong>Output:</strong><br>[<br>  [“hit”,”hot”,”dot”,”dog”,”cog”],<br>  [“hit”,”hot”,”lot”,”log”,”cog”]<br>]<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong><br>beginWord = “hit”<br>endWord = “cog”<br>wordList = [“hot”,”dot”,”dog”,”lot”,”log”]<br><br><strong>Output:</strong> []<br><br><em>*Explanation:</em></pre></em> The endWord “cog” is not in wordList, therefore no possibletransformation.<br><br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个字典和两个单词。每次变换一个字母的得到新单词且该词要在字典中。求所有最少的变换路径。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>更难于Leetcode 127，BFS用于找最短路径而DFS找路径，此题正是贯彻这一思想，先用BFS找出最短路径，<br>然后根据最短路径值找出所有路径。找BFS解的同时建图用邻接表表示Map<string, list<string="">&gt;(这是<br>部分图，与解相关的图)和解集合Map<string, integer="">(从始点到不同节点的最短距离)，这两个信息正是<br>Dijkistra的图输入和解。DFS从始点开始遍历邻接节点，确保沿着最短路径走，最短路径为<br>map.get(cur)+1=map.get(next)表示当前节点到始点距离+1=儿节点到始点距离，终止条件为找到目标节点。  </string,></string,></p>
-<ol>
-<li>在遍历所有邻接节点的时候，如果不加筛选对所有邻接节点都做DFS会造成LTE。关键是要利用BFS中所有<br>节点到单源的最短路径来剪枝。只需DFS最短路径上的节点，否则跳过。  </li>
-<li>利用了单源最短路径映射表distance后，不需要记录visited，因为重复的节点不会在最短路劲上。  </li>
-<li>Cache nextWords的结果。     </li>
-</ol>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>这题是最短路径题，第一时间想到BFS。这是一条典型的单源最短路径问题。  </p>
-<ol>
-<li>建字典。  </li>
-<li>BFS访问，得到图和单源最短路径Map，以及最短路径距离。同时建立邻接表graph[word] = neighbors，DFS时候不用再次找相邻单词    </li>
-<li>DFS求路径，按最短路径剪枝dict[neighbor] == dict[startWord] + 1。    </li>
-</ol>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>注意题目条件，开始词不在字典中(终结词默认在，否则无结果），要将它加入字典中且距离为1且要加入到path，Line 10。 </li>
-<li>建图的邻接表，对没有边的节点也要加到邻接表，所以先对所有点赋空列表，再根据边更新值，Line 29。用defaultdict(list)可解决  </li>
-<li>DFS模板中去掉visited部分，因为用了最短距离distance的map来指导访问路径，所以不会存在循环的情况(否则不会是最短距离)<br>而且如果有visited会存在丢解，因为如果一个节点不在最短路径上先被访问就会被标记为visited，真正到最短路径上时就会返回。<br>DFS模板中加入if dict[neighbor] == dict[startWord] + 1来剪边。  </li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">findLadders</span><span class="params">(self, beginWord: str, endWord: str, wordList: List[str])</span> -&gt; List[List[int]]:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> beginWord <span class="keyword">or</span> <span class="keyword">not</span> endWord:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">	distance, graph = &#123;&#125;, defaultdict(list)</span><br><span class="line">	<span class="keyword">for</span> word <span class="keyword">in</span> wordList:</span><br><span class="line">		distance[word] = <span class="number">0</span></span><br><span class="line">	distance[beginWord] = <span class="number">1</span></span><br><span class="line">	self.bfs(beginWord, endWord, distance, graph, set())</span><br><span class="line">	result = []</span><br><span class="line">	self.dfs(graph, beginWord, endWord, [beginWord], result, distance) <span class="comment"># remember [beginWord]</span></span><br><span class="line">	<span class="keyword">return</span> result</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dfs</span><span class="params">(self, graph, startWord, endWord, path, res, dict)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> startWord == endWord:</span><br><span class="line">		res.append(list(path))</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	<span class="string">'''if startWord in visited: # remember</span></span><br><span class="line"><span class="string">		return</span></span><br><span class="line"><span class="string">	visited.add(startWord)'''</span></span><br><span class="line">	<span class="keyword">for</span> neighbor <span class="keyword">in</span> graph[startWord]:</span><br><span class="line">		<span class="keyword">if</span> dict[neighbor] == dict[startWord] + <span class="number">1</span>:</span><br><span class="line">			path.append(neighbor)</span><br><span class="line">			self.dfs(graph, neighbor, endWord, path, res, dict)</span><br><span class="line">			path.pop()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">bfs</span><span class="params">(self, beginWord, endWord, dict, graph, visited)</span>:</span></span><br><span class="line">	queue = deque([beginWord])</span><br><span class="line">	visited.add(beginWord)</span><br><span class="line">	<span class="comment"># for key in dict.keys():  # remember</span></span><br><span class="line">	<span class="comment">#    graph[key] = []</span></span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		word = queue.popleft()</span><br><span class="line">		<span class="keyword">if</span> word == endWord:</span><br><span class="line">			<span class="keyword">return</span> dict[word]</span><br><span class="line"></span><br><span class="line">		neighbors = self.get_next_words(word, dict)</span><br><span class="line">		graph[word] = neighbors</span><br><span class="line">		<span class="keyword">for</span> neighbor <span class="keyword">in</span> neighbors:</span><br><span class="line">			<span class="keyword">if</span> neighbor <span class="keyword">not</span> <span class="keyword">in</span> visited:</span><br><span class="line">				queue.append(neighbor)</span><br><span class="line">				visited.add(neighbor)</span><br><span class="line">				dict[neighbor] = dict[word] + <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_next_words</span><span class="params">(self, word, dict)</span>:</span></span><br><span class="line">	res = []</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(word)):</span><br><span class="line">		<span class="keyword">for</span> c <span class="keyword">in</span> string.ascii_lowercase: <span class="comment"># or use 'abcdefghijklmnopqrstuvwxyz'</span></span><br><span class="line">			<span class="keyword">if</span> c == word[i]:</span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			new_word = word[:i] + c + word[i + <span class="number">1</span>:]</span><br><span class="line">			<span class="keyword">if</span> new_word <span class="keyword">in</span> dict:</span><br><span class="line">				res.append(new_word)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> List&lt;List&lt;String&gt;&gt; findLadders(String beginWord, String endWord, List&lt;String&gt; wordList) &#123;</span><br><span class="line">	List&lt;String&gt; path = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">	List&lt;List&lt;String&gt;&gt; res = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">	<span class="keyword">if</span>(beginWord == <span class="keyword">null</span> || endWord == <span class="keyword">null</span>)</span><br><span class="line">		<span class="keyword">return</span> res;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// This is a dict and also keeps track of distance</span></span><br><span class="line">	Map&lt;String, Integer&gt; dict = getDict(wordList);</span><br><span class="line">	<span class="comment">// Make sure endWord is in the dict and can be the next word </span></span><br><span class="line">	<span class="comment">//dict.put(endWord, 0);</span></span><br><span class="line">	dict.put(beginWord, <span class="number">1</span>);</span><br><span class="line">	HashMap&lt;String, List&lt;String&gt;&gt; graph = <span class="keyword">new</span> HashMap&lt;String, List&lt;String&gt;&gt;();</span><br><span class="line">	ladderLength(beginWord, endWord, dict, graph);</span><br><span class="line">	path.add(beginWord);</span><br><span class="line">	dfs(beginWord, endWord, dict, graph, path, res);</span><br><span class="line">	<span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(String cur, String endWord, Map&lt;String, Integer&gt; distance,</span></span></span><br><span class="line"><span class="function"><span class="params">		HashMap&lt;String, List&lt;String&gt;&gt; graph, List&lt;String&gt; path, List&lt;List&lt;String&gt;&gt; res)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(endWord.equals(cur)) &#123;</span><br><span class="line">		res.add(<span class="keyword">new</span> ArrayList&lt;&gt;(path));</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span>(String word : graph.get(cur)) &#123;</span><br><span class="line">		path.add(word);</span><br><span class="line">		<span class="keyword">if</span>(distance.get(word) - <span class="number">1</span> == distance.get(cur)) <span class="comment">// use distance, resolve LTE the most important</span></span><br><span class="line">			dfs(word, endWord, distance, graph, path, res);</span><br><span class="line">		path.remove(path.size() - <span class="number">1</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// cache getNextWords</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">ladderLength</span><span class="params">(String beginWord, String endWord, Map&lt;String, Integer&gt; dict, Map&lt;String, List&lt;String&gt;&gt; graph)</span> </span>&#123;</span><br><span class="line">	Set&lt;String&gt; visited = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">	Queue&lt;String&gt; q = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">	q.offer(beginWord);</span><br><span class="line">	visited.add(beginWord);</span><br><span class="line">	<span class="keyword">for</span>(String s : dict.keySet()) &#123;<span class="comment">// remember</span></span><br><span class="line">		graph.put(s, <span class="keyword">new</span> ArrayList&lt;&gt;());</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty()) &#123;</span><br><span class="line">		String word = q.poll();</span><br><span class="line">		<span class="keyword">if</span>(endWord.equals(word))</span><br><span class="line">			<span class="keyword">return</span> dict.get(word);</span><br><span class="line">		</span><br><span class="line">		List&lt;String&gt; nextWords = getNextWords(word, dict);</span><br><span class="line">		graph.put(word, <span class="keyword">new</span> ArrayList&lt;&gt;(nextWords));</span><br><span class="line">		<span class="keyword">for</span>(String s : nextWords) &#123;</span><br><span class="line">			<span class="keyword">if</span>(visited.contains(s))</span><br><span class="line">				<span class="keyword">continue</span>;</span><br><span class="line">			</span><br><span class="line">			q.offer(s);</span><br><span class="line">			visited.add(s);</span><br><span class="line">			dict.put(s, dict.get(word) + <span class="number">1</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Map&lt;String, Integer&gt; <span class="title">getDict</span><span class="params">(List&lt;String&gt; wordList)</span> </span>&#123;</span><br><span class="line">	Map&lt;String, Integer&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">	<span class="keyword">for</span>(String word : wordList) &#123;</span><br><span class="line">		map.put(word, <span class="number">0</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> map;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">List&lt;String&gt; <span class="title">getNextWords</span><span class="params">(String word, Map&lt;String, Integer&gt; dict)</span> </span>&#123;</span><br><span class="line">	List&lt;String&gt; result = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; word.length(); i++) &#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">26</span>; j++) &#123; </span><br><span class="line">			<span class="keyword">char</span> newChar = (<span class="keyword">char</span>)(<span class="string">'a'</span> + j);</span><br><span class="line">			<span class="keyword">if</span>(word.charAt(i) == newChar) <span class="comment">// exclude itself</span></span><br><span class="line">				<span class="keyword">continue</span>;</span><br><span class="line">			String newWord = word.substring(<span class="number">0</span>, i) + </span><br><span class="line">					newChar + word.substring(i + <span class="number">1</span>, word.length());</span><br><span class="line">			<span class="keyword">if</span>(dict.containsKey(newWord))</span><br><span class="line">				result.add(newWord);</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>getNextWords是L<em>26</em>L=<code>O(<em>L</em><sup>2</sup>)</code>产生新字符串需要L<br>时间复杂度为<code>O(n<em><em>L</em><sup>2</sup> + m</em>k)</code>，空间复杂度<code>O(n)</code>，m为答案个数, k为最短路径值，n为单词数。 </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2020/05/03/combination/">组合</a></h1>
-  
-
-      
-        <time datetime="2020-05-03T21:53:45.466Z">2020-05-03</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>Leetcode 078的题目。这里作为知识点归纳。  </p>
-<ol>
-<li>递归中i=st开始。  </li>
-<li>回溯： path递归后去恢复状态。  </li>
-<li>dfs中传入i+1。  </li>
-<li>结果要复制new ArrayList&lt;&gt;(path)  </li>
-<li>一般来说，终止条件才加入结果，但由于子集任何path修改都是子集，所有立即加入。  </li>
-</ol>
-<p>和全排列的区别：  </p>
-<ol>
-<li>由于排列可以乱序如[1,2,3]结果是[1,3,2]也就是一个结果需要多次从左向右完全扫描，所以i=0开始且维护visited数组<br>组合的结果是按照数组顺序的，所以只要从左到右扫描一次即可，所以用i=st。  </li>
-<li>结果方面，排列结果是满长度，而组合不是。所以在加入到res位置上，组合用st来判断是否结束且加入到path就立刻进入最后<br>结果，而排列是在终结条件上加入。  </li>
-</ol>
-<h3 id="应用："><a href="#应用：" class="headerlink" title="应用："></a><strong>应用：</strong></h3><ol>
-<li>找所有可能性</li>
-</ol>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">combine</span><span class="params">(self, nums: List[int])</span> -&gt; List[List[int]]:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> nums:</span><br><span class="line">		<span class="keyword">return</span> [[]]</span><br><span class="line">	path, result = [], []</span><br><span class="line">	self.dfs(nums, <span class="number">0</span>, path, result)</span><br><span class="line">	<span class="keyword">return</span> result</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dfs</span><span class="params">(self, nums, st, path, result)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> st == len(nums):</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(st, len(nums)):</span><br><span class="line">		path.append(nums[i])</span><br><span class="line">		result.append(list(path))</span><br><span class="line">		self.dfs(nums, i + <span class="number">1</span>, path, result)</span><br><span class="line">		path.pop()</span><br></pre></td></tr></table></figure>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> List&lt;List&lt;Integer&gt;&gt; subsets(<span class="keyword">int</span>[] nums) &#123;</span><br><span class="line">	List&lt;Integer&gt; path = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">	List&lt;List&lt;Integer&gt;&gt; res = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">	res.add(<span class="keyword">new</span> ArrayList&lt;&gt;(path)); <span class="comment">//empty set</span></span><br><span class="line">	<span class="keyword">if</span>(nums == <span class="keyword">null</span> || nums.length == <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> res;</span><br><span class="line">	dfs(nums, <span class="number">0</span>, path, res);</span><br><span class="line">	<span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> st, List&lt;Integer&gt; path, List&lt;List&lt;Integer&gt;&gt; res)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(st == nums.length)</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = st; i &lt; nums.length; i++) &#123;</span><br><span class="line">		path.add(nums[i]);</span><br><span class="line">		res.add(<span class="keyword">new</span> ArrayList&lt;&gt;(path));</span><br><span class="line">		dfs(nums, i + <span class="number">1</span>, path, res);</span><br><span class="line">		path.remove(path.size() - <span class="number">1</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(<em>2</em><sup>n</sup>)</code> ，空间复杂度<code>O(1)</code>。</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2020/05/03/permutation/">排列</a></h1>
-  
-
-      
-        <time datetime="2020-05-03T21:48:49.111Z">2020-05-03</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>Leetcode 046的题目。这里作为知识点归纳。  </p>
-<ol>
-<li>类似于组合题，但用到了visited数组且递归中从i=0开始。  </li>
-</ol>
-<h3 id="应用："><a href="#应用：" class="headerlink" title="应用："></a><strong>应用：</strong></h3><ol>
-<li>找所有可能性</li>
-</ol>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>每一种排列加入到结果集时要复制path。 </li>
-</ol>
-<p><a href="https://leetcode.com/problems/permutations" target="_blank" rel="noopener">Leetcode 046 Permutations</a>    </p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">permute</span><span class="params">(self, nums: List[int])</span> -&gt; List[List[int]]:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> nums:</span><br><span class="line">		<span class="keyword">return</span> [[]]</span><br><span class="line">	path, result, visited = [], [], set()</span><br><span class="line">	self.dfs(nums, path, result, visited)</span><br><span class="line">	<span class="keyword">return</span> result</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dfs</span><span class="params">(self, nums, path, result, visited)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> len(path) == len(nums):</span><br><span class="line">		result.append(list(path))</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(nums)):</span><br><span class="line">		<span class="keyword">if</span> i <span class="keyword">not</span> <span class="keyword">in</span> visited:</span><br><span class="line">			path.append(nums[i])</span><br><span class="line">			visited.add(i)</span><br><span class="line">			self.dfs(nums, path, result, visited)</span><br><span class="line">			visited.remove(i)</span><br><span class="line">			path.pop()</span><br></pre></td></tr></table></figure>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> List&lt;List&lt;Integer&gt;&gt; permute(<span class="keyword">int</span>[] nums) &#123;</span><br><span class="line">	List&lt;Integer&gt; path = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">	List&lt;List&lt;Integer&gt;&gt; res = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">	<span class="keyword">if</span>(nums == <span class="keyword">null</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> res;</span><br><span class="line">	&#125;</span><br><span class="line">	dfs(nums, <span class="keyword">new</span> HashSet&lt;&gt;(), path, res);</span><br><span class="line">	<span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span>[] nums, Set&lt;Integer&gt; visited, List&lt;Integer&gt; path, List&lt;List&lt;Integer&gt;&gt; res)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(path.size() == nums.length) &#123;</span><br><span class="line">		res.add(<span class="keyword">new</span> ArrayList&lt;&gt;(path));</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nums.length; i++) &#123;</span><br><span class="line">		<span class="keyword">if</span>(visited.contains(i))</span><br><span class="line">			<span class="keyword">continue</span>;</span><br><span class="line">		visited.add(i);</span><br><span class="line">		path.add(nums[i]);</span><br><span class="line">		dfs(nums, visited, path, res);</span><br><span class="line">		visited.remove(i);</span><br><span class="line">		path.remove(path.size() - <span class="number">1</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n!)</code>，空间复杂度<code>O(1)</code>。</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2020/04/26/quick-sort/">快速排序</a></h1>
-  
-
-      
-        <time datetime="2020-04-27T06:45:44.547Z">2020-04-26</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><ol>
-<li>递归找pivot，然后按小于pivot和大于等于pivot分成两组。每轮递归，pivot肯定在正确（最终）位置上</li>
-<li>partition方法类似于Leetcode75的sort colors一样用两个指针i和noSmallerIdx。i是循环指针，而<br>noSmallerIdx是第二组大于等于pivot的首元素，或者理解为比pivot小的元素（指针i指着）将要被交换<br>的位置（比pivot大的元素）=比pivot小的元素的最后一个+1.  </li>
-<li>循环结束后，将pivot交换到正确的位置上。  </li>
-</ol>
-<p><img src="/images/quicksort.png" alt=""><br>i指向4，因为4小于pivot，所以要换到前面去，跟6置换，noSmallerIdx向后移。  </p>
-<h3 id="应用："><a href="#应用：" class="headerlink" title="应用："></a><strong>应用：</strong></h3><ol>
-<li>排序</li>
-<li>快速选择quick select</li>
-<li>partition，如Leetcode 75</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">quick_sort</span><span class="params">(self, nums: List[int])</span>:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> nums:</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	self.q_sort(nums, <span class="number">0</span>, len(nums) - <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">q_sort</span><span class="params">(self, nums: List[int], start: int, end: int)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> start &gt;= end:</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	pivot = self.partition(nums, start, end)</span><br><span class="line">	self.q_sort(nums, start, pivot - <span class="number">1</span>)</span><br><span class="line">	self.q_sort(nums, pivot + <span class="number">1</span>, end)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">partition</span><span class="params">(self, nums: List[int], start: int, end: int)</span>:</span></span><br><span class="line">	no_smaller_index, pivot = start, end</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(start, end):</span><br><span class="line">		<span class="keyword">if</span> nums[i] &lt; nums[pivot]:</span><br><span class="line">			nums[no_smaller_index], nums[i] = nums[i], nums[no_smaller_index]</span><br><span class="line">			no_smaller_index += <span class="number">1</span></span><br><span class="line">	nums[no_smaller_index], nums[end] = nums[end], nums[no_smaller_index]</span><br><span class="line">	<span class="keyword">return</span> no_smaller_index</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nlogn)</code>，空间复杂度<code>O(1)</code>。</p>
-<h2 id="Quick-Select"><a href="#Quick-Select" class="headerlink" title="Quick Select"></a>Quick Select</h2><p>选择第k小的数(下标从0开始)  </p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>left &gt; right不再是等于，因为几个数相等的情况，排序的时候不用再移动，但第k小里面需要继续递归。  </li>
-<li>binary select是单边递归，而不是双边。要判断pivot是否等于k。  </li>
-<li>递归调用仍用k，而不是跟pivot_pos相关，因为k是下标位置  </li>
-<li>partition中range用[start, end)而不是len </li>
-</ol>
-<h3 id="Python代码：-1"><a href="#Python代码：-1" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">quick_select</span><span class="params">(self, nums: List[int], k: int)</span> -&gt; int:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> nums:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line">	<span class="keyword">return</span> self.q_select(nums, <span class="number">0</span>, len(nums) - <span class="number">1</span>, k)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">q_select</span><span class="params">(self, nums: List[int], start: int, end: int, k: int)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> start &gt; end:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line">	pivot = self.partition(nums, start, end)</span><br><span class="line">	<span class="keyword">if</span> k == pivot:</span><br><span class="line">		<span class="keyword">return</span> nums[pivot]</span><br><span class="line">	<span class="keyword">if</span> k &lt; pivot:</span><br><span class="line">		<span class="keyword">return</span> self.q_select(nums, start, pivot - <span class="number">1</span>, k)</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		<span class="keyword">return</span> self.q_select(nums, pivot + <span class="number">1</span>, end, k)</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>。</p>
-<h2 id="Partition"><a href="#Partition" class="headerlink" title="Partition"></a>Partition</h2><p>用于原位排序，将相应的元素放入该放的位置直到不满足条件为止  </p>
-<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li><strong>i不一定会移动</strong>，放在else里面    </li>
-</ol>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sort</span><span class="params">(self, nums: List[int])</span> -&gt; int:</span></span><br><span class="line">	i = <span class="number">0</span></span><br><span class="line">	<span class="keyword">while</span> i &lt; len(nums):</span><br><span class="line">		<span class="keyword">if</span> &lt;condition&gt;</span><br><span class="line">			self.swap(nums, i, j)</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			i += <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">swap</span><span class="params">(self, nums, i, j)</span>:</span></span><br><span class="line">	nums[i], nums[j] = nums[j], nums[i]</span><br><span class="line">``` </span><br><span class="line"></span><br><span class="line"><span class="comment">### **Java代码：**</span></span><br><span class="line">``` java</span><br><span class="line">public void sort(int[] arr) &#123;</span><br><span class="line">	<span class="keyword">if</span>(arr == null || arr.length == <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	quickSort(arr, <span class="number">0</span>, arr.length - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void quickSort(int[] arr, int left, int right) &#123;</span><br><span class="line">	<span class="keyword">if</span>(left &gt;= right)</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	int pivotPos = partition(arr, left, right);</span><br><span class="line">	quickSort(arr, left, pivotPos - <span class="number">1</span>);</span><br><span class="line">	quickSort(arr, pivotPos + <span class="number">1</span>, right);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int partition(int[] arr, int left, int right) &#123;</span><br><span class="line">	int noSmallerIdx = left;</span><br><span class="line">	int pivot = arr[right];</span><br><span class="line">	<span class="keyword">for</span>(int i = left; i &lt; right; i++) &#123;</span><br><span class="line">		<span class="keyword">if</span>(arr[i] &lt; pivot) </span><br><span class="line">			swap(arr, noSmallerIdx++, i);</span><br><span class="line">	&#125;</span><br><span class="line">	swap(arr, noSmallerIdx, right);</span><br><span class="line">	<span class="keyword">return</span> noSmallerIdx;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void swap(int[] arr, int i, int j) &#123;</span><br><span class="line">	int temp = arr[i];</span><br><span class="line">	arr[i] = arr[j];</span><br><span class="line">	arr[j] = temp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -340,23 +358,23 @@
   <ul class="entry">
     
       <li>
+        <a href="/2021/12/21/lee-013/">LeetCode 013 Roman to Integer</a>
+      </li>
+    
+      <li>
+        <a href="/2021/12/21/lee-1570/">LeetCode 1570 Dot Product of Two Sparse Vectors</a>
+      </li>
+    
+      <li>
+        <a href="/2021/12/21/lee-050/">LeetCode 050 Pow(x, n)</a>
+      </li>
+    
+      <li>
+        <a href="/2021/12/20/lee-443/">LeetCode 443 String Compression</a>
+      </li>
+    
+      <li>
         <a href="/2021/12/20/lee-011/">LeetCode 011 Container With Most Water</a>
-      </li>
-    
-      <li>
-        <a href="/2021/12/20/lee-1762/">LeetCode 1762 Buildings With an Ocean View</a>
-      </li>
-    
-      <li>
-        <a href="/2021/12/19/lee-068/">LeetCode 068 Text Justification</a>
-      </li>
-    
-      <li>
-        <a href="/2021/12/19/lee-005/">LeetCode 005 Longest Palindromic Substring</a>
-      </li>
-    
-      <li>
-        <a href="/2021/12/19/lee-815/">LeetCode 815 Bus Routes</a>
       </li>
     
   </ul>
@@ -369,7 +387,7 @@
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Amazon/" style="font-size: 10px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.33px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 16px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 12px;">Binary Tree</a> <a href="/tags/Bloomberg/" style="font-size: 10px;">Bloomberg</a> <a href="/tags/Breadth-First-Search/" style="font-size: 11.33px;">Breadth-First Search</a> <a href="/tags/Breadth-first-Search/" style="font-size: 14.67px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 19.33px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 14.67px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 12px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 10px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 18px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 10.67px;">Facebook</a> <a href="/tags/Graph/" style="font-size: 11.33px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 15.33px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 14px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 14.67px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 18.67px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 14px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 10px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 14px;">Math</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 12px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.67px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Python-KB/" style="font-size: 17.33px;">Python KB</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.67px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 12px;">Sort</a> <a href="/tags/Stack/" style="font-size: 16.67px;">Stack</a> <a href="/tags/String/" style="font-size: 14.67px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.33px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.67px;">Tree</a> <a href="/tags/Trie/" style="font-size: 10.67px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.67px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.67px;">Union Find</a> <a href="/tags/tik/" style="font-size: 13.33px;">tik</a> <a href="/tags/tiktok/" style="font-size: 11.33px;">tiktok</a>
+    <a href="/tags/Amazon/" style="font-size: 10px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.13px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 16.25px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 11.88px;">Binary Tree</a> <a href="/tags/Bloomberg/" style="font-size: 10px;">Bloomberg</a> <a href="/tags/Breadth-First-Search/" style="font-size: 11.25px;">Breadth-First Search</a> <a href="/tags/Breadth-first-Search/" style="font-size: 14.38px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 19.38px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 14.38px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.88px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.88px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 10px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 18.13px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 11.88px;">Facebook</a> <a href="/tags/Graph/" style="font-size: 11.25px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 11.88px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 15.63px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 13.75px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 14.38px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 18.75px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 13.75px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 10px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 14.38px;">Math</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.88px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.63px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Python-KB/" style="font-size: 17.5px;">Python KB</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.63px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.63px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.88px;">Sort</a> <a href="/tags/Stack/" style="font-size: 16.88px;">Stack</a> <a href="/tags/String/" style="font-size: 15px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.25px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.5px;">Tree</a> <a href="/tags/Trie/" style="font-size: 10.63px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 15.63px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.63px;">Union Find</a> <a href="/tags/tik/" style="font-size: 13.13px;">tik</a> <a href="/tags/tiktok/" style="font-size: 11.25px;">tiktok</a>
   </div>
 </div>
 
