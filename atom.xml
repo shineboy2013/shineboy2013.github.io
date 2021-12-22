@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://shineboy2013.github.com/"/>
-  <updated>2021-12-21T09:46:06.975Z</updated>
+  <updated>2021-12-22T09:12:39.444Z</updated>
   <id>https://shineboy2013.github.com/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>LeetCode 174 Dungeon Game</title>
+    <link href="https://shineboy2013.github.com/2021/12/22/lee-174/"/>
+    <id>https://shineboy2013.github.com/2021/12/22/lee-174/</id>
+    <published>2021-12-22T08:17:51.841Z</published>
+    <updated>2021-12-22T09:12:39.444Z</updated>
+    
+    <content type="html"><![CDATA[<p><strong><a href="https://leetcode.com/problems/dungeon-game/" target="_blank" rel="noopener">LeetCode</a></strong></p><h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>保持正数健康值从左上走到右下  </p><h3 id="DP解题思路-推荐-："><a href="#DP解题思路-推荐-：" class="headerlink" title="DP解题思路(推荐)："></a><strong>DP解题思路(推荐)：</strong></h3><p>坐标型DP。<br>dp[n][m]为通过<strong>这一格前</strong>的最小健康值，也就是题目所求，这意味着需要保证通过最后一个后的健康值为1，所以引入它相邻的两个cell为1<br>递归式为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dp[n][m] = -dungeon[n][m] + min(dp[n+1][m], dp[n][m+1]) if dungeon[n][m] &lt; 0</span><br><span class="line">         = max&#123;1, min(dp[n+1][m], dp[n][m+1]) - dungeon[n][m]&#125; if dungeon[n][m] &gt; 0</span><br></pre></td></tr></table></figure></p><p>由于-dungeon[n][m] + min(dp[n+1][m]一定为正数，所以可以归并两种情况：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dp[n][m] = max&#123;1, min(dp[n+1][m], dp[n][m+1]) - dungeon[n][m]&#125;</span><br></pre></td></tr></table></figure></p><h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p><h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol><li>从右下走回左上倒推初始值。每一格的最小健康值在为1，而初始健康值也最小为1.  </li><li>递归式：一开始的递归式跟下和右格的极小值有关，所以DP数组(比原数组多出的)最右和最下边界初始值为正无穷；但根据公式，右下格会出现正无穷，所以需要特别处理，<strong>将右下格的相邻下右两格初始为1</strong>，可以这样理解，从右下格走出健康值必须是1    </li><li>递归式：一开始写若该格dungeon值为负数，1 - dungeon[n][m] + min(dp[n+1][m], dp[n][m+1])这个1的确保证了最小健康值为1，但其实它只要加一次，而上述右下边界已经处理，所以<strong>递归式不需要+1</strong>，如[[-2, -3]], dp[0][1]=4, 而dp[0][0]为6即可  </li><li>递归式：当dungeon为正数时，可以抵消它相邻格所要求的最低健康值，当然要保证健康值大于1，如[5, 4, -2], dp[0][0] = 1</li></ol><h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># dp[n][m] = 1 - dungeon[n][m] + min(dp[n+1][m], dp[n][m+1]) if dungeon[n][m] &lt; 0</span></span><br><span class="line"><span class="comment">#          = 1 + min(dp[n+1][m], dp[n][m+1]) if dungeon[n][m] &gt; 0</span></span><br><span class="line"><span class="comment"># dp[n][m] = -dungeon[n][m] + min(dp[n+1][m], dp[n][m+1]) if dungeon[n][m] &lt; 0</span></span><br><span class="line"><span class="comment">#          = min(dp[n+1][m], dp[n][m+1]) if dungeon[n][m] &gt; 0</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">calculateMinimumHP</span><span class="params">(self, dungeon: List[List[int]])</span> -&gt; int:</span></span><br><span class="line">dp = [[float(<span class="string">'inf'</span>) <span class="keyword">for</span> _ <span class="keyword">in</span> range(len(dungeon[<span class="number">0</span>]) + <span class="number">1</span>)] <span class="keyword">for</span> _ <span class="keyword">in</span> range(len(dungeon) + <span class="number">1</span>)]</span><br><span class="line">dp[<span class="number">-1</span>][<span class="number">-2</span>] = dp[<span class="number">-2</span>][<span class="number">-1</span>] = <span class="number">1</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> reversed(range(len(dungeon))):</span><br><span class="line"><span class="keyword">for</span> j <span class="keyword">in</span> reversed(range(len(dungeon[<span class="number">0</span>]))):</span><br><span class="line"><span class="string">'''</span></span><br><span class="line"><span class="string">min_neighbor = float('inf')</span></span><br><span class="line"><span class="string">if i + 1 &lt; len(dungeon):</span></span><br><span class="line"><span class="string">min_neighbor = min(min_neighbor, dp[i + 1][j])</span></span><br><span class="line"><span class="string">if j + 1 &lt; len(dungeon[0]):</span></span><br><span class="line"><span class="string">min_neighbor = min(min_neighbor, dp[i][j + 1])</span></span><br><span class="line"><span class="string">if min_neighbor == float('inf'):</span></span><br><span class="line"><span class="string">min_neighbor = 0</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">if dungeon[i][j] &lt; 0:</span></span><br><span class="line"><span class="string">dp[i][j] = min(dp[i + 1][j], dp[i][j + 1]) - dungeon[i][j]</span></span><br><span class="line"><span class="string">else:</span></span><br><span class="line"><span class="string">dp[i][j] = max(1, min(dp[i + 1][j], dp[i][j + 1]) - dungeon[i][j])</span></span><br><span class="line"><span class="string">'''</span></span><br><span class="line">dp[i][j] = max(<span class="number">1</span>, min(dp[i + <span class="number">1</span>][j], dp[i][j + <span class="number">1</span>]) - dungeon[i][j])</span><br><span class="line"><span class="keyword">return</span> dp[<span class="number">0</span>][<span class="number">0</span>]</span><br></pre></td></tr></table></figure><h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n<sup>2</sup>)</code>，空间复杂度<code>O(n<sup>2</sup>)</code>  </p><hr><h3 id="Binary-select算法II解题思路："><a href="#Binary-select算法II解题思路：" class="headerlink" title="Binary select算法II解题思路："></a><strong>Binary select算法II解题思路：</strong></h3><p>Binary select + DP<br>暴力法，假设某个初始健康值，然后用从左到右从上到下计算<strong>这一格后的健康值</strong>，dp[m][n] = max{dp[m-1][n], dp[m][n-1]} + dungeon[r][c], 可以看出dp定义和递归式max都是跟上述方法相反。求最后一个是否正数<br>暴力法是O(n^2), 而用binary select试0, 1000 * (m + n) + 1，1000是cell的最大值，m+n是路径长度，1是最小健康值，二分法试每个数值  </p><p>参考<a href="https://leetcode.com/problems/dungeon-game/discuss/1498367" target="_blank" rel="noopener">https://leetcode.com/problems/dungeon-game/discuss/1498367</a></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;&lt;strong&gt;&lt;a href=&quot;https://leetcode.com/problems/dungeon-game/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;LeetCode&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;h3 id=&quot;题目大意：&quot;&gt;&lt;a 
+      
+    
+    </summary>
+    
+    
+      <category term="Array" scheme="https://shineboy2013.github.com/tags/Array/"/>
+    
+      <category term="Dynamic Programming" scheme="https://shineboy2013.github.com/tags/Dynamic-Programming/"/>
+    
+  </entry>
   
   <entry>
     <title>LeetCode 013 Roman to Integer</title>
@@ -497,32 +523,6 @@
     
     
       <category term="Array" scheme="https://shineboy2013.github.com/tags/Array/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>LeetCode 528 Random Pick with Weight</title>
-    <link href="https://shineboy2013.github.com/2021/12/14/lee-528/"/>
-    <id>https://shineboy2013.github.com/2021/12/14/lee-528/</id>
-    <published>2021-12-15T06:22:38.057Z</published>
-    <updated>2021-12-15T06:32:42.680Z</updated>
-    
-    <content type="html"><![CDATA[<p><strong><a href="https://leetcode.com/problems/random-pick-with-weight/" target="_blank" rel="noopener">LeetCode</a></strong></p><div><br><br>You are given a <strong>0-indexed</strong> array of positive integers <code>w</code> where <code>w[i]</code> describes the <strong>weight</strong> of the <code>i&lt;sup&gt;th&lt;/sup&gt;</code> index.<br><br>You need to implement the function <code>pickIndex()</code>, which <strong>randomly</strong> picks an index in the range <code>[0, w.length - 1]</code> (<strong>inclusive</strong>) and returns it. The <strong>probability</strong> of picking an index <code>i</code> is <code>w[i] / sum(w)</code>.<br><br><em>   For example, if <code>w = [1, 3]</code>, the probability of picking index <code>0</code> is <code>1 / (1 + 3) = 0.25</code> (i.e., <code>25%</code>), and the probability of picking index <code>1</code> is <code>3 / (1 + 3) = 0.75</code> (i.e., <code>75%</code>).<br><br><strong>Example 1:</strong><br><br><pre><strong>Input</strong><br>[“Solution”,”pickIndex”]<br>[[[1]],[]]<br><strong>Output</strong><br>[null,0]<br><br><strong>Explanation</strong><br>Solution solution = new Solution([1]);<br>solution.pickIndex(); // return 0. The only option is to return 0 since there is only one element in w.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input</strong><br>[“Solution”,”pickIndex”,”pickIndex”,”pickIndex”,”pickIndex”,”pickIndex”]<br>[[[1,3]],[],[],[],[],[]]<br><strong>Output</strong><br>[null,1,1,1,1,0]<br><br><strong>Explanation</strong><br>Solution solution = new Solution([1, 3]);<br>solution.pickIndex(); // return 1. It is returning the second element (index = 1) that has a probability of 3/4.<br>solution.pickIndex(); // return 1<br>solution.pickIndex(); // return 1<br>solution.pickIndex(); // return 1<br>solution.pickIndex(); // return 0. It is returning the first element (index = 0) that has a probability of 1/4.<br><br>Since this is a randomization problem, multiple answers are allowed.<br>All of the following outputs can be considered correct:<br>[null,1,1,1,1,0]<br>[null,1,1,1,1,1]<br>[null,1,1,1,0,0]<br>[null,1,1,1,0,1]<br>[null,1,0,1,0,0]<br>……<br>and so on.<br></pre><br><br><strong>Constraints:</strong></em>   <code>1 &lt;= w.length &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code><br><em>   <code>1 &lt;= w[i] &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code></em>   <code>pickIndex</code> will be called at most <code>10&lt;sup&gt;4&lt;/sup&gt;</code> times.<br><br></div><h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>根据数组每个元素的weight来决定其出现的概率： weight/sum of weight  </p><h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>模拟运算过程，先求和，然后根据上述公式分配概率： 如[1, 3], 小于0.25属于第一个元素，大于属于后一个元素，我们不用小数，还原回整数<br>所以数值小于1属于第一个元素，大于1小于4属于后一个，想到用presum，然后在presum搜索某个value，就想到二分法。  </p><h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p><h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol><li>random.randint前闭后闭      </li></ol><h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span><span class="params">(TestCases)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, w: List[int])</span>:</span></span><br><span class="line">        self.presum = []</span><br><span class="line">        sum = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> n <span class="keyword">in</span> w:</span><br><span class="line">            sum += n</span><br><span class="line">            self.presum.append(sum)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">pickIndex</span><span class="params">(self)</span> -&gt; int:</span></span><br><span class="line">        rand_value = random.randint(<span class="number">0</span>, self.presum[<span class="number">-1</span>] - <span class="number">1</span>)</span><br><span class="line">        <span class="keyword">return</span> bisect.bisect(self.presum, rand_value)</span><br></pre></td></tr></table></figure><h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(1ogn)</code>，空间复杂度<code>O(n)</code>  </p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;&lt;strong&gt;&lt;a href=&quot;https://leetcode.com/problems/random-pick-with-weight/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;LeetCode&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
-&lt;div&gt;&lt;b
-      
-    
-    </summary>
-    
-    
-      <category term="Binary Search" scheme="https://shineboy2013.github.com/tags/Binary-Search/"/>
-    
-      <category term="Randomized" scheme="https://shineboy2013.github.com/tags/Randomized/"/>
     
   </entry>
   

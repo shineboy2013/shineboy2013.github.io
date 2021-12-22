@@ -53,6 +53,50 @@
     <header>
       
   
+    <h1 class="title"><a href="/2021/12/14/lee-528/">LeetCode 528 Random Pick with Weight</a></h1>
+  
+
+      
+        <time datetime="2021-12-15T06:22:38.057Z">2021-12-14</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/random-pick-with-weight/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>You are given a <strong>0-indexed</strong> array of positive integers <code>w</code> where <code>w[i]</code> describes the <strong>weight</strong> of the <code>i&lt;sup&gt;th&lt;/sup&gt;</code> index.<br><br>You need to implement the function <code>pickIndex()</code>, which <strong>randomly</strong> picks an index in the range <code>[0, w.length - 1]</code> (<strong>inclusive</strong>) and returns it. The <strong>probability</strong> of picking an index <code>i</code> is <code>w[i] / sum(w)</code>.<br><br><em>   For example, if <code>w = [1, 3]</code>, the probability of picking index <code>0</code> is <code>1 / (1 + 3) = 0.25</code> (i.e., <code>25%</code>), and the probability of picking index <code>1</code> is <code>3 / (1 + 3) = 0.75</code> (i.e., <code>75%</code>).<br><br><strong>Example 1:</strong><br><br><pre><strong>Input</strong><br>[“Solution”,”pickIndex”]<br>[[[1]],[]]<br><strong>Output</strong><br>[null,0]<br><br><strong>Explanation</strong><br>Solution solution = new Solution([1]);<br>solution.pickIndex(); // return 0. The only option is to return 0 since there is only one element in w.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input</strong><br>[“Solution”,”pickIndex”,”pickIndex”,”pickIndex”,”pickIndex”,”pickIndex”]<br>[[[1,3]],[],[],[],[],[]]<br><strong>Output</strong><br>[null,1,1,1,1,0]<br><br><strong>Explanation</strong><br>Solution solution = new Solution([1, 3]);<br>solution.pickIndex(); // return 1. It is returning the second element (index = 1) that has a probability of 3/4.<br>solution.pickIndex(); // return 1<br>solution.pickIndex(); // return 1<br>solution.pickIndex(); // return 1<br>solution.pickIndex(); // return 0. It is returning the first element (index = 0) that has a probability of 1/4.<br><br>Since this is a randomization problem, multiple answers are allowed.<br>All of the following outputs can be considered correct:<br>[null,1,1,1,1,0]<br>[null,1,1,1,1,1]<br>[null,1,1,1,0,0]<br>[null,1,1,1,0,1]<br>[null,1,0,1,0,0]<br>……<br>and so on.<br></pre><br><br><strong>Constraints:</strong>
+
+</em>   <code>1 &lt;= w.length &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code><br><em>   <code>1 &lt;= w[i] &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code>
+</em>   <code>pickIndex</code> will be called at most <code>10&lt;sup&gt;4&lt;/sup&gt;</code> times.<br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>根据数组每个元素的weight来决定其出现的概率： weight/sum of weight  </p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>模拟运算过程，先求和，然后根据上述公式分配概率： 如[1, 3], 小于0.25属于第一个元素，大于属于后一个元素，我们不用小数，还原回整数<br>所以数值小于1属于第一个元素，大于1小于4属于后一个，想到用presum，然后在presum搜索某个value，就想到二分法。  </p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>random.randint前闭后闭      </li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span><span class="params">(TestCases)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, w: List[int])</span>:</span></span><br><span class="line">        self.presum = []</span><br><span class="line">        sum = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> n <span class="keyword">in</span> w:</span><br><span class="line">            sum += n</span><br><span class="line">            self.presum.append(sum)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">pickIndex</span><span class="params">(self)</span> -&gt; int:</span></span><br><span class="line">        rand_value = random.randint(<span class="number">0</span>, self.presum[<span class="number">-1</span>] - <span class="number">1</span>)</span><br><span class="line">        <span class="keyword">return</span> bisect.bisect(self.presum, rand_value)</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(1ogn)</code>，空间复杂度<code>O(n)</code>  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2021/12/14/lee-1396/">LeetCode 1396 Design Underground System</a></h1>
   
 
@@ -232,45 +276,6 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2021/12/13/lee-000/">LeetCode</a></h1>
-  
-
-      
-        <time datetime="2021-12-13T19:38:49.724Z">2021-12-13</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="">LeetCode</a></strong></p>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>N/A</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>N/A</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li></li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -295,6 +300,10 @@
   <ul class="entry">
     
       <li>
+        <a href="/2021/12/22/lee-174/">LeetCode 174 Dungeon Game</a>
+      </li>
+    
+      <li>
         <a href="/2021/12/21/lee-013/">LeetCode 013 Roman to Integer</a>
       </li>
     
@@ -310,10 +319,6 @@
         <a href="/2021/12/20/lee-443/">LeetCode 443 String Compression</a>
       </li>
     
-      <li>
-        <a href="/2021/12/20/lee-011/">LeetCode 011 Container With Most Water</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -324,7 +329,7 @@
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Amazon/" style="font-size: 10px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.13px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 16.25px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 11.88px;">Binary Tree</a> <a href="/tags/Bloomberg/" style="font-size: 10px;">Bloomberg</a> <a href="/tags/Breadth-First-Search/" style="font-size: 11.25px;">Breadth-First Search</a> <a href="/tags/Breadth-first-Search/" style="font-size: 14.38px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 19.38px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 14.38px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.88px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.88px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 10px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 18.13px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 11.88px;">Facebook</a> <a href="/tags/Graph/" style="font-size: 11.25px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 11.88px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 15.63px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 13.75px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 14.38px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 18.75px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 13.75px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 10px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 14.38px;">Math</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.88px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.63px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Python-KB/" style="font-size: 17.5px;">Python KB</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.63px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.63px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.88px;">Sort</a> <a href="/tags/Stack/" style="font-size: 16.88px;">Stack</a> <a href="/tags/String/" style="font-size: 15px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.25px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.5px;">Tree</a> <a href="/tags/Trie/" style="font-size: 10.63px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 15.63px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.63px;">Union Find</a> <a href="/tags/tik/" style="font-size: 13.13px;">tik</a> <a href="/tags/tiktok/" style="font-size: 11.25px;">tiktok</a>
+    <a href="/tags/Amazon/" style="font-size: 10px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.33px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 16.67px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 12px;">Binary Tree</a> <a href="/tags/Bloomberg/" style="font-size: 10px;">Bloomberg</a> <a href="/tags/Breadth-First-Search/" style="font-size: 11.33px;">Breadth-First Search</a> <a href="/tags/Breadth-first-Search/" style="font-size: 14.67px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 19.33px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 14.67px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 12px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 10px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 18.67px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 12px;">Facebook</a> <a href="/tags/Graph/" style="font-size: 11.33px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 14px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 14.67px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 18.67px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 14px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 10px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 14.67px;">Math</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 12px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.67px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Python-KB/" style="font-size: 18px;">Python KB</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.67px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.67px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 12px;">Sort</a> <a href="/tags/Stack/" style="font-size: 17.33px;">Stack</a> <a href="/tags/String/" style="font-size: 15.33px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.33px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.67px;">Tree</a> <a href="/tags/Trie/" style="font-size: 10.67px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 16px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.67px;">Union Find</a> <a href="/tags/tik/" style="font-size: 13.33px;">tik</a> <a href="/tags/tiktok/" style="font-size: 11.33px;">tiktok</a>
   </div>
 </div>
 

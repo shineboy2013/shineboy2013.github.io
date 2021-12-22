@@ -53,6 +53,49 @@
     <header>
       
   
+    <h1 class="title"><a href="/2021/12/06/lee-863/">LeetCode 863 All Nodes Distance K in Binary Tree</a></h1>
+  
+
+      
+        <time datetime="2021-12-06T19:49:23.856Z">2021-12-06</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/all-nodes-distance-k-in-binary-tree/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>Given the <code>root</code> of a binary tree, the value of a target node <code>target</code>, and an integer <code>k</code>, return <em>an array of the values of all nodes that have a distance</em> <code>k</code> <em>from the target node.</em><br><br>You can return the answer in <strong>any order</strong>.<br><br><strong>Example 1:</strong><br><br><img src="https://s3-lc-upload.s3.amazonaws.com/uploads/2018/06/28/sketch0.png" alt=""><br><br><pre><strong>Input:</strong> root = [3,5,1,6,2,0,8,null,null,7,4], target = 5, k = 2<br><strong>Output:</strong> [7,4,1]<br>Explanation: The nodes that are a distance 2 from the target node (with value 5) have values 7, 4, and 1.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> root = [1], target = 1, k = 3<br><strong>Output:</strong> []<br></pre><br><br><strong>Constraints:</strong><br><br><em>   The number of nodes in the tree is in the range <code>[1, 500]</code>.
+</em>   <code>0 &lt;= Node.val &lt;= 500</code><br><em>   All the values <code>Node.val</code> are <strong>unique</strong>.
+</em>   <code>target</code> is the value of one of the nodes in the tree.<br>*   <code>0 &lt;= k &lt;= 1000</code><br><br></div>
+
+<h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>有三种情况，都容易忽略： 1. 儿子节点 2. 所有父节点路劲上 3. 兄弟节点路径上。而第三种情况要搜另一边的儿子节点（左右不确定）要用visited记录，而且不一定是父亲的兄弟节点，可能爷爷的非父亲的儿子节点。<br>既然不是单向搜索，不妨转换为图，然后用计算距离BFS模板，只要用map来记录某节点的父亲节点或者增加一个域。BFS中for neighbor in [node.left, node, right, node.parent]  </p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>root的parent是None，所以从root去赋值parent，而不是从parent root给儿子赋parent  </li>
+<li>Line 13 node.left, node.right, node.parent都可能为None，所以Line14要加not neighbor      </li>
+<li>BFS从target开始而不是root</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">distanceK</span><span class="params">(self, root: TreeNode, target: TreeNode, k: int)</span> -&gt; List[int]:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> root:</span><br><span class="line">		<span class="keyword">return</span> []</span><br><span class="line">	self.dfs(root, <span class="keyword">None</span>)</span><br><span class="line">	queue, visited, distance_to_tgt,  = collections.deque([target]), set([target]), collections.defaultdict(int)</span><br><span class="line">	distance_to_tgt[target], res = <span class="number">0</span>, []</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.popleft()</span><br><span class="line">		<span class="keyword">if</span> distance_to_tgt[node] == k:</span><br><span class="line">			res.append(node.val)</span><br><span class="line">		<span class="keyword">if</span> distance_to_tgt[node] &gt; k:</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		<span class="keyword">for</span> neighbor <span class="keyword">in</span> [node.left, node.right, node.parent]:</span><br><span class="line">			<span class="keyword">if</span> <span class="keyword">not</span> neighbor <span class="keyword">or</span> neighbor <span class="keyword">in</span> visited:  <span class="comment"># remember not neighbor</span></span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			queue.append(neighbor)</span><br><span class="line">			visited.add(neighbor)</span><br><span class="line">			distance_to_tgt[neighbor] = distance_to_tgt[node] + <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dfs</span><span class="params">(self, root, parent)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> root:</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">None</span></span><br><span class="line">	root.parent = parent</span><br><span class="line">	<span class="string">'''if root.left:</span></span><br><span class="line"><span class="string">		root.left.parent = root</span></span><br><span class="line"><span class="string">	if root.right:</span></span><br><span class="line"><span class="string">		root.right.parent = root'''</span></span><br><span class="line">	self.dfs(root.left, root)  <span class="comment"># remember to pass parent</span></span><br><span class="line">	self.dfs(root.right, root)</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2021/12/06/lee-295/">LeetCode 295 Find Median from Data Stream</a></h1>
   
 
@@ -215,42 +258,6 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2021/12/05/lee-731/">LeetCode 731 My Calendar II</a></h1>
-  
-
-      
-        <time datetime="2021-12-06T06:41:18.204Z">2021-12-05</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>有重复区间，考虑用meeting rooms的方法二同时差分再求和的方法。用一个map来存储endpoint包括start和end的频率，若遇到start，map[start]++, 若遇到end, map[end]–，插入一个区间后，遍历所有endpoints，若超过3就返回False  </p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li></li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -275,6 +282,10 @@
   <ul class="entry">
     
       <li>
+        <a href="/2021/12/22/lee-174/">LeetCode 174 Dungeon Game</a>
+      </li>
+    
+      <li>
         <a href="/2021/12/21/lee-013/">LeetCode 013 Roman to Integer</a>
       </li>
     
@@ -290,10 +301,6 @@
         <a href="/2021/12/20/lee-443/">LeetCode 443 String Compression</a>
       </li>
     
-      <li>
-        <a href="/2021/12/20/lee-011/">LeetCode 011 Container With Most Water</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -304,7 +311,7 @@
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Amazon/" style="font-size: 10px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.13px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 16.25px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 11.88px;">Binary Tree</a> <a href="/tags/Bloomberg/" style="font-size: 10px;">Bloomberg</a> <a href="/tags/Breadth-First-Search/" style="font-size: 11.25px;">Breadth-First Search</a> <a href="/tags/Breadth-first-Search/" style="font-size: 14.38px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 19.38px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 14.38px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.88px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.88px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 10px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 18.13px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 11.88px;">Facebook</a> <a href="/tags/Graph/" style="font-size: 11.25px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 11.88px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 15.63px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 13.75px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 14.38px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 18.75px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 13.75px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 10px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 14.38px;">Math</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.88px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.63px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Python-KB/" style="font-size: 17.5px;">Python KB</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.63px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.63px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.88px;">Sort</a> <a href="/tags/Stack/" style="font-size: 16.88px;">Stack</a> <a href="/tags/String/" style="font-size: 15px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.25px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.5px;">Tree</a> <a href="/tags/Trie/" style="font-size: 10.63px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 15.63px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.63px;">Union Find</a> <a href="/tags/tik/" style="font-size: 13.13px;">tik</a> <a href="/tags/tiktok/" style="font-size: 11.25px;">tiktok</a>
+    <a href="/tags/Amazon/" style="font-size: 10px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.33px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 16.67px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 12px;">Binary Tree</a> <a href="/tags/Bloomberg/" style="font-size: 10px;">Bloomberg</a> <a href="/tags/Breadth-First-Search/" style="font-size: 11.33px;">Breadth-First Search</a> <a href="/tags/Breadth-first-Search/" style="font-size: 14.67px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 19.33px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 14.67px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 12px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 12px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 10px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 18.67px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 12px;">Facebook</a> <a href="/tags/Graph/" style="font-size: 11.33px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 14px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 14.67px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 18.67px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 14px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 10px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 14.67px;">Math</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 12px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.67px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Python-KB/" style="font-size: 18px;">Python KB</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.67px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.67px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 12px;">Sort</a> <a href="/tags/Stack/" style="font-size: 17.33px;">Stack</a> <a href="/tags/String/" style="font-size: 15.33px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.33px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.67px;">Tree</a> <a href="/tags/Trie/" style="font-size: 10.67px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 16px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.67px;">Union Find</a> <a href="/tags/tik/" style="font-size: 13.33px;">tik</a> <a href="/tags/tiktok/" style="font-size: 11.33px;">tiktok</a>
   </div>
 </div>
 
