@@ -3,21 +3,21 @@
 <head>
   <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
   
-  <title>Page 31 › Jiajie&#39;s blog</title>
+  <title>Page 31 › KK&#39;s blog</title>
   <meta name="author" content="KK Shum">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
   
-  <meta property="og:site_name" content="Jiajie&#39;s blog"/>
+  <meta property="og:site_name" content="KK&#39;s blog"/>
 
   
     <meta property="og:image" content="undefined"/>
   
 
   <link href="/favicon.png" rel="icon">
-  <link rel="alternate" href="/atom.xml" title="Jiajie&#39;s blog" type="application/atom+xml">
+  <link rel="alternate" href="/atom.xml" title="KK&#39;s blog" type="application/atom+xml">
   <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
   <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]--><!-- hexo-inject:begin --><!-- hexo-inject:end -->
   
@@ -27,7 +27,7 @@
 
 <body>
   <!-- hexo-inject:begin --><!-- hexo-inject:end --><header id="header"><div class="meta inner">
-  <h1><a href="/">Jiajie&#39;s blog</a></h1>
+  <h1><a href="/">KK&#39;s blog</a></h1>
   <h2><a href="/">每天积累多一些</a></h2>
   <nav id="main-nav">
     <ul>
@@ -48,6 +48,159 @@
   </header>
   <div id="content" class="inner">
     <div id="main-col" class="alignleft"><div id="wrapper">
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2020/04/19/lee-133/">LeetCode 133 Clone Graph</a></h1>
+  
+
+      
+        <time datetime="2020-04-20T06:41:45.806Z">2020-04-19</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/clone-graph/" target="_blank" rel="noopener">LeetCode 133 Clone Graph</a></strong></p>
+<p>Given a reference of a node in a <strong><a href="https://en.wikipedia.org/wiki/Connectivity_(graph_theory" target="_blank" rel="noopener">connected</a>#Connected_graph)</strong> undirected graph.</p>
+<p>Return a <a href="https://en.wikipedia.org/wiki/Object_copying#Deep_copy" target="_blank" rel="noopener"><strong>deep copy</strong></a> (clone) of the graph.</p>
+<p>Each node in the graph contains a val (<code>int</code>) and a list (<code>List[Node]</code>) of its neighbors.</p>
+<pre>class Node {
+    public int val;
+    public List<node> neighbors;
+}
+</node></pre>
+
+<p><strong>Test case format:</strong></p>
+<p>For simplicity sake, each node’s value is the same as the node’s index (1-indexed). For example, the first node with <code>val = 1</code>, the second node with <code>val = 2</code>, and so on. The graph is represented in the test case using an adjacency list.</p>
+<p><strong>Adjacency list</strong> is a collection of unordered <strong>lists</strong> used to represent a finite graph. Each list describes the set of neighbors of a node in the graph.</p>
+<p>The given node will always be the first node with <code>val = 1</code>. You must return the <strong>copy of the given node</strong> as a reference to the cloned graph.</p>
+<p><strong>Example 1:</strong></p>
+<p><img src="https://assets.leetcode.com/uploads/2019/11/04/133_clone_graph_question.png" alt=""></p>
+<pre>**Input:** adjList = [[2,4],[1,3],[2,4],[1,3]]
+**Output:** [[2,4],[1,3],[2,4],[1,3]]
+**Explanation:** There are 4 nodes in the graph.
+1st node (val = 1)'s neighbors are 2nd node (val = 2) and 4th node (val = 4).
+2nd node (val = 2)'s neighbors are 1st node (val = 1) and 3rd node (val = 3).
+3rd node (val = 3)'s neighbors are 2nd node (val = 2) and 4th node (val = 4).
+4th node (val = 4)'s neighbors are 1st node (val = 1) and 3rd node (val = 3).
+</pre>
+
+<p><strong>Example 2:</strong></p>
+<p><img src="https://assets.leetcode.com/uploads/2020/01/07/graph.png" alt=""></p>
+<pre>**Input:** adjList = [[]]
+**Output:** [[]]
+**Explanation:** Note that the input contains one empty list. The graph consists of only one node with val = 1 and it does not have any neighbors.
+</pre>
+
+<p><strong>Example 3:</strong></p>
+<pre>**Input:** adjList = []
+**Output:** []
+**Explanation:** This an empty graph, it does not have any nodes.
+</pre>
+
+<p><strong>Example 4:</strong></p>
+<p><img src="https://assets.leetcode.com/uploads/2020/01/07/graph-1.png" alt=""></p>
+<pre>**Input:** adjList = [[2],[1]]
+**Output:** [[2],[1]]
+</pre>
+
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= Node.val &lt;= 100</code></li>
+<li><code>Node.val</code> is unique for each node.</li>
+<li>Number of Nodes will not exceed 100.</li>
+<li>There is no repeated edges and no self-loops in the graph.</li>
+<li>The Graph is connected and all nodes can be visited starting from the given node.</li>
+</ul>
+<p></p>
+<p></p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>深度复制图。注意要复制所有邻接节点。 </p>
+<h3 id="算法I解题思路-推荐-："><a href="#算法I解题思路-推荐-：" class="headerlink" title="算法I解题思路(推荐)："></a><strong>算法I解题思路(推荐)：</strong></h3><p>三步走。分开写逻辑会显得清晰点。</p>
+<ol>
+<li>BFS搜索所有节点，变成<del>邻接表</del>节点列表。</li>
+<li>复制节点。旧新节点映射存在dict中</li>
+<li>根据node.neighbors复制边。 </li>
+</ol>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li><strong>空节点判断Line 2-3</strong>  </li>
+<li>BFS访问是收集节点列表，并不是变成邻接表。如果是含循环的图，由于用了visited，所以邻接表只能复制一半的边，不能用邻接表   </li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">cloneGraph</span><span class="params">(self, node: <span class="string">'Node'</span>)</span> -&gt; 'Node':</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> node:</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">None</span></span><br><span class="line">	di = &#123;&#125;</span><br><span class="line">	node_list = self.bfs(node)</span><br><span class="line">	<span class="keyword">for</span> n <span class="keyword">in</span> node_list:</span><br><span class="line">		di[n] = Node(n.val)</span><br><span class="line">	<span class="keyword">for</span> n <span class="keyword">in</span> node_list:</span><br><span class="line">		<span class="keyword">for</span> n2 <span class="keyword">in</span> n.neighbors:</span><br><span class="line">			di[n].neighbors.append(di[n2])</span><br><span class="line">	<span class="keyword">return</span> di[node]</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">bfs</span><span class="params">(self, input)</span>:</span></span><br><span class="line">	queue = deque([input])</span><br><span class="line">	visited = &#123;input&#125;</span><br><span class="line">	<span class="comment"># graph = collections.defaultdict(list)</span></span><br><span class="line">	res = []</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.popleft()</span><br><span class="line">		<span class="comment"># graph[node] = []</span></span><br><span class="line">		res.append(node)</span><br><span class="line">		<span class="keyword">for</span> neighbor <span class="keyword">in</span> node.neighbors:</span><br><span class="line">			<span class="keyword">if</span> neighbor <span class="keyword">in</span> visited:</span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			queue.append(neighbor)</span><br><span class="line">			visited.add(neighbor)</span><br><span class="line">			<span class="comment"># graph[node].append(neighbor)</span></span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// another bfs3 method uses 3 steps, convert graph to adjacent list by bfs (flatten the graph), </span></span><br><span class="line"><span class="comment">//clone vertices, clone edges</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">bfs3</span><span class="params">(UndirectedGraphNode node, HashMap&lt;UndirectedGraphNode, UndirectedGraphNode&gt; map)</span> </span>&#123;</span><br><span class="line">	ArrayList&lt;UndirectedGraphNode&gt; nodes = getNodes(node);</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// Copy vertices</span></span><br><span class="line">	<span class="keyword">for</span>(UndirectedGraphNode old : nodes) &#123;</span><br><span class="line">		UndirectedGraphNode newNode = <span class="keyword">new</span> UndirectedGraphNode(old.label);</span><br><span class="line">		map.put(old, newNode);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// Copy edges</span></span><br><span class="line">	<span class="keyword">for</span>(UndirectedGraphNode old : nodes) &#123;</span><br><span class="line">		<span class="keyword">for</span>(UndirectedGraphNode neighbor : old.neighbors) &#123;</span><br><span class="line">			map.get(old).neighbors.add(map.get(neighbor));</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> ArrayList&lt;UndirectedGraphNode&gt; <span class="title">getNodes</span><span class="params">(UndirectedGraphNode node)</span> </span>&#123;</span><br><span class="line">	Queue&lt;UndirectedGraphNode&gt; q = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">	Set&lt;UndirectedGraphNode&gt; result = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">	q.offer(node);</span><br><span class="line">	result.add(node); <span class="comment">// Use result set so we can save the visited set</span></span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty()) &#123;</span><br><span class="line">		UndirectedGraphNode n = q.poll();</span><br><span class="line">		<span class="keyword">for</span>(UndirectedGraphNode neighbor : n.neighbors) &#123;</span><br><span class="line">			<span class="keyword">if</span>(result.contains(neighbor))</span><br><span class="line">				<span class="keyword">continue</span>;</span><br><span class="line">			q.offer(neighbor);</span><br><span class="line">			result.add(neighbor);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	ArrayList&lt;UndirectedGraphNode&gt; reList = <span class="keyword">new</span> ArrayList&lt;UndirectedGraphNode&gt;();</span><br><span class="line">	reList.addAll(result);</span><br><span class="line">	<span class="keyword">return</span> reList;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="算法II解题思路："><a href="#算法II解题思路：" class="headerlink" title="算法II解题思路："></a><strong>算法II解题思路：</strong></h3><p>不分开三步写</p>
+<h3 id="Java代码：-1"><a href="#Java代码：-1" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> UndirectedGraphNode <span class="title">cloneGraph2</span><span class="params">(UndirectedGraphNode node)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(node == <span class="keyword">null</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">	</span><br><span class="line">	HashMap&lt;UndirectedGraphNode, UndirectedGraphNode&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">	bfs(node, map);</span><br><span class="line">	<span class="keyword">return</span> map.get(node);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">bfs</span><span class="params">(UndirectedGraphNode node, HashMap&lt;UndirectedGraphNode, UndirectedGraphNode&gt; map)</span> </span>&#123;</span><br><span class="line">	Queue&lt;UndirectedGraphNode&gt; q = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">	q.offer(node);</span><br><span class="line">	map.put(node, <span class="keyword">new</span> UndirectedGraphNode(node.label));</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty()) &#123;</span><br><span class="line">		UndirectedGraphNode head = q.poll();</span><br><span class="line">		<span class="keyword">for</span>(UndirectedGraphNode neighbor : head.neighbors) &#123;</span><br><span class="line">			<span class="keyword">if</span>(!map.containsKey(neighbor)) &#123;</span><br><span class="line">				q.offer(neighbor);</span><br><span class="line">				<span class="comment">// Clone children's vertex</span></span><br><span class="line">				map.put(neighbor, <span class="keyword">new</span> UndirectedGraphNode(neighbor.label));</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="comment">// Clone edge</span></span><br><span class="line">			map.get(head).neighbors.add(map.get(neighbor));</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="算法II解题思路：-1"><a href="#算法II解题思路：-1" class="headerlink" title="算法II解题思路："></a><strong>算法II解题思路：</strong></h3><p>DFS。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">public UndirectedGraphNode cloneGraph(UndirectedGraphNode node) &#123;</span><br><span class="line">	HashMap&lt;Integer, UndirectedGraphNode&gt; map = new HashMap&lt;Integer, UndirectedGraphNode&gt;();</span><br><span class="line">	return cloneGraphR(node, map);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public UndirectedGraphNode cloneGraphR(UndirectedGraphNode node,</span><br><span class="line">		HashMap&lt;Integer, UndirectedGraphNode&gt; map) &#123;</span><br><span class="line">	if (node == null)</span><br><span class="line">		return node;</span><br><span class="line">	if (map.containsKey(node.label))</span><br><span class="line">		return map.get(node.label);</span><br><span class="line"></span><br><span class="line">	UndirectedGraphNode result = new UndirectedGraphNode(node.label);</span><br><span class="line">	map.put(node.label, result);</span><br><span class="line">	for (UndirectedGraphNode child : node.neighbors) &#123;</span><br><span class="line">		result.neighbors.add(cloneGraphR(child, map));</span><br><span class="line">	&#125;</span><br><span class="line">	return result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(# of results)</code>，空间复杂度<code>O(lengh(high))</code>。  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2020/03/08/lee-248/">LeetCode 248 Strobogrammatic Number III</a></h1>
+  
+
+      
+        <time datetime="2020-03-09T01:39:06.644Z">2020-03-08</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/strobogrammatic-number-iii/" target="_blank" rel="noopener">LeetCode 248 Strobogrammatic Number III</a></strong></p>
+<p>A strobogrammatic number is a number that looks the same when rotated 180 degrees (looked at upside down).<br>Write a function to count the total strobogrammatic numbers that exist in the range of low &lt;= num &lt;= high.</p>
+<p><strong>Example:</strong> </p>
+<pre>**Input: low = "50", high = "100"
+
+**Output:** 3 
+
+Explanation: 69, 88, and 96 are three strobogrammatic numbers.
+</pre>
+
+<p><strong>Note:</strong> Because the range might be a large number, the lowand high numbers are represented as string.</p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求某范围的旋转数的个数。旋转数是这个数旋转180度还是一样，如0, 1, 8， 还含两位的如69， 96. </p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是M公司的题目。这题不能用乘法原理，因为情况多变，要实实在在地找出每一个可能性。<br>类似于L351安卓解码种数，数字间有关系，求[m, n]范围间种数。用DFS将每一位填上合法位，此题区别是<br>需要它有对称性，所以DFS从中间向两边。API为f(res, low, high, map), res为当前结果字符串，map为旋转数的映射关系，<br>终止条件为res超过high，若在范围内，结果+1，也就是先将自己加入到结果中，然后两边加入旋转字符，进入下一轮递归，<br>累加到结果中。  </p>
+<p>注意: 与上题一样，和最左位不能为0除了0自己本身。</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>奇偶位。对称中心既可以是奇数位也可以是偶数位。  </li>
+<li>最左位为0，不合法如0880，但0本身除外。  </li>
+</ol>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">strobogrammaticInRange</span><span class="params">(String low, String high)</span> </span>&#123;</span><br><span class="line">	Map&lt;String, String&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">	map.put(<span class="string">"6"</span>, <span class="string">"9"</span>);</span><br><span class="line">	map.put(<span class="string">"9"</span>, <span class="string">"6"</span>);</span><br><span class="line">	map.put(<span class="string">"1"</span>, <span class="string">"1"</span>);</span><br><span class="line">	map.put(<span class="string">"8"</span>, <span class="string">"8"</span>);</span><br><span class="line">	map.put(<span class="string">"0"</span>, <span class="string">"0"</span>);</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">int</span> result = <span class="number">0</span>;</span><br><span class="line">	result += dfs(<span class="string">""</span>, low, high, map);</span><br><span class="line">	result += dfs(<span class="string">"1"</span>, low, high, map);</span><br><span class="line">	result += dfs(<span class="string">"0"</span>, low, high, map);</span><br><span class="line">	result += dfs(<span class="string">"8"</span>, low, high, map);</span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line">	</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">dfs</span><span class="params">(String res, String low, String high, Map&lt;String, String&gt; map)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(res.length() &gt; high.length() || (res.length() == high.length() &amp;&amp; res.compareTo(high) &gt; <span class="number">0</span>)) </span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> result = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">if</span>((res.length() == low.length() &amp;&amp; res.compareTo(low) &gt;= <span class="number">0</span>)  || res.length() &gt; low.length()) </span><br><span class="line">		result = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">if</span>(res.length() &gt; <span class="number">1</span> &amp;&amp; res.charAt(<span class="number">0</span>) == <span class="string">'0'</span>)</span><br><span class="line">		result = <span class="number">0</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">for</span> (Map.Entry&lt;String, String&gt; entry : map.entrySet()) &#123;</span><br><span class="line">		result += dfs(entry.getKey() + res + entry.getValue(), low, high, map);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(# of results)</code>，空间复杂度<code>O(lengh(high))</code>。  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
   <article class="post">
   <div class="post-content">
     <header>
@@ -201,134 +354,6 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2018/06/14/lee-155/">LeetCode 155 Min Stack</a></h1>
-  
-
-      
-        <time datetime="2018-06-14T07:12:02.826Z">2018-06-14</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/min-stack" target="_blank" rel="noopener">LeetCode 155 Min Stack</a></strong></p>
-<p>Design a stack that supports push, pop, top, and retrieving the minimum element in constant time.</p>
-<ul>
-<li>push(x) – Push element x onto stack.</li>
-<li>pop() – Removes the element on top of the stack.</li>
-<li>top() – Get the top element.</li>
-<li>getMin() – Retrieve the minimum element in the stack.</li>
-</ul>
-<p><strong>Example:</strong>  </p>
-<pre>MinStack minStack = new MinStack();
-minStack.push(-2);
-minStack.push(0);
-minStack.push(-3);
-minStack.getMin();   --> Returns -3.
-minStack.pop();
-minStack.top();      --> Returns 0.
-minStack.getMin();   --> Returns -2.
-</pre>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>设计一个栈，支持在常数时间内push，pop，top，和取最小值。</p>
-<p>push(x) – 元素x压入栈<br>pop() – 弹出栈顶元素<br>top() – 获取栈顶元素<br>getMin() – 获取栈中的最小值</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是考察Algorithm和data structure的经典问题。用stack即可实现push，top，pop。难点在于O(1)内实现getMin。看一个例子，<br>按以下顺序加入stack     5, 3, 6, 8, 2<br>最小值                 5, 3, 3, 3, 2<br>可以看出来，最小值是动态变化的，所以需要动态处理，由于存储的方式与stack一致，所以可以考虑再用一个stack来存最小值。<br>如果不用额外stack改用Node，将make_pair(x, curMin)一起压入栈stack<node<int,int>&gt;中，额外空间复杂度O(n)。 见算法2。<br>稍改进空间复杂度，最小值只存变化的值，也就是5,3,2，当最小值变化时再存入最小栈。出栈时候，若出栈元素等于最小栈中的元素，<br>最小栈的元素也要出栈。</node<int,int></p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>当前最小元素可能相等。相等元素也要入最小栈，如5,3,6,3，最小栈为5,3,3。x &lt;= minS.peek()一定要取等于。</li>
-<li>考虑栈为空时，执行pop和peek的操作。这里存在一个decision point，设计原则与stack的操作一致，也就是暴露出exception。</li>
-</ol>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MinStack</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	 <span class="comment">/** initialize your data structure here. */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MinStack</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        s = <span class="keyword">new</span> Stack&lt;&gt;();</span><br><span class="line">        minS = <span class="keyword">new</span> Stack&lt;&gt;();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">push</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">        s.push(x);</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span>(minS.isEmpty() || x &lt;= minS.peek())</span><br><span class="line">        	minS.push(x);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">pop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> top = s.pop();</span><br><span class="line">        <span class="keyword">if</span>(top == minS.peek())</span><br><span class="line">        	minS.pop();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">top</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> s.peek();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getMin</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> minS.peek();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    Stack&lt;Integer&gt; s;</span><br><span class="line">    Stack&lt;Integer&gt; minS;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(1)</code>，空间复杂度<code>O(n)</code>。</p>
-<p>算法2也是可以通过leetcode测试的，虽然空间复杂度比上述差。<br><a href="https://dotblogs.com.tw/tsanmmmm2000/2017/05/19/leetcode-practice-min-stack" target="_blank" rel="noopener">存储每个新加值对应的min，更加浪费空间</a></p>
-<h3 id="Follow-up"><a href="#Follow-up" class="headerlink" title="Follow-up:"></a><strong>Follow-up:</strong></h3><p>如果用O(1)额外空间，怎么改进算法？ </p>
-<p>先考虑最简单的情况，用一个min来记录当前最小值，它可以满足最小值不需更新的情况，解决了问题的一半：<br>x表示要加入的值，m表示最小值的变量，y是真正加入栈的值<br>x 1 5 3<br>m 1 1 1<br>y 1 5 3<br>可以看出无论入栈出栈，最小值均为1.  </p>
-<p>比较难的是最小值需要更新时，如下一个要加入0，最小值要更新m=0，但0不能入栈，前一个最小值1的信息就丢失了，所以要设计一个计算y方法(push)满足  </p>
-<ol>
-<li>已知条件：含有前一个最小值的的信息。x1&lt;m0.  </li>
-<li>设计要求：y&lt;m, 因为最小值不更新的时候y值永远大于等于m，必须区分开来，从而知道怎么pop，也就是还原入栈值（最小值）。y1&lt;m1=x1.<br>解决了这个问题就解决了另一半的问题。  </li>
-</ol>
-<p>以下解释如何推出最小值需要更新时y的计算方式（，以及push和pop的方法：<br><img src="/images/L155.png" alt="">  </p>
-<p>以下例子解释Push<br>x 1 5 3 0 6<br>m 1 1 1 0 0<br>y 1 5 3 -1 6</p>
-<p>以下例子解释Pop<br>x 6 0 3 5 1<br>m 0 0 1 1 1<br>y 6 -1 3 5 1<br>可以看出真正入栈值可以是原数或者是计算值，取决它与最小值的关系。</p>
-<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>当前最小元素可能相等。相等元素不用更新最小值，也就是新值直接入栈。</li>
-<li>以上递推式的初始条件为：第一个元素是直接加入栈且等于m，无论何种情况都不需任何计算。push时候注意当栈为空，m值为第一个元素的值。</li>
-<li>数据溢出。涉及int的加减乘除法，都要预先将其转化为long，否则会溢出。</li>
-</ol>
-<h3 id="Java代码：-1"><a href="#Java代码：-1" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MinStack</span> </span>&#123;</span><br><span class="line">     <span class="function"><span class="keyword">public</span> <span class="title">MinStack</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        s = <span class="keyword">new</span> Stack&lt;&gt;();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">push</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">    	<span class="keyword">if</span> (s.isEmpty())</span><br><span class="line">    		m = x;</span><br><span class="line">    	</span><br><span class="line">    	<span class="keyword">long</span> xx = (<span class="keyword">long</span>)x;</span><br><span class="line">    	<span class="keyword">if</span> (x &gt;= m)</span><br><span class="line">    		s.push(xx);</span><br><span class="line">    	<span class="keyword">else</span> &#123;</span><br><span class="line">    		s.push(<span class="number">2</span>*xx-m);</span><br><span class="line">    		m = x;</span><br><span class="line">    	&#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">pop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">long</span> top = s.pop();</span><br><span class="line">        <span class="keyword">if</span>(top &lt; m)     </span><br><span class="line">        	m = <span class="number">2</span>*m - top;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">top</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> (<span class="keyword">int</span>)(s.peek() &gt;= m? s.peek() : m);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getMin</span><span class="params">()</span> </span>&#123; </span><br><span class="line">        <span class="keyword">return</span> (<span class="keyword">int</span>)m;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    Stack&lt;Long&gt; s;</span><br><span class="line">    <span class="keyword">long</span> m = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(1)</code>，空间复杂度<code>O(1)</code>。</p>
-<h3 id="考点"><a href="#考点" class="headerlink" title="考点:"></a><strong>考点:</strong></h3><ol>
-<li>先不考虑getMin，用什么数据结构实现push, pop, top</li>
-<li>暴力法可以实现getMin，怎么实现O(1)。用什么数据结构实现存储min，额外用一个stack</li>
-<li>元素可能相等</li>
-<li>考虑栈为空时，执行pop和peek的操作</li>
-</ol>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2018/05/07/lee-128/">LeetCode 128 Longest Consecutive Sequence</a></h1>
-  
-
-      
-        <time datetime="2018-05-08T06:57:44.775Z">2018-05-07</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/longest-consecutive-sequence" target="_blank" rel="noopener">LeetCode 128 Longest Consecutive Sequence</a></strong></p>
-<p>Given an unsorted array of integers, find the length of the longest consecutive elements sequence.</p>
-<p>Your algorithm should run in O(<em>n</em>) complexity.</p>
-<p><strong>Example:</strong></p>
-<pre>**Input:** [100, 4, 200, 1, 3, 2]
-**Output:** 4
-**Explanation:** The longest consecutive elements sequence is `[1, 2, 3, 4]`. Therefore its length is 4.
-</pre>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给出一个未排序的整数数组，找出最长的连续元素序列的长度。<br>如： 给出[100, 4, 200, 1, 3, 2]，最长的连续元素序列是[1, 2, 3, 4]。返回它的长度：4。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是连通问题，如果用排序方法，很容易，但时间复杂度为O(nlogn)。考虑改进，因为连通集，容易想到HashMap，把每个元素加入到其中，<br>然后对每个元素进行相邻查找。相邻查找就是以此元素为中心，向上向下在Map查找，从而得到此元素的最大连续序列长度。查找过的元素<br>在Map中删除，以免重复计算。</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>Java中在for循环中不能修改hashSet，所以只能用HashMap且value存boolean替代。HashMap表示此Map还是否含有该元素。</li>
-</ol>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">longestConsecutive</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> result = <span class="number">0</span>;</span><br><span class="line">	HashMap&lt;Integer,Boolean&gt; hm = <span class="keyword">new</span> HashMap&lt;Integer,Boolean&gt;();</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i : nums)</span><br><span class="line">		hm.put(i, <span class="keyword">true</span>);</span><br><span class="line">	</span><br><span class="line">	Iterator it = hm.keySet().iterator();</span><br><span class="line">	<span class="keyword">while</span>(it.hasNext())&#123;</span><br><span class="line">		<span class="keyword">int</span> key = (<span class="keyword">int</span>)it.next();</span><br><span class="line">		<span class="keyword">int</span> i = key+<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">int</span> count = <span class="number">1</span>;</span><br><span class="line">		<span class="keyword">while</span>(hm.containsKey(i) &amp;&amp; hm.get(i))&#123;</span><br><span class="line">			count++;</span><br><span class="line">			hm.put(i, <span class="keyword">false</span>);</span><br><span class="line">			i++;</span><br><span class="line">		&#125;</span><br><span class="line">		i = key-<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">while</span>(hm.containsKey(i) &amp;&amp; hm.get(i))&#123;</span><br><span class="line">			count++;</span><br><span class="line">			hm.put(i, <span class="keyword">false</span>);</span><br><span class="line">			i--;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(count&gt;result)</span><br><span class="line">			result = count;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line">		</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>。</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -353,6 +378,14 @@ minStack.getMin();   --> Returns -2.
   <ul class="entry">
     
       <li>
+        <a href="/2021/12/27/lee-909/">LeetCode 909 Snakes and Ladders</a>
+      </li>
+    
+      <li>
+        <a href="/2021/12/27/lee-987/">LeetCode 987 Vertical Order Traversal of a Binary Tree</a>
+      </li>
+    
+      <li>
         <a href="/2021/12/26/lee-453/">LeetCode 453 Minimum Moves to Equal Array Elements</a>
       </li>
     
@@ -362,14 +395,6 @@ minStack.getMin();   --> Returns -2.
     
       <li>
         <a href="/2021/12/26/lee-828/">LeetCode 828 Count Unique Characters of All Substrings of a Given String</a>
-      </li>
-    
-      <li>
-        <a href="/2021/12/26/lee-071/">LeetCode 071 Simplify Path</a>
-      </li>
-    
-      <li>
-        <a href="/2021/12/26/lee-526/">LeetCode 526 Beautiful Arrangement</a>
       </li>
     
   </ul>
@@ -382,7 +407,7 @@ minStack.getMin();   --> Returns -2.
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Amazon/" style="font-size: 15px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Dynamic-Programming/" style="font-size: 20px;">Dynamic Programming</a> <a href="/tags/Hash-Table/" style="font-size: 10px;">Hash Table</a> <a href="/tags/Knowledge-Base/" style="font-size: 15px;">Knowledge Base</a> <a href="/tags/Math/" style="font-size: 10px;">Math</a>
+    <a href="/tags/Amazon/" style="font-size: 13.16px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 12.63px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 17.89px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 12.63px;">Binary Tree</a> <a href="/tags/Bloomberg/" style="font-size: 10.53px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.37px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 19.47px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15.26px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.58px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.58px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 10px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 18.95px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 14.74px;">Facebook</a> <a href="/tags/Google/" style="font-size: 10px;">Google</a> <a href="/tags/Graph/" style="font-size: 11.05px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.11px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.84px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 13.68px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 14.21px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 18.42px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 13.68px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 11.05px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 15.79px;">Math</a> <a href="/tags/Matrix/" style="font-size: 10.53px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.58px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.53px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Python-KB/" style="font-size: 17.89px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.53px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.53px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.58px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.53px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 18.42px;">Stack</a> <a href="/tags/String/" style="font-size: 16.32px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.05px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.11px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.05px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 15.26px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.53px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
   </div>
 </div>
 

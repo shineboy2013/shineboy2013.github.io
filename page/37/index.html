@@ -3,21 +3,21 @@
 <head>
   <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
   
-  <title>Page 37 › Jiajie&#39;s blog</title>
+  <title>Page 37 › KK&#39;s blog</title>
   <meta name="author" content="KK Shum">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
   
-  <meta property="og:site_name" content="Jiajie&#39;s blog"/>
+  <meta property="og:site_name" content="KK&#39;s blog"/>
 
   
     <meta property="og:image" content="undefined"/>
   
 
   <link href="/favicon.png" rel="icon">
-  <link rel="alternate" href="/atom.xml" title="Jiajie&#39;s blog" type="application/atom+xml">
+  <link rel="alternate" href="/atom.xml" title="KK&#39;s blog" type="application/atom+xml">
   <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
   <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]--><!-- hexo-inject:begin --><!-- hexo-inject:end -->
   
@@ -27,7 +27,7 @@
 
 <body>
   <!-- hexo-inject:begin --><!-- hexo-inject:end --><header id="header"><div class="meta inner">
-  <h1><a href="/">Jiajie&#39;s blog</a></h1>
+  <h1><a href="/">KK&#39;s blog</a></h1>
   <h2><a href="/">每天积累多一些</a></h2>
   <nav id="main-nav">
     <ul>
@@ -48,6 +48,109 @@
   </header>
   <div id="content" class="inner">
     <div id="main-col" class="alignleft"><div id="wrapper">
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2017/12/28/lee-312/">LeetCode 312 Burst Balloons</a></h1>
+  
+
+      
+        <time datetime="2017-12-28T17:58:22.880Z">2017-12-28</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/burst-balloons" target="_blank" rel="noopener">LeetCode 312 Burst Balloons</a></strong></p>
+<p>Given <code>n</code> balloons, indexed from <code>0</code> to <code>n-1</code>. Each balloon is painted with a number on it represented by array <code>nums</code>. You are asked to burst all the balloons. If the you burst balloon <code>i</code> you will get <code>nums[left] * nums[i] * nums[right]</code> coins. Here <code>left</code> and <code>right</code> are adjacent indices of <code>i</code>. After the burst, the <code>left</code> and <code>right</code> then becomes adjacent.</p>
+<p>Find the maximum coins you can collect by bursting the balloons wisely.</p>
+<p><strong>Note:</strong><br>(1) You may imagine <code>nums[-1] = nums[n] = 1</code>. They are not real therefore you can not burst them.<br>(2) 0 ≤ <code>n</code> ≤ 500, 0 ≤ <code>nums[i]</code> ≤ 100</p>
+<p><strong>Example:</strong></p>
+<p>Given <code>[3, 1, 5, 8]</code></p>
+<p>Return <code>167</code></p>
+<pre>    nums = [3,1,5,8] --> [3,5,8] -->   [3,8]   -->  [8]  --> []
+   coins =  3*1*5      +  3*5*8    +  1*3*8      + 1*8*1   = 167
+</pre>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定n个气球，下标为0到n-1。每个气球上都标有一个数字，用数组nums表示。你被要求扎破所有气球。扎破第i个气球可以获得nums[left] &times; nums[i] &times; nums[right]枚硬币。这里left和right是与i相邻的下标。扎破气球以后，left和right就变成相邻的了。<br>寻找最优策略下可以获得的硬币数。</p>
+<p>注意：<br>(1) 你可以假设nums[-1] = nums[n] = 1. 它们并非真实的因此不能扎破。<br>(2) 0 ≤ n ≤ 500, 0 ≤ nums[i] ≤ 100</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><ol>
+<li>此题遍历所有可能性，所以考虑用DP  </li>
+<li>因为一个参数不足以描述问题，因为并不能固定nums左端或右端，所以考虑二元DP，左右边界为参数。DP流程一：定义函数f(i,j)为nums[i..j]之间的最大硬币数。  </li>
+<li>下一步写递归式，由于这是二元DP，参考Floyd和矩阵链乘法算法，一遍要定义一个k，二分法得到两个子问题的解f(i,k)和f(k,j)，求解它们的关系是难点。先写几个例子培养下思路：<br> 2,3,4<br> f([2,4])=2&times;3&times;4同时消去了3变成[2,4],再写一个<br> 2,3,4,5,6,7,8<br> k=5, 数组变成[2,5,8]所以我们定义中忽略了一个重要事实，修改为f(i,j)为nums[i..j]之间的最大硬币数<strong>及其它们之间的元素已经消去。</strong><br> 这样的话，关系就很明朗了，只要消去5就可以得到f([2,8])，k的定义要可以清晰了：最后一个消去的元素。<br> <strong>f(i,j)=max{f(i,m)+ nums[i]&times;nums[m]&times;nums[j] +f(m,j)}, i&lt;m&lt;j，m为整数</strong>  </li>
+<li>我们还要试试nums为单元素和双元素情况下是否适用。比如单元素5，根据题目意思首先前后补1<br>1,5,1 -&gt; f(1,5)+1&times;5&times;1+f(5,1)=5这是正确的因为f(x,y)默认为0.<br>1,5,3,1, k=5, f(1,5)+1&times;5&times;1+f(5,1)=0+5+(5&times;3&times;1)=20 | k=3, f(1,3)+1&times;3&times;1+f(3,1)=(1&times;5&times;3)+3+0=18.所以也是正确，且f(x,y)默认为0没问题。  </li>
+<li><p>遍历顺序。一开始我用i,j,m三重循环，但结果不对。主要因为这个计算过程与演算过程不一致，我们刚才的演算过程是先计算所有i和j之间的值。例如，<br>1,                      5,                               3,          1<br>i &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                   j<br>i &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;       j<br>&nbsp;&nbsp;&nbsp;&nbsp;i &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;       j  </p>
+<p>在第二次循环的时候f(i,j)已经计算出来很显然是不对的。</p>
+</li>
+</ol>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>二元DP([i,j],k的递归式)+二分法。 二元DP中k的引入参考Floyd按步长计算。nums[i] * nums[m] * nums[j]而不是nums[m-1] * nums[m] * nums[m+1]  </li>
+<li>原数组前后补1，这样巧妙地让递归式适用于一个元素的情况，避免特别处理。因此步长可以k=2开始，i&lt;m&lt;j不取等号。dp数组以新数组为边界    </li>
+<li>遍历顺序也类似于Floyd，先k(步长且至少为2)，再遍历矩阵i和j。<strong>特别注意i&lt;n-k</strong>而不是i&lt;n  </li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">maxCoins</span><span class="params">(self, nums: List[int])</span> -&gt; int:</span></span><br><span class="line">	ary = list(nums)</span><br><span class="line">	ary.insert(<span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">	ary.append(<span class="number">1</span>)</span><br><span class="line">	N = len(ary)</span><br><span class="line">	dp = [[<span class="number">0</span> <span class="keyword">for</span> _ <span class="keyword">in</span> range(N)] <span class="keyword">for</span> _ <span class="keyword">in</span> range(N)]</span><br><span class="line">	<span class="keyword">for</span> k <span class="keyword">in</span> range(<span class="number">2</span>, N):</span><br><span class="line">		<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>, N - k):</span><br><span class="line">			j = i + k</span><br><span class="line">			<span class="keyword">for</span> m <span class="keyword">in</span> range(i + <span class="number">1</span>, j):</span><br><span class="line">				dp[i][j] = max(dp[i][j], dp[i][m] + ary[i] * ary[m] * ary[j] + dp[m][j])</span><br><span class="line">	<span class="keyword">return</span> dp[<span class="number">0</span>][N - <span class="number">1</span>]</span><br></pre></td></tr></table></figure>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxCoins</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> n = nums.length+<span class="number">2</span>;</span><br><span class="line">	<span class="keyword">int</span>[] coins = <span class="keyword">new</span> <span class="keyword">int</span>[n];</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums.length;i++)</span><br><span class="line">		coins[i+<span class="number">1</span>]=nums[i];</span><br><span class="line">	coins[<span class="number">0</span>] = coins[n-<span class="number">1</span>] = <span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">int</span>[][] dp = <span class="keyword">new</span> <span class="keyword">int</span>[n][n];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> k=<span class="number">2</span>;k&lt;n;k++)</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n - k;i++)&#123;</span><br><span class="line">			<span class="keyword">int</span> j = i+k;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> m=i+<span class="number">1</span>;m&lt;j;m++)</span><br><span class="line">				dp[i][j] = Math.max(dp[i][j], dp[i][m]+coins[i]*coins[m]*coins[j] + dp[m][j]);</span><br><span class="line">				</span><br><span class="line">		&#125;</span><br><span class="line">	<span class="keyword">return</span> dp[<span class="number">0</span>][n-<span class="number">1</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>三重循环，时间复杂度为<code>O(n<sup>3</sup>)</code>，空间复杂度<code>O(n<sup>2</sup>)</code>。</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2017/12/24/dfs/">DFS</a></h1>
+  
+
+      
+        <time datetime="2017-12-25T04:52:56.090Z">2017-12-24</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>图用邻接表为输入，思路递归实现, 还要一个机制记录节点访问过没有，可以用HashSet，同时它作为结果存储BFS访问结果。<br><strong>BFS多用于找最短路径</strong><br><strong>DFS多用于快速发现底部节点和具体路劲问题（如路径和或打印路径）。</strong></p>
+<p>BFS优缺点：<br>同一层的所有节点都会加入队列，所以耗用大量空间<br>仅能非递归实现<br>相比DFS较快，空间换时间<br>适合广度大的图</p>
+<p>DFS优缺点：<br>无论是系统栈还是用户栈保存的节点数都只是树的深度，所以空间耗用小<br>有递归和非递归实现<br>由于有大量栈操作（特别是递归实现时候的系统调用），执行速度较BFS慢<br>适合深度大的图</p>
+<p>如果BFS和DFS都可以用，建议用BFS，因为工业应用中，BFS不用有限的栈空间，可以利用到所有内存。  </p>
+<h3 id="算法步骤："><a href="#算法步骤：" class="headerlink" title="算法步骤："></a><strong>算法步骤：</strong></h3><ol>
+<li>不合法情况（已访问、越界、trivial情况等）返回。</li>
+<li>标记为已访问。</li>
+<li>递归访问相邻节点。</li>
+<li>DFS路径尽量记录在数组中而非ArrayList中，路径(图)再DFS后要恢复为原状态L332。</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dfs</span><span class="params">(self, graph, start, visited, res)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> start <span class="keyword">in</span> visited:</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	visited.add(start)</span><br><span class="line">	res.append(start)</span><br><span class="line">	<span class="keyword">for</span> node <span class="keyword">in</span> graph[start]:</span><br><span class="line">		self.dfs(graph, visited, node, res)</span><br></pre></td></tr></table></figure>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * graph: 邻接表</span></span><br><span class="line"><span class="comment"> * visited: 记录已访问节点，避免重复访问</span></span><br><span class="line"><span class="comment"> * start: DFS的根节点</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">dfs</span><span class="params">(HashMap&lt;Integer, LinkedList&lt;Integer&gt;&gt; graph, HashSet&lt;Integer&gt; visited, <span class="keyword">int</span> start)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(visited.contains(start))&#123;</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	visited.add(start);</span><br><span class="line">	System.out.print(start+<span class="string">","</span>);</span><br><span class="line">	<span class="keyword">for</span>(Integer child : graph.get(start))&#123;</span><br><span class="line">		dfs(graph, visited, child);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，h为树的高度，空间复杂度<code>O(h)</code>，如果用系统栈，可理解其为O(1)。</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
   <article class="post">
   <div class="post-content">
     <header>
@@ -208,121 +311,6 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2017/12/13/lee-124/">LeetCode 124 Binary Tree Maximum Path Sum</a></h1>
-  
-
-      
-        <time datetime="2017-12-14T06:36:59.880Z">2017-12-13</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/binary-tree-maximum-path-sum" target="_blank" rel="noopener">LeetCode 124 Binary Tree Maximum Path Sum</a></strong></p>
-<p>Given a binary tree, find the maximum path sum.</p>
-<p>For this problem, a path is defined as any sequence of nodes from some starting node to any node in the tree along the parent-child connections. The path must contain <strong>at least one node</strong> and does not need to go through the root.</p>
-<p>For example:<br>Given the below binary tree,</p>
-<pre>       
-       1
-      / \
-     2   3
-</pre>
-
-<p>Return <code>6</code>.</p>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一棵二叉树，寻找最大路径和。路径指的是从任意起始节点出发沿着父亲-孩子链接到达某个终止节点的节点序列。路径不一定要穿过根节点。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>DFS搜索，二叉树的题。步骤主要是考虑</p>
-<ol>
-<li>空指针</li>
-<li>一个node情况或多个node情况（可合并）<br>多个node情况下（比如3个节点），有4种情况下含根节点的和：左子树+根节点，右子树+跟节点，根节点，左子树+根节点+右子树。这些情况包含了所有可能的和的情况。但值得注意的是，前三种<br>情况可以是子问题的解，也就是它返回值将成为此根节点父亲的左或右子树的解，但第四种情况例外，因为此情况形成的路径与根节点父亲并不在一条路径上。所以此情况应在全局变量中比较<br>并不能作为返回值。<br>gmax = max {return max{val,left+val,right+val}  or left+val+right}</li>
-</ol>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>4种情况</li>
-<li>全局最大值作为返回值，初始值为负无穷float(‘-inf’)。</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">maxPathSum</span><span class="params">(self, root: TreeNode)</span> -&gt; int:</span></span><br><span class="line">	path_sum, path_gsum = self.dfs(root)</span><br><span class="line">	<span class="keyword">return</span> path_gsum</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dfs</span><span class="params">(self, root: TreeNode)</span> -&gt; int:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> root:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>, float(<span class="string">'-inf'</span>)</span><br><span class="line">	left_sum, left_gsum = self.dfs(root.left)</span><br><span class="line">	right_sum, right_gsum = self.dfs(root.right)</span><br><span class="line">	max_path_sum = max(left_sum + root.val, right_sum + root.val, root.val)</span><br><span class="line">	max_path_gsum = max(max_path_sum, left_gsum, right_gsum, left_sum + root.val + right_sum)</span><br><span class="line">	<span class="keyword">return</span> max_path_sum, max_path_gsum</span><br></pre></td></tr></table></figure>
-<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>4种情况</li>
-<li>定义全局变量来比较最大值，因为左到右情况不能返回。全局变量初始值为负无穷。</li>
-</ol>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> gsum = Integer.MIN_VALUE;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxPathSum</span><span class="params">(TreeNode root)</span></span>&#123;</span><br><span class="line">	gsum = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> a = max(root);</span><br><span class="line">	<span class="keyword">return</span> gsum;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">max</span><span class="params">(TreeNode root)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(root==<span class="keyword">null</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> lmax = max(root.left);</span><br><span class="line">	<span class="keyword">int</span> rmax = max(root.right);</span><br><span class="line">	<span class="keyword">int</span> sum = Math.max(Math.max(lmax, rmax)+root.val,root.val);</span><br><span class="line">	gsum = Math.max(Math.max(gsum, sum), lmax+root.val+rmax);</span><br><span class="line">	<span class="keyword">return</span> sum;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>两种方法时间复杂度为<code>O(n)</code>，n为节点数。空间复杂度为<code>O(h)</code>，h为二叉树高度。</p>
-<h3 id="相关题目："><a href="#相关题目：" class="headerlink" title="相关题目："></a><strong>相关题目：</strong></h3><p>LeetCode 112 Path Sum<br>LeetCode 124 Binary Tree Maximum Path Sum</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2017/12/13/lee-112/">LeetCode 112 Path Sum</a></h1>
-  
-
-      
-        <time datetime="2017-12-14T06:08:39.112Z">2017-12-13</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/path-sum/" target="_blank" rel="noopener">LeetCode 112 Path Sum</a></strong></p>
-<p>Given a binary tree and a sum, determine if the tree has a root-to-leaf path such that adding up all the values along the path equals the given sum.</p>
-<p>For example:<br>Given the below binary tree and <code>sum = 22</code>,</p>
-<pre>              
-              5
-             / \
-            4   8
-           /   / \
-          11  13  4
-         /  \      \
-        7    2      1
-</pre>
-
-<p>return true, as there exist a root-to-leaf path <code>5-&gt;4-&gt;11-&gt;2</code> which sum is 22.</p>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个二叉树root和一个和sum，决定这个树是否存在一条从根到叶子的路径使得沿路所有节点的和等于给定的sum。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>DFS搜索，二叉树的题。步骤主要是考虑</p>
-<ol>
-<li>空指针</li>
-<li>一个node情况或多个node情况（可合并）</li>
-</ol>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>叶子节点是不含左儿子和右儿子</li>
-</ol>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">hasPathSum</span><span class="params">(TreeNode root, <span class="keyword">int</span> sum)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(root == <span class="keyword">null</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	<span class="keyword">if</span>(root.left==<span class="keyword">null</span> &amp;&amp; root.right==<span class="keyword">null</span> &amp;&amp; root.val==sum)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">	<span class="keyword">return</span> hasPathSum(root.left, sum-root.val) || hasPathSum(root.right, sum-root.val);        </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>两种方法时间复杂度为<code>O(n)</code>，n为节点数。空间复杂度为<code>O(h)</code>，h为二叉树高度。</p>
-<h3 id="相关题目："><a href="#相关题目：" class="headerlink" title="相关题目："></a><strong>相关题目：</strong></h3><p>LeetCode 112 Path Sum<br>LeetCode 124 Binary Tree Maximum Path Sum</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -347,6 +335,14 @@
   <ul class="entry">
     
       <li>
+        <a href="/2021/12/27/lee-909/">LeetCode 909 Snakes and Ladders</a>
+      </li>
+    
+      <li>
+        <a href="/2021/12/27/lee-987/">LeetCode 987 Vertical Order Traversal of a Binary Tree</a>
+      </li>
+    
+      <li>
         <a href="/2021/12/26/lee-453/">LeetCode 453 Minimum Moves to Equal Array Elements</a>
       </li>
     
@@ -356,14 +352,6 @@
     
       <li>
         <a href="/2021/12/26/lee-828/">LeetCode 828 Count Unique Characters of All Substrings of a Given String</a>
-      </li>
-    
-      <li>
-        <a href="/2021/12/26/lee-071/">LeetCode 071 Simplify Path</a>
-      </li>
-    
-      <li>
-        <a href="/2021/12/26/lee-526/">LeetCode 526 Beautiful Arrangement</a>
       </li>
     
   </ul>
@@ -376,7 +364,7 @@
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Amazon/" style="font-size: 15px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Dynamic-Programming/" style="font-size: 20px;">Dynamic Programming</a> <a href="/tags/Hash-Table/" style="font-size: 10px;">Hash Table</a> <a href="/tags/Knowledge-Base/" style="font-size: 15px;">Knowledge Base</a> <a href="/tags/Math/" style="font-size: 10px;">Math</a>
+    <a href="/tags/Amazon/" style="font-size: 13.16px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 12.63px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 17.89px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 12.63px;">Binary Tree</a> <a href="/tags/Bloomberg/" style="font-size: 10.53px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.37px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 19.47px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15.26px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.58px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.58px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 10px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 18.95px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 14.74px;">Facebook</a> <a href="/tags/Google/" style="font-size: 10px;">Google</a> <a href="/tags/Graph/" style="font-size: 11.05px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.11px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.84px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 13.68px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 14.21px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 18.42px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 13.68px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 11.05px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 15.79px;">Math</a> <a href="/tags/Matrix/" style="font-size: 10.53px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.58px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.53px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Python-KB/" style="font-size: 17.89px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.53px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.53px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.58px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.53px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 18.42px;">Stack</a> <a href="/tags/String/" style="font-size: 16.32px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.05px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.11px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.05px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 15.26px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.53px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
   </div>
 </div>
 
