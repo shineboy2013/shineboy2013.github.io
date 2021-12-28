@@ -53,6 +53,53 @@
     <header>
       
   
+    <h1 class="title"><a href="/2020/05/09/memoization/">记忆性搜索</a></h1>
+  
+
+      
+        <time datetime="2020-05-09T23:28:48.775Z">2020-05-09</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>DFS将子问题的解存于结果中。cache[st] = result. st是子问题边界。  </p>
+<h3 id="应用："><a href="#应用：" class="headerlink" title="应用："></a><strong>应用：</strong></h3><p>用于求所有可能性，且这些可能性有重复，记忆性搜索可以用于剪枝。  </p>
+<ol>
+<li>Leetcode 139</li>
+<li>Leetcode 140</li>
+</ol>
+<p>与DP的界线：  </p>
+<ol>
+<li>状态转移特别麻烦如有循环依赖, 不是顺序性。如棋盘，上下左右四个方向如1197 Minimum Knight Moves和word ladder  </li>
+<li>初始化状态不是特别容易找到</li>
+</ol>
+<h3 id="算法步骤："><a href="#算法步骤：" class="headerlink" title="算法步骤："></a><strong>算法步骤：</strong></h3><ol>
+<li>key为子问题索引st，value为子问题的解。不含path和res因为类似于Catalan，用子问题返回结果来组成此轮结果。f(input, st, endIndex, cache) -&gt; List    </li>
+<li>紧跟终结条件，若在cache中，返回子问题的解。  </li>
+<li>循环结束，将子问题的结果存于cache。  </li>
+</ol>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(解大小)</code>，空间复杂度<code>O(解大小)</code>.</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2020/05/09/lee-140/">LeetCode 140 Word Break II</a></h1>
   
 
@@ -288,62 +335,6 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2020/05/03/lee-126/">LeetCode 126 Word Ladder II</a></h1>
-  
-
-      
-        <time datetime="2020-05-04T01:09:53.727Z">2020-05-03</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/word-ladder-ii/" target="_blank" rel="noopener">LeetCode 126 Word Ladder</a></strong></p>
-<div><br><br>Given two words (<em>beginWord</em> and <em>endWord</em>), and a dictionary’s word list, find all shortest transformation sequence(s) from <em>beginWord</em> to <em>endWord</em>, such that:<br><br>1.  Only one letter can be changed at a time<br>2.  Each transformed word must exist in the word list. Note that <em>beginWord</em> is <em>not</em> a transformed word.<br><br><strong>Note:</strong><br><br><em>   Return an empty list if there is no such transformation sequence.
-</em>   All words have the same length.<br><em>   All words contain only lowercase alphabetic characters.
-</em>   You may assume no duplicates in the word list.<br><em>   You may assume <em>beginWord</em> and <em>endWord</em> are non-empty and are not the same.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong><br>beginWord = “hit”,<br>endWord = “cog”,<br>wordList = [“hot”,”dot”,”dog”,”lot”,”log”,”cog”]<br><br><strong>Output:</strong><br>[<br>  [“hit”,”hot”,”dot”,”dog”,”cog”],<br>  [“hit”,”hot”,”lot”,”log”,”cog”]<br>]<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong><br>beginWord = “hit”<br>endWord = “cog”<br>wordList = [“hot”,”dot”,”dog”,”lot”,”log”]<br><br><strong>Output:</strong> []<br><br><em>*Explanation:</em></pre></em> The endWord “cog” is not in wordList, therefore no possibletransformation.<br><br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个字典和两个单词。每次变换一个字母的得到新单词且该词要在字典中。求所有最少的变换路径。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>更难于Leetcode 127，BFS用于找最短路径而DFS找路径，此题正是贯彻这一思想，先用BFS找出最短路径，<br>然后根据最短路径值找出所有路径。找BFS解的同时建图用邻接表表示Map<string, list<string="">&gt;(这是<br>部分图，与解相关的图)和解集合Map<string, integer="">(从始点到不同节点的最短距离)，这两个信息正是<br>Dijkistra的图输入和解。DFS从始点开始遍历邻接节点，确保沿着最短路径走，最短路径为<br>map.get(cur)+1=map.get(next)表示当前节点到始点距离+1=儿节点到始点距离，终止条件为找到目标节点。  </string,></string,></p>
-<ol>
-<li>在遍历所有邻接节点的时候，如果不加筛选对所有邻接节点都做DFS会造成LTE。关键是要利用BFS中所有<br>节点到单源的最短路径来剪枝。只需DFS最短路径上的节点，否则跳过。  </li>
-<li>利用了单源最短路径映射表distance后，不需要记录visited，因为重复的节点不会在最短路劲上。  </li>
-<li>Cache nextWords的结果。     </li>
-</ol>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>这题是最短路径题，第一时间想到BFS。这是一条典型的单源最短路径问题。  </p>
-<ol>
-<li>建字典。  </li>
-<li>BFS访问，得到图和单源最短路径Map，以及最短路径距离。同时建立邻接表graph[word] = neighbors，DFS时候不用再次找相邻单词    </li>
-<li>DFS求路径，按最短路径剪枝dict[neighbor] == dict[startWord] + 1。    </li>
-</ol>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>注意题目条件，开始词不在字典中(终结词默认在，否则无结果），要将它加入字典中且距离为1且要加入到path，Line 10。 </li>
-<li>建图的邻接表，对没有边的节点也要加到邻接表，所以先对所有点赋空列表，再根据边更新值，Line 29。用defaultdict(list)可解决  </li>
-<li>DFS模板中去掉visited部分，因为用了最短距离distance的map来指导访问路径，所以不会存在循环的情况(否则不会是最短距离)<br>而且如果有visited会存在丢解，因为如果一个节点不在最短路径上先被访问就会被标记为visited，真正到最短路径上时就会返回。<br>DFS模板中加入if dict[neighbor] == dict[startWord] + 1来剪边。  </li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">findLadders</span><span class="params">(self, beginWord: str, endWord: str, wordList: List[str])</span> -&gt; List[List[int]]:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> beginWord <span class="keyword">or</span> <span class="keyword">not</span> endWord:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">	distance, graph = &#123;&#125;, defaultdict(list)</span><br><span class="line">	<span class="keyword">for</span> word <span class="keyword">in</span> wordList:</span><br><span class="line">		distance[word] = <span class="number">0</span></span><br><span class="line">	distance[beginWord] = <span class="number">1</span></span><br><span class="line">	self.bfs(beginWord, endWord, distance, graph, set())</span><br><span class="line">	result = []</span><br><span class="line">	self.dfs(graph, beginWord, endWord, [beginWord], result, distance) <span class="comment"># remember [beginWord]</span></span><br><span class="line">	<span class="keyword">return</span> result</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dfs</span><span class="params">(self, graph, startWord, endWord, path, res, dict)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> startWord == endWord:</span><br><span class="line">		res.append(list(path))</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	<span class="string">'''if startWord in visited: # remember</span></span><br><span class="line"><span class="string">		return</span></span><br><span class="line"><span class="string">	visited.add(startWord)'''</span></span><br><span class="line">	<span class="keyword">for</span> neighbor <span class="keyword">in</span> graph[startWord]:</span><br><span class="line">		<span class="keyword">if</span> dict[neighbor] == dict[startWord] + <span class="number">1</span>:</span><br><span class="line">			path.append(neighbor)</span><br><span class="line">			self.dfs(graph, neighbor, endWord, path, res, dict)</span><br><span class="line">			path.pop()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">bfs</span><span class="params">(self, beginWord, endWord, dict, graph, visited)</span>:</span></span><br><span class="line">	queue = deque([beginWord])</span><br><span class="line">	visited.add(beginWord)</span><br><span class="line">	<span class="comment"># for key in dict.keys():  # remember</span></span><br><span class="line">	<span class="comment">#    graph[key] = []</span></span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		word = queue.popleft()</span><br><span class="line">		<span class="keyword">if</span> word == endWord:</span><br><span class="line">			<span class="keyword">return</span> dict[word]</span><br><span class="line"></span><br><span class="line">		neighbors = self.get_next_words(word, dict)</span><br><span class="line">		graph[word] = neighbors</span><br><span class="line">		<span class="keyword">for</span> neighbor <span class="keyword">in</span> neighbors:</span><br><span class="line">			<span class="keyword">if</span> neighbor <span class="keyword">not</span> <span class="keyword">in</span> visited:</span><br><span class="line">				queue.append(neighbor)</span><br><span class="line">				visited.add(neighbor)</span><br><span class="line">				dict[neighbor] = dict[word] + <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_next_words</span><span class="params">(self, word, dict)</span>:</span></span><br><span class="line">	res = []</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(word)):</span><br><span class="line">		<span class="keyword">for</span> c <span class="keyword">in</span> string.ascii_lowercase: <span class="comment"># or use 'abcdefghijklmnopqrstuvwxyz'</span></span><br><span class="line">			<span class="keyword">if</span> c == word[i]:</span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			new_word = word[:i] + c + word[i + <span class="number">1</span>:]</span><br><span class="line">			<span class="keyword">if</span> new_word <span class="keyword">in</span> dict:</span><br><span class="line">				res.append(new_word)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> List&lt;List&lt;String&gt;&gt; findLadders(String beginWord, String endWord, List&lt;String&gt; wordList) &#123;</span><br><span class="line">	List&lt;String&gt; path = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">	List&lt;List&lt;String&gt;&gt; res = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">	<span class="keyword">if</span>(beginWord == <span class="keyword">null</span> || endWord == <span class="keyword">null</span>)</span><br><span class="line">		<span class="keyword">return</span> res;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// This is a dict and also keeps track of distance</span></span><br><span class="line">	Map&lt;String, Integer&gt; dict = getDict(wordList);</span><br><span class="line">	<span class="comment">// Make sure endWord is in the dict and can be the next word </span></span><br><span class="line">	<span class="comment">//dict.put(endWord, 0);</span></span><br><span class="line">	dict.put(beginWord, <span class="number">1</span>);</span><br><span class="line">	HashMap&lt;String, List&lt;String&gt;&gt; graph = <span class="keyword">new</span> HashMap&lt;String, List&lt;String&gt;&gt;();</span><br><span class="line">	ladderLength(beginWord, endWord, dict, graph);</span><br><span class="line">	path.add(beginWord);</span><br><span class="line">	dfs(beginWord, endWord, dict, graph, path, res);</span><br><span class="line">	<span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(String cur, String endWord, Map&lt;String, Integer&gt; distance,</span></span></span><br><span class="line"><span class="function"><span class="params">		HashMap&lt;String, List&lt;String&gt;&gt; graph, List&lt;String&gt; path, List&lt;List&lt;String&gt;&gt; res)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(endWord.equals(cur)) &#123;</span><br><span class="line">		res.add(<span class="keyword">new</span> ArrayList&lt;&gt;(path));</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span>(String word : graph.get(cur)) &#123;</span><br><span class="line">		path.add(word);</span><br><span class="line">		<span class="keyword">if</span>(distance.get(word) - <span class="number">1</span> == distance.get(cur)) <span class="comment">// use distance, resolve LTE the most important</span></span><br><span class="line">			dfs(word, endWord, distance, graph, path, res);</span><br><span class="line">		path.remove(path.size() - <span class="number">1</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// cache getNextWords</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">ladderLength</span><span class="params">(String beginWord, String endWord, Map&lt;String, Integer&gt; dict, Map&lt;String, List&lt;String&gt;&gt; graph)</span> </span>&#123;</span><br><span class="line">	Set&lt;String&gt; visited = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">	Queue&lt;String&gt; q = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">	q.offer(beginWord);</span><br><span class="line">	visited.add(beginWord);</span><br><span class="line">	<span class="keyword">for</span>(String s : dict.keySet()) &#123;<span class="comment">// remember</span></span><br><span class="line">		graph.put(s, <span class="keyword">new</span> ArrayList&lt;&gt;());</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty()) &#123;</span><br><span class="line">		String word = q.poll();</span><br><span class="line">		<span class="keyword">if</span>(endWord.equals(word))</span><br><span class="line">			<span class="keyword">return</span> dict.get(word);</span><br><span class="line">		</span><br><span class="line">		List&lt;String&gt; nextWords = getNextWords(word, dict);</span><br><span class="line">		graph.put(word, <span class="keyword">new</span> ArrayList&lt;&gt;(nextWords));</span><br><span class="line">		<span class="keyword">for</span>(String s : nextWords) &#123;</span><br><span class="line">			<span class="keyword">if</span>(visited.contains(s))</span><br><span class="line">				<span class="keyword">continue</span>;</span><br><span class="line">			</span><br><span class="line">			q.offer(s);</span><br><span class="line">			visited.add(s);</span><br><span class="line">			dict.put(s, dict.get(word) + <span class="number">1</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Map&lt;String, Integer&gt; <span class="title">getDict</span><span class="params">(List&lt;String&gt; wordList)</span> </span>&#123;</span><br><span class="line">	Map&lt;String, Integer&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">	<span class="keyword">for</span>(String word : wordList) &#123;</span><br><span class="line">		map.put(word, <span class="number">0</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> map;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">List&lt;String&gt; <span class="title">getNextWords</span><span class="params">(String word, Map&lt;String, Integer&gt; dict)</span> </span>&#123;</span><br><span class="line">	List&lt;String&gt; result = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; word.length(); i++) &#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">26</span>; j++) &#123; </span><br><span class="line">			<span class="keyword">char</span> newChar = (<span class="keyword">char</span>)(<span class="string">'a'</span> + j);</span><br><span class="line">			<span class="keyword">if</span>(word.charAt(i) == newChar) <span class="comment">// exclude itself</span></span><br><span class="line">				<span class="keyword">continue</span>;</span><br><span class="line">			String newWord = word.substring(<span class="number">0</span>, i) + </span><br><span class="line">					newChar + word.substring(i + <span class="number">1</span>, word.length());</span><br><span class="line">			<span class="keyword">if</span>(dict.containsKey(newWord))</span><br><span class="line">				result.add(newWord);</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>getNextWords是L<em>26</em>L=<code>O(<em>L</em><sup>2</sup>)</code>产生新字符串需要L<br>时间复杂度为<code>O(n<em><em>L</em><sup>2</sup> + m</em>k)</code>，空间复杂度<code>O(n)</code>，m为答案个数, k为最短路径值，n为单词数。 </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -368,6 +359,10 @@
   <ul class="entry">
     
       <li>
+        <a href="/2021/12/28/lee-871/">LeetCode 871 Minimum Number of Refueling Stops</a>
+      </li>
+    
+      <li>
         <a href="/2021/12/27/lee-909/">LeetCode 909 Snakes and Ladders</a>
       </li>
     
@@ -381,10 +376,6 @@
     
       <li>
         <a href="/2021/12/26/lee-926/">LeetCode 926 Flip String to Monotone Increasing</a>
-      </li>
-    
-      <li>
-        <a href="/2021/12/26/lee-828/">LeetCode 828 Count Unique Characters of All Substrings of a Given String</a>
       </li>
     
   </ul>

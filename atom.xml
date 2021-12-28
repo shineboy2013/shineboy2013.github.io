@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://shineboy2013.github.com/"/>
-  <updated>2021-12-28T03:48:03.037Z</updated>
+  <updated>2021-12-28T11:30:16.951Z</updated>
   <id>https://shineboy2013.github.com/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>LeetCode 871 Minimum Number of Refueling Stops</title>
+    <link href="https://shineboy2013.github.com/2021/12/28/lee-871/"/>
+    <id>https://shineboy2013.github.com/2021/12/28/lee-871/</id>
+    <published>2021-12-28T10:25:39.285Z</published>
+    <updated>2021-12-28T11:30:16.951Z</updated>
+    
+    <content type="html"><![CDATA[<p><strong><a href="https://leetcode.com/problems/minimum-number-of-refueling-stops/" target="_blank" rel="noopener">LeetCode</a></strong></p><div><br><br>A car travels from a starting position to a destination which is <code>target</code> miles east of the starting position.<br><br>There are gas stations along the way. The gas stations are represented as an array <code>stations</code> where <code>stations[i] = [position&lt;sub&gt;i&lt;/sub&gt;, fuel&lt;sub&gt;i&lt;/sub&gt;]</code> indicates that the <code>i&lt;sup&gt;th&lt;/sup&gt;</code> gas station is <code>position&lt;sub&gt;i&lt;/sub&gt;</code> miles east of the starting position and has <code>fuel&lt;sub&gt;i&lt;/sub&gt;</code> liters of gas.<br><br>The car starts with an infinite tank of gas, which initially has <code>startFuel</code> liters of fuel in it. It uses one liter of gas per one mile that it drives. When the car reaches a gas station, it may stop and refuel, transferring all the gas from the station into the car.<br><br>Return <em>the minimum number of refueling stops the car must make in order to reach its destination</em>. If it cannot reach the destination, return <code>-1</code>.<br><br>Note that if the car reaches a gas station with <code>0</code> fuel left, the car can still refuel there. If the car reaches the destination with <code>0</code> fuel left, it is still considered to have arrived.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> target = 1, startFuel = 1, stations = []<br><strong>Output:</strong> 0<br><strong>Explanation:</strong> We can reach the target without refueling.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> target = 100, startFuel = 1, stations = [[10,100]]<br><strong>Output:</strong> -1<br><strong>Explanation:</strong> We can not reach the target (or even the first gas station).<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> target = 100, startFuel = 10, stations = [[10,60],[20,30],[30,30],[60,40]]<br><strong>Output:</strong> 2<br><strong>Explanation:</strong> We start with 10 liters of fuel.<br>We drive to position 10, expending 10 liters of fuel.  We refuel from 0 liters to 60 liters of gas.<br>Then, we drive from position 10 to position 60 (expending 50 liters of fuel),<br>and refuel from 10 liters to 50 liters of gas.  We then drive to and reach the target.<br>We made 2 refueling stops along the way, so we return 2.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= target, startFuel &lt;= 10&lt;sup&gt;9&lt;/sup&gt;</code></em>   <code>0 &lt;= stations.length &lt;= 500</code><br><em>   <code>0 &lt;= position&lt;sub&gt;i&lt;/sub&gt; &lt;= position&lt;sub&gt;i+1&lt;/sub&gt; &lt; target</code></em>   <code>1 &lt;= fuel&lt;sub&gt;i&lt;/sub&gt; &lt; 10&lt;sup&gt;9&lt;/sup&gt;</code><br><br></div><h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>其最小加油次数使得能到达目标  </p><h3 id="Heap解题思路-推荐-："><a href="#Heap解题思路-推荐-：" class="headerlink" title="Heap解题思路(推荐)："></a><strong>Heap解题思路(推荐)：</strong></h3><p>由于是重叠区间题，考虑用heap。求最小值，所以用最大堆。heap存的油数。  </p><h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol><li>每到一个加油站，先将油预存到heap中。startFuel为到达某个站后的剩余油数，若startFuel为负，从heap中取油，且累计加油次数。  </li><li>用heap模板，遍历数组也就是加油站。  </li><li>若加完油后，仍为负数，返回-1。</li><li>因为要计算target是否能达到，所以不妨<strong>将target加入到stations</strong>中，这样startFuel的计算可以包括target     </li></ol><h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">minRefuelStops</span><span class="params">(self, target: int, startFuel: int, stations: List[List[int]])</span> -&gt; int:</span></span><br><span class="line">heap, res, prev_pos = [], <span class="number">0</span>, <span class="number">0</span></span><br><span class="line">stations.append([target, <span class="number">0</span>])</span><br><span class="line"><span class="keyword">for</span> pos, fuel <span class="keyword">in</span> stations:</span><br><span class="line">startFuel -= pos - prev_pos</span><br><span class="line"><span class="keyword">while</span> heap <span class="keyword">and</span> startFuel &lt; <span class="number">0</span>:</span><br><span class="line">startFuel += -heapq.heappop(heap)</span><br><span class="line">res += <span class="number">1</span></span><br><span class="line"><span class="keyword">if</span> startFuel &lt; <span class="number">0</span>:</span><br><span class="line"><span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line">heapq.heappush(heap, -fuel)</span><br><span class="line">prev_pos = pos</span><br><span class="line"><span class="keyword">return</span> res</span><br></pre></td></tr></table></figure><h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nlogn)</code>，空间复杂度<code>O(n)</code> </p><hr><h3 id="DP算法II解题思路："><a href="#DP算法II解题思路：" class="headerlink" title="DP算法II解题思路："></a><strong>DP算法II解题思路：</strong></h3><p>一开始考虑用jump game，但此题可以在同一层加多次油。比如start fuel有100 mi，而加油站有3个，所以同一层可以加3次油。所以层数和加油次数不是一个概念。<br>既然是最值考虑另一种方法DP。这题有两个难点:<br>第一个难点是DP式： dp不采用题目的最小加油次数，考虑jump game的分析，转化成dp[i]为停i个站加油能达到的最远距离。或者这样思考，若定义走到第n个站需要最小加油次数，这个n颗粒度不够细，可以换成miles，不如将下标和数值互换。<br>第二个难点是递归式。首先知道假设dp[2]能到达的范围内有一个加油站，加油后dp[3] = dp[2] + 该油站的油数。递归式为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">dp[i] = max&#123;dp[i-1] + stations[i-1][1]&#125;, dp[i-1] &gt;= stations[i-1][0], stations[i..n]</span><br><span class="line">```  </span><br><span class="line">有个前提条件是dp[2]必须能达到当前的加油站。比如要更新dp[3]从任意两个加油站dp[2] + 加油站[i]可能获得。还可能是从dp[2] + 加油站[i+1]获得，如此类推，要试完stations[i..n]。  </span><br><span class="line">**dp值从后往前更新**，因为当前加油站在后方。   </span><br><span class="line">   </span><br><span class="line">### **解题步骤：**</span><br><span class="line">N/A</span><br><span class="line"></span><br><span class="line">### **注意事项：**</span><br><span class="line">1. dp定义和递归式     </span><br><span class="line"></span><br><span class="line">### **Python代码：**</span><br><span class="line">``` Python</span><br><span class="line"># dp[i] = max&#123;dp[i-1] + stations[i-1][1]&#125;, dp[i-1] &gt;= stations[i-1][0], stations[i..n]</span><br><span class="line">def minRefuelStops(self, target: int, startFuel: int, stations: List[List[int]]) -&gt; int:</span><br><span class="line">dp = [startFuel] + [0] * len(stations)</span><br><span class="line">for i, (pos, fuel) in enumerate(stations):</span><br><span class="line">for j in range(i, -1, -1):</span><br><span class="line">if dp[j] &gt;= pos:</span><br><span class="line">dp[j + 1] = max(dp[j + 1], dp[j] + fuel)</span><br><span class="line"></span><br><span class="line">for i, miles in enumerate(dp):</span><br><span class="line">if miles &gt;= target:</span><br><span class="line">return i</span><br><span class="line">return -1</span><br></pre></td></tr></table></figure></p><h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n<sup>2</sup>)</code>，空间复杂度<code>O(n)</code>  </p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;&lt;strong&gt;&lt;a href=&quot;https://leetcode.com/problems/minimum-number-of-refueling-stops/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;LeetCode&lt;/a&gt;&lt;/strong&gt;&lt;/
+      
+    
+    </summary>
+    
+    
+      <category term="Array" scheme="https://shineboy2013.github.com/tags/Array/"/>
+    
+      <category term="Dynamic Programming" scheme="https://shineboy2013.github.com/tags/Dynamic-Programming/"/>
+    
+  </entry>
   
   <entry>
     <title>LeetCode 909 Snakes and Ladders</title>
@@ -115,9 +140,9 @@
     </summary>
     
     
-      <category term="Array" scheme="https://shineboy2013.github.com/tags/Array/"/>
-    
       <category term="Amazon" scheme="https://shineboy2013.github.com/tags/Amazon/"/>
+    
+      <category term="Array" scheme="https://shineboy2013.github.com/tags/Array/"/>
     
       <category term="Dynamic Programming" scheme="https://shineboy2013.github.com/tags/Dynamic-Programming/"/>
     
@@ -142,11 +167,11 @@
     </summary>
     
     
-      <category term="Array" scheme="https://shineboy2013.github.com/tags/Array/"/>
-    
       <category term="Hash Table" scheme="https://shineboy2013.github.com/tags/Hash-Table/"/>
     
       <category term="Amazon" scheme="https://shineboy2013.github.com/tags/Amazon/"/>
+    
+      <category term="Array" scheme="https://shineboy2013.github.com/tags/Array/"/>
     
       <category term="Math" scheme="https://shineboy2013.github.com/tags/Math/"/>
     
@@ -255,9 +280,9 @@
     </summary>
     
     
-      <category term="Array" scheme="https://shineboy2013.github.com/tags/Array/"/>
-    
       <category term="Hash Table" scheme="https://shineboy2013.github.com/tags/Hash-Table/"/>
+    
+      <category term="Array" scheme="https://shineboy2013.github.com/tags/Array/"/>
     
   </entry>
   
@@ -307,9 +332,9 @@
     </summary>
     
     
-      <category term="Array" scheme="https://shineboy2013.github.com/tags/Array/"/>
-    
       <category term="Hash Table" scheme="https://shineboy2013.github.com/tags/Hash-Table/"/>
+    
+      <category term="Array" scheme="https://shineboy2013.github.com/tags/Array/"/>
     
       <category term="LinkedIn" scheme="https://shineboy2013.github.com/tags/LinkedIn/"/>
     
@@ -386,9 +411,9 @@
     </summary>
     
     
-      <category term="Hash Table" scheme="https://shineboy2013.github.com/tags/Hash-Table/"/>
-    
       <category term="String" scheme="https://shineboy2013.github.com/tags/String/"/>
+    
+      <category term="Hash Table" scheme="https://shineboy2013.github.com/tags/Hash-Table/"/>
     
       <category term="Binary Search" scheme="https://shineboy2013.github.com/tags/Binary-Search/"/>
     
@@ -414,11 +439,11 @@
     </summary>
     
     
-      <category term="Array" scheme="https://shineboy2013.github.com/tags/Array/"/>
-    
       <category term="String" scheme="https://shineboy2013.github.com/tags/String/"/>
     
       <category term="Amazon" scheme="https://shineboy2013.github.com/tags/Amazon/"/>
+    
+      <category term="Array" scheme="https://shineboy2013.github.com/tags/Array/"/>
     
   </entry>
   
@@ -442,11 +467,11 @@
     </summary>
     
     
-      <category term="Array" scheme="https://shineboy2013.github.com/tags/Array/"/>
-    
       <category term="String" scheme="https://shineboy2013.github.com/tags/String/"/>
     
       <category term="Amazon" scheme="https://shineboy2013.github.com/tags/Amazon/"/>
+    
+      <category term="Array" scheme="https://shineboy2013.github.com/tags/Array/"/>
     
       <category term="Trie" scheme="https://shineboy2013.github.com/tags/Trie/"/>
     
@@ -533,30 +558,6 @@
       <category term="Stack" scheme="https://shineboy2013.github.com/tags/Stack/"/>
     
       <category term="Bloomberg" scheme="https://shineboy2013.github.com/tags/Bloomberg/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>LeetCode 289 Game of Life</title>
-    <link href="https://shineboy2013.github.com/2021/12/24/lee-289/"/>
-    <id>https://shineboy2013.github.com/2021/12/24/lee-289/</id>
-    <published>2021-12-24T22:40:09.326Z</published>
-    <updated>2021-12-25T00:09:34.601Z</updated>
-    
-    <content type="html"><![CDATA[<p><strong><a href="https://leetcode.com/problems/game-of-life/" target="_blank" rel="noopener">LeetCode</a></strong></p><div><br><br>According to <a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life" target="_blank" rel="noopener">Wikipedia’s article</a>: “The <strong>Game of Life</strong>, also known simply as <strong>Life</strong>, is a cellular automaton devised by the British mathematician John Horton Conway in 1970.”<br><br>The board is made up of an <code>m x n</code> grid of cells, where each cell has an initial state: <strong>live</strong> (represented by a <code>1</code>) or <strong>dead</strong> (represented by a <code>0</code>). Each cell interacts with its <a href="https://en.wikipedia.org/wiki/Moore_neighborhood" target="_blank" rel="noopener">eight neighbors</a> (horizontal, vertical, diagonal) using the following four rules (taken from the above Wikipedia article):<br><br>1.  Any live cell with fewer than two live neighbors dies as if caused by under-population.<br>2.  Any live cell with two or three live neighbors lives on to the next generation.<br>3.  Any live cell with more than three live neighbors dies, as if by over-population.<br>4.  Any dead cell with exactly three live neighbors becomes a live cell, as if by reproduction.<br><br><span>The next state is created by applying the above rules simultaneously to every cell in the current state, where births and deaths occur simultaneously. Given the current state of the <code>m x n</code> grid <code>board</code>, return <em>the next state</em>.</span><br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2020/12/26/grid1.jpg" alt=""><br><br><pre><strong>Input:</strong> board = [[0,1,0],[0,0,1],[1,1,1],[0,0,0]]<br><strong>Output:</strong> [[0,0,0],[1,0,1],[0,1,1],[0,1,0]]<br></pre><br><br><strong>Example 2:</strong><br><br><img src="https://assets.leetcode.com/uploads/2020/12/26/grid2.jpg" alt=""><br><br><pre><strong>Input:</strong> board = [[1,1],[1,0]]<br><strong>Output:</strong> [[1,1],[1,1]]<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>m == board.length</code></em>   <code>n == board[i].length</code><br><em>   <code>1 &lt;= m, n &lt;= 25</code></em>   <code>board[i][j]</code> is <code>0</code> or <code>1</code>.<br><br><strong>Follow up:</strong><br><br><em>   Could you solve it in-place? Remember that the board needs to be updated simultaneously: You cannot update some cells first and then use their updated values to update other cells.</em>   In this question, we represent the board using a 2D array. In principle, the board is infinite, which would cause problems when the active area encroaches upon the border of the array (i.e., live cells reach the border). How would you address these problems?<br><br></div><h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>根据临近8个细胞的情况来决定生死。若该细胞是live和临近有2-3个是live，仍然live。若该细胞是dead和临近有3个是live，复生。其他都变成dead</p><h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>N/A</p><h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p><h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol><li>board[:] = res赋值到原数组一定要用冒号     </li></ol><h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">OFFSETS = [(<span class="number">-1</span>, <span class="number">-1</span>), (<span class="number">-1</span>, <span class="number">0</span>), (<span class="number">-1</span>, <span class="number">1</span>), (<span class="number">0</span>, <span class="number">-1</span>), (<span class="number">0</span>, <span class="number">1</span>), (<span class="number">1</span>, <span class="number">-1</span>), (<span class="number">1</span>, <span class="number">0</span>), (<span class="number">1</span>, <span class="number">1</span>)]</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span><span class="params">(TestCases)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">gameOfLife</span><span class="params">(self, board: List[List[int]])</span> -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        res = [[<span class="number">0</span> <span class="keyword">for</span> _ <span class="keyword">in</span> range(len(board[<span class="number">0</span>]))] <span class="keyword">for</span> _ <span class="keyword">in</span> range(len(board))]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(len(board)):</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> range(len(board[<span class="number">0</span>])):</span><br><span class="line">                live_neighbor_num = self.get_live_neighbor_num(board, i, j)</span><br><span class="line">                <span class="keyword">if</span> board[i][j] == <span class="number">0</span> <span class="keyword">and</span> live_neighbor_num == <span class="number">3</span>:</span><br><span class="line">                    res[i][j] = <span class="number">1</span></span><br><span class="line">                <span class="keyword">if</span> board[i][j] == <span class="number">1</span> <span class="keyword">and</span> live_neighbor_num <span class="keyword">in</span> [<span class="number">2</span>, <span class="number">3</span>]:</span><br><span class="line">                    res[i][j] = <span class="number">1</span></span><br><span class="line">        board[:] = res</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_live_neighbor_num</span><span class="params">(self, board, i, j)</span>:</span></span><br><span class="line">        res = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> _dx, _dy <span class="keyword">in</span> OFFSETS:</span><br><span class="line">            x, y = i + _dx, j + _dy</span><br><span class="line">            <span class="keyword">if</span> <span class="number">0</span> &lt;= x &lt; len(board) <span class="keyword">and</span> <span class="number">0</span> &lt;= y &lt; len(board[<span class="number">0</span>]) <span class="keyword">and</span> board[x][y] == <span class="number">1</span>:</span><br><span class="line">                res += <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure><h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(8n<sup>2</sup>)</code>，空间复杂度<code>O(n<sup>2</sup>)</code>  </p><hr><h3 id="算法II解题思路O-1-Space："><a href="#算法II解题思路O-1-Space：" class="headerlink" title="算法II解题思路O(1) Space："></a><strong>算法II解题思路O(1) Space：</strong></h3><p>用一个数字来记录前后状态，2表示从0到1,3表示从1到0</p><h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol><li>不同之处有两个： Line 11不再是board[i][j]为1的情况，而是从1变成0的情况： live_neighbor_num <strong>not</strong> in [2, 3]     </li><li>最后扫一遍矩阵，将2和3变回1和0  </li><li>board[i][j] == 0和board[i][j] == 1不用改，因为从左到有从上到下扫描，到该格时，该格的值并未变，只能是0或1，它的左和上3邻居才变了。  </li></ol><h3 id="Python代码：-1"><a href="#Python代码：-1" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">OFFSETS = [(<span class="number">-1</span>, <span class="number">-1</span>), (<span class="number">-1</span>, <span class="number">0</span>), (<span class="number">-1</span>, <span class="number">1</span>), (<span class="number">0</span>, <span class="number">-1</span>), (<span class="number">0</span>, <span class="number">1</span>), (<span class="number">1</span>, <span class="number">-1</span>), (<span class="number">1</span>, <span class="number">0</span>), (<span class="number">1</span>, <span class="number">1</span>)]</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span><span class="params">(TestCases)</span>:</span></span><br><span class="line"></span><br><span class="line">     <span class="function"><span class="keyword">def</span> <span class="title">gameOfLife2</span><span class="params">(self, board: List[List[int]])</span> -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        <span class="comment"># STATUS = &#123;2: (0, 1), 3: (1, 0)&#125;</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(len(board)):</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> range(len(board[<span class="number">0</span>])):</span><br><span class="line">                live_neighbor_num = self.get_live_neighbor_num2(board, i, j)</span><br><span class="line">                <span class="keyword">if</span> board[i][j] == <span class="number">0</span> <span class="keyword">and</span> live_neighbor_num == <span class="number">3</span>:</span><br><span class="line">                    board[i][j] = <span class="number">2</span></span><br><span class="line">                <span class="keyword">if</span> board[i][j] == <span class="number">1</span> <span class="keyword">and</span> live_neighbor_num <span class="keyword">not</span> <span class="keyword">in</span> [<span class="number">2</span>, <span class="number">3</span>]:</span><br><span class="line">                    board[i][j] = <span class="number">3</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(len(board)):</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> range(len(board[<span class="number">0</span>])):</span><br><span class="line">                <span class="keyword">if</span> board[i][j] == <span class="number">2</span>:</span><br><span class="line">                    board[i][j] = <span class="number">1</span></span><br><span class="line">                <span class="keyword">if</span> board[i][j] == <span class="number">3</span>:</span><br><span class="line">                    board[i][j] = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_live_neighbor_num2</span><span class="params">(self, board, i, j)</span>:</span></span><br><span class="line">        res = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> _dx, _dy <span class="keyword">in</span> OFFSETS:</span><br><span class="line">            x, y = i + _dx, j + _dy</span><br><span class="line">            <span class="keyword">if</span> <span class="number">0</span> &lt;= x &lt; len(board) <span class="keyword">and</span> <span class="number">0</span> &lt;= y &lt; len(board[<span class="number">0</span>]) <span class="keyword">and</span> board[x][y] <span class="keyword">in</span> [<span class="number">1</span>, <span class="number">3</span>]:</span><br><span class="line">                res += <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure><h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(8n<sup>2</sup>)</code>，空间复杂度<code>O(1)</code></p><hr><h3 id="算法III解题思路"><a href="#算法III解题思路" class="headerlink" title="算法III解题思路"></a><strong>算法III解题思路</strong></h3><p>另外一条follow up是如果matrix无界，可以假设大部分是死细胞，先收集live细胞的list，然后计算live细胞的临近细胞即可</p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;&lt;strong&gt;&lt;a href=&quot;https://leetcode.com/problems/game-of-life/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;LeetCode&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
-&lt;div&gt;&lt;br&gt;&lt;br&gt;Accor
-      
-    
-    </summary>
-    
-    
-      <category term="Array" scheme="https://shineboy2013.github.com/tags/Array/"/>
     
   </entry>
   

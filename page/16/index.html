@@ -53,6 +53,53 @@
     <header>
       
   
+    <h1 class="title"><a href="/2021/12/06/lee-295/">LeetCode 295 Find Median from Data Stream</a></h1>
+  
+
+      
+        <time datetime="2021-12-06T17:48:27.935Z">2021-12-06</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/find-median-from-data-stream/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>The <strong>median</strong> is the middle value in an ordered integer list. If the size of the list is even, there is no middle value and the median is the mean of the two middle values.<br><br><em>   For example, for <code>arr = [2,3,4]</code>, the median is <code>3</code>.
+</em>   For example, for <code>arr = [2,3]</code>, the median is <code>(2 + 3) / 2 = 2.5</code>.<br><br>Implement the MedianFinder class:<br><br><em>   <code>MedianFinder()</code> initializes the <code>MedianFinder</code> object.
+</em>   <code>void addNum(int num)</code> adds the integer <code>num</code> from the data stream to the data structure.<br><em>   <code>double findMedian()</code> returns the median of all elements so far. Answers within <code>10&lt;sup&gt;-5&lt;/sup&gt;</code> of the actual answer will be accepted.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input</strong><br>[“MedianFinder”, “addNum”, “addNum”, “findMedian”, “addNum”, “findMedian”]<br>[[], [1], [2], [], [3], []]<br><strong>Output</strong><br>[null, null, null, 1.5, null, 2.0]<br><br><strong>Explanation</strong><br>MedianFinder medianFinder = new MedianFinder();<br>medianFinder.addNum(1);    // arr = [1]<br>medianFinder.addNum(2);    // arr = [1, 2]<br>medianFinder.findMedian(); // return 1.5 (i.e., (1 + 2) / 2)<br>medianFinder.addNum(3);    // arr[1, 2, 3]<br>medianFinder.findMedian(); // return 2.0<br></pre><br><br><strong>Constraints:</strong>
+
+</em>   <code>-10&lt;sup&gt;5&lt;/sup&gt; &lt;= num &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code><br><em>   There will be at least one element in the data structure before calling <code>findMedian</code>.
+</em>   At most <code>5 * 10&lt;sup&gt;4&lt;/sup&gt;</code> calls will be made to <code>addNum</code> and <code>findMedian</code>.<br><br><strong>Follow up:</strong><br><br><em>   If all integer numbers from the stream are in the range <code>[0, 100]</code>, how would you optimize your solution?
+</em>   If <code>99%</code> of all integer numbers from the stream are in the range <code>[0, 100]</code>, how would you optimize your solution?<br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求动态中位数</p>
+<h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>用max_heap, min_heap, 保证min_heap个数永远等于max_heap或多一个。插入元素先进max_heap, 再heappop将堆顶元素加入min_heap, 若此时比max_heap多2个，就再heappop加入到max_heap. </p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>中位数有1-2个  </li>
+<li>Python中的max_heap用负数实现，<strong>入堆出堆都要取反</strong>        </li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MedianFinder</span><span class="params">(TestCases)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.max_heap = []</span><br><span class="line">        self.min_heap = []</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">addNum</span><span class="params">(self, num: int)</span> -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        heapq.heappush(self.max_heap, -num)</span><br><span class="line">        max_value = -heapq.heappop(self.max_heap)</span><br><span class="line">        heapq.heappush(self.min_heap, max_value)</span><br><span class="line">        <span class="keyword">if</span> len(self.min_heap) - len(self.max_heap) &gt;= <span class="number">2</span>:</span><br><span class="line">            min_value = heapq.heappop(self.min_heap)</span><br><span class="line">            heapq.heappush(self.max_heap, -min_value)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">findMedian</span><span class="params">(self)</span> -&gt; float:</span></span><br><span class="line">        <span class="keyword">if</span> len(self.max_heap) == len(self.min_heap):</span><br><span class="line">            <span class="keyword">return</span> (-self.max_heap[<span class="number">0</span>] + self.min_heap[<span class="number">0</span>]) / <span class="number">2</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> self.min_heap[<span class="number">0</span>]</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(logn)</code>，空间复杂度<code>O(n)</code>  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2021/12/06/lee-227/">LeetCode 227 Basic Calculator II</a></h1>
   
 
@@ -204,42 +251,6 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2021/12/05/lee-490/">LeetCode 490 The Maze</a></h1>
-  
-
-      
-        <time datetime="2021-12-06T05:41:01.328Z">2021-12-05</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>N/A </p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>题意比较复杂但是等价于一个球从某个点向任何方向滚，因为四边都是墙，所以总会使得这个点的四个方向都能滚一次。所以是简单的BFS      </li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nm)</code>，空间复杂度<code>O(nm)</code>  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -264,6 +275,10 @@
   <ul class="entry">
     
       <li>
+        <a href="/2021/12/28/lee-871/">LeetCode 871 Minimum Number of Refueling Stops</a>
+      </li>
+    
+      <li>
         <a href="/2021/12/27/lee-909/">LeetCode 909 Snakes and Ladders</a>
       </li>
     
@@ -277,10 +292,6 @@
     
       <li>
         <a href="/2021/12/26/lee-926/">LeetCode 926 Flip String to Monotone Increasing</a>
-      </li>
-    
-      <li>
-        <a href="/2021/12/26/lee-828/">LeetCode 828 Count Unique Characters of All Substrings of a Given String</a>
       </li>
     
   </ul>
