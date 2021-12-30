@@ -53,6 +53,196 @@
     <header>
       
   
+    <h1 class="title"><a href="/2021/12/27/lee-909/">LeetCode 909 Snakes and Ladders</a></h1>
+  
+
+      
+        <time datetime="2021-12-27T21:50:38.164Z">2021-12-27</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/snakes-and-ladders/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>You are given an <code>n x n</code> integer matrix <code>board</code> where the cells are labeled from <code>1</code> to <code>n&lt;sup&gt;2&lt;/sup&gt;</code> in a <a href="https://en.wikipedia.org/wiki/Boustrophedon" target="_blank" rel="noopener"><strong>Boustrophedon style</strong></a> starting from the bottom left of the board (i.e. <code>board[n - 1][0]</code>) and alternating direction each row.<br><br>You start on square <code>1</code> of the board. In each move, starting from square <code>curr</code>, do the following:<br><br><em>   Choose a destination square <code>next</code> with a label in the range <code>[curr + 1, min(curr + 6, n&lt;sup&gt;2&lt;/sup&gt;)]</code>.
+    </em>   This choice simulates the result of a standard <strong>6-sided die roll</strong>: i.e., there are always at most 6 destinations, regardless of the size of the board.<br><em>   If <code>next</code> has a snake or ladder, you <strong>must</strong> move to the destination of that snake or ladder. Otherwise, you move to <code>next</code>.
+</em>   The game ends when you reach the square <code>n&lt;sup&gt;2&lt;/sup&gt;</code>.<br><br>A board square on row <code>r</code> and column <code>c</code> has a snake or ladder if <code>board[r][c] != -1</code>. The destination of that snake or ladder is <code>board[r][c]</code>. Squares <code>1</code> and <code>n&lt;sup&gt;2&lt;/sup&gt;</code> do not have a snake or ladder.<br><br>Note that you only take a snake or ladder at most once per move. If the destination to a snake or ladder is the start of another snake or ladder, you do <strong>not</strong> follow the subsequent snake or ladder.<br><br><em>   For example, suppose the board is <code>[[-1,4],[-1,3]]</code>, and on the first move, your destination square is <code>2</code>. You follow the ladder to square <code>3</code>, but do <strong>not</strong> follow the subsequent ladder to <code>4</code>.<br><br>Return <em>the least number of moves required to reach the square</em> <code>n&lt;sup&gt;2&lt;/sup&gt;</code><em>. If it is not possible to reach the square, return</em> <code>-1</code>.<br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2018/09/23/snakes.png" alt=""><br><br><pre><strong>Input:</strong> board = [[-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1],[-1,35,-1,-1,13,-1],[-1,-1,-1,-1,-1,-1],[-1,15,-1,-1,-1,-1]]<br><strong>Output:</strong> 4<br><strong>Explanation:</strong><br>In the beginning, you start at square 1 (at row 5, column 0).<br>You decide to move to square 2 and must take the ladder to square 15.<br>You then decide to move to square 17 and must take the snake to square 13.<br>You then decide to move to square 14 and must take the ladder to square 35.<br>You then decide to move to square 36, ending the game.<br>This is the lowest possible number of moves to reach the last square, so return 4.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> board = [[-1,-1],[-1,3]]<br><strong>Output:</strong> 1<br></pre><br><br><strong>Constraints:</strong>
+
+</em>   <code>n == board.length == board[i].length</code><br><em>   <code>2 &lt;= n &lt;= 20</code>
+</em>   <code>grid[i][j]</code> is either <code>-1</code> or in the range <code>[1, n&lt;sup&gt;2&lt;/sup&gt;]</code>.<br>*   The squares labeled <code>1</code> and <code>n&lt;sup&gt;2&lt;/sup&gt;</code> do not have any ladders or snakes.<br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>二维版上每格label从1到n^2, 从左到右或从右到左(梅花间竹)，从下到上。每次走1-6步，格上可能有梯子和蛇，梯子是快进，蛇是回退直接到达目标格。求从1到n^2所需要步数。始点和目标不含梯子和蛇。</p>
+<h3 id="BFS解题思路-推荐-："><a href="#BFS解题思路-推荐-：" class="headerlink" title="BFS解题思路(推荐)："></a><strong>BFS解题思路(推荐)：</strong></h3><p>求最值两个方法：DP和BFS。一开始考虑用DP，但状态很复杂，因为存在回退，这样回退后要重新计算回退之后的DP值。<br>由于此题没有方向性而且似jump game，所以考虑用DP。</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>题意：对于梯子和蛇，它不能停留在梯子和蛇的起点，只能够停在终点，所以梯子和蛇的起点到1的距离为无穷大。其实可以留在起点，比如一个格同时是蛇的终点和梯子的起点。题意表明不能在同一步中两次用梯子或蛇。   </li>
+<li>根据上述题意，程序中对应是<strong>如碰到儿子中有梯子和蛇的起点，完全忽略它，立刻转换成终点，也就是不入列，不如visited，不计算距离，完全当其透明</strong>。开始犯的错误是将其入列，出列才计算梯子终点。此算法仍然可以满足上述题意，此时梯子的起点会被加入到visited和distance，queue中，因为它确实停在那里了。  </li>
+<li>visited在计算完梯子和蛇的终点后才处理，而不是进入for loop后  </li>
+<li>neighbor不能超过n，达不到目标返回-1  </li>
+<li>另一个难点在label转成坐标从而查找是否有梯子和蛇</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">snakesAndLadders</span><span class="params">(self, board: List[List[int]])</span> -&gt; int:</span></span><br><span class="line">	n = len(board) * len(board)</span><br><span class="line">	queue = collections.deque([<span class="number">1</span>])</span><br><span class="line">	visited = set([<span class="number">1</span>])</span><br><span class="line">	distance = &#123;<span class="number">1</span>: <span class="number">0</span>&#125;</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.popleft()</span><br><span class="line">		<span class="keyword">if</span> node == n:</span><br><span class="line">			<span class="keyword">return</span> distance[node]</span><br><span class="line">		<span class="keyword">for</span> neighbor <span class="keyword">in</span> range(node + <span class="number">1</span>, node + <span class="number">7</span>):</span><br><span class="line">			<span class="keyword">if</span> neighbor &gt; n:  <span class="comment"># remember</span></span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line"></span><br><span class="line">			board_x, board_y = self.get_board_cell(len(board), neighbor)</span><br><span class="line">			dest_label = board[board_x][board_y]</span><br><span class="line">			next_step = dest_label <span class="keyword">if</span> dest_label != <span class="number">-1</span> <span class="keyword">else</span> neighbor</span><br><span class="line"></span><br><span class="line">			<span class="keyword">if</span> next_step <span class="keyword">in</span> visited: <span class="comment"># remember to put it after dest_label</span></span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line"></span><br><span class="line">			queue.append(next_step)</span><br><span class="line">			visited.add(next_step)</span><br><span class="line">			distance[next_step] = distance[node] + <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">-1</span>  <span class="comment"># remember</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_board_cell</span><span class="params">(self, n, label)</span>:</span> <span class="comment"># 6, 6</span></span><br><span class="line">	label -= <span class="number">1</span> <span class="comment"># rememeber</span></span><br><span class="line">	row_id = label // n <span class="comment"># 0</span></span><br><span class="line">	col_id = label % n</span><br><span class="line">	<span class="keyword">return</span> n - <span class="number">1</span> - row_id, n - <span class="number">1</span> - col_id <span class="keyword">if</span> row_id % <span class="number">2</span> == <span class="number">1</span> <span class="keyword">else</span> col_id</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n<sup>2</sup>)</code>，空间复杂度<code>O(n<sup>2</sup>)</code>  </p>
+<p>另一种优化是只入最远的节点，类似于jump game。</p>
+<h3 id="Python代码：-1"><a href="#Python代码：-1" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">snakesAndLadders</span><span class="params">(self, board: List[List[int]])</span> -&gt; int:</span></span><br><span class="line">    n = len(board) * len(board)</span><br><span class="line">	queue = collections.deque([<span class="number">1</span>])</span><br><span class="line">	visited = set([<span class="number">1</span>])</span><br><span class="line">	distance = &#123;<span class="number">1</span>: <span class="number">0</span>&#125;</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.popleft()</span><br><span class="line">		<span class="keyword">if</span> node == n:</span><br><span class="line">			<span class="keyword">return</span> distance[node]</span><br><span class="line">		max_non_jump = node</span><br><span class="line">		<span class="keyword">for</span> neighbor <span class="keyword">in</span> range(node + <span class="number">1</span>, node + <span class="number">7</span>):</span><br><span class="line">			<span class="keyword">if</span> neighbor &gt; n:  <span class="comment"># remember</span></span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line"></span><br><span class="line">			board_x, board_y = self.get_board_cell(len(board), neighbor)</span><br><span class="line">			dest_label = board[board_x][board_y]</span><br><span class="line">			next_step = dest_label <span class="keyword">if</span> dest_label != <span class="number">-1</span> <span class="keyword">else</span> neighbor</span><br><span class="line"></span><br><span class="line">			<span class="keyword">if</span> next_step <span class="keyword">in</span> visited:  <span class="comment"># remember to put it after dest_label</span></span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			<span class="keyword">if</span> dest_label != <span class="number">-1</span>:</span><br><span class="line">				queue.append(next_step)</span><br><span class="line">				visited.add(next_step)</span><br><span class="line">				distance[next_step] = distance[node] + <span class="number">1</span></span><br><span class="line">			<span class="keyword">else</span>:</span><br><span class="line">				max_non_jump = next_step</span><br><span class="line">		<span class="keyword">if</span> max_non_jump <span class="keyword">in</span> visited:  <span class="comment"># remember to put it after dest_label</span></span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		queue.append(max_non_jump)</span><br><span class="line">		visited.add(max_non_jump)</span><br><span class="line">		distance[max_non_jump] = distance[node] + <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">-1</span>  <span class="comment"># remember</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_board_cell</span><span class="params">(self, n, label)</span>:</span> <span class="comment"># 6, 6</span></span><br><span class="line">	label -= <span class="number">1</span> <span class="comment"># rememeber</span></span><br><span class="line">	row_id = label // n <span class="comment"># 0</span></span><br><span class="line">	col_id = label % n</span><br><span class="line">	<span class="keyword">return</span> n - <span class="number">1</span> - row_id, n - <span class="number">1</span> - col_id <span class="keyword">if</span> row_id % <span class="number">2</span> == <span class="number">1</span> <span class="keyword">else</span> col_id</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n<sup>2</sup>/6)</code>，空间复杂度<code>O(n<sup>2</sup>/6)</code>  </p>
+<hr>
+<h3 id="DP算法II解题思路-不推荐-："><a href="#DP算法II解题思路-不推荐-：" class="headerlink" title="DP算法II解题思路(不推荐)："></a><strong>DP算法II解题思路(不推荐)：</strong></h3><p>非常容易错，且效率更低，需要回退重新计算dp值。 dp[i] + 1 &lt; dp[dest_label]保证不会在无限回退，i = dest_label - 1要在break前做，而不是更前，否二影响dp[dest_label]计算</p>
+<h3 id="Python代码：-2"><a href="#Python代码：-2" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">snakesAndLadders_dp</span><span class="params">(self, board: List[List[int]])</span> -&gt; int:</span></span><br><span class="line">	N = len(board) * len(board) + <span class="number">1</span></span><br><span class="line">	dp = [float(<span class="string">'inf'</span>) <span class="keyword">for</span> _ <span class="keyword">in</span> range(N)]</span><br><span class="line">	dp[<span class="number">1</span>] = <span class="number">0</span> <span class="comment"># remember</span></span><br><span class="line">	<span class="comment"># i is label id</span></span><br><span class="line">	i = <span class="number">1</span></span><br><span class="line">	<span class="comment"># for i in range(2, N):</span></span><br><span class="line">	<span class="keyword">while</span> i &lt; N:</span><br><span class="line">		<span class="keyword">for</span> k <span class="keyword">in</span> range(<span class="number">1</span>, <span class="number">7</span>):</span><br><span class="line">			<span class="keyword">if</span> i + k &lt; N:</span><br><span class="line">				board_x, board_y = self.get_board_cell(len(board), i + k)</span><br><span class="line">				dest_label = board[board_x][board_y]</span><br><span class="line">				next_step = dest_label <span class="keyword">if</span> dest_label != <span class="number">-1</span> <span class="keyword">else</span> i + k</span><br><span class="line">				<span class="keyword">if</span> dest_label != <span class="number">-1</span>:</span><br><span class="line">					<span class="keyword">if</span> dest_label &lt; i <span class="keyword">and</span> dp[i] + <span class="number">1</span> &lt; dp[dest_label]: <span class="comment"># remember </span></span><br><span class="line">						dp[dest_label] = min(dp[dest_label], dp[i] + <span class="number">1</span>)</span><br><span class="line">						i = dest_label - <span class="number">1</span> <span class="comment"># remember to assign at the end</span></span><br><span class="line">						<span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">				dp[next_step] = min(dp[next_step], dp[i] + <span class="number">1</span>) <span class="comment"># remember + 1 inside min</span></span><br><span class="line">		i += <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> dp[<span class="number">-1</span>] <span class="keyword">if</span> dp[<span class="number">-1</span>] != float(<span class="string">'inf'</span>) <span class="keyword">else</span> <span class="number">-1</span> <span class="comment"># remember</span></span><br></pre></td></tr></table></figure>
+<h3 id="算法分析：-2"><a href="#算法分析：-2" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n<sup>2</sup>)</code>，空间复杂度<code>O(n<sup>2</sup>)</code>  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2021/12/27/lee-987/">LeetCode 987 Vertical Order Traversal of a Binary Tree</a></h1>
+  
+
+      
+        <time datetime="2021-12-27T20:08:31.755Z">2021-12-27</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/vertical-order-traversal-of-a-binary-tree/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>Given the <code>root</code> of a binary tree, calculate the <strong>vertical order traversal</strong> of the binary tree.<br><br>For each node at position <code>(row, col)</code>, its left and right children will be at positions <code>(row + 1, col - 1)</code> and <code>(row + 1, col + 1)</code> respectively. The root of the tree is at <code>(0, 0)</code>.<br><br>The <strong>vertical order traversal</strong> of a binary tree is a list of top-to-bottom orderings for each column index starting from the leftmost column and ending on the rightmost column. There may be multiple nodes in the same row and same column. In such a case, sort these nodes by their values.<br><br>Return <em>the <strong>vertical order traversal</strong> of the binary tree</em>.<br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/01/29/vtree1.jpg" alt=""><br><br><pre><strong>Input:</strong> root = [3,9,20,null,null,15,7]<br><strong>Output:</strong> [[9],[3,15],[20],[7]]<br><strong>Explanation:</strong><br>Column -1: Only node 9 is in this column.<br>Column 0: Nodes 3 and 15 are in this column in that order from top to bottom.<br>Column 1: Only node 20 is in this column.<br>Column 2: Only node 7 is in this column.</pre><br><br><strong>Example 2:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/01/29/vtree2.jpg" alt=""><br><br><pre><strong>Input:</strong> root = [1,2,3,4,5,6,7]<br><strong>Output:</strong> [[4],[2],[1,5,6],[3],[7]]<br><strong>Explanation:</strong><br>Column -2: Only node 4 is in this column.<br>Column -1: Only node 2 is in this column.<br>Column 0: Nodes 1, 5, and 6 are in this column.<br>          1 is at the top, so it comes first.<br>          5 and 6 are at the same position (2, 0), so we order them by their value, 5 before 6.<br>Column 1: Only node 3 is in this column.<br>Column 2: Only node 7 is in this column.<br></pre><br><br><strong>Example 3:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/01/29/vtree3.jpg" alt=""><br><br><pre><strong>Input:</strong> root = [1,2,3,4,6,5,7]<br><strong>Output:</strong> [[4],[2],[1,5,6],[3],[7]]<br><strong>Explanation:</strong><br>This case is the exact same as example 2, but with nodes 5 and 6 swapped.<br>Note that the solution remains the same since 5 and 6 are in the same location and should be ordered by their values.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   The number of nodes in the tree is in the range <code>[1, 1000]</code>.
+</em>   <code>0 &lt;= Node.val &lt;= 1000</code><br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>按列顺序打印二叉树，若列号同，同一行的节点按值排序 </p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>与<a href="https://shineboy2013.github.io/2021/12/24/lee-314/" target="_blank" rel="noopener">LeetCode 314 Binary Tree Vertical Order Traversal</a>类似，用BFS</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>一开始以为同一列的同一行的节点在queue是一个紧接一个出列。但同一行节点可能先出列col=3, col=4， col=3。而且同一列同一行的节点有多个，不止两个。所以<strong>将row_id也加入到queue节点中，row_id也加入到map中，最后遍历结果时，将同一row_id节点排序</strong>  </li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">verticalTraversal</span><span class="params">(self, root: TreeNode)</span> -&gt; List[List[int]]:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> root:</span><br><span class="line">		<span class="keyword">return</span> []</span><br><span class="line">	col_to_node_list = collections.defaultdict(list)</span><br><span class="line">	min_col, max_col = float(<span class="string">'inf'</span>), float(<span class="string">'-inf'</span>)</span><br><span class="line">	queue = collections.deque([(root, <span class="number">0</span>, <span class="number">0</span>)])</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node, row_id, col_id = queue.popleft()</span><br><span class="line">		col_to_node_list[col_id].append((node.val, row_id))</span><br><span class="line">		min_col, max_col = min(min_col, col_id), max(max_col, col_id)</span><br><span class="line">		<span class="keyword">if</span> node.left:</span><br><span class="line">			queue.append((node.left, row_id + <span class="number">1</span>, col_id - <span class="number">1</span>))</span><br><span class="line">		<span class="keyword">if</span> node.right:</span><br><span class="line">			queue.append((node.right, row_id + <span class="number">1</span>, col_id + <span class="number">1</span>))</span><br><span class="line">	res = []</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(min_col, max_col + <span class="number">1</span>):</span><br><span class="line">		last_row_id, same_row, same_col = <span class="number">-1</span>, [], []</span><br><span class="line">		<span class="keyword">for</span> pair <span class="keyword">in</span> col_to_node_list[i]:</span><br><span class="line">			<span class="keyword">if</span> last_row_id == pair[<span class="number">1</span>]:</span><br><span class="line">				same_row.append(pair[<span class="number">0</span>])</span><br><span class="line">			<span class="keyword">else</span>:</span><br><span class="line">				same_col += sorted(same_row)</span><br><span class="line">				same_row = [pair[<span class="number">0</span>]]</span><br><span class="line">				last_row_id = pair[<span class="number">1</span>]</span><br><span class="line">		same_col += sorted(same_row)</span><br><span class="line">		res.append(same_col)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>，稍大于O(n), 因为同一列同一行节点要排序    </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2021/12/26/lee-453/">LeetCode 453 Minimum Moves to Equal Array Elements</a></h1>
+  
+
+      
+        <time datetime="2021-12-27T07:26:35.925Z">2021-12-26</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/minimum-moves-to-equal-array-elements/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>Given an integer array <code>nums</code> of size <code>n</code>, return <em>the minimum number of moves required to make all array elements equal</em>.<br><br>In one move, you can increment <code>n - 1</code> elements of the array by <code>1</code>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> nums = [1,2,3]<br><strong>Output:</strong> 3<br><strong>Explanation:</strong> Only three moves are needed (remember each move increments two elements):<br>[1,2,3]  =&gt;  [2,3,3]  =&gt;  [3,4,3]  =&gt;  [4,4,4]<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> nums = [1,1,1]<br><strong>Output:</strong> 0<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>n == nums.length</code>
+</em>   <code>1 &lt;= nums.length &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code><br><em>   <code>-10&lt;sup&gt;9&lt;/sup&gt; &lt;= nums[i] &lt;= 10&lt;sup&gt;9&lt;/sup&gt;</code>
+</em>   The answer is guaranteed to fit in a <strong>32-bit</strong> integer.<br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求最小移动步数使得数组所有数相等。每次移动是将n-1个元素加1</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>最小值考虑用DP。但比较难写递归式，以[1, 2, 3]为例，值为3，现在是[1, 2, 3, 6]，由于dp[3]的最终状态为[4, 4, 4], 而最终状态加上新元素为[4, 4, 4, 9], 由6变成9是因为dp[3] = 3，表示移动了3步，新元素6，移动的3步全部参与了，所以变成9<br>由[4, 4, 4, 9], 4变9，需要5步，所以结果dp[4] = dp[3] + 5 = 8  </p>
+<p>公式为<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dp[i + 1] = dp[i] + (nums[i] + dp[i] - equal_num)  </span><br><span class="line">equal_num = nums[i] + dp[i]</span><br></pre></td></tr></table></figure></p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>数组要排序  </li>
+<li>equal_num初始值为nums[0]    </li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">minMoves</span><span class="params">(self, nums: List[int])</span> -&gt; int:</span></span><br><span class="line">	nums.sort()</span><br><span class="line">	dp, equal_num = <span class="number">0</span>, nums[<span class="number">0</span>]</span><br><span class="line">	<span class="keyword">for</span> n <span class="keyword">in</span> nums:</span><br><span class="line">		new_val = n + dp</span><br><span class="line">		dp = dp + (n + dp - equal_num) <span class="comment"># 2</span></span><br><span class="line">		equal_num = new_val <span class="comment"># 3</span></span><br><span class="line">	<span class="keyword">return</span> dp</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2021/12/26/lee-926/">LeetCode 926 Flip String to Monotone Increasing</a></h1>
+  
+
+      
+        <time datetime="2021-12-27T06:17:44.346Z">2021-12-26</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/flip-string-to-monotone-increasing/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>A binary string is monotone increasing if it consists of some number of <code>0</code>‘s (possibly none), followed by some number of <code>1</code>‘s (also possibly none).<br><br>You are given a binary string <code>s</code>. You can flip <code>s[i]</code> changing it from <code>0</code> to <code>1</code> or from <code>1</code> to <code>0</code>.<br><br>Return <em>the minimum number of flips to make</em> <code>s</code> <em>monotone increasing</em>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> s = “00110”<br><strong>Output:</strong> 1<br><strong>Explanation:</strong> We flip the last digit to get 00111.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> s = “010110”<br><strong>Output:</strong> 2<br><strong>Explanation:</strong> We flip to get 011111, or alternatively 000111.<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> s = “00011000”<br><strong>Output:</strong> 2<br><strong>Explanation:</strong> We flip to get 00000000.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= s.length &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code>
+</em>   <code>s[i]</code> is either <code>&#39;0&#39;</code> or <code>&#39;1&#39;</code>.<br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>01字符串中Flip其中一些将它变成00111,0和1的个数是任意。  </p>
+<h3 id="DP解题思路-推荐-："><a href="#DP解题思路-推荐-：" class="headerlink" title="DP解题思路(推荐)："></a><strong>DP解题思路(推荐)：</strong></h3><p>求最小值考虑用BFS或者DP。BFS的复杂度可能比较大，DP定义为以s[i]为结尾的最小flip数，但由于不知道具体排列(末状态)是什么或者结尾是什么，所以比较难从子问题推导出来。<br>不妨用两个dp来计算，<br>dp为以0为结尾的最小flip数<br>dp2为以1为结尾的最小flip数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">dp = dp     if s[i] = &apos;0&apos;</span><br><span class="line">   = dp + 1 if s[i] = &apos;1&apos;</span><br><span class="line">   </span><br><span class="line">dp2 = min(dp2 + 1, dp + 1)     if s[i] = &apos;0&apos;</span><br><span class="line">    = min(dp2, dp)             if s[i] = &apos;1&apos;</span><br></pre></td></tr></table></figure></p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>用Python的dp和dp2同时由前状态赋值，这样避免用临时变量     </li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">minFlipsMonoIncr</span><span class="params">(self, s: str)</span> -&gt; int:</span></span><br><span class="line">	dp, dp2 = <span class="number">0</span>, <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(s)):</span><br><span class="line">		<span class="keyword">if</span> s[i] == <span class="string">'0'</span>:</span><br><span class="line">			dp, dp2 = dp, min(dp, dp2) + <span class="number">1</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			dp, dp2 = dp + <span class="number">1</span>, min(dp2, dp)</span><br><span class="line">	<span class="keyword">return</span> min(dp, dp2)</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code> </p>
+<hr>
+<h3 id="presum算法II解题思路："><a href="#presum算法II解题思路：" class="headerlink" title="presum算法II解题思路："></a><strong>presum算法II解题思路：</strong></h3><p>统计1的个数，若是0同时统计从0 flip到1的个数，取两者较小为新flip数。较难理解，不推荐    </p>
+<h3 id="Python代码：-1"><a href="#Python代码：-1" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">minFlipsMonoIncr2</span><span class="params">(self, s: str)</span> -&gt; int:</span></span><br><span class="line">	ones, flips = <span class="number">0</span>, <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> c <span class="keyword">in</span> s:</span><br><span class="line">		<span class="keyword">if</span> c == <span class="string">'1'</span>:</span><br><span class="line">			ones += <span class="number">1</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			flips += <span class="number">1</span></span><br><span class="line">		flips = min(ones, flips)</span><br><span class="line">	<span class="keyword">return</span> flips</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code> </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2021/12/26/lee-828/">LeetCode 828 Count Unique Characters of All Substrings of a Given String</a></h1>
   
 
@@ -97,179 +287,6 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2021/12/26/lee-071/">LeetCode 071 Simplify Path</a></h1>
-  
-
-      
-        <time datetime="2021-12-27T00:49:13.607Z">2021-12-26</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/simplify-path/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>Given a string <code>path</code>, which is an <strong>absolute path</strong> (starting with a slash <code>&#39;/&#39;</code>) to a file or directory in a Unix-style file system, convert it to the simplified <strong>canonical path</strong>.<br><br>In a Unix-style file system, a period <code>&#39;.&#39;</code> refers to the current directory, a double period <code>&#39;..&#39;</code> refers to the directory up a level, and any multiple consecutive slashes (i.e. <code>&#39;//&#39;</code>) are treated as a single slash <code>&#39;/&#39;</code>. For this problem, any other format of periods such as <code>&#39;...&#39;</code> are treated as file/directory names.<br><br>The <strong>canonical path</strong> should have the following format:<br><br><em>   The path starts with a single slash <code>&#39;/&#39;</code>.
-</em>   Any two directories are separated by a single slash <code>&#39;/&#39;</code>.<br><em>   The path does not end with a trailing <code>&#39;/&#39;</code>.
-</em>   The path only contains the directories on the path from the root directory to the target file or directory (i.e., no period <code>&#39;.&#39;</code> or double period <code>&#39;..&#39;</code>)<br><br>Return <em>the simplified <strong>canonical path</strong></em>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> path = “/home/“<br><strong>Output:</strong> “/home”<br><strong>Explanation:</strong> Note that there is no trailing slash after the last directory name.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> path = “/../“<br><strong>Output:</strong> “/“<br><strong>Explanation:</strong> Going one level up from the root directory is a no-op, as the root level is the highest level you can go.<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> path = “/home//foo/“<br><strong>Output:</strong> “/home/foo”<br><strong>Explanation:</strong> In the canonical path, multiple consecutive slashes are replaced by a single one.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= path.length &lt;= 3000</code>
-</em>   <code>path</code> consists of English letters, digits, period <code>&#39;.&#39;</code>, slash <code>&#39;/&#39;</code> or <code>&#39;_&#39;</code>.<br>*   <code>path</code> is a valid absolute Unix path.<br><br></div>
-
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>简化路径，遇.表示当前目录不做事，遇..表示到上一个目录</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>路径类似于括号题，利用括号题模板</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>edge case /../ 表示若stack为空，就不pop。if stack不能加到elif token == ‘..’中  </li>
-<li>遇到..返回到上层目录      </li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">simplifyPath</span><span class="params">(self, path: str)</span> -&gt; str:</span></span><br><span class="line">	path += <span class="string">'/'</span></span><br><span class="line">	token, stack = <span class="string">''</span>, []</span><br><span class="line">	<span class="keyword">for</span> c <span class="keyword">in</span> path:</span><br><span class="line">		<span class="keyword">if</span> c == <span class="string">'/'</span>:</span><br><span class="line">			<span class="keyword">if</span> token == <span class="string">'.'</span>:</span><br><span class="line">				<span class="keyword">pass</span></span><br><span class="line">			<span class="keyword">elif</span> token == <span class="string">'..'</span>:</span><br><span class="line">				<span class="keyword">if</span> stack: <span class="comment"># remember</span></span><br><span class="line">					stack.pop()</span><br><span class="line">			<span class="keyword">elif</span> token:</span><br><span class="line">				stack.append(token)</span><br><span class="line">			token = <span class="string">''</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			token += c</span><br><span class="line">	<span class="keyword">return</span> <span class="string">'/'</span> + <span class="string">'/'</span>.join(stack)</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2021/12/26/lee-526/">LeetCode 526 Beautiful Arrangement</a></h1>
-  
-
-      
-        <time datetime="2021-12-27T00:05:38.130Z">2021-12-26</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/beautiful-arrangement/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>Suppose you have <code>n</code> integers labeled <code>1</code> through <code>n</code>. A permutation of those <code>n</code> integers <code>perm</code> (<strong>1-indexed</strong>) is considered a <strong>beautiful arrangement</strong> if for every <code>i</code> (<code>1 &lt;= i &lt;= n</code>), <strong>either</strong> of the following is true:<br><br><em>   <code>perm[i]</code> is divisible by <code>i</code>.
-</em>   <code>i</code> is divisible by <code>perm[i]</code>.<br><br>Given an integer <code>n</code>, return <em>the <strong>number</strong> of the <strong>beautiful arrangements</strong> that you can construct</em>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> n = 2<br><strong>Output:</strong> 2<br><strong>Explanation:</strong><br>The first beautiful arrangement is [1,2]:<br>    - perm[1] = 1 is divisible by i = 1<br>    - perm[2] = 2 is divisible by i = 2<br>The second beautiful arrangement is [2,1]:<br>    - perm[1] = 2 is divisible by i = 1<br>    - i = 2 is divisible by perm[2] = 1<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> n = 1<br><strong>Output:</strong> 1<br></pre><br><br><strong>Constraints:</strong><br><br>*   <code>1 &lt;= n &lt;= 15</code><br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求数组中所有排列中下标（从1开始）和数值能整除（下标整除数值或反之）的个数</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>一开始考虑用DP，因为求个数且类似于L368 Largest Divisible Subset，但问题与子问题的具体排位有关，所以DP不可行。考虑用Stack，但数组顺序可变。<br>只能用暴力法，也就是DFS中排列求解  </p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>用排列模板，但此题不涉及具体数组。用set来记录访问过的数值而不是下标，start来记录模拟结果path中的位置    </li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">countArrangement</span><span class="params">(self, n: int)</span> -&gt; int:</span></span><br><span class="line">	<span class="keyword">return</span> self.permute(n, <span class="number">1</span>, set())</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">permute</span><span class="params">(self, n, start, visited)</span>:</span> <span class="comment"># 2, 1, [F,F,F]</span></span><br><span class="line">	<span class="keyword">if</span> start == n + <span class="number">1</span>: <span class="comment"># remember n + 1</span></span><br><span class="line">		<span class="comment">#print(path)</span></span><br><span class="line">		<span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">	res = <span class="number">0</span> <span class="comment"># 1</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, n + <span class="number">1</span>): <span class="comment"># [1,3)</span></span><br><span class="line">		<span class="keyword">if</span> i <span class="keyword">in</span> visited:</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		<span class="keyword">if</span> i % start == <span class="number">0</span> <span class="keyword">or</span> start % i == <span class="number">0</span>:</span><br><span class="line">			visited.add(i)</span><br><span class="line">			<span class="comment">#path.append(i)</span></span><br><span class="line">			res += self.permute(n, start + <span class="number">1</span>, visited) <span class="comment"># 2, 2, [FFT]</span></span><br><span class="line">			<span class="comment">#path.pop()</span></span><br><span class="line">			visited.remove(i)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(解大小)</code>，空间复杂度<code>O(n)</code>  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2021/12/26/lee-759/">LeetCode 759 Employee Free Time</a></h1>
-  
-
-      
-        <time datetime="2021-12-26T21:44:38.256Z">2021-12-26</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/employee-free-time/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>We are given a list <code>schedule</code> of employees, which represents the working time for each employee.<br><br>Each employee has a list of non-overlapping <code>Intervals</code>, and these intervals are in sorted order.<br><br>Return the list of finite intervals representing <strong>common, positive-length free time</strong> for <em>all</em> employees, also in sorted order.<br><br>(Even though we are representing <code>Intervals</code> in the form <code>[x, y]</code>, the objects inside are <code>Intervals</code>, not lists or arrays. For example, <code>schedule[0][0].start = 1</code>, <code>schedule[0][0].end = 2</code>, and <code>schedule[0][0][0]</code> is not defined).  Also, we wouldn’t include intervals like [5, 5] in our answer, as they have zero length.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> schedule = [[[1,2],[5,6]],[[1,3]],[[4,10]]]<br><strong>Output:</strong> [[3,4]]<br><strong>Explanation:</strong> There are a total of three employees, and all common<br>free time intervals would be [-inf, 1], [3, 4], [10, inf].<br>We discard any intervals that contain inf as they aren’t finite.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> schedule = [[[1,3],[6,7]],[[2,4]],[[2,5],[9,12]]]<br><strong>Output:</strong> [[5,6],[7,9]]<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= schedule.length , schedule[i].length &lt;= 50</code>
-</em>   <code>0 &lt;= schedule[i].start &lt; schedule[i].end &lt;= 10^8</code><br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定员工的schedule，给所有员工的空余时间的区间</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>一开始考虑用Leetcode 056 merge intervals，然后求不能merge时的区间。后来想用Leetcode 253 meeting rooms II也是关于重合区间，只要active meetings为0时，就表示空余区间，此法更容易实现   </p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>用Leetcode 253 meeting rooms II的排序解法  </li>
-<li>注意输入是每一个员工的schedule如[Interval(1, 2), Interval(5, 6)]，然后是所有员工schedule的列表  </li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test</span><span class="params">(self)</span>:</span></span><br><span class="line">	TestCases.compare(self, self.employeeFreeTime([[Interval(<span class="number">1</span>, <span class="number">2</span>), Interval(<span class="number">5</span>, <span class="number">6</span>)], [Interval(<span class="number">1</span>, <span class="number">3</span>)], [Interval(<span class="number">4</span>, <span class="number">10</span>)]]), [Interval(<span class="number">3</span>, <span class="number">4</span>)])</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">employeeFreeTime</span><span class="params">(self, schedule: [[Interval]])</span> -&gt; [Interval]:</span></span><br><span class="line">	schedule_endpoints = []</span><br><span class="line">	<span class="keyword">for</span> li <span class="keyword">in</span> schedule:</span><br><span class="line">		<span class="keyword">for</span> s <span class="keyword">in</span> li:</span><br><span class="line">			schedule_endpoints.append((s.start, <span class="number">0</span>)) <span class="comment"># [(1, 0),(2,1),(5,0), (6,1)]</span></span><br><span class="line">			schedule_endpoints.append((s.end, <span class="number">1</span>))</span><br><span class="line">	schedule_endpoints.sort()</span><br><span class="line">	res, free_time, active_schedule = [], [], <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(schedule_endpoints)):</span><br><span class="line">		<span class="keyword">if</span> schedule_endpoints[i][<span class="number">1</span>] == <span class="number">0</span>:</span><br><span class="line">			active_schedule += <span class="number">1</span> <span class="comment"># 0</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			active_schedule -= <span class="number">1</span> <span class="comment">#</span></span><br><span class="line">		<span class="keyword">if</span> active_schedule == <span class="number">0</span>:</span><br><span class="line">			free_time.append(schedule_endpoints[i][<span class="number">0</span>]) <span class="comment">#[2,5]</span></span><br><span class="line">		<span class="keyword">if</span> active_schedule == <span class="number">1</span> <span class="keyword">and</span> len(free_time) == <span class="number">1</span>:</span><br><span class="line">			free_time.append(schedule_endpoints[i][<span class="number">0</span>])</span><br><span class="line">			free_interval = Interval(free_time[<span class="number">0</span>], free_time[<span class="number">1</span>])</span><br><span class="line">			res.append(free_interval)</span><br><span class="line">			free_time = []</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nlogn)</code>，空间复杂度<code>O(n)</code>  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2021/12/26/lee-1010/">LeetCode 1010 Pairs of Songs With Total Durations Divisible by 60</a></h1>
-  
-
-      
-        <time datetime="2021-12-26T20:51:37.239Z">2021-12-26</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/pairs-of-songs-with-total-durations-divisible-by-60/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>You are given a list of songs where the i<sup>th</sup> song has a duration of <code>time[i]</code> seconds.<br><br>Return <em>the number of pairs of songs for which their total duration in seconds is divisible by</em> <code>60</code>. Formally, we want the number of indices <code>i</code>, <code>j</code> such that <code>i &lt; j</code> with <code>(time[i] + time[j]) % 60 == 0</code>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> time = [30,20,150,100,40]<br><strong>Output:</strong> 3<br><strong>Explanation:</strong> Three pairs have a total duration divisible by 60:<br>(time[0] = 30, time[2] = 150): total duration 180<br>(time[1] = 20, time[3] = 100): total duration 120<br>(time[1] = 20, time[4] = 40): total duration 60<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> time = [60,60,60]<br><strong>Output:</strong> 3<br><strong>Explanation:</strong> All three pairs have a total duration of 120, which is divisible by 60.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   `1 &lt;= time.length &lt;= 6 </em> 10<sup>4</sup><code>*</code>1 &lt;= time[i] &lt;= 500`<br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求数组中两数和能被60整除  </p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>两数和的关系第一时间想到two sum。但由于target是60的倍数，并不固定，所以先用公式求所有数的mod，(time[i] + time[j]) % 60 = time[i] % 60 + time[j] % 60, 这样target就是60了<br>第二个难点是此题求个数并不是像two sum一样求可行性，所以value to index改成value to count  </p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>对所有数对60求mod，map存value到count    </li>
-<li>如果输入是60，取模后为0， <strong>求(60 - time_mod[i])要对60取模</strong>，否则60不在map中，因为60 - time_mod[i] = 60.</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># (time[i] + time[j]) % 60 = time[i] % 60 + time[j] % 60</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">numPairsDivisibleBy60</span><span class="params">(self, time: List[int])</span> -&gt; int:</span></span><br><span class="line">	time_mod = [t % <span class="number">60</span> <span class="keyword">for</span> t <span class="keyword">in</span> time] <span class="comment"># [30,30]</span></span><br><span class="line">	val_to_count = collections.defaultdict(int)</span><br><span class="line">	res = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(time_mod)):</span><br><span class="line">		<span class="keyword">if</span> (<span class="number">60</span> - time_mod[i]) % <span class="number">60</span> <span class="keyword">in</span> val_to_count:</span><br><span class="line">		   res += val_to_count[(<span class="number">60</span> - time_mod[i]) % <span class="number">60</span>]</span><br><span class="line">		val_to_count[time_mod[i]] += <span class="number">1</span> <span class="comment"># 30:1</span></span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -294,23 +311,23 @@
   <ul class="entry">
     
       <li>
+        <a href="/2021/12/30/lee-101/">LeetCode 101 Symmetric Tree</a>
+      </li>
+    
+      <li>
+        <a href="/2021/12/30/lee-102/">LeetCode 102 Binary Tree Level Order Traversal</a>
+      </li>
+    
+      <li>
+        <a href="/2021/12/30/lee-103/">LeetCode 103 Binary Tree Zigzag Level Order Traversal</a>
+      </li>
+    
+      <li>
+        <a href="/2021/12/29/lee-114/">LeetCode 114 Flatten Binary Tree to Linked List</a>
+      </li>
+    
+      <li>
         <a href="/2021/12/29/lee-070/">LeetCode 070 Climbing Stairs</a>
-      </li>
-    
-      <li>
-        <a href="/2021/12/29/lee-254/">LeetCode 254 Factor Combinations</a>
-      </li>
-    
-      <li>
-        <a href="/2021/12/29/lee-377/">LeetCode 377 Combination Sum IV</a>
-      </li>
-    
-      <li>
-        <a href="/2021/12/29/lee-216/">LeetCode 216 Combination Sum III</a>
-      </li>
-    
-      <li>
-        <a href="/2021/12/29/lee-077/">LeetCode 077 Combinations</a>
       </li>
     
   </ul>
@@ -323,7 +340,7 @@
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 10px;">Backtracking</a> <a href="/tags/Dynamic-Programming/" style="font-size: 15px;">Dynamic Programming</a> <a href="/tags/Knowledge-Base/" style="font-size: 15px;">Knowledge Base</a>
+    <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 10px;">Backtracking</a> <a href="/tags/Binary-Tree/" style="font-size: 20px;">Binary Tree</a> <a href="/tags/Classic/" style="font-size: 10px;">Classic</a> <a href="/tags/Dynamic-Programming/" style="font-size: 13.33px;">Dynamic Programming</a> <a href="/tags/Greedy/" style="font-size: 10px;">Greedy</a> <a href="/tags/Knowledge-Base/" style="font-size: 16.67px;">Knowledge Base</a>
   </div>
 </div>
 

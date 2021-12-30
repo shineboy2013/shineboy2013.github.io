@@ -53,21 +53,141 @@
     <header>
       
   
-    <h1 class="title"><a href="/2021/12/05/lee-729/">LeetCode 729 My Calendar I</a></h1>
+    <h1 class="title"><a href="/2021/12/06/lee-227/">LeetCode 227 Basic Calculator II</a></h1>
   
 
       
-        <time datetime="2021-12-06T05:41:01.328Z">2021-12-05</time>
+        <time datetime="2021-12-06T08:35:57.253Z">2021-12-06</time>
       
     </header>
     <div class="entry">
       
-        <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>题目似meeting rooms，考虑用heap，但不能online处理。考虑用start, end排序，二分法查找，只能处理单次，因为插入不方便。<br>要查找和插入都能低于O(n)，就只能用TreeMap。类似于线段树存储区间和，此题每个Node存储一个区间。新区间的end，start分别与root的start和end比较，若不重合，就递归到左右子树。此树投影为离散且不重合的区间。   </p>
+        <p><strong><a href="https://leetcode.com/problems/basic-calculator-ii/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>Given a string <code>s</code> which represents an expression, <em>evaluate this expression and return its value</em>.<br><br>The integer division should truncate toward zero.<br><br>You may assume that the given expression is always valid. All intermediate results will be in the range of <code>[-2&lt;sup&gt;31&lt;/sup&gt;, 2&lt;sup&gt;31&lt;/sup&gt; - 1]</code>.<br><br><strong>Note:</strong> You are not allowed to use any built-in function which evaluates strings as mathematical expressions, such as <code>eval()</code>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> s = “3+2<em>2”<br><strong>Output:</strong> 7<br></em></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> s = “ 3/2 “<br><strong>Output:</strong> 1<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> s = “ 3+5 / 2 “<br><strong>Output:</strong> 5<br></pre><br><br><strong>Constraints:</strong>
+
+   <code>1 &lt;= s.length &lt;= 3 * 10&lt;sup&gt;5&lt;/sup&gt;</code><br><em>   <code>s</code> consists of integers and operators `(‘+’, ‘-‘, ‘</em>‘, ‘/‘)<code>separated by some number of spaces.
+*</code>s<code>represents **a valid expression**.
+*   All the integers in the expression are non-negative integers in the range</code>[0, 2<sup>31</sup> - 1]`.<br><em>   The answer is <strong>guaranteed</strong> to fit in a <em>*32-bit integer</em></em>.<br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>实现字符串加减乘除，但无括号。</p>
+<h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>逆波兰式的实现用Stack。Stack只存数，而且<strong>只存加号操作符</strong>的数，也就是说，<br>如果是减，就将-num入栈，<br>如果是乘除，立刻计算stack[-1]乘除num的结果再压入栈，因为乘除是最高优先级可以直接计算，而加减不可以。<br>所以用<strong>一个stack</strong>  </p>
+<p>代码中含三种情况：空格，运算符，数字</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><p>此题没有括号，不能用模板，要借用op来记录前一个操作符  </p>
+<ol>
+<li>op记录前一个运算符，char为运算符或当前字符。计算时候根据op，因为char(+)只是第二个操作数(1-2+)的终结字符，此时表明操作数stack[-1], num以及操作符op均已完成，可以计算         </li>
+<li>最容易错的是向下取整Line 18, 题目返回要求整数。所以<strong>要除法后取整int(prev / num)</strong></li>
+<li>s末尾加入加号，方便parse最后一个num  </li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">calculate</span><span class="params">(self, s: str)</span> -&gt; int:</span></span><br><span class="line">	s += <span class="string">'+'</span></span><br><span class="line">	res, num, stack, op = <span class="number">0</span>, <span class="number">0</span>, [], <span class="string">'+'</span></span><br><span class="line">	<span class="keyword">for</span> char <span class="keyword">in</span> s:</span><br><span class="line">		<span class="keyword">if</span> char == <span class="string">' '</span>:</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		<span class="keyword">elif</span> char.isdigit():</span><br><span class="line">			num = num * <span class="number">10</span> + int(char)</span><br><span class="line">		<span class="keyword">elif</span> op == <span class="string">'-'</span>:</span><br><span class="line">			stack.append(-num)</span><br><span class="line">		<span class="keyword">elif</span> op == <span class="string">'+'</span>:</span><br><span class="line">			stack.append(num) <span class="comment"># [4+2*1]</span></span><br><span class="line">		<span class="keyword">elif</span> op == <span class="string">'*'</span>:</span><br><span class="line">			prev = stack.pop()</span><br><span class="line">			stack.append(prev * num)</span><br><span class="line">		<span class="keyword">elif</span> op == <span class="string">'/'</span>:</span><br><span class="line">			prev = stack.pop()</span><br><span class="line">			stack.append(int(prev / num))  <span class="comment"># remember</span></span><br><span class="line">		<span class="keyword">if</span> char <span class="keyword">in</span> <span class="string">'+-*/'</span>:</span><br><span class="line">			num = <span class="number">0</span></span><br><span class="line">			op = char</span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> stack:</span><br><span class="line">		n = stack.pop()</span><br><span class="line">		res += n</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2021/12/06/lee-301/">LeetCode 301 Remove Invalid Parentheses</a></h1>
+  
+
+      
+        <time datetime="2021-12-06T08:01:52.622Z">2021-12-06</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>最值问题考虑用DP和BFS，DP难以拆分子问题。所以考虑用BFS + 括号合法性判断  </p>
 <h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
 <li></li>
 </ol>
 <h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(logn)</code>，空间复杂度<code>O(logn)</code>  </p>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(2^n)</code>，空间复杂度<code>O(n)</code>  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2021/12/05/lee-516/">LeetCode 516 Longest Palindromic Subsequence</a></h1>
+  
+
+      
+        <time datetime="2021-12-06T07:27:35.791Z">2021-12-05</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>一开始看到子序列就想用DP，dp[i]表示以s[i]为结尾的最长回文子序列。但不容易推导公式，难点是没有限制左边界<br>所以应该扩展到二维dp[i][j]表示[i, j]之间的最长回文子序列。公式就简单多了<br>dp[i][j] = dp[i+1][j-1], j = start[i-1], s[i] == s[j]<br>           max(dp[i+1][j], dp[i][j-1]),  s[i] != s[j]    </p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li></li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n*n)</code>，空间复杂度<code>O(n*n)</code>  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2021/12/05/lee-731/">LeetCode 731 My Calendar II</a></h1>
+  
+
+      
+        <time datetime="2021-12-06T06:41:18.204Z">2021-12-05</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>有重复区间，考虑用meeting rooms的方法二同时差分再求和的方法。用一个map来存储endpoint包括start和end的频率，若遇到start，map[start]++, 若遇到end, map[end]–，插入一个区间后，遍历所有endpoints，若超过3就返回False  </p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li></li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>  </p>
 
       
     </div>
@@ -120,122 +240,6 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2021/12/05/lee-105/">LeetCode 105 Construct Binary Tree from Preorder and Inorder Traversal</a></h1>
-  
-
-      
-        <time datetime="2021-12-06T05:36:22.387Z">2021-12-05</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>N/A </p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>用递归实现，in_order字符串分左右两段递归到左右儿子，pre_order字符串每轮递归用pop原地去除首位，再递归到儿子节点  </li>
-<li>终止条件为in_order字符串为空。    </li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2021/12/05/lee-1235/">LeetCode 1235 Maximum Profit in Job Scheduling</a></h1>
-  
-
-      
-        <time datetime="2021-12-06T02:18:26.508Z">2021-12-05</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/maximum-profit-in-job-scheduling/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>We have <code>n</code> jobs, where every job is scheduled to be done from <code>startTime[i]</code> to <code>endTime[i]</code>, obtaining a profit of <code>profit[i]</code>.<br><br>You’re given the <code>startTime</code>, <code>endTime</code> and <code>profit</code> arrays, return the maximum profit you can take such that there are no two jobs in the subset with overlapping time range.<br><br>If you choose a job that ends at time <code>X</code> you will be able to start another job that starts at time <code>X</code>.<br><br><strong>Example 1:</strong><br><br><strong><img src="https://assets.leetcode.com/uploads/2019/10/10/sample1_1584.png" alt=""></strong><br><br><pre><strong>Input:</strong> startTime = [1,2,3,3], endTime = [3,4,5,6], profit = [50,10,40,70]<br><strong>Output:</strong> 120<br><strong>Explanation:</strong> The subset chosen is the first and fourth job.<br>Time range [1-3]+[3-6] , we get profit of 120 = 50 + 70.<br></pre><br><br><strong>Example 2:</strong><br><br><strong><img src="https://assets.leetcode.com/uploads/2019/10/10/sample22_1584.png" alt=""></strong><br><br><pre><strong>Input:</strong> startTime = [1,2,3,4,6], endTime = [3,5,10,6,9], profit = [20,20,100,70,60]<br><strong>Output:</strong> 150<br><strong>Explanation:</strong> The subset chosen is the first, fourth and fifth job.<br>Profit obtained 150 = 20 + 70 + 60.<br></pre><br><br><strong>Example 3:</strong><br><br><strong><img src="https://assets.leetcode.com/uploads/2019/10/10/sample3_1584.png" alt=""></strong><br><br><pre><strong>Input:</strong> startTime = [1,1,1], endTime = [2,3,4], profit = [5,6,4]<br><strong>Output:</strong> 6<br></pre><br><br><strong>Constraints:</strong><br><br><em>   `1 &lt;= startTime.length == endTime.length == profit.length &lt;= 5 </em> 10<sup>4</sup><code>*</code>1 &lt;= startTime[i] &lt; endTime[i] &lt;= 10<sup>9</sup><code>*</code>1 &lt;= profit[i] &lt;= 10<sup>4</sup>`<br><br></div>
-
-<h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>DP + 排序<br>一开始以为类似于meeting rooms II，所以用heap，但只能计算conflicts不能计算profits，但排序思想有用。<br>求最值问题第一时间考虑用DP，所以考虑以第i-1个job为结尾的最大利润：  </p>
-<p><pre><br>dp[i] = max -&gt; dp[j] + profits[i-1]), 第i个job的startTime[i-1] &gt;= endTime[j], 第j个job与第i个job没有conflicts<br>            -&gt; dp[j]                                                          第j个job与第i个job有conflicts<br></pre><br>复杂度为O(n^2)  </p>
-<p>写出递归式后，求startTime &gt;= endTime其实就是按endTime排序，这样有助于搜索这个条件. 这里有个难点是要加强命题至累计利润，因为正如Cooldown股票题一样，dp[j]不应该是以job j为结尾的最大利润，而应该是前j个job的最大利润，这些job不一定都是相邻<br>加强命题dp[i]是累计利润，也就是并不需要计算所有dp[j…i]的值（第一式子），公式变成  </p>
-<p><pre><br>dp[i] = max -&gt; dp[j] + profits[i-1]), j = start[i-1]对应的Endtime下标, 第j个job与第i个job没有conflicts<br>            -&gt; dp[j]                                                   第j个job与第i个job有conflicts<br></pre><br>要找出这个j，就对刚才排序了的endtime数组用bisect找下标。类似于LIS, 复杂度为O(nlogn)  </p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>bisect的使用求大于startTime的endTime下标，此下标j减一正是所求，但dp和数组中下标转换是差1，所以dp[j - 1 + 1]是前值的DP值。      </li>
-<li><strong>加强命题至累计利润</strong>dp[i], 见line 9 - 10 </li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">jobScheduling</span><span class="params">(self, startTime: List[int], endTime: List[int], profit: List[int])</span> -&gt; int:</span></span><br><span class="line">	job_by_endtime, dp, max_profit = [], [<span class="number">0</span>] * (len(startTime) + <span class="number">1</span>), <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(startTime)):</span><br><span class="line">		job_by_endtime.append((endTime[i], startTime[i], profit[i]))</span><br><span class="line">	job_by_endtime.sort()</span><br><span class="line">	end_time_sorted = [pair[<span class="number">0</span>] <span class="keyword">for</span> pair <span class="keyword">in</span> job_by_endtime]</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, len(dp)):</span><br><span class="line">		j = bisect.bisect(end_time_sorted, job_by_endtime[i - <span class="number">1</span>][<span class="number">1</span>]) <span class="comment"># previous end time &lt;= current start time</span></span><br><span class="line">		dp[i] = max(max_profit, dp[j] + job_by_endtime[i - <span class="number">1</span>][<span class="number">2</span>]) <span class="comment"># remember</span></span><br><span class="line">		max_profit = max(max_profit, dp[i]) <span class="comment"># remember</span></span><br><span class="line">	<span class="keyword">return</span> dp[<span class="number">-1</span>]</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nlogn)</code>，空间复杂度<code>O(n)</code>  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2021/12/05/lee-1654/">LeetCode 1654 Minimum Jumps to Reach Home</a></h1>
-  
-
-      
-        <time datetime="2021-12-05T23:43:58.319Z">2021-12-05</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>类似于Jump game，不过此题要用真的BFS，用三个元素push如queue: (point, distance, is_backward), is_backward记录是否回退两次而剪枝，distance是结果。</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li></li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -260,23 +264,23 @@
   <ul class="entry">
     
       <li>
+        <a href="/2021/12/30/lee-101/">LeetCode 101 Symmetric Tree</a>
+      </li>
+    
+      <li>
+        <a href="/2021/12/30/lee-102/">LeetCode 102 Binary Tree Level Order Traversal</a>
+      </li>
+    
+      <li>
+        <a href="/2021/12/30/lee-103/">LeetCode 103 Binary Tree Zigzag Level Order Traversal</a>
+      </li>
+    
+      <li>
+        <a href="/2021/12/29/lee-114/">LeetCode 114 Flatten Binary Tree to Linked List</a>
+      </li>
+    
+      <li>
         <a href="/2021/12/29/lee-070/">LeetCode 070 Climbing Stairs</a>
-      </li>
-    
-      <li>
-        <a href="/2021/12/29/lee-254/">LeetCode 254 Factor Combinations</a>
-      </li>
-    
-      <li>
-        <a href="/2021/12/29/lee-377/">LeetCode 377 Combination Sum IV</a>
-      </li>
-    
-      <li>
-        <a href="/2021/12/29/lee-216/">LeetCode 216 Combination Sum III</a>
-      </li>
-    
-      <li>
-        <a href="/2021/12/29/lee-077/">LeetCode 077 Combinations</a>
       </li>
     
   </ul>
@@ -289,7 +293,7 @@
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 10px;">Backtracking</a> <a href="/tags/Dynamic-Programming/" style="font-size: 15px;">Dynamic Programming</a> <a href="/tags/Knowledge-Base/" style="font-size: 15px;">Knowledge Base</a>
+    <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 10px;">Backtracking</a> <a href="/tags/Binary-Tree/" style="font-size: 20px;">Binary Tree</a> <a href="/tags/Classic/" style="font-size: 10px;">Classic</a> <a href="/tags/Dynamic-Programming/" style="font-size: 13.33px;">Dynamic Programming</a> <a href="/tags/Greedy/" style="font-size: 10px;">Greedy</a> <a href="/tags/Knowledge-Base/" style="font-size: 16.67px;">Knowledge Base</a>
   </div>
 </div>
 
