@@ -69,16 +69,15 @@ You are given an integer array coins representing coins of different denominatio
 </em>   <code>1 &lt;= coins[i] &lt;= 2&lt;sup&gt;31&lt;/sup&gt; - 1</code><br>*   <code>0 &lt;= amount &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code><br><br></div>
 
 <h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>N/A</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>N/A</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>用数值-&gt;个数DP模板</p>
 <h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
 <li>amount为0时候，返回0，表示不用coin也能满足，属于合法情况, dp[0] = 0  </li>
 <li>返回值，若dp[-1]为初始值，表示无解，返回-1  </li>
-<li>dp数组引用的边界情况： 代码调转i和j的遍历顺序，可以避免边界检查，且i=[j, len(dp)]，i包含j，表示dp[0], 包含了初始化dp[for coin in coins] = 1的情况  </li>
 <li>实现中dp[i] = min(dp[i], dp[i - j] + 1), +1在min内而不是min外。  </li>
 </ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">coinChange</span><span class="params">(self, coins: List[int], amount: int)</span> -&gt; int:</span></span><br><span class="line">	dp = [sys.maxsize] * (amount + <span class="number">1</span>)</span><br><span class="line">	dp[<span class="number">0</span>] = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> j <span class="keyword">in</span> coins:</span><br><span class="line">		<span class="keyword">for</span> i <span class="keyword">in</span> range(j, len(dp)):  <span class="comment"># i = [1..3]</span></span><br><span class="line">			dp[i] = min(dp[i], dp[i - j] + <span class="number">1</span>)  <span class="comment"># remember</span></span><br><span class="line">	<span class="keyword">return</span> dp[<span class="number">-1</span>] <span class="keyword">if</span> dp[<span class="number">-1</span>] &lt; sys.maxsize <span class="keyword">else</span> <span class="number">-1</span>  <span class="comment"># remember</span></span><br></pre></td></tr></table></figure>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">coinChange3</span><span class="params">(self, coins: List[int], amount: int)</span> -&gt; int:</span></span><br><span class="line">	coins.sort()</span><br><span class="line">	dp = [float(<span class="string">'inf'</span>)] * (amount + <span class="number">1</span>)</span><br><span class="line">	dp[<span class="number">0</span>] = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(dp)):</span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> range(len(coins)):</span><br><span class="line">			<span class="keyword">if</span> i + coins[j] &gt; amount:</span><br><span class="line">				<span class="keyword">break</span></span><br><span class="line">			dp[i + coins[j]] = min(dp[i + coins[j]], dp[i] + <span class="number">1</span>)</span><br><span class="line">	<span class="keyword">return</span> dp[<span class="number">-1</span>] <span class="keyword">if</span> dp[<span class="number">-1</span>] &lt; float(<span class="string">'inf'</span>) <span class="keyword">else</span> <span class="number">-1</span>  <span class="comment"># remember</span></span><br></pre></td></tr></table></figure>
 <p>我的实现，要注意dp[i]边界检查, Line 7 - 8, 12<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># dp[n] = min(dp[n-coins[j]]) + 1, 0 &lt;= j &lt;= len(coins)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">coinChange</span><span class="params">(self, coins: List[int], amount: int)</span> -&gt; int:</span></span><br><span class="line">	<span class="keyword">if</span> amount == <span class="number">0</span>:  <span class="comment"># remember</span></span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">	dp = [sys.maxsize] * (amount + <span class="number">1</span>)</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> coins:</span><br><span class="line">		<span class="keyword">if</span> i &lt; len(dp):  <span class="comment"># remember</span></span><br><span class="line">			dp[i] = <span class="number">1</span></span><br><span class="line">	<span class="comment"># [3], amount = 3, dp[3] = 1</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, len(dp)):  <span class="comment"># i = [1..3]</span></span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> coins:</span><br><span class="line">			<span class="keyword">if</span> i &gt; j:  <span class="comment"># remember</span></span><br><span class="line">				dp[i] = min(dp[i], dp[i - j] + <span class="number">1</span>)  <span class="comment"># remember</span></span><br><span class="line">	<span class="keyword">return</span> dp[<span class="number">-1</span>] <span class="keyword">if</span> dp[<span class="number">-1</span>] &lt; sys.maxsize <span class="keyword">else</span> <span class="number">-1</span>  <span class="comment"># remember</span></span><br></pre></td></tr></table></figure></p>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>。</p>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n*amount)</code>，空间复杂度<code>O(n)</code>。</p>
 
       
     </div>
@@ -86,11 +85,6 @@ You are given an integer array coins representing coins of different denominatio
       <footer>
         
         
-  
-  <div class="tags">
-    <a href="/tags/Array/">Array</a>, <a href="/tags/Python-KB/">Python KB</a>, <a href="/tags/Dynamic-Programming/">Dynamic Programming</a>
-  </div>
-
         
   <div class="addthis addthis_toolbox addthis_default_style">
     
@@ -136,23 +130,23 @@ You are given an integer array coins representing coins of different denominatio
   <ul class="entry">
     
       <li>
-        <a href="/2021/12/28/lee-1650/">LeetCode 1650 Lowest Common Ancestor of a Binary Tree III</a>
+        <a href="/2021/12/29/lee-070/">LeetCode 070 Climbing Stairs</a>
       </li>
     
       <li>
-        <a href="/2021/12/28/lee-238/">LeetCode 238 Product of Array Except Self</a>
+        <a href="/2021/12/29/lee-254/">LeetCode 254 Factor Combinations</a>
       </li>
     
       <li>
-        <a href="/2021/12/28/lee-037/">LeetCode 037 Sudoku Solver</a>
+        <a href="/2021/12/29/lee-377/">LeetCode 377 Combination Sum IV</a>
       </li>
     
       <li>
-        <a href="/2021/12/28/lee-871/">LeetCode 871 Minimum Number of Refueling Stops</a>
+        <a href="/2021/12/29/lee-216/">LeetCode 216 Combination Sum III</a>
       </li>
     
       <li>
-        <a href="/2021/12/27/lee-909/">LeetCode 909 Snakes and Ladders</a>
+        <a href="/2021/12/29/lee-077/">LeetCode 077 Combinations</a>
       </li>
     
   </ul>
@@ -165,7 +159,7 @@ You are given an integer array coins representing coins of different denominatio
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Amazon/" style="font-size: 13.53px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.53px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 17.65px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 12.94px;">Binary Tree</a> <a href="/tags/Bloomberg/" style="font-size: 10.59px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.06px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 19.41px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15.29px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.76px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.76px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 10.59px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 18.82px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 15.88px;">Facebook</a> <a href="/tags/Google/" style="font-size: 10px;">Google</a> <a href="/tags/Graph/" style="font-size: 11.18px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.35px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 17.06px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 14.12px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 14.71px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 18.24px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 14.12px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 11.76px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 15.88px;">Math</a> <a href="/tags/Matrix/" style="font-size: 11.18px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.76px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.59px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 17.65px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.59px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.59px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.76px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.59px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 18.24px;">Stack</a> <a href="/tags/String/" style="font-size: 16.47px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.18px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.94px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.18px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 15.29px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.59px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
+    <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 10px;">Backtracking</a> <a href="/tags/Dynamic-Programming/" style="font-size: 15px;">Dynamic Programming</a> <a href="/tags/Knowledge-Base/" style="font-size: 15px;">Knowledge Base</a>
   </div>
 </div>
 
