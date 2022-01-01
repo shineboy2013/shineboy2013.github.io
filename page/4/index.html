@@ -53,6 +53,61 @@
     <header>
       
   
+    <h1 class="title"><a href="/2021/12/28/lee-871/">LeetCode 871 Minimum Number of Refueling Stops</a></h1>
+  
+
+      
+        <time datetime="2021-12-28T10:25:39.285Z">2021-12-28</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/minimum-number-of-refueling-stops/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>A car travels from a starting position to a destination which is <code>target</code> miles east of the starting position.<br><br>There are gas stations along the way. The gas stations are represented as an array <code>stations</code> where <code>stations[i] = [position&lt;sub&gt;i&lt;/sub&gt;, fuel&lt;sub&gt;i&lt;/sub&gt;]</code> indicates that the <code>i&lt;sup&gt;th&lt;/sup&gt;</code> gas station is <code>position&lt;sub&gt;i&lt;/sub&gt;</code> miles east of the starting position and has <code>fuel&lt;sub&gt;i&lt;/sub&gt;</code> liters of gas.<br><br>The car starts with an infinite tank of gas, which initially has <code>startFuel</code> liters of fuel in it. It uses one liter of gas per one mile that it drives. When the car reaches a gas station, it may stop and refuel, transferring all the gas from the station into the car.<br><br>Return <em>the minimum number of refueling stops the car must make in order to reach its destination</em>. If it cannot reach the destination, return <code>-1</code>.<br><br>Note that if the car reaches a gas station with <code>0</code> fuel left, the car can still refuel there. If the car reaches the destination with <code>0</code> fuel left, it is still considered to have arrived.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> target = 1, startFuel = 1, stations = []<br><strong>Output:</strong> 0<br><strong>Explanation:</strong> We can reach the target without refueling.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> target = 100, startFuel = 1, stations = [[10,100]]<br><strong>Output:</strong> -1<br><strong>Explanation:</strong> We can not reach the target (or even the first gas station).<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> target = 100, startFuel = 10, stations = [[10,60],[20,30],[30,30],[60,40]]<br><strong>Output:</strong> 2<br><strong>Explanation:</strong> We start with 10 liters of fuel.<br>We drive to position 10, expending 10 liters of fuel.  We refuel from 0 liters to 60 liters of gas.<br>Then, we drive from position 10 to position 60 (expending 50 liters of fuel),<br>and refuel from 10 liters to 50 liters of gas.  We then drive to and reach the target.<br>We made 2 refueling stops along the way, so we return 2.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= target, startFuel &lt;= 10&lt;sup&gt;9&lt;/sup&gt;</code>
+</em>   <code>0 &lt;= stations.length &lt;= 500</code><br><em>   <code>0 &lt;= position&lt;sub&gt;i&lt;/sub&gt; &lt;= position&lt;sub&gt;i+1&lt;/sub&gt; &lt; target</code>
+</em>   <code>1 &lt;= fuel&lt;sub&gt;i&lt;/sub&gt; &lt; 10&lt;sup&gt;9&lt;/sup&gt;</code><br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>其最小加油次数使得能到达目标  </p>
+<h3 id="Heap解题思路-推荐-："><a href="#Heap解题思路-推荐-：" class="headerlink" title="Heap解题思路(推荐)："></a><strong>Heap解题思路(推荐)：</strong></h3><p>由于是重叠区间题，考虑用heap。求最小值，所以用最大堆。heap存的油数。  </p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>每到一个加油站，先将油预存到heap中。startFuel为到达某个站后的剩余油数，若startFuel为负，从heap中取油，且累计加油次数。  </li>
+<li>用heap模板，遍历数组也就是加油站。  </li>
+<li>若加完油后，仍为负数，返回-1。</li>
+<li>因为要计算target是否能达到，所以不妨<strong>将target加入到stations</strong>中，这样startFuel的计算可以包括target     </li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">minRefuelStops</span><span class="params">(self, target: int, startFuel: int, stations: List[List[int]])</span> -&gt; int:</span></span><br><span class="line">	heap, res, prev_pos = [], <span class="number">0</span>, <span class="number">0</span></span><br><span class="line">	stations.append([target, <span class="number">0</span>])</span><br><span class="line">	<span class="keyword">for</span> pos, fuel <span class="keyword">in</span> stations:</span><br><span class="line">		startFuel -= pos - prev_pos</span><br><span class="line">		<span class="keyword">while</span> heap <span class="keyword">and</span> startFuel &lt; <span class="number">0</span>:</span><br><span class="line">			startFuel += -heapq.heappop(heap)</span><br><span class="line">			res += <span class="number">1</span></span><br><span class="line">		<span class="keyword">if</span> startFuel &lt; <span class="number">0</span>:</span><br><span class="line">			<span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line">		heapq.heappush(heap, -fuel)</span><br><span class="line">		prev_pos = pos</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nlogn)</code>，空间复杂度<code>O(n)</code> </p>
+<hr>
+<h3 id="DP算法II解题思路："><a href="#DP算法II解题思路：" class="headerlink" title="DP算法II解题思路："></a><strong>DP算法II解题思路：</strong></h3><p>一开始考虑用jump game，但此题可以在同一层加多次油。比如start fuel有100 mi，而加油站有3个，所以同一层可以加3次油。所以层数和加油次数不是一个概念。<br>既然是最值考虑另一种方法DP。这题有两个难点:<br>第一个难点是DP式： dp不采用题目的最小加油次数，考虑jump game的分析，转化成dp[i]为停i个站加油能达到的最远距离。或者这样思考，若定义走到第n个站需要最小加油次数，这个n颗粒度不够细，可以换成miles，不如将下标和数值互换。<br>第二个难点是递归式。首先知道假设dp[2]能到达的范围内有一个加油站，加油后dp[3] = dp[2] + 该油站的油数。递归式为：  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dp[i] = max&#123;dp[i-1] + stations[i-1][1]&#125;, dp[i-1] &gt;= stations[i-1][0], stations[i..n]</span><br></pre></td></tr></table></figure>
+<p>有个前提条件是dp[2]必须能达到当前的加油站。比如要更新dp[3]从任意两个加油站dp[2] + 加油站[i]可能获得。还可能是从dp[2] + 加油站[i+1]获得，如此类推，要试完stations[i..n]。<br><strong>dp值从后往前更新</strong>，因为当前加油站在后方。   </p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>dp定义和递归式     </li>
+</ol>
+<h3 id="Python代码：-1"><a href="#Python代码：-1" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># dp[i] = max&#123;dp[i-1] + stations[i-1][1]&#125;, dp[i-1] &gt;= stations[i-1][0], stations[i..n]</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">minRefuelStops</span><span class="params">(self, target: int, startFuel: int, stations: List[List[int]])</span> -&gt; int:</span></span><br><span class="line">	dp = [startFuel] + [<span class="number">0</span>] * len(stations)</span><br><span class="line">	<span class="keyword">for</span> i, (pos, fuel) <span class="keyword">in</span> enumerate(stations):</span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> range(i, <span class="number">-1</span>, <span class="number">-1</span>):</span><br><span class="line">			<span class="keyword">if</span> dp[j] &gt;= pos:</span><br><span class="line">				dp[j + <span class="number">1</span>] = max(dp[j + <span class="number">1</span>], dp[j] + fuel)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> i, miles <span class="keyword">in</span> enumerate(dp):</span><br><span class="line">		<span class="keyword">if</span> miles &gt;= target:</span><br><span class="line">			<span class="keyword">return</span> i</span><br><span class="line">	<span class="keyword">return</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure>
+<h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n<sup>2</sup>)</code>，空间复杂度<code>O(n)</code>  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2021/12/27/lee-909/">LeetCode 909 Snakes and Ladders</a></h1>
   
 
@@ -238,55 +293,6 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2021/12/26/lee-828/">LeetCode 828 Count Unique Characters of All Substrings of a Given String</a></h1>
-  
-
-      
-        <time datetime="2021-12-27T03:47:53.235Z">2021-12-26</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/count-unique-characters-of-all-substrings-of-a-given-string/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>Let’s define a function <code>countUniqueChars(s)</code> that returns the number of unique characters on <code>s</code>.<br><br><em>   For example if <code>s = &quot;LEETCODE&quot;</code> then <code>&quot;L&quot;</code>, <code>&quot;T&quot;</code>, <code>&quot;C&quot;</code>, <code>&quot;O&quot;</code>, <code>&quot;D&quot;</code> are the unique characters since they appear only once in <code>s</code>, therefore <code>countUniqueChars(s) = 5</code>.<br><br>Given a string <code>s</code>, return the sum of <code>countUniqueChars(t)</code> where <code>t</code> is a substring of s.<br><br>Notice that some substrings can be repeated so in this case you have to count the repeated ones too.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> s = “ABC”<br><strong>Output:</strong> 10<br><strong>Explanation:</strong> All possible substrings are: “A”,”B”,”C”,”AB”,”BC” and “ABC”.<br>Evey substring is composed with only unique letters.<br>Sum of lengths of all substring is 1 + 1 + 1 + 2 + 2 + 3 = 10<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> s = “ABA”<br><strong>Output:</strong> 8<br><strong>Explanation:</strong> The same as example 1, except <code>countUniqueChars</code>(“ABA”) = 1.<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> s = “LEETCODE”<br><strong>Output:</strong> 92<br></pre><br><br><strong>Constraints:</strong>
-
-</em>   <code>1 &lt;= s.length &lt;= 10</code><sup>5</sup><br>*   <code>s</code> consists of uppercase English letters only.<br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求所有子串的唯一字符的个数的总和</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>暴力法是所有子串O(n^2)，统计唯一字符个数O(n), 复杂度为O(n^3). 尝试优化统计那一步，用presum map来详见可以O(1)求得，但内存过大，仍然TLE。<br>求个个数且是字符串题，考虑用DP。此题还有点似Leetcode 003 Longest Substring Without Repeating Characters。  </p>
-<p>写几个找规律且从简单开始，也就是没有重复<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">A: 1</span><br><span class="line">AB: 1                + 2 + 1 = 4, 1是dp[1], 2是以B结尾的2个子串有两个B，最后一个1表示AB串中有一个A  </span><br><span class="line">       B</span><br><span class="line">      AB        </span><br><span class="line">ABC： 4           + 3 + 2 + 1 = 10， 4是dp[2], 2是以C结尾的3个子串有三个C，2个B，1个A. Delta = 6  </span><br><span class="line">        C</span><br><span class="line">       BC</span><br><span class="line">      ABC  </span><br><span class="line">ABCB:10      + 2 + 3 + 0 + 1 = 16, 同理是上一个DP结果和从后往前每个字母在新子串中的唯一数。由于出现重复，B从4个变成2个，前一个B变成0个，其他加法项是不变的。Delta = 6 + 4 - 2 x 2 = 6 公式为Delta = Delta + 当前长度 - (i - 上一个重复元素下标) x 2    </span><br><span class="line">         B</span><br><span class="line">        CB</span><br><span class="line">       BCB</span><br><span class="line">      ABCB  </span><br><span class="line">ABCBA:16 + 4 + 2 + 3 + 0 + 0 = 25 = 16 + delta 验证公式delta = 6 + 5 - 1 x 2 = 9    </span><br><span class="line">          A </span><br><span class="line">         BA</span><br><span class="line">        CBA</span><br><span class="line">       BCBA</span><br><span class="line">      ABCBA </span><br><span class="line">ABCBAC:25 + 3 + 4 + 2 + 0 + 0 + 0 = 34 = 25 + delta 验证公式delta = 9 + 6 - (6 - 3) x 2 = 9    </span><br><span class="line">           C </span><br><span class="line">          AC </span><br><span class="line">         BAC</span><br><span class="line">        CBAC</span><br><span class="line">       BCBAC</span><br><span class="line">      ABCBAC </span><br><span class="line">ABCBACA:34 + 2 + 3 + 0 + 2 + 0 + 0 + 0 = 41 = 34 + delta 验证公式delta = 9 + 7 - (7 - 2) x 2 = 6不匹配，新A本来是7个变成2个，而次新A上一轮有4个最多减4个并不能减5个，所以x 2是不对的。      </span><br><span class="line">            A </span><br><span class="line">           CA </span><br><span class="line">          ACA </span><br><span class="line">         BACA</span><br><span class="line">        CBACA</span><br><span class="line">       BCBACA</span><br><span class="line">      ABCBACA</span><br></pre></td></tr></table></figure></p>
-<p>公式为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Delta = Delta + 当前长度 - (i - 上一个重复元素下标) - 上个重复元素对应的加法项delta[j]</span><br><span class="line">Res += Delta</span><br></pre></td></tr></table></figure></p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>delta_sum为上一轮的增加的唯一元素个数<br>delta[i]为下标为i的元素的唯一个数的增量  </p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>公式中减去重复个数不能乘以2，因为上一个重复元素的增量可能不够减     </li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">uniqueLetterString</span><span class="params">(self, s: str)</span> -&gt; int:</span></span><br><span class="line">	res, delta_sum, delta, char_to_index = <span class="number">0</span>, <span class="number">0</span>, [<span class="number">0</span>] * len(s), collections.defaultdict(<span class="keyword">lambda</span>: <span class="number">-1</span>)</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(s)):</span><br><span class="line">		cur_len = i + <span class="number">1</span></span><br><span class="line">		delta[i] = cur_len</span><br><span class="line">		<span class="keyword">if</span> s[i] <span class="keyword">in</span> char_to_index:</span><br><span class="line">			delta[i] -= char_to_index[s[i]] + <span class="number">1</span></span><br><span class="line">			delta_sum += delta[i] - delta[char_to_index[s[i]]]</span><br><span class="line">			delta[char_to_index[s[i]]] = <span class="number">0</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			delta_sum += delta[i]</span><br><span class="line">		res += delta_sum</span><br><span class="line">		char_to_index[s[i]] = i</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>  </p>
-<hr>
-<h3 id="两个Map算法II解题思路-推荐-："><a href="#两个Map算法II解题思路-推荐-：" class="headerlink" title="两个Map算法II解题思路(推荐)："></a><strong>两个Map算法II解题思路(推荐)：</strong></h3><p>公式中上个重复元素对应的加法项也就是上个重复元素与上上个重复元素的距离，所以引入另一个map来记录，避免用delta[i]，算法更加简单。  </p>
-<h3 id="Python代码：-1"><a href="#Python代码：-1" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">uniqueLetterString</span><span class="params">(self, s: str)</span> -&gt; int:</span></span><br><span class="line">	last_char_to_index = collections.defaultdict(<span class="keyword">lambda</span>: <span class="number">-1</span>)</span><br><span class="line">	last_last_char_to_index = collections.defaultdict(<span class="keyword">lambda</span>: <span class="number">-1</span>)</span><br><span class="line">	res, delta = <span class="number">0</span>, <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i, c <span class="keyword">in</span> enumerate(s):</span><br><span class="line">		delta += i - last_char_to_index[c] - (last_char_to_index[c] - last_last_char_to_index[c])</span><br><span class="line">		last_last_char_to_index[c] = last_char_to_index[c]</span><br><span class="line">		last_char_to_index[c] = i</span><br><span class="line">		res += delta</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -311,6 +317,10 @@
   <ul class="entry">
     
       <li>
+        <a href="/2022/01/01/lee-395/">LeetCode 395 Longest Substring with At Least K Repeating Characters</a>
+      </li>
+    
+      <li>
         <a href="/2021/12/30/lee-101/">LeetCode 101 Symmetric Tree</a>
       </li>
     
@@ -326,10 +336,6 @@
         <a href="/2021/12/29/lee-114/">LeetCode 114 Flatten Binary Tree to Linked List</a>
       </li>
     
-      <li>
-        <a href="/2021/12/29/lee-070/">LeetCode 070 Climbing Stairs</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -340,7 +346,7 @@
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Amazon/" style="font-size: 13.16px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.68px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 17.89px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 14.74px;">Binary Tree</a> <a href="/tags/Bloomberg/" style="font-size: 10.53px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.37px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 19.47px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15.26px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.58px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.58px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 10.53px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 18.95px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 16.32px;">Facebook</a> <a href="/tags/Google/" style="font-size: 10px;">Google</a> <a href="/tags/Graph/" style="font-size: 11.05px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.11px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 17.37px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 13.68px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 14.21px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 18.42px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 13.68px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 11.58px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 15.79px;">Math</a> <a href="/tags/Matrix/" style="font-size: 11.05px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.58px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.53px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 17.89px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.53px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.53px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.58px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.53px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 18.42px;">Stack</a> <a href="/tags/String/" style="font-size: 16.84px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.05px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.63px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.05px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 15.26px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.53px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
+    <a href="/tags/Amazon/" style="font-size: 13.16px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.68px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 17.89px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 14.74px;">Binary Tree</a> <a href="/tags/Bloomberg/" style="font-size: 10.53px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.89px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 19.47px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15.26px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.58px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.58px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 10.53px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 18.95px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 16.32px;">Facebook</a> <a href="/tags/Google/" style="font-size: 10px;">Google</a> <a href="/tags/Graph/" style="font-size: 11.05px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.11px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 17.37px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 13.68px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 14.21px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 18.42px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 13.68px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 11.58px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 15.79px;">Math</a> <a href="/tags/Matrix/" style="font-size: 11.05px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.58px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.53px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 17.89px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.53px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.53px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10.53px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.58px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.53px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 18.42px;">Stack</a> <a href="/tags/String/" style="font-size: 16.84px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.05px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.63px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.05px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.74px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.53px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
   </div>
 </div>
 
@@ -349,7 +355,7 @@
   </div>
   <footer id="footer" class="inner"><div class="alignleft">
   
-  &copy; 2021 KK Shum
+  &copy; 2022 KK Shum
   
 </div>
 <div class="clearfix"></div></footer>

@@ -53,6 +53,92 @@
     <header>
       
   
+    <h1 class="title"><a href="/2021/07/27/lee-138/">LeetCode 138 Copy List with Random Pointer</a></h1>
+  
+
+      
+        <time datetime="2021-07-27T09:14:55.918Z">2021-07-27</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/copy-list-with-random-pointer/" target="_blank" rel="noopener">LeetCode 138 Copy List with Random Pointer</a></strong></p>
+<p>A linked list of length <code>n</code> is given such that each node contains an additional random pointer, which could point to any node in the list, or <code>null</code>.</p>
+<p>Construct a <a href="https://en.wikipedia.org/wiki/Object_copying#Deep_copy" target="_blank" rel="noopener"><strong>deep copy</strong></a> of the list. The deep copy should consist of exactly <code>n</code> <strong>brand new</strong> nodes, where each new node has its value set to the value of its corresponding original node. Both the <code>next</code> and <code>random</code> pointer of the new nodes should point to new nodes in the copied list such that the pointers in the original list and copied list represent the same list state. <strong>None of the pointers in the new list should point to nodes in the original list</strong>.</p>
+<p>For example, if there are two nodes <code>X</code> and <code>Y</code> in the original list, where <code>X.random --&gt; Y</code>, then for the corresponding two nodes <code>x</code> and <code>y</code> in the copied list, <code>x.random --&gt; y</code>.</p>
+<p>Return <em>the head of the copied linked list</em>.</p>
+<p>The linked list is represented in the input/output as a list of <code>n</code> nodes. Each node is represented as a pair of <code>[val, random_index]</code> where:</p>
+<ul>
+<li><code>val</code>: an integer representing <code>Node.val</code></li>
+<li><code>random_index</code>: the index of the node (range from <code>0</code> to <code>n-1</code>) that the <code>random</code> pointer points to, or <code>null</code> if it does not point to any node.</li>
+</ul>
+<p>Your code will <strong>only</strong> be given the <code>head</code> of the original linked list.</p>
+<p><strong>Example 1:</strong></p>
+<p><img src="https://assets.leetcode.com/uploads/2019/12/18/e1.png" alt=""></p>
+<pre>**Input:** head = [[7,null],[13,0],[11,4],[10,2],[1,0]]
+**Output:** [[7,null],[13,0],[11,4],[10,2],[1,0]]
+</pre>
+
+<p><strong>Example 2:</strong></p>
+<p><img src="https://assets.leetcode.com/uploads/2019/12/18/e2.png" alt=""></p>
+<pre>**Input:** head = [[1,1],[2,1]]
+**Output:** [[1,1],[2,1]]
+</pre>
+
+<p><strong>Example 3:</strong></p>
+<p><strong><img src="https://assets.leetcode.com/uploads/2019/12/18/e3.png" alt=""></strong></p>
+<pre>**Input:** head = [[3,null],[3,0],[3,null]]
+**Output:** [[3,null],[3,0],[3,null]]
+</pre>
+
+<p><strong>Example 4:</strong></p>
+<pre>**Input:** head = []
+**Output:** []
+**Explanation:** The given linked list is empty (null pointer), so return null.
+</pre>
+
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>0 &lt;= n &lt;= 1000</code></li>
+<li><code>-10000 &lt;= Node.val &lt;= 10000</code></li>
+<li><code>Node.random</code> is <code>null</code> or is pointing to some node in the linked list.</li>
+</ul>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>复制含next和random的链表。</p>
+<h3 id="解题思路（推荐）："><a href="#解题思路（推荐）：" class="headerlink" title="解题思路（推荐）："></a><strong>解题思路（推荐）：</strong></h3><p>此法较容易实现。先复制next指针，然后利用HashMap存储旧新节点，来复制random指针。  </p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>复制next指针和Map中。<strong>clone题均用此法。</strong>  </li>
+<li>Random指针不空才copy</li>
+<li>加it = it.next，否则死循环</li>
+<li>如果创建新Node用while it.next表示用它的父节点，否则某个field赋值如random用while it</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">copyRandomList</span><span class="params">(self, head: <span class="string">'Node'</span>)</span> -&gt; 'Node':</span></span><br><span class="line">	node_map = &#123;&#125;</span><br><span class="line">	fake_head, fake_head_copy = Node(<span class="number">0</span>), Node(<span class="number">0</span>)</span><br><span class="line">	fake_head.next = head</span><br><span class="line">	it, it_copy = fake_head, fake_head_copy</span><br><span class="line">	<span class="keyword">while</span> it.next:</span><br><span class="line">		it_copy.next = Node(it.next.val)</span><br><span class="line">		node_map[it.next] = it_copy.next</span><br><span class="line">		it, it_copy = it.next, it_copy.next</span><br><span class="line"></span><br><span class="line">	it, it_copy = fake_head.next, fake_head_copy.next</span><br><span class="line">	<span class="keyword">while</span> it:</span><br><span class="line">		<span class="keyword">if</span> it.random:</span><br><span class="line">			node_map[it].random = node_map[it.random]</span><br><span class="line">		it, it_copy = it.next, it_copy.next</span><br><span class="line">	<span class="keyword">return</span> fake_head_copy.next</span><br></pre></td></tr></table></figure>
+<h3 id="梅花间竹解题思路："><a href="#梅花间竹解题思路：" class="headerlink" title="梅花间竹解题思路："></a><strong>梅花间竹解题思路：</strong></h3><p>第二种方法，梅花间竹，分3部走。  </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">copyRandomList</span><span class="params">(self, head: <span class="string">'Node'</span>)</span> -&gt; 'Node':</span></span><br><span class="line">	fake_head, fake_head_copy = Node(<span class="number">0</span>), Node(<span class="number">0</span>)</span><br><span class="line">	fake_head.next = head</span><br><span class="line"></span><br><span class="line">	<span class="comment"># insert</span></span><br><span class="line">	it = fake_head.next</span><br><span class="line">	<span class="keyword">while</span> it:</span><br><span class="line">		temp = it.next</span><br><span class="line">		it.next = Node(it.val)</span><br><span class="line">		it.next.next = temp</span><br><span class="line">		it = it.next.next</span><br><span class="line"></span><br><span class="line">	<span class="comment"># copy random</span></span><br><span class="line">	it = fake_head.next</span><br><span class="line">	<span class="keyword">while</span> it:</span><br><span class="line">		<span class="keyword">if</span> it.random <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>:</span><br><span class="line">			it.next.random = it.random.next</span><br><span class="line">		it = it.next.next</span><br><span class="line"></span><br><span class="line">	<span class="comment"># delete</span></span><br><span class="line">	it, it_copy = fake_head.next, fake_head_copy</span><br><span class="line">	<span class="keyword">while</span> it:</span><br><span class="line">		temp = it.next</span><br><span class="line">		it.next = it.next.next</span><br><span class="line">		it_copy.next = temp</span><br><span class="line">		temp.next = <span class="keyword">None</span></span><br><span class="line">		it, it_copy = it.next, it_copy.next</span><br><span class="line">	<span class="keyword">return</span> fake_head_copy.next</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><ol>
+<li>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>。</li>
+<li>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>。</li>
+</ol>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2021/06/07/kb-Python/">Python知识点</a></h1>
   
 
@@ -1030,53 +1116,6 @@ p = "mis*is*p*."
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2020/05/09/memoization/">记忆性搜索</a></h1>
-  
-
-      
-        <time datetime="2020-05-09T23:28:48.775Z">2020-05-09</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>DFS将子问题的解存于结果中。cache[st] = result. st是子问题边界。  </p>
-<h3 id="应用："><a href="#应用：" class="headerlink" title="应用："></a><strong>应用：</strong></h3><p>用于求所有可能性，且这些可能性有重复，记忆性搜索可以用于剪枝。  </p>
-<ol>
-<li>Leetcode 139</li>
-<li>Leetcode 140</li>
-</ol>
-<p>与DP的界线：  </p>
-<ol>
-<li>状态转移特别麻烦如有循环依赖, 不是顺序性。如棋盘，上下左右四个方向如1197 Minimum Knight Moves和word ladder  </li>
-<li>初始化状态不是特别容易找到</li>
-</ol>
-<h3 id="算法步骤："><a href="#算法步骤：" class="headerlink" title="算法步骤："></a><strong>算法步骤：</strong></h3><ol>
-<li>key为子问题索引st，value为子问题的解。不含path和res因为类似于Catalan，用子问题返回结果来组成此轮结果。f(input, st, endIndex, cache) -&gt; List    </li>
-<li>紧跟终结条件，若在cache中，返回子问题的解。  </li>
-<li>循环结束，将子问题的结果存于cache。  </li>
-</ol>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(解大小)</code>，空间复杂度<code>O(解大小)</code>.</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -1101,6 +1140,10 @@ p = "mis*is*p*."
   <ul class="entry">
     
       <li>
+        <a href="/2022/01/01/lee-395/">LeetCode 395 Longest Substring with At Least K Repeating Characters</a>
+      </li>
+    
+      <li>
         <a href="/2021/12/30/lee-101/">LeetCode 101 Symmetric Tree</a>
       </li>
     
@@ -1116,10 +1159,6 @@ p = "mis*is*p*."
         <a href="/2021/12/29/lee-114/">LeetCode 114 Flatten Binary Tree to Linked List</a>
       </li>
     
-      <li>
-        <a href="/2021/12/29/lee-070/">LeetCode 070 Climbing Stairs</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -1130,7 +1169,7 @@ p = "mis*is*p*."
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Amazon/" style="font-size: 13.16px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.68px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 17.89px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 14.74px;">Binary Tree</a> <a href="/tags/Bloomberg/" style="font-size: 10.53px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.37px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 19.47px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15.26px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.58px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.58px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 10.53px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 18.95px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 16.32px;">Facebook</a> <a href="/tags/Google/" style="font-size: 10px;">Google</a> <a href="/tags/Graph/" style="font-size: 11.05px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.11px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 17.37px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 13.68px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 14.21px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 18.42px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 13.68px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 11.58px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 15.79px;">Math</a> <a href="/tags/Matrix/" style="font-size: 11.05px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.58px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.53px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 17.89px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.53px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.53px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.58px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.53px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 18.42px;">Stack</a> <a href="/tags/String/" style="font-size: 16.84px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.05px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.63px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.05px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 15.26px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.53px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
+    <a href="/tags/Amazon/" style="font-size: 13.16px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.68px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 17.89px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 14.74px;">Binary Tree</a> <a href="/tags/Bloomberg/" style="font-size: 10.53px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.89px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 19.47px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15.26px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.58px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.58px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 10.53px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 18.95px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 16.32px;">Facebook</a> <a href="/tags/Google/" style="font-size: 10px;">Google</a> <a href="/tags/Graph/" style="font-size: 11.05px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.11px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 17.37px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 13.68px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 14.21px;">Interviewer</a> <a href="/tags/Knowledge-Base/" style="font-size: 18.42px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 13.68px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 11.58px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 15.79px;">Math</a> <a href="/tags/Matrix/" style="font-size: 11.05px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.58px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.53px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 17.89px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.53px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.53px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10.53px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.58px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.53px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 18.42px;">Stack</a> <a href="/tags/String/" style="font-size: 16.84px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.05px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.63px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.05px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.74px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.53px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
   </div>
 </div>
 
@@ -1139,7 +1178,7 @@ p = "mis*is*p*."
   </div>
   <footer id="footer" class="inner"><div class="alignleft">
   
-  &copy; 2021 KK Shum
+  &copy; 2022 KK Shum
   
 </div>
 <div class="clearfix"></div></footer>
