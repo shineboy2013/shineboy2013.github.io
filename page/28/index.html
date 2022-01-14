@@ -53,6 +53,78 @@
     <header>
       
   
+    <h1 class="title"><a href="/2021/12/05/lee-210/">LeetCode 210 Course Schedule II</a></h1>
+  
+
+      
+        <time datetime="2021-12-05T18:18:44.453Z">2021-12-05</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/course-schedule-ii/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<p>&lt;div&gt;</p>
+<p>There are a total of <code>numCourses</code> courses you have to take, labeled from <code>0</code> to <code>numCourses - 1</code>. You are given an array <code>prerequisites</code> where <code>prerequisites[i] = [a&lt;sub&gt;i&lt;/sub&gt;, b&lt;sub&gt;i&lt;/sub&gt;]</code> indicates that you <strong>must</strong> take course <code>b&lt;sub&gt;i&lt;/sub&gt;</code> first if you want to take course <code>a&lt;sub&gt;i&lt;/sub&gt;</code>.</p>
+<ul>
+<li>For example, the pair <code>[0, 1]</code>, indicates that to take course <code>0</code> you have to first take course <code>1</code>.</li>
+</ul>
+<p>Return <em>the ordering of courses you should take to finish all courses</em>. If there are many valid answers, return <strong>any</strong> of them. If it is impossible to finish all courses, return <strong>an empty array</strong>.</p>
+<p><strong>Example 1:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> numCourses = 2, prerequisites = [[1,0]]
+<strong>Output:</strong> [0,1]
+<strong>Explanation:</strong> There are a total of 2 courses to take. To take course 1 you should have finished course 0. So the correct course order is [0,1].
+&lt;/pre&gt;</p>
+<p><strong>Example 2:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> numCourses = 4, prerequisites = [[1,0],[2,0],[3,1],[3,2]]
+<strong>Output:</strong> [0,2,1,3]
+<strong>Explanation:</strong> There are a total of 4 courses to take. To take course 3 you should have finished both courses 1 and 2. Both courses 1 and 2 should be taken after you finished course 0.
+So one correct course order is [0,1,2,3]. Another correct ordering is [0,2,1,3].
+&lt;/pre&gt;</p>
+<p><strong>Example 3:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> numCourses = 1, prerequisites = []
+<strong>Output:</strong> [0]
+&lt;/pre&gt;</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= numCourses &lt;= 2000</code></li>
+<li><code>0 &lt;= prerequisites.length &lt;= numCourses * (numCourses - 1)</code></li>
+<li><code>prerequisites[i].length == 2</code></li>
+<li><code>0 &lt;= a&lt;sub&gt;i&lt;/sub&gt;, b&lt;sub&gt;i&lt;/sub&gt; &lt; numCourses</code></li>
+<li><code>a&lt;sub&gt;i&lt;/sub&gt; != b&lt;sub&gt;i&lt;/sub&gt;</code></li>
+<li>All the pairs <code>[a&lt;sub&gt;i&lt;/sub&gt;, b&lt;sub&gt;i&lt;/sub&gt;]</code> are <strong>distinct</strong>.</li>
+</ul>
+<p>&lt;/div&gt;</p>
+<h3><strong>算法思路：</strong></h3>
+<p>拓扑排序的经典题</p>
+<h3><strong>注意事项：</strong></h3>
+<ol>
+<li>注意题目要求课程可能存在循环，记得第四部侦测循环</li>
+</ol>
+<h3><strong>Python代码：</strong></h3>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">findOrder</span><span class="params">(self, numCourses: int, prerequisites: List[List[int]])</span> -&gt; List[int]:</span></span><br><span class="line">	in_degree = [<span class="number">0</span>] * numCourses</span><br><span class="line">	graph = [[] <span class="keyword">for</span> _ <span class="keyword">in</span> range(numCourses)]</span><br><span class="line">	<span class="keyword">for</span> li <span class="keyword">in</span> prerequisites:</span><br><span class="line">		in_degree[li[<span class="number">0</span>]] += <span class="number">1</span></span><br><span class="line">		graph[li[<span class="number">1</span>]].append(li[<span class="number">0</span>])</span><br><span class="line">	queue = collections.deque([i <span class="keyword">for</span> i <span class="keyword">in</span> range(len(in_degree)) <span class="keyword">if</span> in_degree[i] == <span class="number">0</span>])</span><br><span class="line">	res = []</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.popleft()</span><br><span class="line">		res.append(node)</span><br><span class="line">		<span class="keyword">for</span> neighbor <span class="keyword">in</span> graph[node]:</span><br><span class="line">			in_degree[neighbor] -= <span class="number">1</span></span><br><span class="line">			<span class="keyword">if</span> in_degree[neighbor] == <span class="number">0</span>:</span><br><span class="line">				queue.append(neighbor)</span><br><span class="line">	<span class="keyword">return</span> res <span class="keyword">if</span> numCourses == len(res) <span class="keyword">else</span> []</span><br><span class="line">```    </span><br><span class="line"></span><br><span class="line"><span class="comment">### **Java代码：**</span></span><br><span class="line">``` java</span><br><span class="line">public int[] findOrder(int numCourses, int[][] prerequisites) &#123;</span><br><span class="line">	ArrayList&lt;ArrayList&lt;Integer&gt;&gt; graph = new ArrayList&lt;ArrayList&lt;Integer&gt;&gt;();</span><br><span class="line">	ArrayList&lt;Integer&gt; res = new ArrayList&lt;&gt;();</span><br><span class="line">	<span class="keyword">for</span>(int i=<span class="number">0</span>;i&lt;numCourses;i++)</span><br><span class="line">		graph.add(new ArrayList&lt;Integer&gt;());</span><br><span class="line">	int[] inDegree = new int[numCourses];</span><br><span class="line">	//populate inDegree &amp; convert to graph</span><br><span class="line">	<span class="keyword">for</span>(int i=<span class="number">0</span>;i&lt;prerequisites.length;i++)&#123;</span><br><span class="line">		//[0,1] means 1-&gt;0</span><br><span class="line">		inDegree[prerequisites[i][<span class="number">0</span>]]++;</span><br><span class="line">		graph.get(prerequisites[i][<span class="number">1</span>]).add(prerequisites[i][<span class="number">0</span>]);</span><br><span class="line">	&#125;</span><br><span class="line">	Queue&lt;Integer&gt; q = new LinkedList&lt;Integer&gt;();</span><br><span class="line">	<span class="keyword">for</span>(int i=<span class="number">0</span>;i&lt;inDegree.length;i++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(inDegree[i]==<span class="number">0</span>)</span><br><span class="line">			q.offer(i);</span><br><span class="line">	&#125;</span><br><span class="line">	int count = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty())&#123;</span><br><span class="line">		Integer v = q.poll();</span><br><span class="line">		res.add(v);</span><br><span class="line">		count++;</span><br><span class="line">		<span class="keyword">for</span>(int neighbor : graph.get(v))&#123;</span><br><span class="line">			<span class="keyword">if</span>(--inDegree[neighbor]==<span class="number">0</span>)</span><br><span class="line">				q.add(neighbor);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span>(count != numCourses)</span><br><span class="line">		res.clear();</span><br><span class="line"></span><br><span class="line">	return res.stream().mapToInt(i-&gt;i).toArray();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3><strong>算法分析：</strong></h3>
+<p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code></p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2021/12/05/lee-198/">LeetCode 198 House Robber</a></h1>
   
 
@@ -63,15 +135,37 @@
     <div class="entry">
       
         <p><strong><a href="https://leetcode.com/problems/house-robber/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed, the only constraint stopping you from robbing each of them is that adjacent houses have security systems connected and <strong>it will automatically contact the police if two adjacent houses were broken into on the same night</strong>.<br><br>Given an integer array <code>nums</code> representing the amount of money of each house, return <em>the maximum amount of money you can rob tonight <strong>without alerting the police</strong></em>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> nums = [1,2,3,1]<br><strong>Output:</strong> 4<br><strong>Explanation:</strong> Rob house 1 (money = 1) and then rob house 3 (money = 3).<br>Total amount you can rob = 1 + 3 = 4.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> nums = [2,7,9,3,1]<br><strong>Output:</strong> 12<br><strong>Explanation:</strong> Rob house 1 (money = 2), rob house 3 (money = 9) and rob house 5 (money = 1).<br>Total amount you can rob = 2 + 9 + 1 = 12.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= nums.length &lt;= 100</code>
-</em>   <code>0 &lt;= nums[i] &lt;= 400</code><br><br></div>
-
-<h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>N/A  </p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>循环不是模板中的1开始，而是从2开始，因为i-2&gt;=0     </li>
+<p>&lt;div&gt;</p>
+<p>You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed, the only constraint stopping you from robbing each of them is that adjacent houses have security systems connected and <strong>it will automatically contact the police if two adjacent houses were broken into on the same night</strong>.</p>
+<p>Given an integer array <code>nums</code> representing the amount of money of each house, return <em>the maximum amount of money you can rob tonight <strong>without alerting the police</strong></em>.</p>
+<p><strong>Example 1:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> nums = [1,2,3,1]
+<strong>Output:</strong> 4
+<strong>Explanation:</strong> Rob house 1 (money = 1) and then rob house 3 (money = 3).
+Total amount you can rob = 1 + 3 = 4.
+&lt;/pre&gt;</p>
+<p><strong>Example 2:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> nums = [2,7,9,3,1]
+<strong>Output:</strong> 12
+<strong>Explanation:</strong> Rob house 1 (money = 2), rob house 3 (money = 9) and rob house 5 (money = 1).
+Total amount you can rob = 2 + 9 + 1 = 12.
+&lt;/pre&gt;</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= nums.length &lt;= 100</code></li>
+<li><code>0 &lt;= nums[i] &lt;= 400</code></li>
+</ul>
+<p>&lt;/div&gt;</p>
+<h3><strong>算法思路：</strong></h3>
+<p>N/A</p>
+<h3><strong>注意事项：</strong></h3>
+<ol>
+<li>循环不是模板中的1开始，而是从2开始，因为i-2&gt;=0</li>
 </ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">rob</span><span class="params">(self, nums: List[int])</span> -&gt; int:</span></span><br><span class="line">	dp = [<span class="number">0</span>] * (len(nums) + <span class="number">1</span>)</span><br><span class="line">	dp[<span class="number">1</span>] = nums[<span class="number">0</span>]</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">2</span>, len(dp)):</span><br><span class="line">		dp[i] = max(dp[i<span class="number">-1</span>], dp[i<span class="number">-2</span>] + nums[i - <span class="number">1</span>])</span><br><span class="line">	<span class="keyword">return</span> dp[<span class="number">-1</span>]</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
+<h3><strong>Python代码：</strong></h3>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">rob</span><span class="params">(self, nums: List[int])</span> -&gt; int:</span></span><br><span class="line">	dp = [<span class="number">0</span>] * (len(nums) + <span class="number">1</span>)</span><br><span class="line">	dp[<span class="number">1</span>] = nums[<span class="number">0</span>]</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">2</span>, len(dp)):</span><br><span class="line">		dp[i] = max(dp[i<span class="number">-1</span>], dp[i<span class="number">-2</span>] + nums[i - <span class="number">1</span>])</span><br><span class="line">	<span class="keyword">return</span> dp[<span class="number">-1</span>]</span><br></pre></td></tr></table></figure></p>
+<h3><strong>算法分析：</strong></h3>
+<p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code></p>
 
       
     </div>
@@ -102,12 +196,16 @@
     </header>
     <div class="entry">
       
-        <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>left is left pointer, i is right pointer</p>
+        <h3><strong>算法思路：</strong></h3>
+<p>left is left pointer, i is right pointer</p>
 <p>求最短串</p>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">two_pointers</span><span class="params">(self, nums)</span>:</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(nums)):</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">while</span> &lt;meets condition&gt;:</span><br><span class="line">			&lt;calculate result&gt;</span><br><span class="line">			left += <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> &lt;result&gt;</span><br></pre></td></tr></table></figure>
+<h3><strong>Python代码：</strong></h3>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">two_pointers</span><span class="params">(self, nums)</span>:</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(nums)):</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">while</span> &lt;meets condition&gt;:</span><br><span class="line">			&lt;calculate result&gt;</span><br><span class="line">			left += <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> &lt;result&gt;</span><br></pre></td></tr></table></figure></p>
 <p>求最长串</p>
-<h3 id="Python代码：-1"><a href="#Python代码：-1" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">two_pointers</span><span class="params">(self, nums)</span>:</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(nums)):</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">while</span> &lt;does <span class="keyword">not</span> meet condition&gt;:</span><br><span class="line">			left += <span class="number">1</span></span><br><span class="line">		&lt;calculate result&gt;</span><br><span class="line">	<span class="keyword">return</span> &lt;result&gt;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>。</p>
+<h3><strong>Python代码：</strong></h3>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">two_pointers</span><span class="params">(self, nums)</span>:</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(nums)):</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">while</span> &lt;does <span class="keyword">not</span> meet condition&gt;:</span><br><span class="line">			left += <span class="number">1</span></span><br><span class="line">		&lt;calculate result&gt;</span><br><span class="line">	<span class="keyword">return</span> &lt;result&gt;</span><br></pre></td></tr></table></figure></p>
+<h3><strong>算法分析：</strong></h3>
+<p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>。</p>
 
       
     </div>
@@ -139,16 +237,39 @@
     <div class="entry">
       
         <p><strong><a href="https://leetcode.com/problems/minimum-size-subarray-sum/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>Given an array of positive integers <code>nums</code> and a positive integer <code>target</code>, return the minimal length of a <strong>contiguous subarray</strong> <code>[nums&lt;sub&gt;l&lt;/sub&gt;, nums&lt;sub&gt;l+1&lt;/sub&gt;, ..., nums&lt;sub&gt;r-1&lt;/sub&gt;, nums&lt;sub&gt;r&lt;/sub&gt;]</code> of which the sum is greater than or equal to <code>target</code>. If there is no such subarray, return <code>0</code> instead.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> target = 7, nums = [2,3,1,2,4,3]<br><strong>Output:</strong> 2<br><strong>Explanation:</strong> The subarray [4,3] has the minimal length under the problem constraint.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> target = 4, nums = [1,4,4]<br><strong>Output:</strong> 1<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> target = 11, nums = [1,1,1,1,1,1,1,1]<br><strong>Output:</strong> 0<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= target &lt;= 10&lt;sup&gt;9&lt;/sup&gt;</code>
-</em>   <code>1 &lt;= nums.length &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code><br><em>   <code>1 &lt;= nums[i] &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code><br><br><em>*Follow up:</em></em> If you have figured out the <code>O(n)</code> solution, try coding another solution of which the time complexity is <code>O(n log(n))</code>.</div>
-
-<h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>N/A  </p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>求最小值，所以min_len初始化最大值  </li>
-<li>长度为i - j + 1写例子来计算     </li>
+<p>&lt;div&gt;</p>
+<p>Given an array of positive integers <code>nums</code> and a positive integer <code>target</code>, return the minimal length of a <strong>contiguous subarray</strong> <code>[nums&lt;sub&gt;l&lt;/sub&gt;, nums&lt;sub&gt;l+1&lt;/sub&gt;, ..., nums&lt;sub&gt;r-1&lt;/sub&gt;, nums&lt;sub&gt;r&lt;/sub&gt;]</code> of which the sum is greater than or equal to <code>target</code>. If there is no such subarray, return <code>0</code> instead.</p>
+<p><strong>Example 1:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> target = 7, nums = [2,3,1,2,4,3]
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> The subarray [4,3] has the minimal length under the problem constraint.
+&lt;/pre&gt;</p>
+<p><strong>Example 2:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> target = 4, nums = [1,4,4]
+<strong>Output:</strong> 1
+&lt;/pre&gt;</p>
+<p><strong>Example 3:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> target = 11, nums = [1,1,1,1,1,1,1,1]
+<strong>Output:</strong> 0
+&lt;/pre&gt;</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= target &lt;= 10&lt;sup&gt;9&lt;/sup&gt;</code></li>
+<li><code>1 &lt;= nums.length &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code></li>
+<li><code>1 &lt;= nums[i] &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code></li>
+</ul>
+<p><strong>Follow up:</strong> If you have figured out the <code>O(n)</code> solution, try coding another solution of which the time complexity is <code>O(n log(n))</code>.&lt;/div&gt;</p>
+<h3><strong>算法思路：</strong></h3>
+<p>N/A</p>
+<h3><strong>注意事项：</strong></h3>
+<ol>
+<li>求最小值，所以min_len初始化最大值</li>
+<li>长度为i - j + 1写例子来计算</li>
 </ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">minSubArrayLen</span><span class="params">(self, target: int, nums: List[int])</span> -&gt; int:</span></span><br><span class="line">	min_len, num_sum, j = sys.maxsize, <span class="number">0</span>, <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(nums)):</span><br><span class="line">		num_sum += nums[i]</span><br><span class="line">		<span class="keyword">while</span> num_sum &gt;= target:</span><br><span class="line">			min_len = min(min_len, i - j + <span class="number">1</span>)</span><br><span class="line">			num_sum -= nums[j]</span><br><span class="line">			j += <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span> <span class="keyword">if</span> min_len == sys.maxsize <span class="keyword">else</span> min_len</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
+<h3><strong>Python代码：</strong></h3>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">minSubArrayLen</span><span class="params">(self, target: int, nums: List[int])</span> -&gt; int:</span></span><br><span class="line">	min_len, num_sum, left = sys.maxsize, <span class="number">0</span>, <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(nums)):</span><br><span class="line">		num_sum += nums[i]</span><br><span class="line">		<span class="keyword">while</span> num_sum &gt;= target:</span><br><span class="line">			min_len = min(min_len, i - left + <span class="number">1</span>)</span><br><span class="line">			num_sum -= nums[left]</span><br><span class="line">			left += <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span> <span class="keyword">if</span> min_len == sys.maxsize <span class="keyword">else</span> min_len</span><br></pre></td></tr></table></figure></p>
+<h3><strong>算法分析：</strong></h3>
+<p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code></p>
 
       
     </div>
@@ -180,55 +301,42 @@
     <div class="entry">
       
         <p><strong><a href="https://leetcode.com/problems/find-k-pairs-with-smallest-sums/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>You are given two integer arrays <code>nums1</code> and <code>nums2</code> sorted in <strong>ascending order</strong> and an integer <code>k</code>.<br><br>Define a pair <code>(u, v)</code> which consists of one element from the first array and one element from the second array.<br><br>Return <em>the</em> <code>k</code> <em>pairs</em> <code>(u&lt;sub&gt;1&lt;/sub&gt;, v&lt;sub&gt;1&lt;/sub&gt;), (u&lt;sub&gt;2&lt;/sub&gt;, v&lt;sub&gt;2&lt;/sub&gt;), ..., (u&lt;sub&gt;k&lt;/sub&gt;, v&lt;sub&gt;k&lt;/sub&gt;)</code> <em>with the smallest sums</em>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> nums1 = [1,7,11], nums2 = [2,4,6], k = 3<br><strong>Output:</strong> [[1,2],[1,4],[1,6]]<br><strong>Explanation:</strong> The first 3 pairs are returned from the sequence: [1,2],[1,4],[1,6],[7,2],[7,4],[11,2],[7,6],[11,4],[11,6]<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> nums1 = [1,1,2], nums2 = [1,2,3], k = 2<br><strong>Output:</strong> [[1,1],[1,1]]<br><strong>Explanation:</strong> The first 2 pairs are returned from the sequence: [1,1],[1,1],[1,2],[2,1],[1,2],[2,2],[1,3],[1,3],[2,3]<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> nums1 = [1,2], nums2 = [3], k = 3<br><strong>Output:</strong> [[1,3],[2,3]]<br><strong>Explanation:</strong> All possible pairs are returned from the sequence: [1,3],[2,3]<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= nums1.length, nums2.length &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code>
-</em>   <code>-10&lt;sup&gt;9&lt;/sup&gt; &lt;= nums1[i], nums2[i] &lt;= 10&lt;sup&gt;9&lt;/sup&gt;</code><br><em>   <code>nums1</code> and <code>nums2</code> both are sorted in <strong>ascending order</strong>.
-</em>   <code>1 &lt;= k &lt;= 1000</code><br><br></div>
-
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>类似于BFS模板，只不过是将queue换成heap。  </li>
-<li>将两数和加入到heap中，而不是下标的和(粗心)  </li>
+<p>&lt;div&gt;</p>
+<p>You are given two integer arrays <code>nums1</code> and <code>nums2</code> sorted in <strong>ascending order</strong> and an integer <code>k</code>.</p>
+<p>Define a pair <code>(u, v)</code> which consists of one element from the first array and one element from the second array.</p>
+<p>Return <em>the</em> <code>k</code> <em>pairs</em> <code>(u&lt;sub&gt;1&lt;/sub&gt;, v&lt;sub&gt;1&lt;/sub&gt;), (u&lt;sub&gt;2&lt;/sub&gt;, v&lt;sub&gt;2&lt;/sub&gt;), ..., (u&lt;sub&gt;k&lt;/sub&gt;, v&lt;sub&gt;k&lt;/sub&gt;)</code> <em>with the smallest sums</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> nums1 = [1,7,11], nums2 = [2,4,6], k = 3
+<strong>Output:</strong> [[1,2],[1,4],[1,6]]
+<strong>Explanation:</strong> The first 3 pairs are returned from the sequence: [1,2],[1,4],[1,6],[7,2],[7,4],[11,2],[7,6],[11,4],[11,6]
+&lt;/pre&gt;</p>
+<p><strong>Example 2:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> nums1 = [1,1,2], nums2 = [1,2,3], k = 2
+<strong>Output:</strong> [[1,1],[1,1]]
+<strong>Explanation:</strong> The first 2 pairs are returned from the sequence: [1,1],[1,1],[1,2],[2,1],[1,2],[2,2],[1,3],[1,3],[2,3]
+&lt;/pre&gt;</p>
+<p><strong>Example 3:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> nums1 = [1,2], nums2 = [3], k = 3
+<strong>Output:</strong> [[1,3],[2,3]]
+<strong>Explanation:</strong> All possible pairs are returned from the sequence: [1,3],[2,3]
+&lt;/pre&gt;</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= nums1.length, nums2.length &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code></li>
+<li><code>-10&lt;sup&gt;9&lt;/sup&gt; &lt;= nums1[i], nums2[i] &lt;= 10&lt;sup&gt;9&lt;/sup&gt;</code></li>
+<li><code>nums1</code> and <code>nums2</code> both are sorted in <strong>ascending order</strong>.</li>
+<li><code>1 &lt;= k &lt;= 1000</code></li>
+</ul>
+<p>&lt;/div&gt;</p>
+<h3><strong>注意事项：</strong></h3>
+<ol>
+<li>类似于BFS模板，只不过是将queue换成heap。</li>
+<li>将两数和加入到heap中，而不是下标的和(粗心)</li>
 </ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">OFFSET = [(<span class="number">0</span>, <span class="number">1</span>), (<span class="number">1</span>, <span class="number">0</span>)]</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">kSmallestPairs</span><span class="params">(self, nums1: List[int], nums2: List[int], k: int)</span> -&gt; List[List[int]]:</span></span><br><span class="line">	heap, res = [(nums1[<span class="number">0</span>] + nums2[<span class="number">0</span>], <span class="number">0</span>, <span class="number">0</span>)], []</span><br><span class="line">	visited = set([<span class="number">0</span>, <span class="number">0</span>])</span><br><span class="line">	<span class="keyword">while</span> heap:</span><br><span class="line">		node = heapq.heappop(heap)</span><br><span class="line">		res.append([nums1[node[<span class="number">1</span>]], nums2[node[<span class="number">2</span>]]])</span><br><span class="line">		<span class="keyword">if</span> len(res) == k:</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		<span class="keyword">for</span> _dx, _dy <span class="keyword">in</span> OFFSET:</span><br><span class="line">			_x, _y = node[<span class="number">1</span>] + _dx, node[<span class="number">2</span>] + _dy</span><br><span class="line">			<span class="keyword">if</span> _x &lt; len(nums1) <span class="keyword">and</span> _y &lt; len(nums2) <span class="keyword">and</span> (_x, _y) <span class="keyword">not</span> <span class="keyword">in</span> visited:</span><br><span class="line">				heapq.heappush(heap, (nums1[_x] + nums2[_y], _x, _y))</span><br><span class="line">				visited.add((_x, _y))</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(k)</code>，空间复杂度<code>O(1)</code>。</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2021/12/04/lee-236/">LeetCode 236 Lowest Common Ancestor of a Binary Tree</a></h1>
-  
-
-      
-        <time datetime="2021-12-05T05:54:04.675Z">2021-12-04</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>Given a binary tree, find the lowest common ancestor (LCA) of two given nodes in the tree.<br><br>According to the <a href="https://en.wikipedia.org/wiki/Lowest_common_ancestor" target="_blank" rel="noopener">definition of LCA on Wikipedia</a>: “The lowest common ancestor is defined between two nodes <code>p</code> and <code>q</code> as the lowest node in <code>T</code> that has both <code>p</code> and <code>q</code> as descendants (where we allow <strong>a node to be a descendant of itself</strong>).”<br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2018/12/14/binarytree.png" alt=""><br><br><pre><strong>Input:</strong> root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 1<br><strong>Output:</strong> 3<br><strong>Explanation:</strong> The LCA of nodes 5 and 1 is 3.<br></pre><br><br><strong>Example 2:</strong><br><br><img src="https://assets.leetcode.com/uploads/2018/12/14/binarytree.png" alt=""><br><br><pre><strong>Input:</strong> root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 4<br><strong>Output:</strong> 5<br><strong>Explanation:</strong> The LCA of nodes 5 and 4 is 5, since a node can be a descendant of itself according to the LCA definition.<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> root = [1,2], p = 1, q = 2<br><strong>Output:</strong> 1<br></pre><br><br><strong>Constraints:</strong><br><br><em>   The number of nodes in the tree is in the range <code>[2, 10&lt;sup&gt;5&lt;/sup&gt;]</code>.
-</em>   <code>-10&lt;sup&gt;9&lt;/sup&gt; &lt;= Node.val &lt;= 10&lt;sup&gt;9&lt;/sup&gt;</code><br><em>   All <code>Node.val</code> are <strong>unique</strong>.
-</em>   <code>p != q</code><br>*   <code>p</code> and <code>q</code> will exist in the tree.<br><br></div>
-
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">lowestCommonAncestor</span><span class="params">(self, root: <span class="string">'TreeNode'</span>, p: <span class="string">'TreeNode'</span>, q: <span class="string">'TreeNode'</span>)</span> -&gt; 'TreeNode':</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> root:</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">None</span></span><br><span class="line">	<span class="keyword">if</span> root == p <span class="keyword">or</span> root == q:</span><br><span class="line">		<span class="keyword">return</span> root</span><br><span class="line">	left = self.lowestCommonAncestor(root.left, p, q)</span><br><span class="line">	right = self.lowestCommonAncestor(root.right, p, q)</span><br><span class="line">	<span class="keyword">if</span> left <span class="keyword">and</span> right:</span><br><span class="line">		<span class="keyword">return</span> root</span><br><span class="line">	<span class="keyword">return</span> left <span class="keyword">if</span> left <span class="keyword">else</span> right</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>。</p>
-<hr>
-<h3 id="算法II解题思路："><a href="#算法II解题思路：" class="headerlink" title="算法II解题思路："></a><strong>算法II解题思路：</strong></h3><p>BFS遍历树（可以找到就停止），然后记录子节点到父节点的映射，将所有父节点放到set中，同样查找另一个节点的父节点们，找到第一个在set中的节点。  </p>
+<h3><strong>Python代码：</strong></h3>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">OFFSET = [(<span class="number">0</span>, <span class="number">1</span>), (<span class="number">1</span>, <span class="number">0</span>)]</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">kSmallestPairs</span><span class="params">(self, nums1: List[int], nums2: List[int], k: int)</span> -&gt; List[List[int]]:</span></span><br><span class="line">	heap, res = [(nums1[<span class="number">0</span>] + nums2[<span class="number">0</span>], <span class="number">0</span>, <span class="number">0</span>)], []</span><br><span class="line">	visited = set([<span class="number">0</span>, <span class="number">0</span>])</span><br><span class="line">	<span class="keyword">while</span> heap:</span><br><span class="line">		node = heapq.heappop(heap)</span><br><span class="line">		res.append([nums1[node[<span class="number">1</span>]], nums2[node[<span class="number">2</span>]]])</span><br><span class="line">		<span class="keyword">if</span> len(res) == k:</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		<span class="keyword">for</span> _dx, _dy <span class="keyword">in</span> OFFSET:</span><br><span class="line">			_x, _y = node[<span class="number">1</span>] + _dx, node[<span class="number">2</span>] + _dy</span><br><span class="line">			<span class="keyword">if</span> _x &lt; len(nums1) <span class="keyword">and</span> _y &lt; len(nums2) <span class="keyword">and</span> (_x, _y) <span class="keyword">not</span> <span class="keyword">in</span> visited:</span><br><span class="line">				heapq.heappush(heap, (nums1[_x] + nums2[_y], _x, _y))</span><br><span class="line">				visited.add((_x, _y))</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure></p>
+<h3><strong>算法分析：</strong></h3>
+<p>时间复杂度为<code>O(k)</code>，空间复杂度<code>O(1)</code>。</p>
 
       
     </div>
@@ -269,6 +377,10 @@
   <ul class="entry">
     
       <li>
+        <a href="/2022/01/13/lee-065/">LeetCode 065 Valid Number</a>
+      </li>
+    
+      <li>
         <a href="/2022/01/05/lee-063/">LeetCode 063 Unique Paths II</a>
       </li>
     
@@ -284,10 +396,6 @@
         <a href="/2022/01/04/lee-427/">LeetCode 427 Construct Quad Tree</a>
       </li>
     
-      <li>
-        <a href="/2022/01/04/lee-387/">LeetCode 387 First Unique Character in a String</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -298,7 +406,7 @@
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 13.53px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.53px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 17.65px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 14.71px;">Binary Tree</a> <a href="/tags/Bloomberg/" style="font-size: 10.59px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.65px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 19.41px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15.29px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.76px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.76px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 10.59px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 18.82px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 17.06px;">Facebook</a> <a href="/tags/Google/" style="font-size: 10px;">Google</a> <a href="/tags/Graph/" style="font-size: 11.18px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.35px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 17.06px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 14.12px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 14.12px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.76px;">Iterator</a> <a href="/tags/Knowledge-Base/" style="font-size: 18.24px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 13.53px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.94px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 15.88px;">Math</a> <a href="/tags/Matrix/" style="font-size: 14.12px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.76px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.59px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 16.47px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.59px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.59px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10.59px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.76px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.59px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 18.24px;">Stack</a> <a href="/tags/String/" style="font-size: 16.47px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.18px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.94px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.18px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.71px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.59px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.59px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
+    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 13.53px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.53px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 17.65px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 14.71px;">Binary Tree</a> <a href="/tags/Bloomberg/" style="font-size: 10.59px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.65px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 19.41px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15.29px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.76px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.76px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 10.59px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 18.82px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 17.65px;">Facebook</a> <a href="/tags/Google/" style="font-size: 10px;">Google</a> <a href="/tags/Graph/" style="font-size: 11.18px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.35px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 17.06px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 14.12px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 14.12px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.76px;">Iterator</a> <a href="/tags/Knowledge-Base/" style="font-size: 18.24px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 13.53px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.94px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 15.88px;">Math</a> <a href="/tags/Matrix/" style="font-size: 14.12px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.76px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.59px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 16.47px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.59px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.59px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10.59px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.76px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.59px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 18.24px;">Stack</a> <a href="/tags/String/" style="font-size: 17.06px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.18px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.94px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.18px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.71px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.59px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.59px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
   </div>
 </div>
 
