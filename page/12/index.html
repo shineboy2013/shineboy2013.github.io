@@ -53,6 +53,259 @@
     <header>
       
   
+    <h1 class="title"><a href="/2021/12/25/lee-981/">LeetCode 981 Time Based Key-Value Store</a></h1>
+  
+
+      
+        <time datetime="2021-12-26T00:52:26.416Z">2021-12-25</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/time-based-key-value-store/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<p>&lt;div&gt;</p>
+<p>Design a time-based key-value data structure that can store multiple values for the same key at different time stamps and retrieve the key's value at a certain timestamp.</p>
+<p>Implement the <code>TimeMap</code> class:</p>
+<ul>
+<li><code>TimeMap()</code> Initializes the object of the data structure.</li>
+<li><code>void set(String key, String value, int timestamp)</code> Stores the key <code>key</code> with the value <code>value</code> at the given time <code>timestamp</code>.</li>
+<li><code>String get(String key, int timestamp)</code> Returns a value such that <code>set</code> was called previously, with <code>timestamp_prev &lt;= timestamp</code>. If there are multiple such values, it returns the value associated with the largest <code>timestamp_prev</code>. If there are no values, it returns <code>&quot;&quot;</code>.</li>
+</ul>
+<p><strong>Example 1:</strong></p>
+<p>&lt;pre&gt;<strong>Input</strong>
+[&quot;TimeMap&quot;, &quot;set&quot;, &quot;get&quot;, &quot;get&quot;, &quot;set&quot;, &quot;get&quot;, &quot;get&quot;]
+[[], [&quot;foo&quot;, &quot;bar&quot;, 1], [&quot;foo&quot;, 1], [&quot;foo&quot;, 3], [&quot;foo&quot;, &quot;bar2&quot;, 4], [&quot;foo&quot;, 4], [&quot;foo&quot;, 5]]
+<strong>Output</strong>
+[null, null, &quot;bar&quot;, &quot;bar&quot;, null, &quot;bar2&quot;, &quot;bar2&quot;]</p>
+<p><strong>Explanation</strong>
+TimeMap timeMap = new TimeMap();
+timeMap.set(&quot;foo&quot;, &quot;bar&quot;, 1);  // store the key &quot;foo&quot; and value &quot;bar&quot; along with timestamp = 1.
+timeMap.get(&quot;foo&quot;, 1);         // return &quot;bar&quot;
+timeMap.get(&quot;foo&quot;, 3);         // return &quot;bar&quot;, since there is no value corresponding to foo at timestamp 3 and timestamp 2, then the only value is at timestamp 1 is &quot;bar&quot;.
+timeMap.set(&quot;foo&quot;, &quot;bar2&quot;, 4); // store the key &quot;foo&quot; and value &quot;bar2&quot; along with timestamp = 4.
+timeMap.get(&quot;foo&quot;, 4);         // return &quot;bar2&quot;
+timeMap.get(&quot;foo&quot;, 5);         // return &quot;bar2&quot;
+&lt;/pre&gt;</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= key.length, value.length &lt;= 100</code></li>
+<li><code>key</code> and <code>value</code> consist of lowercase English letters and digits.</li>
+<li><code>1 &lt;= timestamp &lt;= 10&lt;sup&gt;7&lt;/sup&gt;</code></li>
+<li>All the timestamps <code>timestamp</code> of <code>set</code> are strictly increasing.</li>
+<li>At most <code>2 * 10&lt;sup&gt;5&lt;/sup&gt;</code> calls will be made to <code>set</code> and <code>get</code>.</li>
+</ul>
+<p>&lt;/div&gt;</p>
+<h3><strong>题目大意：</strong></h3>
+<p>实现带历史记录的HashMap。也就是同一个key记录所有赋过值的value</p>
+<h3><strong>解题思路：</strong></h3>
+<p>N/A</p>
+<h3><strong>解题步骤：</strong></h3>
+<p>N/A</p>
+<h3><strong>注意事项：</strong></h3>
+<ol>
+<li>Map to list的思路，list含两个，包括value和timestamp，用binary search搜索timestamp的下标，然后返回对应的value</li>
+</ol>
+<h3><strong>Python代码：</strong></h3>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TimeMap</span><span class="params">(TestCases)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.key_to_val = collections.defaultdict(list)</span><br><span class="line">        self.key_to_timestamp = collections.defaultdict(list)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">set</span><span class="params">(self, key: str, value: str, timestamp: int)</span> -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        self.key_to_val[key].append(value)</span><br><span class="line">        self.key_to_timestamp[key].append(timestamp)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span><span class="params">(self, key: str, timestamp: int)</span> -&gt; str:</span></span><br><span class="line">        index = bisect.bisect(self.key_to_timestamp[key], timestamp) - <span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> index == <span class="number">-1</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="string">''</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> self.key_to_val[key][index]</span><br></pre></td></tr></table></figure></p>
+<h3><strong>算法分析：</strong></h3>
+<p>get时间复杂度为<code>O(logn)</code>，空间复杂度<code>O(n)</code></p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2021/12/25/lee-937/">LeetCode 937 Reorder Data in Log Files</a></h1>
+  
+
+      
+        <time datetime="2021-12-25T10:03:16.769Z">2021-12-25</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/reorder-data-in-log-files/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<p>&lt;div&gt;</p>
+<p>You are given an array of <code>logs</code>. Each log is a space-delimited string of words, where the first word is the <strong>identifier</strong>.</p>
+<p>There are two types of logs:</p>
+<ul>
+<li><strong>Letter-logs</strong>: All words (except the identifier) consist of lowercase English letters.</li>
+<li><strong>Digit-logs</strong>: All words (except the identifier) consist of digits.</li>
+</ul>
+<p>Reorder these logs so that:</p>
+<ol>
+<li>The <strong>letter-logs</strong> come before all <strong>digit-logs</strong>.</li>
+<li>The <strong>letter-logs</strong> are sorted lexicographically by their contents. If their contents are the same, then sort them lexicographically by their identifiers.</li>
+<li>The <strong>digit-logs</strong> maintain their relative ordering.</li>
+</ol>
+<p>Return <em>the final order of the logs</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> logs = [&quot;dig1 8 1 5 1&quot;,&quot;let1 art can&quot;,&quot;dig2 3 6&quot;,&quot;let2 own kit dig&quot;,&quot;let3 art zero&quot;]
+<strong>Output:</strong> [&quot;let1 art can&quot;,&quot;let3 art zero&quot;,&quot;let2 own kit dig&quot;,&quot;dig1 8 1 5 1&quot;,&quot;dig2 3 6&quot;]
+<strong>Explanation:</strong>
+The letter-log contents are all different, so their ordering is &quot;art can&quot;, &quot;art zero&quot;, &quot;own kit dig&quot;.
+The digit-logs have a relative order of &quot;dig1 8 1 5 1&quot;, &quot;dig2 3 6&quot;.
+&lt;/pre&gt;</p>
+<p><strong>Example 2:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> logs = [&quot;a1 9 2 3 1&quot;,&quot;g1 act car&quot;,&quot;zo4 4 7&quot;,&quot;ab1 off key dog&quot;,&quot;a8 act zoo&quot;]
+<strong>Output:</strong> [&quot;g1 act car&quot;,&quot;a8 act zoo&quot;,&quot;ab1 off key dog&quot;,&quot;a1 9 2 3 1&quot;,&quot;zo4 4 7&quot;]
+&lt;/pre&gt;</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= logs.length &lt;= 100</code></li>
+<li><code>3 &lt;= logs[i].length &lt;= 100</code></li>
+<li>All the tokens of <code>logs[i]</code> are separated by a <strong>single</strong> space.</li>
+<li><code>logs[i]</code> is guaranteed to have an identifier and at least one word after the identifier.</li>
+</ul>
+<p>&lt;/div&gt;</p>
+<h3><strong>题目大意：</strong></h3>
+<p>排序log file，以下顺序：字母log (内容，id), 数字log</p>
+<h3><strong>解题思路(推荐)：</strong></h3>
+<p>N/A</p>
+<h3><strong>解题步骤：</strong></h3>
+<p>N/A</p>
+<h3><strong>注意事项：</strong></h3>
+<ol>
+<li>排序的multi key实现(0, content_str, li[0]) if is_alpha else (1, ). (1, )表示按数组顺序</li>
+</ol>
+<h3><strong>Python代码：</strong></h3>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">reorderLogFiles</span><span class="params">(self, logs: List[str])</span> -&gt; List[str]:</span></span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">get_key</span><span class="params">(x)</span>:</span></span><br><span class="line">		li = x.split(<span class="string">' '</span>)</span><br><span class="line">		content_str = <span class="string">' '</span>.join(li[<span class="number">1</span>:])</span><br><span class="line">		is_alpha = <span class="number">1</span> <span class="keyword">if</span> content_str[<span class="number">0</span>].isalpha() <span class="keyword">else</span> <span class="number">0</span></span><br><span class="line">		<span class="keyword">return</span> (<span class="number">0</span>, content_str, li[<span class="number">0</span>]) <span class="keyword">if</span> is_alpha <span class="keyword">else</span> (<span class="number">1</span>, )</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> sorted(logs, key=get_key)</span><br></pre></td></tr></table></figure></p>
+<h3><strong>算法分析：</strong></h3>
+<p>时间复杂度为<code>O(nmlogn)</code>，空间复杂度<code>O(mn)</code>, n为log数量，m为每个log的最长长度。如mergesort中merge复杂度为nm, 每个key比较是O(m)复杂度</p>
+<hr>
+<h3><strong>算法II解题思路：</strong></h3>
+<p>我的解法。本质上和上法一致，较繁琐</p>
+<h3><strong>注意事项：</strong></h3>
+<ol>
+<li>字母log排序不能按content_str + ' ' + li[0], 而是(content_str, li[0])作多key排序</li>
+</ol>
+<h3><strong>Python代码：</strong></h3>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">reorderLogFiles2</span><span class="params">(self, logs: List[str])</span> -&gt; List[str]:</span></span><br><span class="line">	letter_logs, digit_logs = [], []</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(logs)):</span><br><span class="line">		<span class="keyword">if</span> logs[i][<span class="number">-1</span>].isdigit():</span><br><span class="line">			digit_logs.append(logs[i])</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			li = logs[i].split(<span class="string">' '</span>)</span><br><span class="line">			content_str = <span class="string">' '</span>.join(li[<span class="number">1</span>:])</span><br><span class="line">			letter_logs.append((content_str, li[<span class="number">0</span>], i))</span><br><span class="line">	letter_logs.sort()</span><br><span class="line">	res = [logs[pair[<span class="number">2</span>]] <span class="keyword">for</span> pair <span class="keyword">in</span> letter_logs]</span><br><span class="line">	res += digit_logs</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2021/12/25/lee-1268/">LeetCode 1268 Search Suggestions System</a></h1>
+  
+
+      
+        <time datetime="2021-12-25T09:02:37.829Z">2021-12-25</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/search-suggestions-system/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<p>&lt;div&gt;</p>
+<p>You are given an array of strings <code>products</code> and a string <code>searchWord</code>.</p>
+<p>Design a system that suggests at most three product names from <code>products</code> after each character of <code>searchWord</code> is typed. Suggested products should have common prefix with <code>searchWord</code>. If there are more than three products with a common prefix return the three lexicographically minimums products.</p>
+<p>Return <em>a list of lists of the suggested products after each character of</em> <code>searchWord</code> <em>is typed</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> products = [&quot;mobile&quot;,&quot;mouse&quot;,&quot;moneypot&quot;,&quot;monitor&quot;,&quot;mousepad&quot;], searchWord = &quot;mouse&quot;
+<strong>Output:</strong> [
+[&quot;mobile&quot;,&quot;moneypot&quot;,&quot;monitor&quot;],
+[&quot;mobile&quot;,&quot;moneypot&quot;,&quot;monitor&quot;],
+[&quot;mouse&quot;,&quot;mousepad&quot;],
+[&quot;mouse&quot;,&quot;mousepad&quot;],
+[&quot;mouse&quot;,&quot;mousepad&quot;]
+]
+<strong>Explanation:</strong> products sorted lexicographically = [&quot;mobile&quot;,&quot;moneypot&quot;,&quot;monitor&quot;,&quot;mouse&quot;,&quot;mousepad&quot;]
+After typing m and mo all products match and we show user [&quot;mobile&quot;,&quot;moneypot&quot;,&quot;monitor&quot;]
+After typing mou, mous and mouse the system suggests [&quot;mouse&quot;,&quot;mousepad&quot;]
+&lt;/pre&gt;</p>
+<p><strong>Example 2:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> products = [&quot;havana&quot;], searchWord = &quot;havana&quot;
+<strong>Output:</strong> [[&quot;havana&quot;],[&quot;havana&quot;],[&quot;havana&quot;],[&quot;havana&quot;],[&quot;havana&quot;],[&quot;havana&quot;]]
+&lt;/pre&gt;</p>
+<p><strong>Example 3:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> products = [&quot;bags&quot;,&quot;baggage&quot;,&quot;banner&quot;,&quot;box&quot;,&quot;cloths&quot;], searchWord = &quot;bags&quot;
+<strong>Output:</strong> [[&quot;baggage&quot;,&quot;bags&quot;,&quot;banner&quot;],[&quot;baggage&quot;,&quot;bags&quot;,&quot;banner&quot;],[&quot;baggage&quot;,&quot;bags&quot;],[&quot;bags&quot;]]
+&lt;/pre&gt;</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= products.length &lt;= 1000</code></li>
+<li><code>1 &lt;= products[i].length &lt;= 3000</code></li>
+<li><code>1 &lt;= sum(products[i].length) &lt;= 2 * 10&lt;sup&gt;4&lt;/sup&gt;</code></li>
+<li>All the strings of <code>products</code> are <strong>unique</strong>.</li>
+<li><code>products[i]</code> consists of lowercase English letters.</li>
+<li><code>1 &lt;= searchWord.length &lt;= 1000</code></li>
+<li><code>searchWord</code> consists of lowercase English letters.</li>
+</ul>
+<p>&lt;/div&gt;</p>
+<h3><strong>题目大意：</strong></h3>
+<p>实现搜索结果为3个autocomplete的功能</p>
+<h3><strong>Prefix解题思路(推荐)：</strong></h3>
+<p>Prefix</p>
+<h3><strong>解题步骤：</strong></h3>
+<p>N/A</p>
+<h3><strong>注意事项：</strong></h3>
+<ol>
+<li>用Trie，另一种思路是用prefix，此法采用prefix法，将所有单词按前缀加入到字典中</li>
+</ol>
+<h3><strong>Python代码：</strong></h3>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">suggestedProducts</span><span class="params">(self, products: List[str], searchWord: str)</span> -&gt; List[List[str]]:</span></span><br><span class="line">	products.sort()</span><br><span class="line">	prefix_dict = collections.defaultdict(list)</span><br><span class="line">	<span class="keyword">for</span> word <span class="keyword">in</span> products:</span><br><span class="line">		<span class="keyword">for</span> i <span class="keyword">in</span> range(len(word)):</span><br><span class="line">			prefix = word[:i + <span class="number">1</span>]</span><br><span class="line">			<span class="keyword">if</span> len(prefix_dict[prefix]) &lt; <span class="number">3</span>:</span><br><span class="line">				prefix_dict[prefix].append(word)</span><br><span class="line">	res = []</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(searchWord)):</span><br><span class="line">		prefix = searchWord[:i + <span class="number">1</span>]</span><br><span class="line">		res.append(prefix_dict[prefix])</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure></p>
+<h3><strong>算法分析：</strong></h3>
+<p>时间复杂度为<code>O(nL1 + L2)</code>，空间复杂度<code>O(nL1)</code>, L1为单词列表中最长的长度，L2为搜索单词长度，n为单词个数</p>
+<hr>
+<h3><strong>Trie + DFS算法II解题思路：</strong></h3>
+<p>建Trie，然后根据搜索的前缀定位到Trie节点，然后对此节点做DFS找到3个单词，因为DFS和字母顺序是一致的，所以DFS可行<br>
+具体参考Leetcode solution</p>
+<hr>
+<h3><strong>Two pointers算法III解题思路(推荐)：</strong></h3>
+<p>先排序，用双指针相向搜索，根据搜索单词的每一个字母，不断收缩搜索范围，左指针和右指针之间即为满足条件的结果。每轮将左指针往后三个结果加到结果集<br>
+具体参考Leetcode discussion</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2021/12/24/lee-735/">LeetCode 735 Asteroid Collision</a></h1>
   
 
@@ -211,250 +464,6 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2021/12/24/lee-1209/">LeetCode 1209 Remove All Adjacent Duplicates in String II</a></h1>
-  
-
-      
-        <time datetime="2021-12-25T02:34:49.356Z">2021-12-24</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/remove-all-adjacent-duplicates-in-string-ii/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<p>&lt;div&gt;</p>
-<p>You are given a string <code>s</code> and an integer <code>k</code>, a <code>k</code> <strong>duplicate removal</strong> consists of choosing <code>k</code> adjacent and equal letters from <code>s</code> and removing them, causing the left and the right side of the deleted substring to concatenate together.</p>
-<p>We repeatedly make <code>k</code> <strong>duplicate removals</strong> on <code>s</code> until we no longer can.</p>
-<p>Return the final string after all such duplicate removals have been made. It is guaranteed that the answer is unique.</p>
-<p><strong>Example 1:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> s = &quot;abcd&quot;, k = 2
-<strong>Output:</strong> &quot;abcd&quot;
-<strong>Explanation:</strong> There's nothing to delete.&lt;/pre&gt;</p>
-<p><strong>Example 2:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> s = &quot;deeedbbcccbdaa&quot;, k = 3
-<strong>Output:</strong> &quot;aa&quot;
-<strong>Explanation:</strong> First delete &quot;eee&quot; and &quot;ccc&quot;, get &quot;ddbbbdaa&quot;
-Then delete &quot;bbb&quot;, get &quot;dddaa&quot;
-Finally delete &quot;ddd&quot;, get &quot;aa&quot;&lt;/pre&gt;</p>
-<p><strong>Example 3:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> s = &quot;pbbcggttciiippooaais&quot;, k = 2
-<strong>Output:</strong> &quot;ps&quot;
-&lt;/pre&gt;</p>
-<p><strong>Constraints:</strong></p>
-<ul>
-<li><code>1 &lt;= s.length &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code></li>
-<li><code>2 &lt;= k &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code></li>
-<li><code>s</code> only contains lower case English letters.</li>
-</ul>
-<p>&lt;/div&gt;</p>
-<h3><strong>题目大意：</strong></h3>
-<p>字符串中去除连续k次的字符</p>
-<h3><strong>解题思路：</strong></h3>
-<p>一开始用暴力法得到LTE。这题由于需要保持顺序，且元素之间是相等关系且类似于LeetCode 316 Remove Duplicate Letters，考虑用Stack。</p>
-<h3><strong>解题步骤：</strong></h3>
-<p>N/A</p>
-<h3><strong>注意事项：</strong></h3>
-<ol>
-<li>Stack中存元素和该元素的连续个数，这样避免往前重新计算连续了几次。若栈顶元素等于遍历元素且栈顶连续个数为k - 1就连续出栈。此情况<strong>此遍历元素不入栈</strong></li>
-<li></li>
-</ol>
-<h3><strong>Python代码：</strong></h3>
-<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">removeDuplicates</span><span class="params">(self, s: str, k: int)</span> -&gt; str:</span></span><br><span class="line">	stack, res = [], <span class="string">''</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(s)):</span><br><span class="line">		<span class="keyword">if</span> stack <span class="keyword">and</span> stack[<span class="number">-1</span>][<span class="number">0</span>] == s[i] <span class="keyword">and</span> stack[<span class="number">-1</span>][<span class="number">1</span>] == k - <span class="number">1</span>:</span><br><span class="line">			<span class="keyword">while</span> stack <span class="keyword">and</span> stack[<span class="number">-1</span>][<span class="number">0</span>] == s[i]:</span><br><span class="line">				stack.pop()</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			<span class="keyword">if</span> stack <span class="keyword">and</span> stack[<span class="number">-1</span>][<span class="number">0</span>] == s[i]:</span><br><span class="line">				stack.append((s[i], stack[<span class="number">-1</span>][<span class="number">1</span>] + <span class="number">1</span>))</span><br><span class="line">			<span class="keyword">else</span>:</span><br><span class="line">				stack.append((s[i], <span class="number">1</span>))</span><br><span class="line">	<span class="keyword">while</span> stack:</span><br><span class="line">		pair = stack.pop()</span><br><span class="line">		res += pair[<span class="number">0</span>]</span><br><span class="line">	<span class="keyword">return</span> res[::<span class="number">-1</span>]</span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code></p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2021/12/24/lee-289/">LeetCode 289 Game of Life</a></h1>
-  
-
-      
-        <time datetime="2021-12-24T22:40:09.326Z">2021-12-24</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/game-of-life/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<p>&lt;div&gt;</p>
-<p>According to <a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life" target="_blank" rel="noopener">Wikipedia's article</a>: &quot;The <strong>Game of Life</strong>, also known simply as <strong>Life</strong>, is a cellular automaton devised by the British mathematician John Horton Conway in 1970.&quot;</p>
-<p>The board is made up of an <code>m x n</code> grid of cells, where each cell has an initial state: <strong>live</strong> (represented by a <code>1</code>) or <strong>dead</strong> (represented by a <code>0</code>). Each cell interacts with its <a href="https://en.wikipedia.org/wiki/Moore_neighborhood" target="_blank" rel="noopener">eight neighbors</a> (horizontal, vertical, diagonal) using the following four rules (taken from the above Wikipedia article):</p>
-<ol>
-<li>Any live cell with fewer than two live neighbors dies as if caused by under-population.</li>
-<li>Any live cell with two or three live neighbors lives on to the next generation.</li>
-<li>Any live cell with more than three live neighbors dies, as if by over-population.</li>
-<li>Any dead cell with exactly three live neighbors becomes a live cell, as if by reproduction.</li>
-</ol>
-<p>&lt;span&gt;The next state is created by applying the above rules simultaneously to every cell in the current state, where births and deaths occur simultaneously. Given the current state of the <code>m x n</code> grid <code>board</code>, return <em>the next state</em>.&lt;/span&gt;</p>
-<p><strong>Example 1:</strong></p>
-<p><img src="https://assets.leetcode.com/uploads/2020/12/26/grid1.jpg" alt=""></p>
-<p>&lt;pre&gt;<strong>Input:</strong> board = [[0,1,0],[0,0,1],[1,1,1],[0,0,0]]
-<strong>Output:</strong> [[0,0,0],[1,0,1],[0,1,1],[0,1,0]]
-&lt;/pre&gt;</p>
-<p><strong>Example 2:</strong></p>
-<p><img src="https://assets.leetcode.com/uploads/2020/12/26/grid2.jpg" alt=""></p>
-<p>&lt;pre&gt;<strong>Input:</strong> board = [[1,1],[1,0]]
-<strong>Output:</strong> [[1,1],[1,1]]
-&lt;/pre&gt;</p>
-<p><strong>Constraints:</strong></p>
-<ul>
-<li><code>m == board.length</code></li>
-<li><code>n == board[i].length</code></li>
-<li><code>1 &lt;= m, n &lt;= 25</code></li>
-<li><code>board[i][j]</code> is <code>0</code> or <code>1</code>.</li>
-</ul>
-<p><strong>Follow up:</strong></p>
-<ul>
-<li>Could you solve it in-place? Remember that the board needs to be updated simultaneously: You cannot update some cells first and then use their updated values to update other cells.</li>
-<li>In this question, we represent the board using a 2D array. In principle, the board is infinite, which would cause problems when the active area encroaches upon the border of the array (i.e., live cells reach the border). How would you address these problems?</li>
-</ul>
-<p>&lt;/div&gt;</p>
-<h3><strong>题目大意：</strong></h3>
-<p>根据临近8个细胞的情况来决定生死。若该细胞是live和临近有2-3个是live，仍然live。若该细胞是dead和临近有3个是live，复生。其他都变成dead</p>
-<h3><strong>解题思路：</strong></h3>
-<p>N/A</p>
-<h3><strong>解题步骤：</strong></h3>
-<p>N/A</p>
-<h3><strong>注意事项：</strong></h3>
-<ol>
-<li>board[:] = res赋值到原数组一定要用冒号</li>
-</ol>
-<h3><strong>Python代码：</strong></h3>
-<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">OFFSETS = [(<span class="number">-1</span>, <span class="number">-1</span>), (<span class="number">-1</span>, <span class="number">0</span>), (<span class="number">-1</span>, <span class="number">1</span>), (<span class="number">0</span>, <span class="number">-1</span>), (<span class="number">0</span>, <span class="number">1</span>), (<span class="number">1</span>, <span class="number">-1</span>), (<span class="number">1</span>, <span class="number">0</span>), (<span class="number">1</span>, <span class="number">1</span>)]</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span><span class="params">(TestCases)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">gameOfLife</span><span class="params">(self, board: List[List[int]])</span> -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        res = [[<span class="number">0</span> <span class="keyword">for</span> _ <span class="keyword">in</span> range(len(board[<span class="number">0</span>]))] <span class="keyword">for</span> _ <span class="keyword">in</span> range(len(board))]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(len(board)):</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> range(len(board[<span class="number">0</span>])):</span><br><span class="line">                live_neighbor_num = self.get_live_neighbor_num(board, i, j)</span><br><span class="line">                <span class="keyword">if</span> board[i][j] == <span class="number">0</span> <span class="keyword">and</span> live_neighbor_num == <span class="number">3</span>:</span><br><span class="line">                    res[i][j] = <span class="number">1</span></span><br><span class="line">                <span class="keyword">if</span> board[i][j] == <span class="number">1</span> <span class="keyword">and</span> live_neighbor_num <span class="keyword">in</span> [<span class="number">2</span>, <span class="number">3</span>]:</span><br><span class="line">                    res[i][j] = <span class="number">1</span></span><br><span class="line">        board[:] = res</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_live_neighbor_num</span><span class="params">(self, board, i, j)</span>:</span></span><br><span class="line">        res = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> _dx, _dy <span class="keyword">in</span> OFFSETS:</span><br><span class="line">            x, y = i + _dx, j + _dy</span><br><span class="line">            <span class="keyword">if</span> <span class="number">0</span> &lt;= x &lt; len(board) <span class="keyword">and</span> <span class="number">0</span> &lt;= y &lt; len(board[<span class="number">0</span>]) <span class="keyword">and</span> board[x][y] == <span class="number">1</span>:</span><br><span class="line">                res += <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>时间复杂度为&lt;code&gt;O(8n&lt;sup&gt;2&lt;/sup&gt;)&lt;/code&gt;，空间复杂度&lt;code&gt;O(n&lt;sup&gt;2&lt;/sup&gt;)&lt;/code&gt;</p>
-<hr>
-<h3><strong>算法II解题思路O(1) Space：</strong></h3>
-<p>用一个数字来记录前后状态，2表示从0到1,3表示从1到0</p>
-<h3><strong>注意事项：</strong></h3>
-<ol>
-<li>不同之处有两个： Line 11不再是board[i][j]为1的情况，而是从1变成0的情况： live_neighbor_num <strong>not</strong> in [2, 3]</li>
-<li>最后扫一遍矩阵，将2和3变回1和0</li>
-<li>board[i][j] == 0和board[i][j] == 1不用改，因为从左到有从上到下扫描，到该格时，该格的值并未变，只能是0或1，它的左和上3邻居才变了。</li>
-</ol>
-<h3><strong>Python代码：</strong></h3>
-<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">OFFSETS = [(<span class="number">-1</span>, <span class="number">-1</span>), (<span class="number">-1</span>, <span class="number">0</span>), (<span class="number">-1</span>, <span class="number">1</span>), (<span class="number">0</span>, <span class="number">-1</span>), (<span class="number">0</span>, <span class="number">1</span>), (<span class="number">1</span>, <span class="number">-1</span>), (<span class="number">1</span>, <span class="number">0</span>), (<span class="number">1</span>, <span class="number">1</span>)]</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span><span class="params">(TestCases)</span>:</span></span><br><span class="line"></span><br><span class="line">     <span class="function"><span class="keyword">def</span> <span class="title">gameOfLife2</span><span class="params">(self, board: List[List[int]])</span> -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        <span class="comment"># STATUS = &#123;2: (0, 1), 3: (1, 0)&#125;</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(len(board)):</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> range(len(board[<span class="number">0</span>])):</span><br><span class="line">                live_neighbor_num = self.get_live_neighbor_num2(board, i, j)</span><br><span class="line">                <span class="keyword">if</span> board[i][j] == <span class="number">0</span> <span class="keyword">and</span> live_neighbor_num == <span class="number">3</span>:</span><br><span class="line">                    board[i][j] = <span class="number">2</span></span><br><span class="line">                <span class="keyword">if</span> board[i][j] == <span class="number">1</span> <span class="keyword">and</span> live_neighbor_num <span class="keyword">not</span> <span class="keyword">in</span> [<span class="number">2</span>, <span class="number">3</span>]:</span><br><span class="line">                    board[i][j] = <span class="number">3</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(len(board)):</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> range(len(board[<span class="number">0</span>])):</span><br><span class="line">                <span class="keyword">if</span> board[i][j] == <span class="number">2</span>:</span><br><span class="line">                    board[i][j] = <span class="number">1</span></span><br><span class="line">                <span class="keyword">if</span> board[i][j] == <span class="number">3</span>:</span><br><span class="line">                    board[i][j] = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_live_neighbor_num2</span><span class="params">(self, board, i, j)</span>:</span></span><br><span class="line">        res = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> _dx, _dy <span class="keyword">in</span> OFFSETS:</span><br><span class="line">            x, y = i + _dx, j + _dy</span><br><span class="line">            <span class="keyword">if</span> <span class="number">0</span> &lt;= x &lt; len(board) <span class="keyword">and</span> <span class="number">0</span> &lt;= y &lt; len(board[<span class="number">0</span>]) <span class="keyword">and</span> board[x][y] <span class="keyword">in</span> [<span class="number">1</span>, <span class="number">3</span>]:</span><br><span class="line">                res += <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>时间复杂度为&lt;code&gt;O(8n&lt;sup&gt;2&lt;/sup&gt;)&lt;/code&gt;，空间复杂度<code>O(1)</code></p>
-<hr>
-<h3><strong>算法III解题思路</strong></h3>
-<p>另外一条follow up是如果matrix无界，可以假设大部分是死细胞，先收集live细胞的list，然后计算live细胞的临近细胞即可</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2021/12/24/lee-362/">LeetCode 362 Design Hit Counter</a></h1>
-  
-
-      
-        <time datetime="2021-12-24T19:08:15.516Z">2021-12-24</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/design-hit-counter/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<p>&lt;div&gt;</p>
-<p>Design a hit counter which counts the number of hits received in the past <code>5</code> minutes (i.e., the past <code>300</code> seconds).</p>
-<p>Your system should accept a <code>timestamp</code> parameter (<strong>in seconds</strong> granularity), and you may assume that calls are being made to the system in chronological order (i.e., <code>timestamp</code> is monotonically increasing). Several hits may arrive roughly at the same time.</p>
-<p>Implement the <code>HitCounter</code> class:</p>
-<ul>
-<li><code>HitCounter()</code> Initializes the object of the hit counter system.</li>
-<li><code>void hit(int timestamp)</code> Records a hit that happened at <code>timestamp</code> (<strong>in seconds</strong>). Several hits may happen at the same <code>timestamp</code>.</li>
-<li><code>int getHits(int timestamp)</code> Returns the number of hits in the past 5 minutes from <code>timestamp</code> (i.e., the past <code>300</code> seconds).</li>
-</ul>
-<p><strong>Example 1:</strong></p>
-<p>&lt;pre&gt;<strong>Input</strong>
-[&quot;HitCounter&quot;, &quot;hit&quot;, &quot;hit&quot;, &quot;hit&quot;, &quot;getHits&quot;, &quot;hit&quot;, &quot;getHits&quot;, &quot;getHits&quot;]
-[[], [1], [2], [3], [4], [300], [300], [301]]
-<strong>Output</strong>
-[null, null, null, null, 3, null, 4, 3]</p>
-<p><strong>Explanation</strong>
-HitCounter hitCounter = new HitCounter();
-hitCounter.hit(1);       // hit at timestamp 1.
-hitCounter.hit(2);       // hit at timestamp 2.
-hitCounter.hit(3);       // hit at timestamp 3.
-hitCounter.getHits(4);   // get hits at timestamp 4, return 3.
-hitCounter.hit(300);     // hit at timestamp 300.
-hitCounter.getHits(300); // get hits at timestamp 300, return 4.
-hitCounter.getHits(301); // get hits at timestamp 301, return 3.
-&lt;/pre&gt;</p>
-<p><strong>Constraints:</strong></p>
-<ul>
-<li><code>1 &lt;= timestamp &lt;= 2 * 10&lt;sup&gt;9&lt;/sup&gt;</code></li>
-<li>All the calls are being made to the system in chronological order (i.e., <code>timestamp</code> is monotonically increasing).</li>
-<li>At most <code>300</code> calls will be made to <code>hit</code> and <code>getHits</code>.</li>
-</ul>
-<p><strong>Follow up:</strong> What if the number of hits per second could be huge? Does your design scale?</p>
-<p>&lt;/div&gt;</p>
-<h3><strong>题目大意：</strong></h3>
-<p>设计统计hits系统。题目要求：同一个时间可以有多个hits，hit是按时间顺序的。</p>
-<h3><strong>解题思路：</strong></h3>
-<p>用一个固定大小为300的数组来记录timestamp和对应的hits的总数</p>
-<h3><strong>解题步骤：</strong></h3>
-<p>N/A</p>
-<h3><strong>注意事项：</strong></h3>
-<ol>
-<li>题目要求：同一个时间可以有多个hits，hit是按时间顺序的。所以固定数组只要比较现在的timestamp是否和last_timestamp一样，不是的话reset hit。用<strong>循环数组</strong>记录</li>
-<li>getHist是统计300以内（<strong>不包括300</strong>）的hit数。</li>
-</ol>
-<h3><strong>Python代码：</strong></h3>
-<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">HitCounter</span><span class="params">(TestCases)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.hits = [(<span class="number">0</span>, <span class="number">0</span>)] * <span class="number">300</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">hit</span><span class="params">(self, timestamp: int)</span> -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        last_timestamp, count = self.hits[timestamp % <span class="number">300</span>]</span><br><span class="line">        <span class="keyword">if</span> last_timestamp <span class="keyword">and</span> timestamp != last_timestamp:</span><br><span class="line">            self.hits[timestamp % <span class="number">300</span>] = (timestamp, <span class="number">0</span>)</span><br><span class="line">            count = <span class="number">0</span></span><br><span class="line">        count += <span class="number">1</span></span><br><span class="line">        self.hits[timestamp % <span class="number">300</span>] = (timestamp, count)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">getHits</span><span class="params">(self, timestamp: int)</span> -&gt; int:</span></span><br><span class="line">        res = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> t, count <span class="keyword">in</span> self.hits:</span><br><span class="line">            <span class="keyword">if</span> t <span class="keyword">and</span> timestamp - t &lt; <span class="number">300</span>:</span><br><span class="line">                res += count</span><br><span class="line">        <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>hit时间复杂度为<code>O(1)</code>，getHits时间复杂度为<code>O(1)</code>，空间复杂度<code>O(1)</code></p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -479,23 +488,23 @@ hitCounter.getHits(301); // get hits at timestamp 301, return 3.
   <ul class="entry">
     
       <li>
+        <a href="/2022/01/15/lee-072/">LeetCode 072 Edit Distance</a>
+      </li>
+    
+      <li>
+        <a href="/2022/01/15/lee-076/">LeetCode 076 Minimum Window Substring</a>
+      </li>
+    
+      <li>
+        <a href="/2022/01/15/lee-073/">LeetCode 073 Set Matrix Zeroes</a>
+      </li>
+    
+      <li>
         <a href="/2022/01/14/lee-078/">LeetCode 078 Subsets</a>
       </li>
     
       <li>
         <a href="/2022/01/13/lee-065/">LeetCode 065 Valid Number</a>
-      </li>
-    
-      <li>
-        <a href="/2022/01/05/lee-063/">LeetCode 063 Unique Paths II</a>
-      </li>
-    
-      <li>
-        <a href="/2022/01/05/lee-062/">LeetCode 062 Unique Paths</a>
-      </li>
-    
-      <li>
-        <a href="/2022/01/05/lee-064/">LeetCode 064 Minimum Path Sum</a>
       </li>
     
   </ul>
@@ -508,7 +517,7 @@ hitCounter.getHits(301); // get hits at timestamp 301, return 3.
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 13.53px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.53px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 17.65px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 14.71px;">Binary Tree</a> <a href="/tags/Bloomberg/" style="font-size: 10.59px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.65px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 19.41px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15.29px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.76px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.76px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 10.59px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 18.82px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 17.65px;">Facebook</a> <a href="/tags/Google/" style="font-size: 10px;">Google</a> <a href="/tags/Graph/" style="font-size: 11.18px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.35px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 17.06px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 14.12px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 14.12px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.76px;">Iterator</a> <a href="/tags/Knowledge-Base/" style="font-size: 18.24px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 13.53px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.94px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 15.88px;">Math</a> <a href="/tags/Matrix/" style="font-size: 14.12px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.76px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.59px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 16.47px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.59px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.59px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10.59px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.76px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.59px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 18.24px;">Stack</a> <a href="/tags/String/" style="font-size: 17.06px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.18px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.94px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.18px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.71px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.59px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.59px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
+    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 13.53px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.53px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 17.65px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 14.71px;">Binary Tree</a> <a href="/tags/Bloomberg/" style="font-size: 10.59px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.65px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 19.41px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15.29px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.76px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.76px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 10.59px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 18.82px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 18.24px;">Facebook</a> <a href="/tags/Google/" style="font-size: 10px;">Google</a> <a href="/tags/Graph/" style="font-size: 11.18px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.35px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 17.06px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 14.12px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 14.12px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.76px;">Iterator</a> <a href="/tags/Knowledge-Base/" style="font-size: 18.24px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 13.53px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.94px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 15.88px;">Math</a> <a href="/tags/Matrix/" style="font-size: 14.12px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.76px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.59px;">Merge Sort</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 16.47px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.59px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.59px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 11.18px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.76px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.59px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 18.24px;">Stack</a> <a href="/tags/String/" style="font-size: 17.65px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.18px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.94px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.18px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.71px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.59px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.59px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
   </div>
 </div>
 
