@@ -53,6 +53,73 @@
     <header>
       
   
+    <h1 class="title"><a href="/2021/12/06/lee-301/">LeetCode 301 Remove Invalid Parentheses</a></h1>
+  
+
+      
+        <time datetime="2021-12-06T08:01:52.622Z">2021-12-06</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/remove-invalid-parentheses/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<p>&lt;div&gt;</p>
+<p>Given a string <code>s</code> that contains parentheses and letters, remove the minimum number of invalid parentheses to make the input string valid.</p>
+<p>Return <em>all the possible results</em>. You may return the answer in <strong>any order</strong>.</p>
+<p><strong>Example 1:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> s = &quot;()())()&quot;
+<strong>Output:</strong> [&quot;(())()&quot;,&quot;()()()&quot;]
+&lt;/pre&gt;</p>
+<p><strong>Example 2:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> s = &quot;(a)())()&quot;
+<strong>Output:</strong> [&quot;(a())()&quot;,&quot;(a)()()&quot;]
+&lt;/pre&gt;</p>
+<p><strong>Example 3:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> s = &quot;)(&quot;
+<strong>Output:</strong> [&quot;&quot;]
+&lt;/pre&gt;</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= s.length &lt;= 25</code></li>
+<li><code>s</code> consists of lowercase English letters and parentheses <code>'('</code> and <code>')'</code>.</li>
+<li>There will be at most <code>20</code> parentheses in <code>s</code>.</li>
+</ul>
+<p>&lt;/div&gt;</p>
+<h3><strong>题目大意：</strong></h3>
+<p>求最小去掉不合法括号数之后的所有结果</p>
+<h3><strong>算法思路：</strong></h3>
+<p>最值问题考虑用DP和BFS，DP难以拆分子问题。所以考虑用BFS + 括号是否合法</p>
+<h3><strong>注意事项：</strong></h3>
+<ol>
+<li>由于()())() -&gt; (())()，所以去掉的括号不一定都不合法，所以<strong>BFS要尝试删除每一个括号</strong>。若节点合法，加入结果且记录最小删除数，因为要求同一距离下的所有结果，所以<strong>用这个最小数来剪枝</strong>。</li>
+<li>输入含小写字母，所以<strong>无论是判断括号是否合法还是生成儿子节点都要跳过</strong></li>
+<li>模板中含if neighbor in visited，不能忘记写</li>
+</ol>
+<h3><strong>Python代码：</strong></h3>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">removeInvalidParentheses</span><span class="params">(self, s: str)</span> -&gt; List[str]:</span></span><br><span class="line">	queue = collections.deque([s])</span><br><span class="line">	visited = set([s])</span><br><span class="line">	res, min_dis = [], float(<span class="string">'inf'</span>)</span><br><span class="line">	distance = collections.defaultdict(int)</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.popleft()</span><br><span class="line">		<span class="keyword">if</span> self.is_valid(node):</span><br><span class="line">			res.append(node)</span><br><span class="line">			min_dis = min(min_dis, distance[node])</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		<span class="keyword">if</span> distance[node] &gt; min_dis:</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		<span class="keyword">for</span> i <span class="keyword">in</span> range(len(node)):</span><br><span class="line">			<span class="keyword">if</span> node[i] <span class="keyword">not</span> <span class="keyword">in</span> [<span class="string">'('</span>, <span class="string">')'</span>]:  <span class="comment"># remember</span></span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			child = node[:i] + node[i + <span class="number">1</span>:]</span><br><span class="line">			<span class="keyword">if</span> child <span class="keyword">in</span> visited: <span class="comment"># remember</span></span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			queue.append(child)</span><br><span class="line">			visited.add(child)</span><br><span class="line">			distance[child] = distance[node] + <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">is_valid</span><span class="params">(self, s)</span>:</span> <span class="comment"># remember not to use get_invalid_index ()())() -&gt; (())()</span></span><br><span class="line">	stack = []</span><br><span class="line">	<span class="keyword">for</span> i, char <span class="keyword">in</span> enumerate(s):</span><br><span class="line">		<span class="keyword">if</span> char <span class="keyword">not</span> <span class="keyword">in</span> [<span class="string">'('</span>, <span class="string">')'</span>]: <span class="comment"># remember</span></span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		<span class="keyword">if</span> char == <span class="string">')'</span> <span class="keyword">and</span> stack <span class="keyword">and</span> s[stack[<span class="number">-1</span>]] == <span class="string">'('</span>:</span><br><span class="line">			stack.pop()</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			stack.append(i)</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">False</span> <span class="keyword">if</span> stack <span class="keyword">else</span> <span class="keyword">True</span></span><br></pre></td></tr></table></figure></p>
+<h3><strong>算法分析：</strong></h3>
+<p>时间复杂度为&lt;code&gt;O(2&lt;sup&gt;n&lt;/sup&gt;)&lt;/code&gt;，空间复杂度<code>O(n)</code></p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2021/12/05/lee-516/">LeetCode 516 Longest Palindromic Subsequence</a></h1>
   
 
@@ -202,84 +269,6 @@ myCalendarTwo.book(25, 55); // return True, The event can be booked, as the time
     <header>
       
   
-    <h1 class="title"><a href="/2021/12/05/lee-490/">LeetCode 490 The Maze</a></h1>
-  
-
-      
-        <time datetime="2021-12-06T05:41:01.328Z">2021-12-05</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/the-maze/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<p>&lt;div&gt;</p>
-<p>There is a ball in a <code>maze</code> with empty spaces (represented as <code>0</code>) and walls (represented as <code>1</code>). The ball can go through the empty spaces by rolling <strong>up, down, left or right</strong>, but it won't stop rolling until hitting a wall. When the ball stops, it could choose the next direction.</p>
-<p>Given the <code>m x n</code> <code>maze</code>, the ball's <code>start</code> position and the <code>destination</code>, where <code>start = [start&lt;sub&gt;row&lt;/sub&gt;, start&lt;sub&gt;col&lt;/sub&gt;]</code> and <code>destination = [destination&lt;sub&gt;row&lt;/sub&gt;, destination&lt;sub&gt;col&lt;/sub&gt;]</code>, return <code>true</code> if the ball can stop at the destination, otherwise return <code>false</code>.</p>
-<p>You may assume that <strong>the borders of the maze are all walls</strong> (see examples).</p>
-<p><strong>Example 1:</strong></p>
-<p><img src="https://assets.leetcode.com/uploads/2021/03/31/maze1-1-grid.jpg" alt=""></p>
-<p>&lt;pre&gt;<strong>Input:</strong> maze = [[0,0,1,0,0],[0,0,0,0,0],[0,0,0,1,0],[1,1,0,1,1],[0,0,0,0,0]], start = [0,4], destination = [4,4]
-<strong>Output:</strong> true
-<strong>Explanation:</strong> One possible way is : left -&gt; down -&gt; left -&gt; down -&gt; right -&gt; down -&gt; right.
-&lt;/pre&gt;</p>
-<p><strong>Example 2:</strong></p>
-<p><img src="https://assets.leetcode.com/uploads/2021/03/31/maze1-2-grid.jpg" alt=""></p>
-<p>&lt;pre&gt;<strong>Input:</strong> maze = [[0,0,1,0,0],[0,0,0,0,0],[0,0,0,1,0],[1,1,0,1,1],[0,0,0,0,0]], start = [0,4], destination = [3,2]
-<strong>Output:</strong> false
-<strong>Explanation:</strong> There is no way for the ball to stop at the destination. Notice that you can pass through the destination but you cannot stop there.
-&lt;/pre&gt;</p>
-<p><strong>Example 3:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> maze = [[0,0,0,0,0],[1,1,0,0,1],[0,0,0,0,0],[0,1,0,0,1],[0,1,0,0,0]], start = [4,3], destination = [0,1]
-<strong>Output:</strong> false
-&lt;/pre&gt;</p>
-<p><strong>Constraints:</strong></p>
-<ul>
-<li><code>m == maze.length</code></li>
-<li><code>n == maze[i].length</code></li>
-<li><code>1 &lt;= m, n &lt;= 100</code></li>
-<li><code>maze[i][j]</code> is <code>0</code> or <code>1</code>.</li>
-<li><code>start.length == 2</code></li>
-<li><code>destination.length == 2</code></li>
-<li><code>0 &lt;= start&lt;sub&gt;row&lt;/sub&gt;, destination&lt;sub&gt;row&lt;/sub&gt; &lt;= m</code></li>
-<li><code>0 &lt;= start&lt;sub&gt;col&lt;/sub&gt;, destination&lt;sub&gt;col&lt;/sub&gt; &lt;= n</code></li>
-<li>Both the ball and the destination exist in an empty space, and they will not be in the same position initially.</li>
-<li>The maze contains <strong>at least 2 empty spaces</strong>.</li>
-</ul>
-<p>&lt;/div&gt;</p>
-<h3><strong>题目大意：</strong></h3>
-<p>球在玉米迷宫上滚，当遇到边界或玉米会停下，停下后可以转任意方向。求能否停在目标上。</p>
-<h3><strong>算法思路：</strong></h3>
-<p>二维数组求目标第一时间想到用BFS，此题求能停下的点而不是所有点。所以属于<strong>一组节点作为一层的BFS</strong>，也就是说只有能停下的位置才算BFS的一层，才加入都队列，其他停不来的点均忽略。这是此题的难点。</p>
-<h3><strong>注意事项：</strong></h3>
-<ol>
-<li>属于<strong>一组节点作为一层的BFS</strong>，能停下的点才加入到queue。比标准模板多了Line 10 - 11. 停下包括边界和<strong>玉米(maze[x][y] == 1</strong>)</li>
-<li>要滚回一步Line 12 - 15，因为line 10循环的终结状态为出界或玉米上。要滚回一步到空地上。</li>
-</ol>
-<h3><strong>Python代码：</strong></h3>
-<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hasPath</span><span class="params">(self, maze: List[List[int]], start: List[int], destination: List[int])</span> -&gt; bool:</span></span><br><span class="line">	queue = collections.deque([(start[<span class="number">0</span>], start[<span class="number">1</span>])])</span><br><span class="line">	visited = set([(start[<span class="number">0</span>], start[<span class="number">1</span>])])</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.popleft()</span><br><span class="line">		<span class="keyword">if</span> node[<span class="number">0</span>] == destination[<span class="number">0</span>] <span class="keyword">and</span> node[<span class="number">1</span>] == destination[<span class="number">1</span>]:</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line">		<span class="keyword">for</span> _dx, _dy <span class="keyword">in</span> OFFSETS:</span><br><span class="line">			x, y = node[<span class="number">0</span>], node[<span class="number">1</span>]</span><br><span class="line">			<span class="keyword">while</span> <span class="number">0</span> &lt;= x &lt; len(maze) <span class="keyword">and</span> <span class="number">0</span> &lt;= y &lt; len(maze[<span class="number">0</span>]) <span class="keyword">and</span> maze[x][y] == <span class="number">0</span>: <span class="comment"># remember maze[x][y] == 0</span></span><br><span class="line">				x, y = x + _dx, y + _dy</span><br><span class="line">			<span class="keyword">if</span> (x - _dx, y - _dy) <span class="keyword">in</span> visited: <span class="comment"># remember</span></span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			queue.append((x - _dx, y - _dy))</span><br><span class="line">			visited.add((x - _dx, y - _dy))</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">False</span></span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>时间复杂度为<code>O(nm)</code>，空间复杂度<code>O(nm)</code></p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
     <h1 class="title"><a href="/2021/12/05/lee-729/">LeetCode 729 My Calendar I</a></h1>
   
 
@@ -377,49 +366,63 @@ myCalendar.book(20, 30); // return True, The event can be booked, as the first e
     <header>
       
   
-    <h1 class="title"><a href="/2021/12/05/lee-105/">LeetCode 105 Construct Binary Tree from Preorder and Inorder Traversal</a></h1>
+    <h1 class="title"><a href="/2021/12/05/lee-490/">LeetCode 490 The Maze</a></h1>
   
 
       
-        <time datetime="2021-12-06T05:36:22.387Z">2021-12-05</time>
+        <time datetime="2021-12-06T05:41:01.328Z">2021-12-05</time>
       
     </header>
     <div class="entry">
       
-        <p><strong><a href="https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+        <p><strong><a href="https://leetcode.com/problems/the-maze/" target="_blank" rel="noopener">LeetCode</a></strong></p>
 <p>&lt;div&gt;</p>
-<p>Given two integer arrays <code>preorder</code> and <code>inorder</code> where <code>preorder</code> is the preorder traversal of a binary tree and <code>inorder</code> is the inorder traversal of the same tree, construct and return <em>the binary tree</em>.</p>
+<p>There is a ball in a <code>maze</code> with empty spaces (represented as <code>0</code>) and walls (represented as <code>1</code>). The ball can go through the empty spaces by rolling <strong>up, down, left or right</strong>, but it won't stop rolling until hitting a wall. When the ball stops, it could choose the next direction.</p>
+<p>Given the <code>m x n</code> <code>maze</code>, the ball's <code>start</code> position and the <code>destination</code>, where <code>start = [start&lt;sub&gt;row&lt;/sub&gt;, start&lt;sub&gt;col&lt;/sub&gt;]</code> and <code>destination = [destination&lt;sub&gt;row&lt;/sub&gt;, destination&lt;sub&gt;col&lt;/sub&gt;]</code>, return <code>true</code> if the ball can stop at the destination, otherwise return <code>false</code>.</p>
+<p>You may assume that <strong>the borders of the maze are all walls</strong> (see examples).</p>
 <p><strong>Example 1:</strong></p>
-<p><img src="https://assets.leetcode.com/uploads/2021/02/19/tree.jpg" alt=""></p>
-<p>&lt;pre&gt;<strong>Input:</strong> preorder = [3,9,20,15,7], inorder = [9,3,15,20,7]
-<strong>Output:</strong> [3,9,20,null,null,15,7]
+<p><img src="https://assets.leetcode.com/uploads/2021/03/31/maze1-1-grid.jpg" alt=""></p>
+<p>&lt;pre&gt;<strong>Input:</strong> maze = [[0,0,1,0,0],[0,0,0,0,0],[0,0,0,1,0],[1,1,0,1,1],[0,0,0,0,0]], start = [0,4], destination = [4,4]
+<strong>Output:</strong> true
+<strong>Explanation:</strong> One possible way is : left -&gt; down -&gt; left -&gt; down -&gt; right -&gt; down -&gt; right.
 &lt;/pre&gt;</p>
 <p><strong>Example 2:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> preorder = [-1], inorder = [-1]
-<strong>Output:</strong> [-1]
+<p><img src="https://assets.leetcode.com/uploads/2021/03/31/maze1-2-grid.jpg" alt=""></p>
+<p>&lt;pre&gt;<strong>Input:</strong> maze = [[0,0,1,0,0],[0,0,0,0,0],[0,0,0,1,0],[1,1,0,1,1],[0,0,0,0,0]], start = [0,4], destination = [3,2]
+<strong>Output:</strong> false
+<strong>Explanation:</strong> There is no way for the ball to stop at the destination. Notice that you can pass through the destination but you cannot stop there.
+&lt;/pre&gt;</p>
+<p><strong>Example 3:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> maze = [[0,0,0,0,0],[1,1,0,0,1],[0,0,0,0,0],[0,1,0,0,1],[0,1,0,0,0]], start = [4,3], destination = [0,1]
+<strong>Output:</strong> false
 &lt;/pre&gt;</p>
 <p><strong>Constraints:</strong></p>
 <ul>
-<li><code>1 &lt;= preorder.length &lt;= 3000</code></li>
-<li><code>inorder.length == preorder.length</code></li>
-<li><code>-3000 &lt;= preorder[i], inorder[i] &lt;= 3000</code></li>
-<li><code>preorder</code> and <code>inorder</code> consist of <strong>unique</strong> values.</li>
-<li>Each value of <code>inorder</code> also appears in <code>preorder</code>.</li>
-<li><code>preorder</code> is <strong>guaranteed</strong> to be the preorder traversal of the tree.</li>
-<li><code>inorder</code> is <strong>guaranteed</strong> to be the inorder traversal of the tree.</li>
+<li><code>m == maze.length</code></li>
+<li><code>n == maze[i].length</code></li>
+<li><code>1 &lt;= m, n &lt;= 100</code></li>
+<li><code>maze[i][j]</code> is <code>0</code> or <code>1</code>.</li>
+<li><code>start.length == 2</code></li>
+<li><code>destination.length == 2</code></li>
+<li><code>0 &lt;= start&lt;sub&gt;row&lt;/sub&gt;, destination&lt;sub&gt;row&lt;/sub&gt; &lt;= m</code></li>
+<li><code>0 &lt;= start&lt;sub&gt;col&lt;/sub&gt;, destination&lt;sub&gt;col&lt;/sub&gt; &lt;= n</code></li>
+<li>Both the ball and the destination exist in an empty space, and they will not be in the same position initially.</li>
+<li>The maze contains <strong>at least 2 empty spaces</strong>.</li>
 </ul>
 <p>&lt;/div&gt;</p>
+<h3><strong>题目大意：</strong></h3>
+<p>球在玉米迷宫上滚，当遇到边界或玉米会停下，停下后可以转任意方向。求能否停在目标上。</p>
 <h3><strong>算法思路：</strong></h3>
-<p>N/A</p>
+<p>二维数组求目标第一时间想到用BFS，此题求能停下的点而不是所有点。所以属于<strong>一组节点作为一层的BFS</strong>，也就是说只有能停下的位置才算BFS的一层，才加入都队列，其他停不来的点均忽略。这是此题的难点。</p>
 <h3><strong>注意事项：</strong></h3>
 <ol>
-<li>用递归实现，in_order字符串分左右两段子串递归到左右儿子，<strong>pre_order字符串每轮递归用pop(0)原地去除首位</strong>，再递归到儿子节点</li>
-<li><strong>终止条件为in_order字符串为空</strong>。</li>
+<li>属于<strong>一组节点作为一层的BFS</strong>，能停下的点才加入到queue。比标准模板多了Line 10 - 11. 停下包括边界和<strong>玉米(maze[x][y] == 1</strong>)</li>
+<li>要滚回一步Line 12 - 15，因为line 10循环的终结状态为出界或玉米上。要滚回一步到空地上。</li>
 </ol>
 <h3><strong>Python代码：</strong></h3>
-<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">buildTree</span><span class="params">(self, preorder: List[int], inorder: List[int])</span> -&gt; TreeNode:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> inorder:</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">None</span></span><br><span class="line">	head = preorder.pop(<span class="number">0</span>)</span><br><span class="line">	index = inorder.index(head)</span><br><span class="line">	left_inorder, right_inorder = inorder[:index], inorder[index + <span class="number">1</span>:]</span><br><span class="line"></span><br><span class="line">	root = TreeNode(head)</span><br><span class="line">	root.left = self.buildTree(preorder, left_inorder)</span><br><span class="line">	root.right = self.buildTree(preorder, right_inorder)</span><br><span class="line">	<span class="keyword">return</span> root</span><br></pre></td></tr></table></figure></p>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hasPath</span><span class="params">(self, maze: List[List[int]], start: List[int], destination: List[int])</span> -&gt; bool:</span></span><br><span class="line">	queue = collections.deque([(start[<span class="number">0</span>], start[<span class="number">1</span>])])</span><br><span class="line">	visited = set([(start[<span class="number">0</span>], start[<span class="number">1</span>])])</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.popleft()</span><br><span class="line">		<span class="keyword">if</span> node[<span class="number">0</span>] == destination[<span class="number">0</span>] <span class="keyword">and</span> node[<span class="number">1</span>] == destination[<span class="number">1</span>]:</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line">		<span class="keyword">for</span> _dx, _dy <span class="keyword">in</span> OFFSETS:</span><br><span class="line">			x, y = node[<span class="number">0</span>], node[<span class="number">1</span>]</span><br><span class="line">			<span class="keyword">while</span> <span class="number">0</span> &lt;= x &lt; len(maze) <span class="keyword">and</span> <span class="number">0</span> &lt;= y &lt; len(maze[<span class="number">0</span>]) <span class="keyword">and</span> maze[x][y] == <span class="number">0</span>: <span class="comment"># remember maze[x][y] == 0</span></span><br><span class="line">				x, y = x + _dx, y + _dy</span><br><span class="line">			<span class="keyword">if</span> (x - _dx, y - _dy) <span class="keyword">in</span> visited: <span class="comment"># remember</span></span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			queue.append((x - _dx, y - _dy))</span><br><span class="line">			visited.add((x - _dx, y - _dy))</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">False</span></span><br></pre></td></tr></table></figure></p>
 <h3><strong>算法分析：</strong></h3>
-<p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code></p>
+<p>时间复杂度为<code>O(nm)</code>，空间复杂度<code>O(nm)</code></p>
 
       
     </div>
@@ -460,6 +463,10 @@ myCalendar.book(20, 30); // return True, The event can be booked, as the first e
   <ul class="entry">
     
       <li>
+        <a href="/2022/01/14/lee-078/">LeetCode 078 Subsets</a>
+      </li>
+    
+      <li>
         <a href="/2022/01/13/lee-065/">LeetCode 065 Valid Number</a>
       </li>
     
@@ -473,10 +480,6 @@ myCalendar.book(20, 30); // return True, The event can be booked, as the first e
     
       <li>
         <a href="/2022/01/05/lee-064/">LeetCode 064 Minimum Path Sum</a>
-      </li>
-    
-      <li>
-        <a href="/2022/01/04/lee-427/">LeetCode 427 Construct Quad Tree</a>
       </li>
     
   </ul>

@@ -53,6 +53,68 @@
     <header>
       
   
+    <h1 class="title"><a href="/2020/05/10/lee-368/">LeetCode 368 Largest Divisible Subset</a></h1>
+  
+
+      
+        <time datetime="2020-05-10T23:21:41.197Z">2020-05-10</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/largest-divisible-subset/" target="_blank" rel="noopener">LeetCode 368 Largest Divisible Subset</a></strong></p>
+<p>Given a set of <strong>distinct</strong> positive integers, find the largest subset such that every pair (S&lt;sub&gt;i&lt;/sub&gt;, S&lt;sub&gt;j&lt;/sub&gt;) of elements in this subset satisfies:</p>
+<p>S&lt;sub&gt;i&lt;/sub&gt; % S&lt;sub&gt;j&lt;/sub&gt; = 0 or S&lt;sub&gt;j&lt;/sub&gt; % S&lt;sub&gt;i&lt;/sub&gt; = 0.</p>
+<p>If there are multiple solutions, return any subset is fine.</p>
+<p><strong>Example 1:</strong></p>
+<p>&lt;div&gt;</p>
+<p>&lt;pre&gt;<strong>Input:</strong> &lt;span id=&quot;example-input-1-1&quot;&gt;[1,2,3]&lt;/span&gt;
+<strong>Output:</strong> &lt;span id=&quot;example-output-1&quot;&gt;[1,2]&lt;/span&gt; (of course, [1,3] will also be ok)
+&lt;/pre&gt;</p>
+<p>&lt;div&gt;</p>
+<p><strong>Example 2:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> &lt;span id=&quot;example-input-2-1&quot;&gt;[1,2,4,8]&lt;/span&gt;
+<strong>Output:</strong> &lt;span id=&quot;example-output-2&quot;&gt;[1,2,4,8]&lt;/span&gt;
+&lt;/pre&gt;</p>
+<h3><strong>题目大意：</strong></h3>
+<p>一个数组，让我们求这样一个子集合，集合中的任意两个数相互取余均为0。</p>
+<h3><strong>解题思路：</strong></h3>
+<p>由于知道子问题有助于求解考虑用DP。它就是LIS的翻版。这道题还需要打印DP路径。</p>
+<ol>
+<li>定义dp[i]为num[i-1]这个数对应的最大可整除子集合个数。</li>
+<li>递归式为dp[i] = max{dp[j-1] + 1}, 0&lt;j&lt;i, 若num[i-1]可被num[j-1]整除</li>
+<li>方向为从左到右。初始值为dp = 1。</li>
+<li>path数组记录解的下标+1，每求得一个解dp[i] = dp[j] + 1就记录对应上一层解的下标，也就是到此解的路径。</li>
+</ol>
+<h3><strong>注意事项：</strong></h3>
+<ol>
+<li>初始值dp = 1。</li>
+</ol>
+<h3><strong>Java代码：</strong></h3>
+<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;Integer&gt; <span class="title">largestDivisibleSubset</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">	List&lt;Integer&gt; res = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">	<span class="keyword">if</span>(nums == <span class="keyword">null</span> || nums.length == <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> res;</span><br><span class="line">	<span class="keyword">if</span>(nums.length == <span class="number">1</span>)</span><br><span class="line">		<span class="keyword">return</span> Arrays.asList(nums[<span class="number">0</span>]);</span><br><span class="line">	Arrays.sort(nums);</span><br><span class="line">	<span class="keyword">int</span> max = Integer.MIN_VALUE;</span><br><span class="line">	<span class="keyword">int</span> maxPos = -<span class="number">1</span>;</span><br><span class="line">	<span class="keyword">int</span>[] dp = <span class="keyword">new</span> <span class="keyword">int</span>[nums.length + <span class="number">1</span>];</span><br><span class="line">	<span class="keyword">int</span>[] path = <span class="keyword">new</span> <span class="keyword">int</span>[nums.length + <span class="number">1</span>];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; dp.length; i++) <span class="comment">// remember to init to 1</span></span><br><span class="line">		dp[i] = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; dp.length; i++) &#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span>; j &lt; i; j++) &#123;</span><br><span class="line">			<span class="keyword">if</span>(nums[i-<span class="number">1</span>] % nums[j-<span class="number">1</span>] == <span class="number">0</span> &amp;&amp; dp[j] + <span class="number">1</span> &gt; dp[i]) &#123;</span><br><span class="line">				dp[i] = dp[j] + <span class="number">1</span>;</span><br><span class="line">				path[i] = j;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(dp[i] &gt; max) &#123; <span class="comment">// the biggest value might not be the last one, keep track of the start pos for the path</span></span><br><span class="line">			max = dp[i];</span><br><span class="line">			maxPos = i;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">int</span> pos = maxPos;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; dp[maxPos]; i++) &#123;</span><br><span class="line">		res.add(nums[pos-<span class="number">1</span>]);</span><br><span class="line">		pos = path[pos];</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	Collections.sort(res);</span><br><span class="line">	<span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3><strong>算法分析：</strong></h3>
+<p>时间复杂度为&lt;code&gt;O(n&lt;sup&gt;2&lt;/sup&gt;)&lt;/code&gt;，空间复杂度&lt;code&gt;O(n&lt;sup&gt;2&lt;/sup&gt;)&lt;/code&gt;。</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2020/05/10/lee-010/">LeetCode 010 Regular Expression Matching</a></h1>
   
 
@@ -402,90 +464,6 @@ wordDict = [&quot;cats&quot;, &quot;dog&quot;, &quot;sand&quot;, &quot;and&quot;
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2020/05/09/lin-683/">LintCode 683 Word Break III</a></h1>
-  
-
-      
-        <time datetime="2020-05-09T20:05:20.549Z">2020-05-09</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://www.lintcode.com/problem/word-break-iii/" target="_blank" rel="noopener">LintCode 683 Word Break III</a></strong></p>
-<p>&lt;div&gt;</p>
-<p>Give a dictionary of words and a sentence with all whitespace removed, return the number of sentences you can form by inserting whitespaces to the sentence so that each word can be found in the dictionary.</p>
-<p><strong>Example 1:</strong></p>
-<p>&lt;pre&gt;
-Input:
-&quot;CatMat&quot;
-[&quot;Cat&quot;, &quot;Mat&quot;, &quot;Ca&quot;, &quot;tM&quot;, &quot;at&quot;, &quot;C&quot;, &quot;Dog&quot;, &quot;og&quot;, &quot;Do&quot;]
-Output: 3
-Explanation:
-we can form 3 sentences, as follows:
-&quot;CatMat&quot; = &quot;Cat&quot; + &quot;Mat&quot;
-&quot;CatMat&quot; = &quot;Ca&quot; + &quot;tM&quot; + &quot;at&quot;
-&quot;CatMat&quot; = &quot;C&quot; + &quot;at&quot; + &quot;Mat&quot;
-&lt;/pre&gt;</p>
-<p><strong>Example 2:</strong></p>
-<p>&lt;pre&gt;
-Input:
-&quot;a&quot;
-[]
-Output: 0
-&lt;/pre&gt;</p>
-<p>&lt;/div&gt;</p>
-<h3><strong>题目大意：</strong></h3>
-<p>一个字符串s，被“字典集合”（wordDict）中的单词拼接而成的可能性种数。</p>
-<h3><strong>解题思路：</strong></h3>
-<p>这是经典题。如果知道s[0:n-1)很容易知道s[0:n)是否有解，既然和子问题有关，就用DP。</p>
-<ol>
-<li>定义dp[i]为字符串s[0,i)是合法分解种数。</li>
-<li>判断一个字符串是否可以合法分解，方案是尝试在每一位进行分解，若其中一个可分解，即有解，加入到dp[i]中。<br>
-递归式为dp[i] += dp[k] * isWord(s[k:i)), 0 &lt;= k &lt; i.</li>
-<li>方向为从左到右i=0..n, 初始值为dp[0] = 1.</li>
-</ol>
-<h3><strong>注意事项：</strong></h3>
-<ol>
-<li>将两个输入都转换成小写。</li>
-<li>dp[n+1]而不是dp[n]，而for循环从1开始。</li>
-<li>递归中dp[i]用+操作符。</li>
-</ol>
-<h3><strong>Java代码：</strong></h3>
-<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">wordBreak3</span><span class="params">(String s, Set&lt;String&gt; dict)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(s == <span class="keyword">null</span> || <span class="string">""</span>.equals(s))</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	</span><br><span class="line">	Set&lt;String&gt; lowerDict = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">	<span class="keyword">for</span>(String c : dict)</span><br><span class="line">		lowerDict.add(c.toLowerCase());</span><br><span class="line">	dict = lowerDict;</span><br><span class="line">	s = s.toLowerCase();</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">int</span>[] dp = <span class="keyword">new</span> <span class="keyword">int</span>[s.length() + <span class="number">1</span>];</span><br><span class="line">	dp[<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// dp[i][j] = sum(dp[i][k] * isWord(s[k,j])), i=0..n-1, j=i..n-1</span></span><br><span class="line">	<span class="comment">// dp[0][n-1] = sum(dp[0][k] * isWord(s[k,n-1]))</span></span><br><span class="line">	<span class="comment">// dp[n] = sum(dp[k] * isWord(s[k,n]))</span></span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= s.length(); i++) &#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; i; k++) &#123;</span><br><span class="line">			dp[i] += dp[k] * (dict.contains(s.substring(k, i)) ? <span class="number">1</span> : <span class="number">0</span>); </span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> dp[s.length()];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>时间复杂度为&lt;code&gt;O(n&lt;sup&gt;2&lt;/sup&gt;)&lt;/code&gt;，空间复杂度为<code>O(n)</code>。</p>
-<p>这道题一开始走过一些弯路，首先我觉得类似于Catalan算法，左右半部都是子问题，但其实这属于单边问题。所以写了以下算法：</p>
-<h3><strong>Java代码：</strong></h3>
-<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">wordBreak3_wrong</span><span class="params">(String s, Set&lt;String&gt; dict)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(s == <span class="keyword">null</span> || <span class="string">""</span>.equals(s))</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// dp[i][j] = sum(dp[i][k] * dp[k][j])</span></span><br><span class="line">	<span class="keyword">int</span>[][] dp = <span class="keyword">new</span> <span class="keyword">int</span>[s.length() + <span class="number">1</span>][s.length() + <span class="number">1</span>];</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// use "ab" as an example</span></span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> len = <span class="number">1</span>; len &lt;= s.length(); len++) &#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; s.length() - len + <span class="number">1</span>; i++) &#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt; i + len; j++) &#123;</span><br><span class="line">				<span class="comment">//"a","b"</span></span><br><span class="line">				dp[i][i+len] += dp[i][j] * dp[j][i+len];    		</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="comment">//"ab"</span></span><br><span class="line">			<span class="keyword">if</span>(dict.contains(s.substring(i, i+len)))</span><br><span class="line">				dp[i][i+len]++;</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> dp[<span class="number">0</span>][s.length()];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>但这个方法会有重复解，比如<br>
-&quot;abc&quot;, &quot;a&quot;,&quot;b&quot;,&quot;c&quot;<br>
--&gt; <code>dp[&quot;ab&quot;] * dp[&quot;c&quot;] = 1</code><br>
--&gt; <code>dp[&quot;a&quot;] * dp[&quot;bc&quot;] = 1</code><br>
-所以解重复，因为这问题是单边子问题而不是Catalan问题。<br>
-更改版本为单边子问题，一开始用dp[n]导致初始化稍复杂，其实初始化可以并入到递归式，只要用dp[n+1]即可。</p>
-<h3><strong>Java代码：</strong></h3>
-<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">wordBreak32</span><span class="params">(String s, Set&lt;String&gt; dict)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(s == <span class="keyword">null</span> || <span class="string">""</span>.equals(s))</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">int</span>[] dp = <span class="keyword">new</span> <span class="keyword">int</span>[s.length()];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; s.length(); i++)</span><br><span class="line">		dp[i] = dict.contains(s.substring(<span class="number">0</span>, i + <span class="number">1</span>)) ? <span class="number">1</span> : <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; s.length(); i++) &#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; i; k++) &#123;</span><br><span class="line">			dp[i] += dp[k] * (dict.contains(s.substring(k + <span class="number">1</span>, i + <span class="number">1</span>)) ? <span class="number">1</span> : <span class="number">0</span>); </span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> dp[s.length() - <span class="number">1</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -510,6 +488,10 @@ Output: 0
   <ul class="entry">
     
       <li>
+        <a href="/2022/01/14/lee-078/">LeetCode 078 Subsets</a>
+      </li>
+    
+      <li>
         <a href="/2022/01/13/lee-065/">LeetCode 065 Valid Number</a>
       </li>
     
@@ -523,10 +505,6 @@ Output: 0
     
       <li>
         <a href="/2022/01/05/lee-064/">LeetCode 064 Minimum Path Sum</a>
-      </li>
-    
-      <li>
-        <a href="/2022/01/04/lee-427/">LeetCode 427 Construct Quad Tree</a>
       </li>
     
   </ul>

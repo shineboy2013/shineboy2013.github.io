@@ -53,6 +53,89 @@
     <header>
       
   
+    <h1 class="title"><a href="/2017/11/28/lee-122/">LeetCode 122 Best Time to Buy and Sell Stock II</a></h1>
+  
+
+      
+        <time datetime="2017-11-28T09:39:08.642Z">2017-11-28</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/best-time-to-buy-and-sell-stock-ii/" target="_blank" rel="noopener">LeetCode 122 Best Time to Buy and Sell Stock II</a></strong></p>
+<p>&lt;div&gt;</p>
+<p>You are given an integer array <code>prices</code> where <code>prices[i]</code> is the price of a given stock on the <code>i&lt;sup&gt;th&lt;/sup&gt;</code> day.</p>
+<p>On each day, you may decide to buy and/or sell the stock. You can only hold <strong>at most one</strong> share of the stock at any time. However, you can buy it then immediately sell it on the <strong>same day</strong>.</p>
+<p>Find and return <em>the <strong>maximum</strong> profit you can achieve</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> prices = [7,1,5,3,6,4]
+<strong>Output:</strong> 7
+<strong>Explanation:</strong> Buy on day 2 (price = 1) and sell on day 3 (price = 5), profit = 5-1 = 4.
+Then buy on day 4 (price = 3) and sell on day 5 (price = 6), profit = 6-3 = 3.
+Total profit is 4 + 3 = 7.
+&lt;/pre&gt;</p>
+<p><strong>Example 2:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> prices = [1,2,3,4,5]
+<strong>Output:</strong> 4
+<strong>Explanation:</strong> Buy on day 1 (price = 1) and sell on day 5 (price = 5), profit = 5-1 = 4.
+Total profit is 4.
+&lt;/pre&gt;</p>
+<p><strong>Example 3:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> prices = [7,6,4,3,1]
+<strong>Output:</strong> 0
+<strong>Explanation:</strong> There is no way to make a positive profit, so we never buy the stock to achieve the maximum profit of 0.
+&lt;/pre&gt;</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= prices.length &lt;= 3 * 10&lt;sup&gt;4&lt;/sup&gt;</code></li>
+<li><code>0 &lt;= prices[i] &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code></li>
+</ul>
+<p>&lt;/div&gt;</p>
+<h3><strong>题目大意：</strong></h3>
+<p>设计一个算法寻找最大收益。你可以随便完成多少次交易（比如，多次买入卖出）。然而你不能一次进行多次交易。</p>
+<h3><strong>解题思路：</strong></h3>
+<p>仍然是求最大利润，可以交易多次，但要先卖再买。容易想到是求所有上升坡的的总和。更简单而言，若将每一个上升坡，分成一小段(每天的交易)，求这些小段的和即可。<br>
+如：[6, 1, 2, 3, 4]中的1, 2, 3, 4序列来说，对于两种操作方案：<br>
+1 在1买入，4卖出<br>
+2 在1买入，2卖出同时买入，3卖出同时买入，4卖出<br>
+这两种操作下，收益是一样的。这种方法，避免检测下坡以及计算每段的和。</p>
+<p><img src="/images/L122.png" alt=""></p>
+<h3><strong>Python代码：</strong></h3>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">maxProfit</span><span class="params">(self, prices: List[int])</span> -&gt; int:</span></span><br><span class="line">	res = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, len(prices)):</span><br><span class="line">		<span class="keyword">if</span> prices[i] - prices[i - <span class="number">1</span>] &gt; <span class="number">0</span>:</span><br><span class="line">			res += prices[i] - prices[i - <span class="number">1</span>]</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure></p>
+<h3><strong>注意事项：</strong></h3>
+<ol>
+<li>数组为空</li>
+</ol>
+<h3><strong>Java代码：</strong></h3>
+<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxProfit</span><span class="params">(<span class="keyword">int</span>[] prices)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(prices.length==<span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> profit = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;prices.length;i++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(prices[i-<span class="number">1</span>]&lt;prices[i])</span><br><span class="line">			profit += prices[i] - prices[i-<span class="number">1</span>];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> profit;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3><strong>算法分析：</strong></h3>
+<p>时间复杂度为<code>O(n)</code>，n为字符串长度，空间复杂度<code>O(1)</code>。</p>
+<h3><strong>相关题目：</strong></h3>
+<p><a href="https://shineboy2013.github.io/2017/11/27/lee-121/" target="_blank" rel="noopener">LeetCode 121 Best Time to Buy and Sell Stock</a><br>
+<a href="https://shineboy2013.github.io/2017/11/28/lee-122/" target="_blank" rel="noopener">LeetCode 122 Best Time to Buy and Sell Stock II</a>
+<a href="https://shineboy2013.github.io/2017/12/11/lee-309/" target="_blank" rel="noopener">LeetCode 309 Best Time to Buy and Sell Stock with Cooldown</a>
+<a href="https://shineboy2013.github.io/2017/12/24/lee-123/" target="_blank" rel="noopener">LeetCode 123 Best Time to Buy and Sell Stock III</a></p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2017/11/27/lee-121/">LeetCode 121 Best Time to Buy and Sell Stock</a></h1>
   
 
@@ -3820,542 +3903,6 @@ Output: &quot;s'teL ekat edoCteeL tsetnoc&quot;
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2017/11/02/kb/">知识点</a></h1>
-  
-
-      
-        <time datetime="2017-11-02T11:43:32.566Z">2017-11-02</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong>常用知识点</strong></p>
-<table>
-<thead>
-<tr>
-<th>类型</th>
-<th style="text-align:left">函数名</th>
-<th style="text-align:left">作用</th>
-<th style="text-align:left">输入参数</th>
-<th style="text-align:left">返回值</th>
-<th style="text-align:left">例子</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>String</td>
-<td style="text-align:left">split</td>
-<td style="text-align:left">根据输入参数分拆成字符串数组</td>
-<td style="text-align:left">String</td>
-<td style="text-align:left">String[]</td>
-<td style="text-align:left">String[] tokens = s.split(&quot; &quot;);</td>
-</tr>
-<tr>
-<td>String</td>
-<td style="text-align:left">trim</td>
-<td style="text-align:left">将前后空格去掉</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">String</td>
-<td style="text-align:left">s = s.trim()</td>
-</tr>
-<tr>
-<td>String</td>
-<td style="text-align:left">toCharArray</td>
-<td style="text-align:left">将字符串变成字符数组</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">char</td>
-<td style="text-align:left">char[] a = s.toCharArray()</td>
-</tr>
-<tr>
-<td>String</td>
-<td style="text-align:left">charAt</td>
-<td style="text-align:left">取某字符</td>
-<td style="text-align:left">int</td>
-<td style="text-align:left">char</td>
-<td style="text-align:left">num1.charAt(i)</td>
-</tr>
-<tr>
-<td>String</td>
-<td style="text-align:left">length</td>
-<td style="text-align:left">取某字符长度</td>
-<td style="text-align:left">int</td>
-<td style="text-align:left">int</td>
-<td style="text-align:left">num1.length()</td>
-</tr>
-<tr>
-<td>String</td>
-<td style="text-align:left">equals</td>
-<td style="text-align:left">判断相等</td>
-<td style="text-align:left">String</td>
-<td style="text-align:left">boolean</td>
-<td style="text-align:left">&quot;&quot;.equals(str)</td>
-</tr>
-<tr>
-<td>String</td>
-<td style="text-align:left">substring</td>
-<td style="text-align:left">取某字符[beginIdx, endIdx)子串</td>
-<td style="text-align:left">int, int</td>
-<td style="text-align:left">String</td>
-<td style="text-align:left">&quot;smiles&quot;.substring(1,5)-&gt;&quot;mile&quot;</td>
-</tr>
-<tr>
-<td>Integer</td>
-<td style="text-align:left">parseInt</td>
-<td style="text-align:left">字符串变整型</td>
-<td style="text-align:left">String</td>
-<td style="text-align:left">int</td>
-<td style="text-align:left">Integer.parseInt(&quot;2&quot;); Integer.parseInt(&quot;100&quot;, 2) -&gt; 4，任意进制数转为10进制。</td>
-</tr>
-<tr>
-<td>Integer</td>
-<td style="text-align:left">Integer.MIN_VALUE</td>
-<td style="text-align:left">整型最小值</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">int</td>
-<td style="text-align:left">Integer.MIN_VALUE</td>
-</tr>
-<tr>
-<td>Integer</td>
-<td style="text-align:left">Integer.toString</td>
-<td style="text-align:left">整型-&gt;String</td>
-<td style="text-align:left">int</td>
-<td style="text-align:left">String</td>
-<td style="text-align:left">Integer.toString(root.val)</td>
-</tr>
-<tr>
-<td>StringBuilder</td>
-<td style="text-align:left">append</td>
-<td style="text-align:left">将新字符（串）加入到末尾</td>
-<td style="text-align:left">String或char</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">sb.append(&quot;abc&quot;)</td>
-</tr>
-<tr>
-<td>StringBuilder</td>
-<td style="text-align:left">new StringBuilder()</td>
-<td style="text-align:left">新建这个类当然也将目前字符串清空</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">sb=new StringBuilder()</td>
-</tr>
-<tr>
-<td>StringBuilder</td>
-<td style="text-align:left">reverse</td>
-<td style="text-align:left">反转</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">StringBuilder</td>
-<td style="text-align:left">sb.reverse()</td>
-</tr>
-<tr>
-<td>StringBuilder</td>
-<td style="text-align:left">toString</td>
-<td style="text-align:left">StringBuilder变成字符串</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">String</td>
-<td style="text-align:left">sb.reverse().toString()</td>
-</tr>
-<tr>
-<td>StringBuilder</td>
-<td style="text-align:left">deleteCharAt</td>
-<td style="text-align:left">StringBuilder删除某字符</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">int</td>
-<td style="text-align:left">sb.deleteCharAt(sb.length() - 1);</td>
-</tr>
-<tr>
-<td>Arrays</td>
-<td style="text-align:left">length</td>
-<td style="text-align:left">数组长度</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">int</td>
-<td style="text-align:left">ary.length</td>
-</tr>
-<tr>
-<td>Arrays</td>
-<td style="text-align:left">sort</td>
-<td style="text-align:left">对数组正(逆)排序</td>
-<td style="text-align:left">T[]</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">Arrays.sort(nums1); Arrays.sort(nums1,Collections.reverseOrder());  Arrays.sort(nums1,new Comparator&lt;int[]&gt;(){});</td>
-</tr>
-<tr>
-<td>Arrays</td>
-<td style="text-align:left">asList</td>
-<td style="text-align:left">包装类型数组转化成List</td>
-<td style="text-align:left">T[]</td>
-<td style="text-align:left">List</td>
-<td style="text-align:left">Arrays.asList(ary), ary为Integer数组或者常量  List: Arrays.asList(&quot;a&quot;, &quot;b&quot;);</td>
-</tr>
-<tr>
-<td>Arrays</td>
-<td style="text-align:left">stream</td>
-<td style="text-align:left">基本类型数组转化成List</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left"><strong>List&lt;Integer&gt; re = Arrays.stream(ints).boxed()   .collect(Collectors.toList())</strong></td>
-</tr>
-<tr>
-<td>Arrays</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left"><strong>去重</strong></td>
-<td style="text-align:left">int[]</td>
-<td style="text-align:left">int[]</td>
-<td style="text-align:left">Set&lt;Integer&gt; set = new HashSet&lt;&gt;(list);set-&gt;int[]</td>
-</tr>
-<tr>
-<td>Collections</td>
-<td style="text-align:left">sort</td>
-<td style="text-align:left">对List排序</td>
-<td style="text-align:left">List</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">Collections.sort(list); Collections.sort(l, Collections.reverseOrder());</td>
-</tr>
-<tr>
-<td>ArrayList</td>
-<td style="text-align:left">new ArrayList&lt;&gt;()</td>
-<td style="text-align:left">新建List</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">List</td>
-<td style="text-align:left">List&lt;Integer&gt; l = new ArrayList&lt;&gt;()</td>
-</tr>
-<tr>
-<td>ArrayList</td>
-<td style="text-align:left">stream</td>
-<td style="text-align:left">List转为基本类型数组</td>
-<td style="text-align:left">List</td>
-<td style="text-align:left">int[]</td>
-<td style="text-align:left"><strong>int[] re = l.stream().mapToInt(i-&gt;i).toArray()</strong></td>
-</tr>
-<tr>
-<td>ArrayList</td>
-<td style="text-align:left">stream</td>
-<td style="text-align:left">List转为Object类型数组</td>
-<td style="text-align:left">List</td>
-<td style="text-align:left">Integer[]</td>
-<td style="text-align:left">Integer[] re = l.toArray(new Integer[0]);</td>
-</tr>
-<tr>
-<td>ArrayList</td>
-<td style="text-align:left">add</td>
-<td style="text-align:left">把一个元素加入到List l中</td>
-<td style="text-align:left">List</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">l.add(&quot;pen&quot;);</td>
-</tr>
-<tr>
-<td>ArrayList</td>
-<td style="text-align:left">addAll</td>
-<td style="text-align:left">把一个List的所有元素加入到另一个中</td>
-<td style="text-align:left">List</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">l2.addAll(l);</td>
-</tr>
-<tr>
-<td>ArrayList</td>
-<td style="text-align:left">get</td>
-<td style="text-align:left">返回给定的下标对应的元素</td>
-<td style="text-align:left">List</td>
-<td style="text-align:left">T</td>
-<td style="text-align:left">l.get(2);</td>
-</tr>
-<tr>
-<td>ArrayList</td>
-<td style="text-align:left">remove</td>
-<td style="text-align:left">把给定下标的元素从List l中删除</td>
-<td style="text-align:left">List</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">l.remove(2);</td>
-</tr>
-<tr>
-<td>ArrayList</td>
-<td style="text-align:left">remove</td>
-<td style="text-align:left">把第一个出现的元素从List l中删除</td>
-<td style="text-align:left">List</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">l.remove(&quot;pen&quot;);</td>
-</tr>
-<tr>
-<td>ArrayList</td>
-<td style="text-align:left">size</td>
-<td style="text-align:left">大小</td>
-<td style="text-align:left">List</td>
-<td style="text-align:left">int</td>
-<td style="text-align:left">l.size();</td>
-</tr>
-<tr>
-<td>ArrayList</td>
-<td style="text-align:left">reverse</td>
-<td style="text-align:left">反转</td>
-<td style="text-align:left">List</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">Collections.reverse(l);</td>
-</tr>
-<tr>
-<td>LinkedList</td>
-<td style="text-align:left">add</td>
-<td style="text-align:left">加到末尾</td>
-<td style="text-align:left">T</td>
-<td style="text-align:left">N/a</td>
-<td style="text-align:left">ll.add(2);</td>
-</tr>
-<tr>
-<td>LinkedList</td>
-<td style="text-align:left">remove</td>
-<td style="text-align:left">头部删除</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">T</td>
-<td style="text-align:left">ll.remove();</td>
-</tr>
-<tr>
-<td>LinkedList</td>
-<td style="text-align:left">addFirst</td>
-<td style="text-align:left">加到头部</td>
-<td style="text-align:left">T</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">ll.addFirst(2);</td>
-</tr>
-<tr>
-<td>LinkedList</td>
-<td style="text-align:left">removeLast</td>
-<td style="text-align:left">末尾删除</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">T</td>
-<td style="text-align:left">ll.removeLast();</td>
-</tr>
-<tr>
-<td>Queue</td>
-<td style="text-align:left">new LinkedList&lt;Integer&gt;()</td>
-<td style="text-align:left">新建/复制队列</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">Queue</td>
-<td style="text-align:left">Queue&lt;Integer&gt; q = new LinkedList&lt;&gt;(q2)</td>
-</tr>
-<tr>
-<td>Queue</td>
-<td style="text-align:left">offer</td>
-<td style="text-align:left">不抛异常的加入尾元素</td>
-<td style="text-align:left">T</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">q.offer(5)</td>
-</tr>
-<tr>
-<td>Queue</td>
-<td style="text-align:left">poll</td>
-<td style="text-align:left">不抛异常的取出头元素</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">T</td>
-<td style="text-align:left">Integer i = q.poll()</td>
-</tr>
-<tr>
-<td>Queue</td>
-<td style="text-align:left">peek</td>
-<td style="text-align:left">不抛异常的看看头元素</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">T</td>
-<td style="text-align:left">Integer i = q.peek()</td>
-</tr>
-<tr>
-<td>Stack</td>
-<td style="text-align:left">new Stack</td>
-<td style="text-align:left">新建栈</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">Stack</td>
-<td style="text-align:left">Stack&lt;Integer&gt; s = new Stack&lt;&gt;()</td>
-</tr>
-<tr>
-<td>Stack</td>
-<td style="text-align:left">peek</td>
-<td style="text-align:left">获取栈顶元素但不出栈</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">T</td>
-<td style="text-align:left">Integer i = s.peek()</td>
-</tr>
-<tr>
-<td>Stack</td>
-<td style="text-align:left">pop</td>
-<td style="text-align:left">获取栈顶元素且出栈</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">T</td>
-<td style="text-align:left">Integer i = s.pop()</td>
-</tr>
-<tr>
-<td>Stack</td>
-<td style="text-align:left">push</td>
-<td style="text-align:left">加入</td>
-<td style="text-align:left">T</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">s.push(5)</td>
-</tr>
-<tr>
-<td>Stack</td>
-<td style="text-align:left">isEmpty</td>
-<td style="text-align:left">是否为空</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">boolean</td>
-<td style="text-align:left">s.isEmpty()</td>
-</tr>
-<tr>
-<td>HashMap</td>
-<td style="text-align:left">new HashMap</td>
-<td style="text-align:left">新建哈希表</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">Map</td>
-<td style="text-align:left">Map&lt;Character, Integer&gt; m = new HashMap&lt;&gt;()</td>
-</tr>
-<tr>
-<td>HashMap</td>
-<td style="text-align:left">get</td>
-<td style="text-align:left">获取</td>
-<td style="text-align:left">T</td>
-<td style="text-align:left">T</td>
-<td style="text-align:left">m.get('a')</td>
-</tr>
-<tr>
-<td>HashMap</td>
-<td style="text-align:left">put</td>
-<td style="text-align:left">加入</td>
-<td style="text-align:left">T,T</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">m.put('a',5)</td>
-</tr>
-<tr>
-<td>HashMap</td>
-<td style="text-align:left">containsKey</td>
-<td style="text-align:left">是否含有某个key</td>
-<td style="text-align:left">T</td>
-<td style="text-align:left">boolean</td>
-<td style="text-align:left">m.containsKey('a')</td>
-</tr>
-<tr>
-<td>HashMap</td>
-<td style="text-align:left">get,put</td>
-<td style="text-align:left">更新key对应的value</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">m.put('a',m.get('a')+1)</td>
-</tr>
-<tr>
-<td>Map</td>
-<td style="text-align:left">Map.of</td>
-<td style="text-align:left">Map常量</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">Map</td>
-<td style="text-align:left">Map.of(2, &quot;abc&quot;, 3, &quot;def&quot;);</td>
-</tr>
-<tr>
-<td>Iterator</td>
-<td style="text-align:left">Iterator</td>
-<td style="text-align:left">entrySet</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">Iterator it = map.entrySet().iterator();</td>
-</tr>
-<tr>
-<td>Iterator</td>
-<td style="text-align:left">Iterator</td>
-<td style="text-align:left">keySet</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">Iterator it = map.keySet().iterator();</td>
-</tr>
-<tr>
-<td>Iterator</td>
-<td style="text-align:left">hasNext</td>
-<td style="text-align:left">有无下一个元素</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">while(it.hasNext())</td>
-</tr>
-<tr>
-<td>Iterator</td>
-<td style="text-align:left">next</td>
-<td style="text-align:left">下一个元素</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">Map.Entry pair = (Map.Entry)it.next()</td>
-</tr>
-<tr>
-<td>Map.Entry</td>
-<td style="text-align:left">getValue, getKey</td>
-<td style="text-align:left">得到key, Value</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">pair.getValue(), pair.getKey()</td>
-</tr>
-<tr>
-<td>HashSet</td>
-<td style="text-align:left">new HashSet</td>
-<td style="text-align:left">新建哈希集</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">Set</td>
-<td style="text-align:left">Set&lt;Character&gt; m = new HashSet&lt;&gt;()</td>
-</tr>
-<tr>
-<td>HashSet</td>
-<td style="text-align:left">add</td>
-<td style="text-align:left">加入</td>
-<td style="text-align:left">T</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">m.add('a')</td>
-</tr>
-<tr>
-<td>HashSet</td>
-<td style="text-align:left">remove</td>
-<td style="text-align:left">删除</td>
-<td style="text-align:left">T</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">m.remove('a')</td>
-</tr>
-<tr>
-<td>HashSet</td>
-<td style="text-align:left">contains</td>
-<td style="text-align:left">是否含有某个元素</td>
-<td style="text-align:left">T</td>
-<td style="text-align:left">boolean</td>
-<td style="text-align:left">m.contains('a')</td>
-</tr>
-<tr>
-<td>PriorityQueue</td>
-<td style="text-align:left">offer,poll,peek</td>
-<td style="text-align:left">与Queue相同</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">N/A</td>
-</tr>
-<tr>
-<td>PriorityQueue</td>
-<td style="text-align:left">Comparator</td>
-<td style="text-align:left">k大小的heap</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">见下</td>
-</tr>
-</tbody>
-</table>
-<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">PriorityQueue&lt;Node&gt; minHeap = <span class="keyword">new</span> PriorityQueue&lt;Node&gt;(k,</span><br><span class="line">				<span class="keyword">new</span> Comparator&lt;Node&gt;() &#123;</span><br><span class="line">					<span class="meta">@Override</span></span><br><span class="line">					<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(Node o1, Node o2)</span> </span>&#123;</span><br><span class="line">						<span class="keyword">return</span> o1.value - o2.value;</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;</span><br><span class="line">		);</span><br></pre></td></tr></table></figure></p>
-<p>Arrays的二分法： 若找不到，返回比tgt大的数的下标数组长度的负值-1。
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span>[] lis = <span class="keyword">new</span> <span class="keyword">int</span>[len];</span><br><span class="line"><span class="keyword">int</span> index = Arrays.binarySearch(lis, <span class="number">0</span>, len, tgt);</span><br><span class="line"><span class="keyword">if</span>(index &lt; <span class="number">0</span>) &#123;</span><br><span class="line">	index = -index - <span class="number">1</span>;</span><br><span class="line">	lis[index] = tgt;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">	lis[index] = tgt;</span><br></pre></td></tr></table></figure></p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -4380,6 +3927,10 @@ Output: &quot;s'teL ekat edoCteeL tsetnoc&quot;
   <ul class="entry">
     
       <li>
+        <a href="/2022/01/14/lee-078/">LeetCode 078 Subsets</a>
+      </li>
+    
+      <li>
         <a href="/2022/01/13/lee-065/">LeetCode 065 Valid Number</a>
       </li>
     
@@ -4393,10 +3944,6 @@ Output: &quot;s'teL ekat edoCteeL tsetnoc&quot;
     
       <li>
         <a href="/2022/01/05/lee-064/">LeetCode 064 Minimum Path Sum</a>
-      </li>
-    
-      <li>
-        <a href="/2022/01/04/lee-427/">LeetCode 427 Construct Quad Tree</a>
       </li>
     
   </ul>

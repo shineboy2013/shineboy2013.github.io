@@ -53,6 +53,92 @@
     <header>
       
   
+    <h1 class="title"><a href="/2021/12/27/lee-987/">LeetCode 987 Vertical Order Traversal of a Binary Tree</a></h1>
+  
+
+      
+        <time datetime="2021-12-27T20:08:31.755Z">2021-12-27</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/vertical-order-traversal-of-a-binary-tree/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<p>&lt;div&gt;</p>
+<p>Given the <code>root</code> of a binary tree, calculate the <strong>vertical order traversal</strong> of the binary tree.</p>
+<p>For each node at position <code>(row, col)</code>, its left and right children will be at positions <code>(row + 1, col - 1)</code> and <code>(row + 1, col + 1)</code> respectively. The root of the tree is at <code>(0, 0)</code>.</p>
+<p>The <strong>vertical order traversal</strong> of a binary tree is a list of top-to-bottom orderings for each column index starting from the leftmost column and ending on the rightmost column. There may be multiple nodes in the same row and same column. In such a case, sort these nodes by their values.</p>
+<p>Return <em>the <strong>vertical order traversal</strong> of the binary tree</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><img src="https://assets.leetcode.com/uploads/2021/01/29/vtree1.jpg" alt=""></p>
+<p>&lt;pre&gt;<strong>Input:</strong> root = [3,9,20,null,null,15,7]
+<strong>Output:</strong> [[9],[3,15],[20],[7]]
+<strong>Explanation:</strong>
+Column -1: Only node 9 is in this column.
+Column 0: Nodes 3 and 15 are in this column in that order from top to bottom.
+Column 1: Only node 20 is in this column.
+Column 2: Only node 7 is in this column.&lt;/pre&gt;</p>
+<p><strong>Example 2:</strong></p>
+<p><img src="https://assets.leetcode.com/uploads/2021/01/29/vtree2.jpg" alt=""></p>
+<p>&lt;pre&gt;<strong>Input:</strong> root = [1,2,3,4,5,6,7]
+<strong>Output:</strong> [[4],[2],[1,5,6],[3],[7]]
+<strong>Explanation:</strong>
+Column -2: Only node 4 is in this column.
+Column -1: Only node 2 is in this column.
+Column 0: Nodes 1, 5, and 6 are in this column.
+1 is at the top, so it comes first.
+5 and 6 are at the same position (2, 0), so we order them by their value, 5 before 6.
+Column 1: Only node 3 is in this column.
+Column 2: Only node 7 is in this column.
+&lt;/pre&gt;</p>
+<p><strong>Example 3:</strong></p>
+<p><img src="https://assets.leetcode.com/uploads/2021/01/29/vtree3.jpg" alt=""></p>
+<p>&lt;pre&gt;<strong>Input:</strong> root = [1,2,3,4,6,5,7]
+<strong>Output:</strong> [[4],[2],[1,5,6],[3],[7]]
+<strong>Explanation:</strong>
+This case is the exact same as example 2, but with nodes 5 and 6 swapped.
+Note that the solution remains the same since 5 and 6 are in the same location and should be ordered by their values.
+&lt;/pre&gt;</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li>The number of nodes in the tree is in the range <code>[1, 1000]</code>.</li>
+<li><code>0 &lt;= Node.val &lt;= 1000</code></li>
+</ul>
+<p>&lt;/div&gt;</p>
+<h3><strong>题目大意：</strong></h3>
+<p>按列顺序打印二叉树，若列号同，同一行的节点按值排序</p>
+<h3><strong>解题思路：</strong></h3>
+<p>与<a href="https://shineboy2013.github.io/2021/12/24/lee-314/" target="_blank" rel="noopener">LeetCode 314 Binary Tree Vertical Order Traversal</a>类似，用BFS</p>
+<h3><strong>解题步骤：</strong></h3>
+<p>N/A</p>
+<h3><strong>注意事项：</strong></h3>
+<ol>
+<li>一开始以为同一列的同一行的节点在queue是一个紧接一个出列。但同一行节点可能先出列col=3, col=4， col=3。而且同一列同一行的节点有多个，不止两个。所以<strong>将row_id也加入到queue节点中，row_id也加入到map中，最后遍历结果时，将同一row_id节点排序</strong></li>
+</ol>
+<h3><strong>Python代码：</strong></h3>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">verticalTraversal</span><span class="params">(self, root: TreeNode)</span> -&gt; List[List[int]]:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> root:</span><br><span class="line">		<span class="keyword">return</span> []</span><br><span class="line">	col_to_node_list = collections.defaultdict(list)</span><br><span class="line">	min_col, max_col = float(<span class="string">'inf'</span>), float(<span class="string">'-inf'</span>)</span><br><span class="line">	queue = collections.deque([(root, <span class="number">0</span>, <span class="number">0</span>)])</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node, row_id, col_id = queue.popleft()</span><br><span class="line">		col_to_node_list[col_id].append((node.val, row_id))</span><br><span class="line">		min_col, max_col = min(min_col, col_id), max(max_col, col_id)</span><br><span class="line">		<span class="keyword">if</span> node.left:</span><br><span class="line">			queue.append((node.left, row_id + <span class="number">1</span>, col_id - <span class="number">1</span>))</span><br><span class="line">		<span class="keyword">if</span> node.right:</span><br><span class="line">			queue.append((node.right, row_id + <span class="number">1</span>, col_id + <span class="number">1</span>))</span><br><span class="line">	res = []</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(min_col, max_col + <span class="number">1</span>):</span><br><span class="line">		last_row_id, same_row, same_col = <span class="number">-1</span>, [], []</span><br><span class="line">		<span class="keyword">for</span> pair <span class="keyword">in</span> col_to_node_list[i]:</span><br><span class="line">			<span class="keyword">if</span> last_row_id == pair[<span class="number">1</span>]:</span><br><span class="line">				same_row.append(pair[<span class="number">0</span>])</span><br><span class="line">			<span class="keyword">else</span>:</span><br><span class="line">				same_col += sorted(same_row)</span><br><span class="line">				same_row = [pair[<span class="number">0</span>]]</span><br><span class="line">				last_row_id = pair[<span class="number">1</span>]</span><br><span class="line">		same_col += sorted(same_row)</span><br><span class="line">		res.append(same_col)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure></p>
+<h3><strong>算法分析：</strong></h3>
+<p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>，稍大于O(n), 因为同一列同一行节点要排序</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2021/12/26/lee-453/">LeetCode 453 Minimum Moves to Equal Array Elements</a></h1>
   
 
@@ -365,79 +451,6 @@ delta[i]为下标为i的元素的唯一个数的增量</p>
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2021/12/26/lee-526/">LeetCode 526 Beautiful Arrangement</a></h1>
-  
-
-      
-        <time datetime="2021-12-27T00:05:38.130Z">2021-12-26</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/beautiful-arrangement/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<p>&lt;div&gt;</p>
-<p>Suppose you have <code>n</code> integers labeled <code>1</code> through <code>n</code>. A permutation of those <code>n</code> integers <code>perm</code> (<strong>1-indexed</strong>) is considered a <strong>beautiful arrangement</strong> if for every <code>i</code> (<code>1 &lt;= i &lt;= n</code>), <strong>either</strong> of the following is true:</p>
-<ul>
-<li><code>perm[i]</code> is divisible by <code>i</code>.</li>
-<li><code>i</code> is divisible by <code>perm[i]</code>.</li>
-</ul>
-<p>Given an integer <code>n</code>, return <em>the <strong>number</strong> of the <strong>beautiful arrangements</strong> that you can construct</em>.</p>
-<p><strong>Example 1:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> n = 2
-<strong>Output:</strong> 2
-<strong>Explanation:</strong>
-The first beautiful arrangement is [1,2]:
-- perm[1] = 1 is divisible by i = 1
-- perm[2] = 2 is divisible by i = 2
-The second beautiful arrangement is [2,1]:
-- perm[1] = 2 is divisible by i = 1
-- i = 2 is divisible by perm[2] = 1
-&lt;/pre&gt;</p>
-<p><strong>Example 2:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> n = 1
-<strong>Output:</strong> 1
-&lt;/pre&gt;</p>
-<p><strong>Constraints:</strong></p>
-<ul>
-<li><code>1 &lt;= n &lt;= 15</code></li>
-</ul>
-<p>&lt;/div&gt;</p>
-<h3><strong>题目大意：</strong></h3>
-<p>求数组中所有排列中下标（从1开始）和数值能整除（下标整除数值或反之）的个数</p>
-<h3><strong>解题思路：</strong></h3>
-<p>一开始考虑用DP，因为求个数且类似于L368 Largest Divisible Subset，但问题与子问题的具体排位有关，所以DP不可行。考虑用Stack，但数组顺序可变。<br>
-只能用暴力法，也就是DFS中排列求解</p>
-<h3><strong>解题步骤：</strong></h3>
-<p>N/A</p>
-<h3><strong>注意事项：</strong></h3>
-<ol>
-<li>用排列模板，但此题不涉及具体数组。用set来记录访问过的数值而不是下标，start来记录模拟结果path中的位置</li>
-</ol>
-<h3><strong>Python代码：</strong></h3>
-<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">countArrangement</span><span class="params">(self, n: int)</span> -&gt; int:</span></span><br><span class="line">	<span class="keyword">return</span> self.permute(n, <span class="number">1</span>, set())</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">permute</span><span class="params">(self, n, start, visited)</span>:</span> <span class="comment"># 2, 1, [F,F,F]</span></span><br><span class="line">	<span class="keyword">if</span> start == n + <span class="number">1</span>: <span class="comment"># remember n + 1</span></span><br><span class="line">		<span class="comment">#print(path)</span></span><br><span class="line">		<span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">	res = <span class="number">0</span> <span class="comment"># 1</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, n + <span class="number">1</span>): <span class="comment"># [1,3)</span></span><br><span class="line">		<span class="keyword">if</span> i <span class="keyword">in</span> visited:</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		<span class="keyword">if</span> i % start == <span class="number">0</span> <span class="keyword">or</span> start % i == <span class="number">0</span>:</span><br><span class="line">			visited.add(i)</span><br><span class="line">			<span class="comment">#path.append(i)</span></span><br><span class="line">			res += self.permute(n, start + <span class="number">1</span>, visited) <span class="comment"># 2, 2, [FFT]</span></span><br><span class="line">			<span class="comment">#path.pop()</span></span><br><span class="line">			visited.remove(i)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>时间复杂度为<code>O(解大小)</code>，空间复杂度<code>O(n)</code></p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -462,6 +475,10 @@ The second beautiful arrangement is [2,1]:
   <ul class="entry">
     
       <li>
+        <a href="/2022/01/14/lee-078/">LeetCode 078 Subsets</a>
+      </li>
+    
+      <li>
         <a href="/2022/01/13/lee-065/">LeetCode 065 Valid Number</a>
       </li>
     
@@ -475,10 +492,6 @@ The second beautiful arrangement is [2,1]:
     
       <li>
         <a href="/2022/01/05/lee-064/">LeetCode 064 Minimum Path Sum</a>
-      </li>
-    
-      <li>
-        <a href="/2022/01/04/lee-427/">LeetCode 427 Construct Quad Tree</a>
       </li>
     
   </ul>
