@@ -1,0 +1,810 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+  
+  <title>Page 49 › KK&#39;s blog</title>
+  <meta name="author" content="KK Shum">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+  <meta property="og:site_name" content="KK&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="KK&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]--><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+</head>
+
+
+<body>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><header id="header"><div class="meta inner">
+  <h1><a href="/">KK&#39;s blog</a></h1>
+  <h2><a href="/">每天积累多一些</a></h2>
+  <nav id="main-nav">
+    <ul>
+      
+      <li><a href="/about">About</a></li>
+      
+      <li><a href="/archives">Archives</a></li>
+      
+      <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+</div>
+<div class="clearfix"></div>
+
+	<script data-ad-client="ca-pub-3350210696528821" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  </header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper">
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2017/11/02/lee-557/">LeetCode 557 Reverse Words in a String III</a></h1>
+  
+
+      
+        <time datetime="2017-11-02T11:43:32.738Z">2017-11-02</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/reverse-words-in-a-string-iii/" target="_blank" rel="noopener">LeetCode 557 Reverse Words in a String III</a></strong></p>
+<p>Given a string, you need to reverse the order of characters in each word within a sentence while still preserving whitespace and initial word order.</p>
+<p><strong>Example 1:</strong></p>
+<p>&lt;pre&gt;Input: &quot;Let's take LeetCode contest&quot;
+Output: &quot;s'teL ekat edoCteeL tsetnoc&quot;
+&lt;/pre&gt;</p>
+<p>**Note:**In the string, each word is separated by single space and there will not be any extra space in the string.</p>
+<h3><strong>题目大意：</strong></h3>
+<p>给定字符串，将每个单词逐字符逆置，返回新字符串。注意：字符串中单词之间有且只有1个空格分开。</p>
+<h3><strong>解题思路：</strong></h3>
+<p>这里考到StringBuilder，对于字符串连接效率高。还有一个小技巧，就是往输入参数附加一个空格，这样for循环结束后不用特别处理边界情况。
+第一种方法是以单词为扫描单位，把字符串分成单词字符串数组，然后把每个单词反转及一个空格加入到结果sb中。
+第二种方法是以字符为扫描单位，遇到空格是，就把之前存入的word放入sb中，再进行下一轮word扫描。</p>
+<h3><strong>注意事项：</strong></h3>
+<ol>
+<li>用StringBuilder</li>
+<li>末尾加入空格</li>
+</ol>
+<h3><strong>Java代码：</strong></h3>
+<p>第一种方法
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">reverseWords</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">	String[] tokens = s.split(<span class="string">" "</span>);</span><br><span class="line">	StringBuilder sb = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">	<span class="keyword">for</span>(String token : tokens)</span><br><span class="line">		sb.append(<span class="keyword">new</span> StringBuilder(token).reverse().toString()+<span class="string">" "</span>);</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">return</span> sb.toString().trim();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>第二种方法
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">reverseWords</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">	s = s+<span class="string">" "</span>;</span><br><span class="line">	StringBuilder sb = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">	StringBuilder word = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">char</span> c : s.toCharArray())&#123;</span><br><span class="line">		<span class="keyword">if</span>(c!=<span class="string">' '</span>)</span><br><span class="line">			word.append(c);</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			sb.append(word.reverse().toString()+<span class="string">" "</span>);</span><br><span class="line">			word = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> sb.toString().trim();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3><strong>算法分析：</strong></h3>
+<p>两种方法时间复杂度为<code>O(n)</code>，n为字符串长度。第一种方法空间复杂度为<code>O(n)</code>，而第二种方法为<code>O(1)</code>。</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2017/11/02/lee-415/">LeetCode 415 Add Strings</a></h1>
+  
+
+      
+        <time datetime="2017-11-02T11:43:32.613Z">2017-11-02</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/add-strings/" target="_blank" rel="noopener">LeetCode 415 Add Strings</a></strong></p>
+<p>Given two non-negative numbers <code>num1</code> and <code>num2</code> represented as string, return the sum of <code>num1</code> and <code>num2</code>.</p>
+<p><strong>Note:</strong></p>
+<ol>
+<li>The length of both <code>num1</code> and <code>num2</code> is &lt; 5100.</li>
+<li>Both <code>num1</code> and <code>num2</code> contains only digits <code>0-9</code>.</li>
+<li>Both <code>num1</code> and <code>num2</code> does not contain any leading zero.</li>
+<li>You <strong>must not use any built-in BigInteger library</strong> or <strong>convert the inputs to integer</strong> directly.</li>
+</ol>
+<h3><strong>题目大意：</strong></h3>
+<p>给出两个字符串形式的非负数num1和num2，返回num1和num2之和。</p>
+<h3><strong>解题思路：</strong></h3>
+<p>对每一位进行加法，注意进位和长度不一，类似于merge sort里面merge的实现。最要注意的是进位carry的edge case：for循环后最后值要特别处理。</p>
+<h3><strong>注意事项：</strong></h3>
+<ol>
+<li>三个循环后carry要特殊处理</li>
+<li>Python中，题目要求不能用int函数，就只能用ord(num1[i]) - ord('0')</li>
+</ol>
+<h3><strong>Python代码：</strong></h3>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">addStrings</span><span class="params">(self, num1: str, num2: str)</span> -&gt; str:</span></span><br><span class="line">	num1, num2 = num1[::<span class="number">-1</span>], num2[::<span class="number">-1</span>]</span><br><span class="line">	res = <span class="string">''</span></span><br><span class="line">	i, j, carry = <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span></span><br><span class="line">	<span class="keyword">while</span> i &lt; len(num1) <span class="keyword">and</span> j &lt; len(num2):</span><br><span class="line">		tmp = ord(num1[i]) - ord(<span class="string">'0'</span>) + ord(num2[j]) - ord(<span class="string">'0'</span>) + carry</span><br><span class="line">		carry = <span class="number">1</span> <span class="keyword">if</span> tmp &gt;= <span class="number">10</span> <span class="keyword">else</span> <span class="number">0</span></span><br><span class="line">		res += str(tmp % <span class="number">10</span>)</span><br><span class="line">		i += <span class="number">1</span></span><br><span class="line">		j += <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> i &lt; len(num1):</span><br><span class="line">		tmp = ord(num1[i]) - ord(<span class="string">'0'</span>) + carry</span><br><span class="line">		carry = <span class="number">1</span> <span class="keyword">if</span> tmp &gt;= <span class="number">10</span> <span class="keyword">else</span> <span class="number">0</span></span><br><span class="line">		res += str(tmp % <span class="number">10</span>)</span><br><span class="line">		i += <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> j &lt; len(num2):</span><br><span class="line">		tmp = ord(num2[j]) - ord(<span class="string">'0'</span>) + carry</span><br><span class="line">		carry = <span class="number">1</span> <span class="keyword">if</span> tmp &gt;= <span class="number">10</span> <span class="keyword">else</span> <span class="number">0</span></span><br><span class="line">		res += str(tmp % <span class="number">10</span>)</span><br><span class="line">		j += <span class="number">1</span></span><br><span class="line">	<span class="keyword">if</span> carry == <span class="number">1</span>:</span><br><span class="line">		res += str(carry)</span><br><span class="line">	<span class="keyword">return</span> res[::<span class="number">-1</span>]</span><br></pre></td></tr></table></figure></p>
+<h3><strong>Java代码：</strong></h3>
+<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">addStrings</span><span class="params">(String num1, String num2)</span> </span>&#123;</span><br><span class="line">	StringBuffer sb = <span class="keyword">new</span> StringBuffer();</span><br><span class="line">	<span class="keyword">int</span> i=num1.length()-<span class="number">1</span>,j=num2.length()-<span class="number">1</span>;</span><br><span class="line">	<span class="keyword">int</span> carry=<span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span>(i&gt;=<span class="number">0</span> &amp;&amp; j&gt;=<span class="number">0</span>)&#123;</span><br><span class="line">		<span class="keyword">int</span> tmp = Integer.parseInt(num1.charAt(i)+<span class="string">""</span>)+Integer.parseInt(num2.charAt(j)+<span class="string">""</span>)+carry;</span><br><span class="line">		<span class="keyword">if</span>(tmp&gt;=<span class="number">10</span>)</span><br><span class="line">			carry = <span class="number">1</span>;</span><br><span class="line">		<span class="keyword">else</span> carry = <span class="number">0</span>;</span><br><span class="line">		sb.append(tmp%<span class="number">10</span>);</span><br><span class="line">		i--;</span><br><span class="line">		j--;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">while</span>(i&gt;=<span class="number">0</span>)&#123;</span><br><span class="line">		<span class="keyword">int</span> tmp = Integer.parseInt(num1.charAt(i)+<span class="string">""</span>)+carry;</span><br><span class="line">		<span class="keyword">if</span>(tmp&gt;=<span class="number">10</span>)</span><br><span class="line">			carry = <span class="number">1</span>;</span><br><span class="line">		<span class="keyword">else</span> carry = <span class="number">0</span>;</span><br><span class="line">		sb.append(tmp%<span class="number">10</span>);</span><br><span class="line">		i--;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">while</span>(j&gt;=<span class="number">0</span>)&#123;</span><br><span class="line">		<span class="keyword">int</span> tmp = Integer.parseInt(num2.charAt(j)+<span class="string">""</span>)+carry;</span><br><span class="line">		<span class="keyword">if</span>(tmp&gt;=<span class="number">10</span>)</span><br><span class="line">			carry = <span class="number">1</span>;</span><br><span class="line">		<span class="keyword">else</span> carry = <span class="number">0</span>;</span><br><span class="line">		sb.append(tmp%<span class="number">10</span>);</span><br><span class="line">		j--;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span>(carry&gt;<span class="number">0</span>)</span><br><span class="line">		sb.append(carry);</span><br><span class="line">	<span class="keyword">return</span> sb.reverse().toString();	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3><strong>算法分析：</strong></h3>
+<p>时间复杂度为<code>O(n)</code>，n为字符串较长者长度。空间复杂度为<code>O(1)</code>。</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2017/11/02/kb/">知识点</a></h1>
+  
+
+      
+        <time datetime="2017-11-02T11:43:32.566Z">2017-11-02</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong>常用知识点</strong></p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th style="text-align:left">函数名</th>
+<th style="text-align:left">作用</th>
+<th style="text-align:left">输入参数</th>
+<th style="text-align:left">返回值</th>
+<th style="text-align:left">例子</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String</td>
+<td style="text-align:left">split</td>
+<td style="text-align:left">根据输入参数分拆成字符串数组</td>
+<td style="text-align:left">String</td>
+<td style="text-align:left">String[]</td>
+<td style="text-align:left">String[] tokens = s.split(&quot; &quot;);</td>
+</tr>
+<tr>
+<td>String</td>
+<td style="text-align:left">trim</td>
+<td style="text-align:left">将前后空格去掉</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">String</td>
+<td style="text-align:left">s = s.trim()</td>
+</tr>
+<tr>
+<td>String</td>
+<td style="text-align:left">toCharArray</td>
+<td style="text-align:left">将字符串变成字符数组</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">char</td>
+<td style="text-align:left">char[] a = s.toCharArray()</td>
+</tr>
+<tr>
+<td>String</td>
+<td style="text-align:left">charAt</td>
+<td style="text-align:left">取某字符</td>
+<td style="text-align:left">int</td>
+<td style="text-align:left">char</td>
+<td style="text-align:left">num1.charAt(i)</td>
+</tr>
+<tr>
+<td>String</td>
+<td style="text-align:left">length</td>
+<td style="text-align:left">取某字符长度</td>
+<td style="text-align:left">int</td>
+<td style="text-align:left">int</td>
+<td style="text-align:left">num1.length()</td>
+</tr>
+<tr>
+<td>String</td>
+<td style="text-align:left">equals</td>
+<td style="text-align:left">判断相等</td>
+<td style="text-align:left">String</td>
+<td style="text-align:left">boolean</td>
+<td style="text-align:left">&quot;&quot;.equals(str)</td>
+</tr>
+<tr>
+<td>String</td>
+<td style="text-align:left">substring</td>
+<td style="text-align:left">取某字符[beginIdx, endIdx)子串</td>
+<td style="text-align:left">int, int</td>
+<td style="text-align:left">String</td>
+<td style="text-align:left">&quot;smiles&quot;.substring(1,5)-&gt;&quot;mile&quot;</td>
+</tr>
+<tr>
+<td>Integer</td>
+<td style="text-align:left">parseInt</td>
+<td style="text-align:left">字符串变整型</td>
+<td style="text-align:left">String</td>
+<td style="text-align:left">int</td>
+<td style="text-align:left">Integer.parseInt(&quot;2&quot;); Integer.parseInt(&quot;100&quot;, 2) -&gt; 4，任意进制数转为10进制。</td>
+</tr>
+<tr>
+<td>Integer</td>
+<td style="text-align:left">Integer.MIN_VALUE</td>
+<td style="text-align:left">整型最小值</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">int</td>
+<td style="text-align:left">Integer.MIN_VALUE</td>
+</tr>
+<tr>
+<td>Integer</td>
+<td style="text-align:left">Integer.toString</td>
+<td style="text-align:left">整型-&gt;String</td>
+<td style="text-align:left">int</td>
+<td style="text-align:left">String</td>
+<td style="text-align:left">Integer.toString(root.val)</td>
+</tr>
+<tr>
+<td>StringBuilder</td>
+<td style="text-align:left">append</td>
+<td style="text-align:left">将新字符（串）加入到末尾</td>
+<td style="text-align:left">String或char</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">sb.append(&quot;abc&quot;)</td>
+</tr>
+<tr>
+<td>StringBuilder</td>
+<td style="text-align:left">new StringBuilder()</td>
+<td style="text-align:left">新建这个类当然也将目前字符串清空</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">sb=new StringBuilder()</td>
+</tr>
+<tr>
+<td>StringBuilder</td>
+<td style="text-align:left">reverse</td>
+<td style="text-align:left">反转</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">StringBuilder</td>
+<td style="text-align:left">sb.reverse()</td>
+</tr>
+<tr>
+<td>StringBuilder</td>
+<td style="text-align:left">toString</td>
+<td style="text-align:left">StringBuilder变成字符串</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">String</td>
+<td style="text-align:left">sb.reverse().toString()</td>
+</tr>
+<tr>
+<td>StringBuilder</td>
+<td style="text-align:left">deleteCharAt</td>
+<td style="text-align:left">StringBuilder删除某字符</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">int</td>
+<td style="text-align:left">sb.deleteCharAt(sb.length() - 1);</td>
+</tr>
+<tr>
+<td>Arrays</td>
+<td style="text-align:left">length</td>
+<td style="text-align:left">数组长度</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">int</td>
+<td style="text-align:left">ary.length</td>
+</tr>
+<tr>
+<td>Arrays</td>
+<td style="text-align:left">sort</td>
+<td style="text-align:left">对数组正(逆)排序</td>
+<td style="text-align:left">T[]</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">Arrays.sort(nums1); Arrays.sort(nums1,Collections.reverseOrder());  Arrays.sort(nums1,new Comparator&lt;int[]&gt;(){});</td>
+</tr>
+<tr>
+<td>Arrays</td>
+<td style="text-align:left">asList</td>
+<td style="text-align:left">包装类型数组转化成List</td>
+<td style="text-align:left">T[]</td>
+<td style="text-align:left">List</td>
+<td style="text-align:left">Arrays.asList(ary), ary为Integer数组或者常量  List: Arrays.asList(&quot;a&quot;, &quot;b&quot;);</td>
+</tr>
+<tr>
+<td>Arrays</td>
+<td style="text-align:left">stream</td>
+<td style="text-align:left">基本类型数组转化成List</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left"><strong>List&lt;Integer&gt; re = Arrays.stream(ints).boxed()   .collect(Collectors.toList())</strong></td>
+</tr>
+<tr>
+<td>Arrays</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left"><strong>去重</strong></td>
+<td style="text-align:left">int[]</td>
+<td style="text-align:left">int[]</td>
+<td style="text-align:left">Set&lt;Integer&gt; set = new HashSet&lt;&gt;(list);set-&gt;int[]</td>
+</tr>
+<tr>
+<td>Collections</td>
+<td style="text-align:left">sort</td>
+<td style="text-align:left">对List排序</td>
+<td style="text-align:left">List</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">Collections.sort(list); Collections.sort(l, Collections.reverseOrder());</td>
+</tr>
+<tr>
+<td>ArrayList</td>
+<td style="text-align:left">new ArrayList&lt;&gt;()</td>
+<td style="text-align:left">新建List</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">List</td>
+<td style="text-align:left">List&lt;Integer&gt; l = new ArrayList&lt;&gt;()</td>
+</tr>
+<tr>
+<td>ArrayList</td>
+<td style="text-align:left">stream</td>
+<td style="text-align:left">List转为基本类型数组</td>
+<td style="text-align:left">List</td>
+<td style="text-align:left">int[]</td>
+<td style="text-align:left"><strong>int[] re = l.stream().mapToInt(i-&gt;i).toArray()</strong></td>
+</tr>
+<tr>
+<td>ArrayList</td>
+<td style="text-align:left">stream</td>
+<td style="text-align:left">List转为Object类型数组</td>
+<td style="text-align:left">List</td>
+<td style="text-align:left">Integer[]</td>
+<td style="text-align:left">Integer[] re = l.toArray(new Integer[0]);</td>
+</tr>
+<tr>
+<td>ArrayList</td>
+<td style="text-align:left">add</td>
+<td style="text-align:left">把一个元素加入到List l中</td>
+<td style="text-align:left">List</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">l.add(&quot;pen&quot;);</td>
+</tr>
+<tr>
+<td>ArrayList</td>
+<td style="text-align:left">addAll</td>
+<td style="text-align:left">把一个List的所有元素加入到另一个中</td>
+<td style="text-align:left">List</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">l2.addAll(l);</td>
+</tr>
+<tr>
+<td>ArrayList</td>
+<td style="text-align:left">get</td>
+<td style="text-align:left">返回给定的下标对应的元素</td>
+<td style="text-align:left">List</td>
+<td style="text-align:left">T</td>
+<td style="text-align:left">l.get(2);</td>
+</tr>
+<tr>
+<td>ArrayList</td>
+<td style="text-align:left">remove</td>
+<td style="text-align:left">把给定下标的元素从List l中删除</td>
+<td style="text-align:left">List</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">l.remove(2);</td>
+</tr>
+<tr>
+<td>ArrayList</td>
+<td style="text-align:left">remove</td>
+<td style="text-align:left">把第一个出现的元素从List l中删除</td>
+<td style="text-align:left">List</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">l.remove(&quot;pen&quot;);</td>
+</tr>
+<tr>
+<td>ArrayList</td>
+<td style="text-align:left">size</td>
+<td style="text-align:left">大小</td>
+<td style="text-align:left">List</td>
+<td style="text-align:left">int</td>
+<td style="text-align:left">l.size();</td>
+</tr>
+<tr>
+<td>ArrayList</td>
+<td style="text-align:left">reverse</td>
+<td style="text-align:left">反转</td>
+<td style="text-align:left">List</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">Collections.reverse(l);</td>
+</tr>
+<tr>
+<td>LinkedList</td>
+<td style="text-align:left">add</td>
+<td style="text-align:left">加到末尾</td>
+<td style="text-align:left">T</td>
+<td style="text-align:left">N/a</td>
+<td style="text-align:left">ll.add(2);</td>
+</tr>
+<tr>
+<td>LinkedList</td>
+<td style="text-align:left">remove</td>
+<td style="text-align:left">头部删除</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">T</td>
+<td style="text-align:left">ll.remove();</td>
+</tr>
+<tr>
+<td>LinkedList</td>
+<td style="text-align:left">addFirst</td>
+<td style="text-align:left">加到头部</td>
+<td style="text-align:left">T</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">ll.addFirst(2);</td>
+</tr>
+<tr>
+<td>LinkedList</td>
+<td style="text-align:left">removeLast</td>
+<td style="text-align:left">末尾删除</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">T</td>
+<td style="text-align:left">ll.removeLast();</td>
+</tr>
+<tr>
+<td>Queue</td>
+<td style="text-align:left">new LinkedList&lt;Integer&gt;()</td>
+<td style="text-align:left">新建/复制队列</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">Queue</td>
+<td style="text-align:left">Queue&lt;Integer&gt; q = new LinkedList&lt;&gt;(q2)</td>
+</tr>
+<tr>
+<td>Queue</td>
+<td style="text-align:left">offer</td>
+<td style="text-align:left">不抛异常的加入尾元素</td>
+<td style="text-align:left">T</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">q.offer(5)</td>
+</tr>
+<tr>
+<td>Queue</td>
+<td style="text-align:left">poll</td>
+<td style="text-align:left">不抛异常的取出头元素</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">T</td>
+<td style="text-align:left">Integer i = q.poll()</td>
+</tr>
+<tr>
+<td>Queue</td>
+<td style="text-align:left">peek</td>
+<td style="text-align:left">不抛异常的看看头元素</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">T</td>
+<td style="text-align:left">Integer i = q.peek()</td>
+</tr>
+<tr>
+<td>Stack</td>
+<td style="text-align:left">new Stack</td>
+<td style="text-align:left">新建栈</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">Stack</td>
+<td style="text-align:left">Stack&lt;Integer&gt; s = new Stack&lt;&gt;()</td>
+</tr>
+<tr>
+<td>Stack</td>
+<td style="text-align:left">peek</td>
+<td style="text-align:left">获取栈顶元素但不出栈</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">T</td>
+<td style="text-align:left">Integer i = s.peek()</td>
+</tr>
+<tr>
+<td>Stack</td>
+<td style="text-align:left">pop</td>
+<td style="text-align:left">获取栈顶元素且出栈</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">T</td>
+<td style="text-align:left">Integer i = s.pop()</td>
+</tr>
+<tr>
+<td>Stack</td>
+<td style="text-align:left">push</td>
+<td style="text-align:left">加入</td>
+<td style="text-align:left">T</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">s.push(5)</td>
+</tr>
+<tr>
+<td>Stack</td>
+<td style="text-align:left">isEmpty</td>
+<td style="text-align:left">是否为空</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">boolean</td>
+<td style="text-align:left">s.isEmpty()</td>
+</tr>
+<tr>
+<td>HashMap</td>
+<td style="text-align:left">new HashMap</td>
+<td style="text-align:left">新建哈希表</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">Map</td>
+<td style="text-align:left">Map&lt;Character, Integer&gt; m = new HashMap&lt;&gt;()</td>
+</tr>
+<tr>
+<td>HashMap</td>
+<td style="text-align:left">get</td>
+<td style="text-align:left">获取</td>
+<td style="text-align:left">T</td>
+<td style="text-align:left">T</td>
+<td style="text-align:left">m.get('a')</td>
+</tr>
+<tr>
+<td>HashMap</td>
+<td style="text-align:left">put</td>
+<td style="text-align:left">加入</td>
+<td style="text-align:left">T,T</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">m.put('a',5)</td>
+</tr>
+<tr>
+<td>HashMap</td>
+<td style="text-align:left">containsKey</td>
+<td style="text-align:left">是否含有某个key</td>
+<td style="text-align:left">T</td>
+<td style="text-align:left">boolean</td>
+<td style="text-align:left">m.containsKey('a')</td>
+</tr>
+<tr>
+<td>HashMap</td>
+<td style="text-align:left">get,put</td>
+<td style="text-align:left">更新key对应的value</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">m.put('a',m.get('a')+1)</td>
+</tr>
+<tr>
+<td>Map</td>
+<td style="text-align:left">Map.of</td>
+<td style="text-align:left">Map常量</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">Map</td>
+<td style="text-align:left">Map.of(2, &quot;abc&quot;, 3, &quot;def&quot;);</td>
+</tr>
+<tr>
+<td>Iterator</td>
+<td style="text-align:left">Iterator</td>
+<td style="text-align:left">entrySet</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">Iterator it = map.entrySet().iterator();</td>
+</tr>
+<tr>
+<td>Iterator</td>
+<td style="text-align:left">Iterator</td>
+<td style="text-align:left">keySet</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">Iterator it = map.keySet().iterator();</td>
+</tr>
+<tr>
+<td>Iterator</td>
+<td style="text-align:left">hasNext</td>
+<td style="text-align:left">有无下一个元素</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">while(it.hasNext())</td>
+</tr>
+<tr>
+<td>Iterator</td>
+<td style="text-align:left">next</td>
+<td style="text-align:left">下一个元素</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">Map.Entry pair = (Map.Entry)it.next()</td>
+</tr>
+<tr>
+<td>Map.Entry</td>
+<td style="text-align:left">getValue, getKey</td>
+<td style="text-align:left">得到key, Value</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">pair.getValue(), pair.getKey()</td>
+</tr>
+<tr>
+<td>HashSet</td>
+<td style="text-align:left">new HashSet</td>
+<td style="text-align:left">新建哈希集</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">Set</td>
+<td style="text-align:left">Set&lt;Character&gt; m = new HashSet&lt;&gt;()</td>
+</tr>
+<tr>
+<td>HashSet</td>
+<td style="text-align:left">add</td>
+<td style="text-align:left">加入</td>
+<td style="text-align:left">T</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">m.add('a')</td>
+</tr>
+<tr>
+<td>HashSet</td>
+<td style="text-align:left">remove</td>
+<td style="text-align:left">删除</td>
+<td style="text-align:left">T</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">m.remove('a')</td>
+</tr>
+<tr>
+<td>HashSet</td>
+<td style="text-align:left">contains</td>
+<td style="text-align:left">是否含有某个元素</td>
+<td style="text-align:left">T</td>
+<td style="text-align:left">boolean</td>
+<td style="text-align:left">m.contains('a')</td>
+</tr>
+<tr>
+<td>PriorityQueue</td>
+<td style="text-align:left">offer,poll,peek</td>
+<td style="text-align:left">与Queue相同</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">N/A</td>
+</tr>
+<tr>
+<td>PriorityQueue</td>
+<td style="text-align:left">Comparator</td>
+<td style="text-align:left">k大小的heap</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">见下</td>
+</tr>
+</tbody>
+</table>
+<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">PriorityQueue&lt;Node&gt; minHeap = <span class="keyword">new</span> PriorityQueue&lt;Node&gt;(k,</span><br><span class="line">				<span class="keyword">new</span> Comparator&lt;Node&gt;() &#123;</span><br><span class="line">					<span class="meta">@Override</span></span><br><span class="line">					<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(Node o1, Node o2)</span> </span>&#123;</span><br><span class="line">						<span class="keyword">return</span> o1.value - o2.value;</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;</span><br><span class="line">		);</span><br></pre></td></tr></table></figure></p>
+<p>Arrays的二分法： 若找不到，返回比tgt大的数的下标数组长度的负值-1。
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span>[] lis = <span class="keyword">new</span> <span class="keyword">int</span>[len];</span><br><span class="line"><span class="keyword">int</span> index = Arrays.binarySearch(lis, <span class="number">0</span>, len, tgt);</span><br><span class="line"><span class="keyword">if</span>(index &lt; <span class="number">0</span>) &#123;</span><br><span class="line">	index = -index - <span class="number">1</span>;</span><br><span class="line">	lis[index] = tgt;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">	lis[index] = tgt;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2017/11/02/hello-world/">Hello World</a></h1>
+  
+
+      
+        <time datetime="2017-11-02T11:43:32.504Z">2017-11-02</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
+<h2>Quick Start</h2>
+<h3>Create a new post</h3>
+<p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure></p>
+<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
+<h3>Run server</h3>
+<p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure></p>
+<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
+<h3>Generate static files</h3>
+<p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure></p>
+<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
+<h3>Deploy to remote sites</h3>
+<p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure></p>
+<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+
+<nav id="pagination">
+  
+    <a href="/page/48/" class="alignleft prev">Prev</a>
+  
+  
+  <div class="clearfix"></div>
+</nav></div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="q" value="site:shineboy2013.github.com">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">Recent Posts</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2022/01/15/lee-2139/">LeetCode 2139 Minimum Moves to Reach Target Score</a>
+      </li>
+    
+      <li>
+        <a href="/2022/01/15/lee-2140/">LeetCode 2140 Solving Questions With Brainpower</a>
+      </li>
+    
+      <li>
+        <a href="/2022/01/15/lee-085/">LeetCode 085 Maximal Rectangle</a>
+      </li>
+    
+      <li>
+        <a href="/2022/01/15/lee-084/">LeetCode 084 Largest Rectangle in Histogram</a>
+      </li>
+    
+      <li>
+        <a href="/2022/01/15/lee-072/">LeetCode 072 Edit Distance</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">Tag Cloud</h3>
+  <div class="entry">
+    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 13.13px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.13px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 17.5px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 14.38px;">Binary Tree</a> <a href="/tags/Bloomberg/" style="font-size: 10.63px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.5px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 19.38px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.88px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.88px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 10.63px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.38px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 18.13px;">Facebook</a> <a href="/tags/Google/" style="font-size: 10px;">Google</a> <a href="/tags/Graph/" style="font-size: 11.25px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.5px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.88px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 13.75px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 13.75px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.88px;">Iterator</a> <a href="/tags/Knowledge-Base/" style="font-size: 18.13px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 13.13px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.5px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 15.63px;">Math</a> <a href="/tags/Matrix/" style="font-size: 13.75px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.88px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.63px;">Merge Sort</a> <a href="/tags/Mtrix/" style="font-size: 10px;">Mtrix</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 16.25px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.63px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.63px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 11.25px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.88px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.63px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 18.75px;">Stack</a> <a href="/tags/String/" style="font-size: 17.5px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.25px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.5px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.25px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.38px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.63px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.63px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
+  </div>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2022 KK Shum
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+
+</body>
+</html>
+
