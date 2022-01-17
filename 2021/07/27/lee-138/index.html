@@ -77,48 +77,46 @@ A linked list of length n is given such that each node contains an additional ra
 <p>Your code will <strong>only</strong> be given the <code>head</code> of the original linked list.</p>
 <p><strong>Example 1:</strong></p>
 <p><img src="https://assets.leetcode.com/uploads/2019/12/18/e1.png" alt=""></p>
-<p>&lt;pre&gt;<strong>Input:</strong> head = [[7,null],[13,0],[11,4],[10,2],[1,0]]
-<strong>Output:</strong> [[7,null],[13,0],[11,4],[10,2],[1,0]]
-&lt;/pre&gt;</p>
+<pre>**Input:** head = [[7,null],[13,0],[11,4],[10,2],[1,0]]
+**Output:** [[7,null],[13,0],[11,4],[10,2],[1,0]]
+</pre>
+
 <p><strong>Example 2:</strong></p>
 <p><img src="https://assets.leetcode.com/uploads/2019/12/18/e2.png" alt=""></p>
-<p>&lt;pre&gt;<strong>Input:</strong> head = [[1,1],[2,1]]
-<strong>Output:</strong> [[1,1],[2,1]]
-&lt;/pre&gt;</p>
+<pre>**Input:** head = [[1,1],[2,1]]
+**Output:** [[1,1],[2,1]]
+</pre>
+
 <p><strong>Example 3:</strong></p>
 <p><strong><img src="https://assets.leetcode.com/uploads/2019/12/18/e3.png" alt=""></strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> head = [[3,null],[3,0],[3,null]]
-<strong>Output:</strong> [[3,null],[3,0],[3,null]]
-&lt;/pre&gt;</p>
+<pre>**Input:** head = [[3,null],[3,0],[3,null]]
+**Output:** [[3,null],[3,0],[3,null]]
+</pre>
+
 <p><strong>Example 4:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> head = []
-<strong>Output:</strong> []
-<strong>Explanation:</strong> The given linked list is empty (null pointer), so return null.
-&lt;/pre&gt;</p>
+<pre>**Input:** head = []
+**Output:** []
+**Explanation:** The given linked list is empty (null pointer), so return null.
+</pre>
+
 <p><strong>Constraints:</strong></p>
 <ul>
 <li><code>0 &lt;= n &lt;= 1000</code></li>
 <li><code>-10000 &lt;= Node.val &lt;= 10000</code></li>
 <li><code>Node.random</code> is <code>null</code> or is pointing to some node in the linked list.</li>
 </ul>
-<h3><strong>题目大意：</strong></h3>
-<p>复制含next和random的链表。</p>
-<h3><strong>解题思路（推荐）：</strong></h3>
-<p>此法较容易实现。先复制next指针，然后利用HashMap存储旧新节点，来复制random指针。</p>
-<h3><strong>注意事项：</strong></h3>
-<ol>
-<li>复制next指针和Map中。<strong>clone题均用此法。</strong></li>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>复制含next和random的链表。</p>
+<h3 id="解题思路（推荐）："><a href="#解题思路（推荐）：" class="headerlink" title="解题思路（推荐）："></a><strong>解题思路（推荐）：</strong></h3><p>此法较容易实现。先复制next指针，然后利用HashMap存储旧新节点，来复制random指针。  </p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>复制next指针和Map中。<strong>clone题均用此法。</strong>  </li>
 <li>Random指针不空才copy</li>
 <li>加it = it.next，否则死循环</li>
 <li>如果创建新Node用while it.next表示用它的父节点，否则某个field赋值如random用while it</li>
 </ol>
-<h3><strong>Python代码：</strong></h3>
-<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">copyRandomList</span><span class="params">(self, head: <span class="string">'Node'</span>)</span> -&gt; 'Node':</span></span><br><span class="line">	node_map = &#123;&#125;</span><br><span class="line">	fake_head, fake_head_copy = Node(<span class="number">0</span>), Node(<span class="number">0</span>)</span><br><span class="line">	fake_head.next = head</span><br><span class="line">	it, it_copy = fake_head, fake_head_copy</span><br><span class="line">	<span class="keyword">while</span> it.next:</span><br><span class="line">		it_copy.next = Node(it.next.val)</span><br><span class="line">		node_map[it.next] = it_copy.next</span><br><span class="line">		it, it_copy = it.next, it_copy.next</span><br><span class="line"></span><br><span class="line">	it, it_copy = fake_head.next, fake_head_copy.next</span><br><span class="line">	<span class="keyword">while</span> it:</span><br><span class="line">		<span class="keyword">if</span> it.random:</span><br><span class="line">			node_map[it].random = node_map[it.random]</span><br><span class="line">		it, it_copy = it.next, it_copy.next</span><br><span class="line">	<span class="keyword">return</span> fake_head_copy.next</span><br></pre></td></tr></table></figure></p>
-<h3><strong>梅花间竹解题思路：</strong></h3>
-<p>第二种方法，梅花间竹，分3部走。</p>
-<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">copyRandomList</span><span class="params">(self, head: <span class="string">'Node'</span>)</span> -&gt; 'Node':</span></span><br><span class="line">	fake_head, fake_head_copy = Node(<span class="number">0</span>), Node(<span class="number">0</span>)</span><br><span class="line">	fake_head.next = head</span><br><span class="line"></span><br><span class="line">	<span class="comment"># insert</span></span><br><span class="line">	it = fake_head.next</span><br><span class="line">	<span class="keyword">while</span> it:</span><br><span class="line">		temp = it.next</span><br><span class="line">		it.next = Node(it.val)</span><br><span class="line">		it.next.next = temp</span><br><span class="line">		it = it.next.next</span><br><span class="line"></span><br><span class="line">	<span class="comment"># copy random</span></span><br><span class="line">	it = fake_head.next</span><br><span class="line">	<span class="keyword">while</span> it:</span><br><span class="line">		<span class="keyword">if</span> it.random <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>:</span><br><span class="line">			it.next.random = it.random.next</span><br><span class="line">		it = it.next.next</span><br><span class="line"></span><br><span class="line">	<span class="comment"># delete</span></span><br><span class="line">	it, it_copy = fake_head.next, fake_head_copy</span><br><span class="line">	<span class="keyword">while</span> it:</span><br><span class="line">		temp = it.next</span><br><span class="line">		it.next = it.next.next</span><br><span class="line">		it_copy.next = temp</span><br><span class="line">		temp.next = <span class="keyword">None</span></span><br><span class="line">		it, it_copy = it.next, it_copy.next</span><br><span class="line">	<span class="keyword">return</span> fake_head_copy.next</span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">copyRandomList</span><span class="params">(self, head: <span class="string">'Node'</span>)</span> -&gt; 'Node':</span></span><br><span class="line">	node_map = &#123;&#125;</span><br><span class="line">	fake_head, fake_head_copy = Node(<span class="number">0</span>), Node(<span class="number">0</span>)</span><br><span class="line">	fake_head.next = head</span><br><span class="line">	it, it_copy = fake_head, fake_head_copy</span><br><span class="line">	<span class="keyword">while</span> it.next:</span><br><span class="line">		it_copy.next = Node(it.next.val)</span><br><span class="line">		node_map[it.next] = it_copy.next</span><br><span class="line">		it, it_copy = it.next, it_copy.next</span><br><span class="line"></span><br><span class="line">	it, it_copy = fake_head.next, fake_head_copy.next</span><br><span class="line">	<span class="keyword">while</span> it:</span><br><span class="line">		<span class="keyword">if</span> it.random:</span><br><span class="line">			node_map[it].random = node_map[it.random]</span><br><span class="line">		it, it_copy = it.next, it_copy.next</span><br><span class="line">	<span class="keyword">return</span> fake_head_copy.next</span><br></pre></td></tr></table></figure>
+<h3 id="梅花间竹解题思路："><a href="#梅花间竹解题思路：" class="headerlink" title="梅花间竹解题思路："></a><strong>梅花间竹解题思路：</strong></h3><p>第二种方法，梅花间竹，分3部走。  </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">copyRandomList</span><span class="params">(self, head: <span class="string">'Node'</span>)</span> -&gt; 'Node':</span></span><br><span class="line">	fake_head, fake_head_copy = Node(<span class="number">0</span>), Node(<span class="number">0</span>)</span><br><span class="line">	fake_head.next = head</span><br><span class="line"></span><br><span class="line">	<span class="comment"># insert</span></span><br><span class="line">	it = fake_head.next</span><br><span class="line">	<span class="keyword">while</span> it:</span><br><span class="line">		temp = it.next</span><br><span class="line">		it.next = Node(it.val)</span><br><span class="line">		it.next.next = temp</span><br><span class="line">		it = it.next.next</span><br><span class="line"></span><br><span class="line">	<span class="comment"># copy random</span></span><br><span class="line">	it = fake_head.next</span><br><span class="line">	<span class="keyword">while</span> it:</span><br><span class="line">		<span class="keyword">if</span> it.random <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>:</span><br><span class="line">			it.next.random = it.random.next</span><br><span class="line">		it = it.next.next</span><br><span class="line"></span><br><span class="line">	<span class="comment"># delete</span></span><br><span class="line">	it, it_copy = fake_head.next, fake_head_copy</span><br><span class="line">	<span class="keyword">while</span> it:</span><br><span class="line">		temp = it.next</span><br><span class="line">		it.next = it.next.next</span><br><span class="line">		it_copy.next = temp</span><br><span class="line">		temp.next = <span class="keyword">None</span></span><br><span class="line">		it, it_copy = it.next, it_copy.next</span><br><span class="line">	<span class="keyword">return</span> fake_head_copy.next</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><ol>
 <li>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>。</li>
 <li>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>。</li>
 </ol>
@@ -179,23 +177,23 @@ A linked list of length n is given such that each node contains an additional ra
   <ul class="entry">
     
       <li>
-        <a href="/2022/01/15/lee-2139/">LeetCode 2139 Minimum Moves to Reach Target Score</a>
+        <a href="/2022/01/16/leetcode-142-linked-list-cycle-ii/">LeetCode 142 Linked List Cycle II</a>
       </li>
     
       <li>
-        <a href="/2022/01/15/lee-2140/">LeetCode 2140 Solving Questions With Brainpower</a>
+        <a href="/2022/01/16/leetcode-141-linked-list-cycle/">LeetCode 141 Linked List Cycle</a>
       </li>
     
       <li>
-        <a href="/2022/01/15/lee-085/">LeetCode 085 Maximal Rectangle</a>
+        <a href="/2022/01/16/leetcode-136-single-number/">LeetCode 136 Single Number</a>
       </li>
     
       <li>
-        <a href="/2022/01/15/lee-084/">LeetCode 084 Largest Rectangle in Histogram</a>
+        <a href="/2022/01/16/leetcode-129-sum-root-to-leaf-numbers/">LeetCode 129 Sum Root to Leaf Numbers</a>
       </li>
     
       <li>
-        <a href="/2022/01/15/lee-072/">LeetCode 072 Edit Distance</a>
+        <a href="/2022/01/16/lee-125-valid-palindrome/">LeetCode 125 Valid Palindrome</a>
       </li>
     
   </ul>
@@ -208,7 +206,7 @@ A linked list of length n is given such that each node contains an additional ra
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 13.13px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.13px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 17.5px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 14.38px;">Binary Tree</a> <a href="/tags/Bloomberg/" style="font-size: 10.63px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.5px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 19.38px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.88px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.88px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 10.63px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.38px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 18.13px;">Facebook</a> <a href="/tags/Google/" style="font-size: 10px;">Google</a> <a href="/tags/Graph/" style="font-size: 11.25px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.5px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.88px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 13.75px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 13.75px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.88px;">Iterator</a> <a href="/tags/Knowledge-Base/" style="font-size: 18.13px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 13.13px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.5px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 15.63px;">Math</a> <a href="/tags/Matrix/" style="font-size: 13.75px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.88px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.63px;">Merge Sort</a> <a href="/tags/Mtrix/" style="font-size: 10px;">Mtrix</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 16.25px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.63px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.63px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 11.25px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.88px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.63px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 18.75px;">Stack</a> <a href="/tags/String/" style="font-size: 17.5px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.25px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.5px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.25px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.38px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.63px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.63px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
+    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 12.63px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.16px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 16.84px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 13.68px;">Binary Tree</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10px;">Bit Manipulation</a> <a href="/tags/Bloomberg/" style="font-size: 10.53px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 16.84px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 18.95px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 14.74px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.58px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.58px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 10.53px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.47px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 18.42px;">Facebook</a> <a href="/tags/Google/" style="font-size: 10px;">Google</a> <a href="/tags/Graph/" style="font-size: 11.05px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.11px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.32px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 13.16px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 13.16px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.58px;">Iterator</a> <a href="/tags/Knowledge-Base/" style="font-size: 17.37px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 14.21px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.11px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 15.26px;">Math</a> <a href="/tags/Matrix/" style="font-size: 13.16px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.58px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.53px;">Merge Sort</a> <a href="/tags/Mtrix/" style="font-size: 10px;">Mtrix</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 15.79px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.53px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.53px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 11.05px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.58px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.53px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 18.42px;">Stack</a> <a href="/tags/String/" style="font-size: 17.89px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.05px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.63px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.05px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.21px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.53px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.53px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
   </div>
 </div>
 
