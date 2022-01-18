@@ -53,26 +53,121 @@
     <header>
       
   
-    <h1 class="title"><a href="/2022/01/02/lee-048/">LeetCode 048 Rotate Image</a></h1>
+    <h1 class="title"><a href="/2022/01/04/lee-074/">LeetCode 074 Search a 2D Matrix</a></h1>
   
 
       
-        <time datetime="2022-01-03T07:32:48.043Z">2022-01-02</time>
+        <time datetime="2022-01-04T09:27:06.283Z">2022-01-04</time>
       
     </header>
     <div class="entry">
       
-        <p><strong><a href="https://leetcode.com/problems/rotate-image/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>You are given an <code>n x n</code> 2D <code>matrix</code> representing an image, rotate the image by <strong>90</strong> degrees (clockwise).<br><br>You have to rotate the image <a href="https://en.wikipedia.org/wiki/In-place_algorithm" target="_blank" rel="noopener"><strong>in-place</strong></a>, which means you have to modify the input 2D matrix directly. <strong>DO NOT</strong> allocate another 2D matrix and do the rotation.<br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2020/08/28/mat1.jpg" alt=""><br><br><pre><strong>Input:</strong> matrix = [[1,2,3],[4,5,6],[7,8,9]]<br><strong>Output:</strong> [[7,4,1],[8,5,2],[9,6,3]]<br></pre><br><br><strong>Example 2:</strong><br><br><img src="https://assets.leetcode.com/uploads/2020/08/28/mat2.jpg" alt=""><br><br><pre><strong>Input:</strong> matrix = [[5,1,9,11],[2,4,8,10],[13,3,6,7],[15,14,12,16]]<br><strong>Output:</strong> [[15,13,2,5],[14,3,4,1],[12,6,8,9],[16,7,10,11]]<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>n == matrix.length == matrix[i].length</code>
-</em>   <code>1 &lt;= n &lt;= 20</code><br>*   <code>-1000 &lt;= matrix[i][j] &lt;= 1000</code><br><br></div>
+        <p><strong><a href="https://leetcode.com/problems/search-a-2d-matrix/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>Write an efficient algorithm that searches for a value in an <code>m x n</code> matrix. This matrix has the following properties:<br><br><em>   Integers in each row are sorted from left to right.
+</em>   The first integer of each row is greater than the last integer of the previous row.<br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2020/10/05/mat.jpg" alt=""><br><br><pre><strong>Input:</strong> matrix = [[1,3,5,7],[10,11,16,20],[23,30,34,60]], target = 3<br><strong>Output:</strong> true<br></pre><br><br><strong>Example 2:</strong><br><br><img src="https://assets.leetcode.com/uploads/2020/10/05/mat2.jpg" alt=""><br><br><pre><strong>Input:</strong> matrix = [[1,3,5,7],[10,11,16,20],[23,30,34,60]], target = 13<br><strong>Output:</strong> false<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>m == matrix.length</code>
+</em>   <code>n == matrix[i].length</code><br><em>   <code>1 &lt;= m, n &lt;= 100</code>
+</em>   <code>-10&lt;sup&gt;4&lt;/sup&gt; &lt;= matrix[i][j], target &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code><br><br></div>
 
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>顺时针循环矩阵90度</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>先上下对称，再沿正对角线(左上到右下)对称。正对角线实现比较容易</p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>矩阵中每一行有序，下一行的首元素大于上一行的尾元素。求target是否在矩阵中</p>
+<h3 id="列-行搜索解题思路："><a href="#列-行搜索解题思路：" class="headerlink" title="列+行搜索解题思路："></a><strong>列+行搜索解题思路：</strong></h3><p>先对列做二分搜索，再对行</p>
 <h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
 <h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>先上下对称，再沿正对角线(左上到右下)对称。正对角线实现比较容易</li>
+<li><h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">searchMatrix</span><span class="params">(self, matrix: List[List[int]], target: int)</span> -&gt; bool:</span></span><br><span class="line">	col = [matrix[i][<span class="number">0</span>] <span class="keyword">for</span> i <span class="keyword">in</span> range(len(matrix))]</span><br><span class="line">	row_idx = bisect.bisect(col, target) - <span class="number">1</span></span><br><span class="line">	<span class="keyword">if</span> row_idx &lt; <span class="number">0</span> <span class="keyword">or</span> row_idx &gt;= len(matrix):</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">	<span class="keyword">if</span> matrix[row_idx][<span class="number">0</span>] == target:</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line">	col_idx = bisect.bisect(matrix[row_idx], target) - <span class="number">1</span></span><br><span class="line">	<span class="keyword">if</span> col_idx &lt; <span class="number">0</span> <span class="keyword">or</span> col_idx &gt;= len(matrix[<span class="number">0</span>]):</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">True</span> <span class="keyword">if</span> matrix[row_idx][col_idx] == target <span class="keyword">else</span> <span class="keyword">False</span></span><br></pre></td></tr></table></figure>
+</li>
 </ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">rotate</span><span class="params">(self, matrix: List[List[int]])</span> -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(matrix) // <span class="number">2</span>):</span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> range(len(matrix[<span class="number">0</span>])):</span><br><span class="line">			matrix[i][j], matrix[len(matrix) - <span class="number">1</span> - i][j] = matrix[len(matrix) - <span class="number">1</span> - i][j], matrix[i][j]</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(matrix)):</span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> range(i, len(matrix[<span class="number">0</span>])):</span><br><span class="line">			matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(logn + logm)</code>，空间复杂度<code>O(n)</code>, 可以写一个二分法来做列搜索，这样空间为常量。  </p>
+<hr>
+<h3 id="全矩阵搜索算法II解题思路："><a href="#全矩阵搜索算法II解题思路：" class="headerlink" title="全矩阵搜索算法II解题思路："></a><strong>全矩阵搜索算法II解题思路：</strong></h3><p>对矩阵的左上，右下元素作为start, end得到mid转化成(i, j)找到矩阵位置。</p>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">searchMatrix</span><span class="params">(<span class="keyword">int</span>[][] matrix, <span class="keyword">int</span> target)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (matrix.length==<span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	<span class="keyword">int</span> lo = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> hi = matrix.length*matrix[<span class="number">0</span>].length - <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">while</span> (lo &lt;= hi) &#123;</span><br><span class="line">		<span class="comment">// Key is in a[lo..hi] or not present.</span></span><br><span class="line">		<span class="keyword">int</span> mid = lo + (hi - lo) / <span class="number">2</span>;</span><br><span class="line">		<span class="keyword">int</span> x = mid/matrix[<span class="number">0</span>].length;</span><br><span class="line">		<span class="keyword">int</span> y = mid%matrix[<span class="number">0</span>].length;</span><br><span class="line">		<span class="keyword">if</span> (target &lt; matrix[x][y])</span><br><span class="line">			hi = mid - <span class="number">1</span>;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (target &gt; matrix[x][y])</span><br><span class="line">			lo = mid + <span class="number">1</span>;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(logn + logm)</code>，空间复杂度<code>O(1)</code>。  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2022/01/04/lee-008/">LeetCode 008 String to Integer (atoi)</a></h1>
+  
+
+      
+        <time datetime="2022-01-04T08:58:32.853Z">2022-01-04</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/string-to-integer-atoi/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>Implement the <code>myAtoi(string s)</code> function, which converts a string to a 32-bit signed integer (similar to C/C++’s <code>atoi</code> function).<br><br>The algorithm for <code>myAtoi(string s)</code> is as follows:<br><br>1.  Read in and ignore any leading whitespace.<br>2.  Check if the next character (if not already at the end of the string) is <code>&#39;-&#39;</code> or <code>&#39;+&#39;</code>. Read this character in if it is either. This determines if the final result is negative or positive respectively. Assume the result is positive if neither is present.<br>3.  Read in next the characters until the next non-digit character or the end of the input is reached. The rest of the string is ignored.<br>4.  Convert these digits into an integer (i.e. <code>&quot;123&quot; -&gt; 123</code>, <code>&quot;0032&quot; -&gt; 32</code>). If no digits were read, then the integer is <code>0</code>. Change the sign as necessary (from step 2).<br>5.  If the integer is out of the 32-bit signed integer range <code>[-2&lt;sup&gt;31&lt;/sup&gt;, 2&lt;sup&gt;31&lt;/sup&gt; - 1]</code>, then clamp the integer so that it remains in the range. Specifically, integers less than <code>-2&lt;sup&gt;31&lt;/sup&gt;</code> should be clamped to <code>-2&lt;sup&gt;31&lt;/sup&gt;</code>, and integers greater than <code>2&lt;sup&gt;31&lt;/sup&gt; - 1</code> should be clamped to <code>2&lt;sup&gt;31&lt;/sup&gt; - 1</code>.<br>6.  Return the integer as the final result.<br><br><strong>Note:</strong><br><br><em>   Only the space character <code>&#39; &#39;</code> is considered a whitespace character.
+</em>   <strong>Do not ignore</strong> any characters other than the leading whitespace or the rest of the string after the digits.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> s = “42”<br><strong>Output:</strong> 42<br><strong>Explanation:</strong> The underlined characters are what is read in, the caret is the current reader position.<br>Step 1: “42” (no characters read because there is no leading whitespace)<br>         ^<br>Step 2: “42” (no characters read because there is neither a ‘-‘ nor ‘+’)<br>         ^<br>Step 3: “<u>42</u>“ (“42” is read in)<br>           ^<br>The parsed integer is 42.<br>Since 42 is in the range [-2<sup>31</sup>, 2<sup>31</sup> - 1], the final result is 42.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> s = “   -42”<br><strong>Output:</strong> -42<br><strong>Explanation:</strong><br>Step 1: “-42” (leading whitespace is read and ignored)<br>            ^<br>Step 2: “   <u>-</u>42” (‘-‘ is read, so the result should be negative)<br>             ^<br>Step 3: “   -<u>42</u>“ (“42” is read in)<br>               ^<br>The parsed integer is -42.<br>Since -42 is in the range [-2<sup>31</sup>, 2<sup>31</sup> - 1], the final result is -42.<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> s = “4193 with words”<br><strong>Output:</strong> 4193<br><strong>Explanation:</strong><br>Step 1: “4193 with words” (no characters read because there is no leading whitespace)<br>         ^<br>Step 2: “4193 with words” (no characters read because there is neither a ‘-‘ nor ‘+’)<br>         ^<br>Step 3: “<u>4193</u> with words” (“4193” is read in; reading stops because the next character is a non-digit)<br>             ^<br>The parsed integer is 4193.<br>Since 4193 is in the range [-2<sup>31</sup>, 2<sup>31</sup> - 1], the final result is 4193.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>0 &lt;= s.length &lt;= 200</code>
+</em>   <code>s</code> consists of English letters (lower-case and upper-case), digits (<code>0-9</code>), <code>&#39; &#39;</code>, <code>&#39;+&#39;</code>, <code>&#39;-&#39;</code>, and <code>&#39;.&#39;</code>.<br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>字符串转整数</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>关键是第一位是否符号的判断，之后是ord函数的运用</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>空字符或全空格返回0</li>
+<li>[key]<strong>若有符号只能第一位是符号</strong>，连续是符号不合法返回0，如-+12, <strong>将符号处理放在循环外</strong></li>
+<li>除符号外，若第一位为非数字，不合法，返回0</li>
+<li>循环内，若出现非数字，跳出循环</li>
+<li>计算符号，然后检查数字范围</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">myAtoi</span><span class="params">(self, s: str)</span> -&gt; int:</span></span><br><span class="line">	s = s.strip()</span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> s:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">	sign = <span class="number">1</span></span><br><span class="line">	<span class="keyword">if</span> s[<span class="number">0</span>] == <span class="string">'-'</span>:</span><br><span class="line">		sign = <span class="number">-1</span></span><br><span class="line">		s = s[<span class="number">1</span>:]</span><br><span class="line">	<span class="keyword">elif</span> s[<span class="number">0</span>] == <span class="string">'+'</span>:</span><br><span class="line">		s = s[<span class="number">1</span>:]</span><br><span class="line">	<span class="keyword">if</span> s <span class="keyword">and</span> <span class="keyword">not</span> s[<span class="number">0</span>].isdigit():</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">	res = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> char <span class="keyword">in</span> s:</span><br><span class="line">		<span class="keyword">if</span> char.isdigit():</span><br><span class="line">			res = res * <span class="number">10</span> + ord(char) - ord(<span class="string">'0'</span>)</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">	res *= sign</span><br><span class="line">	<span class="keyword">if</span> res &lt; -pow(<span class="number">2</span>, <span class="number">31</span>):</span><br><span class="line">		<span class="keyword">return</span> -pow(<span class="number">2</span>, <span class="number">31</span>)</span><br><span class="line">	<span class="keyword">if</span> res &gt; pow(<span class="number">2</span>, <span class="number">31</span>) - <span class="number">1</span>:</span><br><span class="line">		<span class="keyword">return</span> pow(<span class="number">2</span>, <span class="number">31</span>) - <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2022/01/04/lee-016/">LeetCode 016 3Sum Closest</a></h1>
+  
+
+      
+        <time datetime="2022-01-04T08:20:04.305Z">2022-01-04</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/3sum-closest/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>Given an integer array <code>nums</code> of length <code>n</code> and an integer <code>target</code>, find three integers in <code>nums</code> such that the sum is closest to <code>target</code>.<br><br>Return <em>the sum of the three integers</em>.<br><br>You may assume that each input would have exactly one solution.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> nums = [-1,2,1,-4], target = 1<br><strong>Output:</strong> 2<br><strong>Explanation:</strong> The sum that is closest to the target is 2. (-1 + 2 + 1 = 2).<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> nums = [0,0,0], target = 1<br><strong>Output:</strong> 0<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>3 &lt;= nums.length &lt;= 1000</code>
+</em>   <code>-1000 &lt;= nums[i] &lt;= 1000</code><br>*   <code>-10&lt;sup&gt;4&lt;/sup&gt; &lt;= target &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code><br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>三数和最接近target</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>N/A</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>此题不需去重，若等于target可直接返回 </li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">threeSumClosest</span><span class="params">(self, nums: List[int], target: int)</span> -&gt; int:</span></span><br><span class="line">	nums.sort()</span><br><span class="line">	res = float(<span class="string">'inf'</span>)</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(nums)):</span><br><span class="line">		left, right = i + <span class="number">1</span>, len(nums) - <span class="number">1</span></span><br><span class="line">		<span class="keyword">while</span> left &lt; right:</span><br><span class="line">			temp = nums[i] + nums[left] + nums[right]</span><br><span class="line">			<span class="keyword">if</span> abs(temp - target) &lt; abs(res - target):</span><br><span class="line">				res = temp</span><br><span class="line">			<span class="keyword">if</span> temp &lt; target:</span><br><span class="line">				left += <span class="number">1</span></span><br><span class="line">			<span class="keyword">elif</span> temp &gt; target:</span><br><span class="line">				right -= <span class="number">1</span></span><br><span class="line">			<span class="keyword">else</span>:</span><br><span class="line">				<span class="keyword">return</span> target</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
 <h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n<sup>2</sup>)</code>，空间复杂度<code>O(1)</code>  </p>
 
       
@@ -95,29 +190,28 @@
     <header>
       
   
-    <h1 class="title"><a href="/2022/01/01/lee-395/">LeetCode 395 Longest Substring with At Least K Repeating Characters</a></h1>
+    <h1 class="title"><a href="/2022/01/03/lee-088/">LeetCode 088 Merge Sorted Array</a></h1>
   
 
       
-        <time datetime="2022-01-01T23:03:35.789Z">2022-01-01</time>
+        <time datetime="2022-01-04T07:58:40.595Z">2022-01-03</time>
       
     </header>
     <div class="entry">
       
-        <p><strong><a href="https://leetcode.com/problems/longest-substring-with-at-least-k-repeating-characters/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>Given a string <code>s</code> and an integer <code>k</code>, return <em>the length of the longest substring of</em> <code>s</code> <em>such that the frequency of each character in this substring is greater than or equal to</em> <code>k</code>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> s = “aaabb”, k = 3<br><strong>Output:</strong> 3<br><strong>Explanation:</strong> The longest substring is “aaa”, as ‘a’ is repeated 3 times.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> s = “ababbc”, k = 2<br><strong>Output:</strong> 5<br><strong>Explanation:</strong> The longest substring is “ababb”, as ‘a’ is repeated 2 times and ‘b’ is repeated 3 times.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= s.length &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code>
-</em>   <code>s</code> consists of only lowercase English letters.<br>*   <code>1 &lt;= k &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code><br><br></div>
+        <p><strong><a href="https://leetcode.com/problems/merge-sorted-array/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>You are given two integer arrays <code>nums1</code> and <code>nums2</code>, sorted in <strong>non-decreasing order</strong>, and two integers <code>m</code> and <code>n</code>, representing the number of elements in <code>nums1</code> and <code>nums2</code> respectively.<br><br><strong>Merge</strong> <code>nums1</code> and <code>nums2</code> into a single array sorted in <strong>non-decreasing order</strong>.<br><br>The final sorted array should not be returned by the function, but instead be <em>stored inside the array</em> <code>nums1</code>. To accommodate this, <code>nums1</code> has a length of <code>m + n</code>, where the first <code>m</code> elements denote the elements that should be merged, and the last <code>n</code> elements are set to <code>0</code> and should be ignored. <code>nums2</code> has a length of <code>n</code>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> nums1 = [1,2,3,0,0,0], m = 3, nums2 = [2,5,6], n = 3<br><strong>Output:</strong> [1,2,2,3,5,6]<br><strong>Explanation:</strong> The arrays we are merging are [1,2,3] and [2,5,6].<br>The result of the merge is [<u>1</u>,<u>2</u>,2,<u>3</u>,5,6] with the underlined elements coming from nums1.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> nums1 = [1], m = 1, nums2 = [], n = 0<br><strong>Output:</strong> [1]<br><strong>Explanation:</strong> The arrays we are merging are [1] and [].<br>The result of the merge is [1].<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> nums1 = [0], m = 0, nums2 = [1], n = 1<br><strong>Output:</strong> [1]<br><strong>Explanation:</strong> The arrays we are merging are [] and [1].<br>The result of the merge is [1].<br>Note that because m = 0, there are no elements in nums1. The 0 is only there to ensure the merge result can fit in nums1.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>nums1.length == m + n</code>
+</em>   <code>nums2.length == n</code><br><em>   <code>0 &lt;= m, n &lt;= 200</code>
+</em>   <code>1 &lt;= m + n &lt;= 200</code><br><em>   <code>-10&lt;sup&gt;9&lt;/sup&gt; &lt;= nums1[i], nums2[j] &lt;= 10&lt;sup&gt;9&lt;/sup&gt;</code><br><br><em>*Follow up:</em></em> Can you come up with an algorithm that runs in <code>O(m + n)</code> time?<br><br></div>
 
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求最长每种字符至少k个的子串  </p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>类似于L003 Longest Substring Without Repeating Characters用双指针法，难点是每种字符，用26字母存储法解决。  </p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>合并两有序数组，最后结果储存在第一个数组</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>从后往前合并</p>
 <h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
 <h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>按多少种不同字符来做sliding window。有1-26种。  </li>
-<li>子函数求给定种数下的最长子串，所以满足条件在外循环不在内循环，还需进一步统计每种字符是否符合k个。内循环为不满足条件的情况unique_count == n + 1   </li>
-<li>char_count[26]记录每种字符个数, unique_count是子串[left, i]之间多少种。   </li>
+<li>i从m - 1而不是len(nums1) - 1开始，m和n是数组实际长度。</li>
 </ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">longestSubstring</span><span class="params">(self, s: str, k: int)</span> -&gt; int:</span></span><br><span class="line">	res = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, <span class="number">27</span>):</span><br><span class="line">		res = max(res, self.longest_substring(s, k, i))</span><br><span class="line">	<span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">longest_substring</span><span class="params">(self, s, k, n)</span> -&gt; int:</span></span><br><span class="line">	left, char_count = <span class="number">0</span>, [<span class="number">0</span>] * <span class="number">26</span></span><br><span class="line">	res, unique_count = <span class="number">0</span>, <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(s)):</span><br><span class="line">		char_count[ord(s[i]) - ord(<span class="string">'a'</span>)] += <span class="number">1</span></span><br><span class="line">		<span class="keyword">if</span> char_count[ord(s[i]) - ord(<span class="string">'a'</span>)] == <span class="number">1</span>:</span><br><span class="line">			unique_count += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">		<span class="keyword">while</span> unique_count == n + <span class="number">1</span>:</span><br><span class="line">			char_count[ord(s[left]) - ord(<span class="string">'a'</span>)] -= <span class="number">1</span> <span class="comment"># use left not i</span></span><br><span class="line">			<span class="keyword">if</span> char_count[ord(s[left]) - ord(<span class="string">'a'</span>)] == <span class="number">0</span>:</span><br><span class="line">				unique_count -= <span class="number">1</span></span><br><span class="line">			left += <span class="number">1</span></span><br><span class="line">		valid_count = <span class="number">0</span></span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">26</span>):</span><br><span class="line">			<span class="keyword">if</span> char_count[j] &gt; <span class="number">0</span> <span class="keyword">and</span> char_count[j] &gt;= k:</span><br><span class="line">				valid_count += <span class="number">1</span></span><br><span class="line">		<span class="keyword">if</span> unique_count == valid_count:</span><br><span class="line">			res = max(res, i - left + <span class="number">1</span>)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(26*26n)</code>，空间复杂度<code>O(n)</code>  </p>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">merge</span><span class="params">(self, nums1: List[int], m: int, nums2: List[int], n: int)</span> -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">	i, j, k = m - <span class="number">1</span>, n - <span class="number">1</span>, len(nums1) - <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> i &gt;= <span class="number">0</span> <span class="keyword">and</span> j &gt;= <span class="number">0</span>:</span><br><span class="line">		<span class="keyword">if</span> nums1[i] &gt; nums2[j]:</span><br><span class="line">			nums1[k] = nums1[i]</span><br><span class="line">			k -= <span class="number">1</span></span><br><span class="line">			i -= <span class="number">1</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			nums1[k] = nums2[j]</span><br><span class="line">			k -= <span class="number">1</span></span><br><span class="line">			j -= <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> i &gt;= <span class="number">0</span>:</span><br><span class="line">		nums1[k] = nums1[i]</span><br><span class="line">		k -= <span class="number">1</span></span><br><span class="line">		i -= <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> j &gt;= <span class="number">0</span>:</span><br><span class="line">		nums1[k] = nums2[j]</span><br><span class="line">		k -= <span class="number">1</span></span><br><span class="line">		j -= <span class="number">1</span></span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n + m)</code>，空间复杂度<code>O(1)</code>  </p>
 
       
     </div>
@@ -139,129 +233,24 @@
     <header>
       
   
-    <h1 class="title"><a href="/2021/12/30/lee-101/">LeetCode 101 Symmetric Tree</a></h1>
+    <h1 class="title"><a href="/2022/01/03/lee-034/">LeetCode</a></h1>
   
 
       
-        <time datetime="2021-12-30T09:48:56.828Z">2021-12-30</time>
+        <time datetime="2022-01-04T07:29:57.188Z">2022-01-03</time>
       
     </header>
     <div class="entry">
       
-        <p><strong><a href="https://leetcode.com/problems/symmetric-tree/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<p>Given the <code>root</code> of a binary tree, <em>check whether it is a mirror of itself</em> (i.e., symmetric around its center).</p>
-<p><strong>Example 1:</strong></p>
-<p><img src="https://assets.leetcode.com/uploads/2021/02/19/symtree1.jpg" alt=""></p>
-<pre>**Input:** root = [1,2,2,3,4,4,3]
-**Output:** true
-</pre>
-
-<p><strong>Example 2:</strong></p>
-<p><img src="https://assets.leetcode.com/uploads/2021/02/19/symtree2.jpg" alt=""></p>
-<pre>**Input:** root = [1,2,2,null,3,null,3]
-**Output:** false
-</pre>
-
-<p><strong>Constraints:</strong></p>
-<ul>
-<li>The number of nodes in the tree is in the range <code>[1, 1000]</code>.</li>
-<li><code>-100 &lt;= Node.val &lt;= 100</code></li>
-</ul>
-<p><strong>Follow up:</strong> Could you solve it both recursively and iteratively?</p>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>判断二叉树是否对称</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>Easy题，但难点是转化成比较两棵树是否对称</p>
+        <p><strong><a href="https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求有序数列中元素等于target的第一个和最后一个下标</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>用模板</p>
 <h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
 <h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>难点是转化成比较两棵树是否对称    </li>
-<li>还要比较值相等，root.val == root2.val</li>
+<li>数组为空的情况要返回-1</li>
 </ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">isSymmetric</span><span class="params">(self, root: TreeNode)</span> -&gt; bool:</span></span><br><span class="line">	<span class="keyword">return</span> self.is_symmetric(root.left, root.right)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">is_symmetric</span><span class="params">(self, root, root2)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> root <span class="keyword">and</span> <span class="keyword">not</span> root2:</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> root <span class="keyword">or</span> <span class="keyword">not</span> root2:</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">	<span class="keyword">return</span> root.val == root2.val <span class="keyword">and</span> self.is_symmetric(root.left, root2.right) <span class="keyword">and</span> self.is_symmetric(root.right, root2.left)</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2021/12/30/lee-102/">LeetCode 102 Binary Tree Level Order Traversal</a></h1>
-  
-
-      
-        <time datetime="2021-12-30T09:26:06.359Z">2021-12-30</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/binary-tree-level-order-traversal/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>Given the <code>root</code> of a binary tree, return <em>the level order traversal of its nodes’ values</em>. (i.e., from left to right, level by level).<br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/02/19/tree1.jpg" alt=""><br><br><pre><strong>Input:</strong> root = [3,9,20,null,null,15,7]<br><strong>Output:</strong> [[3],[9,20],[15,7]]<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> root = [1]<br><strong>Output:</strong> [[1]]<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> root = []<br><strong>Output:</strong> []<br></pre><br><br><strong>Constraints:</strong><br><br><em>   The number of nodes in the tree is in the range <code>[0, 2000]</code>.
-</em>   <code>-1000 &lt;= Node.val &lt;= 1000</code><br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>二叉树按层遍历</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>用BFS模板</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>res.append(level)不是res.append(list(level))因为level = []已重新初始化。 </li>
-<li>关键行： 多这一行<strong>level.append(node.val)</strong>，其他一样 </li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">levelOrder</span><span class="params">(self, root: TreeNode)</span> -&gt; List[List[int]]:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> root:</span><br><span class="line">		<span class="keyword">return</span> []</span><br><span class="line">	queue, res = collections.deque([root]), []</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		level = []</span><br><span class="line">		<span class="keyword">for</span> _ <span class="keyword">in</span> range(len(queue)):</span><br><span class="line">			node = queue.popleft()</span><br><span class="line">			level.append(node.val)</span><br><span class="line"></span><br><span class="line">			<span class="keyword">if</span> node.left:</span><br><span class="line">				queue.append(node.left)</span><br><span class="line">			<span class="keyword">if</span> node.right:</span><br><span class="line">				queue.append(node.right)</span><br><span class="line">		res.append(level)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2021/12/30/lee-103/">LeetCode 103 Binary Tree Zigzag Level Order Traversal</a></h1>
-  
-
-      
-        <time datetime="2021-12-30T09:11:24.325Z">2021-12-30</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/binary-tree-zigzag-level-order-traversal/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>Given the <code>root</code> of a binary tree, return <em>the zigzag level order traversal of its nodes’ values</em>. (i.e., from left to right, then right to left for the next level and alternate between).<br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/02/19/tree1.jpg" alt=""><br><br><pre><strong>Input:</strong> root = [3,9,20,null,null,15,7]<br><strong>Output:</strong> [[3],[20,9],[15,7]]<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> root = [1]<br><strong>Output:</strong> [[1]]<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> root = []<br><strong>Output:</strong> []<br></pre><br><br><strong>Constraints:</strong><br><br><em>   The number of nodes in the tree is in the range <code>[0, 2000]</code>.
-</em>   <code>-100 &lt;= Node.val &lt;= 100</code><br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>按层遍历二叉树。偶数层逆向</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>用BFS按层遍历模板</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>多这一行level.append(node.val)   </li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">zigzagLevelOrder</span><span class="params">(self, root: TreeNode)</span> -&gt; List[List[int]]:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> root:</span><br><span class="line">		<span class="keyword">return</span> []</span><br><span class="line">	res = []</span><br><span class="line">	queue = collections.deque([root])</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		level = []</span><br><span class="line">		<span class="keyword">for</span> _ <span class="keyword">in</span> range(len(queue)):</span><br><span class="line">			node = queue.popleft()</span><br><span class="line">			level.append(node.val)</span><br><span class="line">			<span class="keyword">if</span> node.left:</span><br><span class="line">				queue.append(node.left)</span><br><span class="line">			<span class="keyword">if</span> node.right:</span><br><span class="line">				queue.append(node.right)</span><br><span class="line">		<span class="keyword">if</span> len(res) % <span class="number">2</span> == <span class="number">1</span>:</span><br><span class="line">			res.append(level[::<span class="number">-1</span>])</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			res.append(level)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">searchRange</span><span class="params">(self, nums: List[int], target: int)</span> -&gt; List[int]:</span></span><br><span class="line">	first = self.first_position(nums, target)</span><br><span class="line">	last = self.last_position(nums, target)</span><br><span class="line">	<span class="keyword">return</span> [first, last]</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">last_position</span><span class="params">(self, nums, target)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> nums:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line">	start, end = <span class="number">0</span>, len(nums) - <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> start + <span class="number">1</span> &lt; end:</span><br><span class="line">		mid = start + (end - start) // <span class="number">2</span></span><br><span class="line">		<span class="keyword">if</span> target &lt; nums[mid]:</span><br><span class="line">			end = mid</span><br><span class="line">		<span class="keyword">elif</span> target &gt; nums[mid]:</span><br><span class="line">			start = mid</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			start = mid</span><br><span class="line">	<span class="keyword">if</span> nums[end] == target:</span><br><span class="line">		<span class="keyword">return</span> end</span><br><span class="line">	<span class="keyword">if</span> nums[start] == target:</span><br><span class="line">		<span class="keyword">return</span> start</span><br><span class="line">	<span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">first_position</span><span class="params">(self, nums, target)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> nums:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line">	start, end = <span class="number">0</span>, len(nums) - <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> start + <span class="number">1</span> &lt; end:</span><br><span class="line">		mid = start+ (end - start) // <span class="number">2</span></span><br><span class="line">		<span class="keyword">if</span> target &lt; nums[mid]:</span><br><span class="line">			end = mid</span><br><span class="line">		<span class="keyword">elif</span> target &gt; nums[mid]:</span><br><span class="line">			start = mid</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			end = mid</span><br><span class="line">	<span class="keyword">if</span> nums[start] == target:</span><br><span class="line">		<span class="keyword">return</span> start</span><br><span class="line">	<span class="keyword">if</span> nums[end] == target:</span><br><span class="line">		<span class="keyword">return</span> end</span><br><span class="line">	<span class="keyword">return</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(logn)</code>，空间复杂度<code>O(1)</code>  </p>
 
       
     </div>
@@ -302,23 +291,23 @@
   <ul class="entry">
     
       <li>
-        <a href="/2022/01/16/leetcode-142-linked-list-cycle-ii/">LeetCode 142 Linked List Cycle II</a>
+        <a href="/2022/01/17/leetcode-211-design-add-and-search-words-data-structure/">LeetCode 211 Design Add and Search Words Data Structure</a>
       </li>
     
       <li>
-        <a href="/2022/01/16/leetcode-141-linked-list-cycle/">LeetCode 141 Linked List Cycle</a>
+        <a href="/2022/01/17/leetcode-207-course-schedule/">LeetCode 207 Course Schedule</a>
       </li>
     
       <li>
-        <a href="/2022/01/16/leetcode-136-single-number/">LeetCode 136 Single Number</a>
+        <a href="/2022/01/17/leetcode-206-reverse-linked-list/">LeetCode 206 Reverse Linked List</a>
       </li>
     
       <li>
-        <a href="/2022/01/16/leetcode-129-sum-root-to-leaf-numbers/">LeetCode 129 Sum Root to Leaf Numbers</a>
+        <a href="/2022/01/17/leetcode-204-count-primes/">LeetCode 204 Count Primes</a>
       </li>
     
       <li>
-        <a href="/2022/01/16/lee-125-valid-palindrome/">LeetCode 125 Valid Palindrome</a>
+        <a href="/2022/01/17/leetcode-191-number-of-1-bits/">LeetCode 191 Number of 1 Bits</a>
       </li>
     
   </ul>
@@ -331,7 +320,7 @@
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 12.63px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.16px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 16.84px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 13.68px;">Binary Tree</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10px;">Bit Manipulation</a> <a href="/tags/Bloomberg/" style="font-size: 10.53px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 16.84px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 18.95px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 14.74px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.58px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.58px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 10.53px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.47px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 18.42px;">Facebook</a> <a href="/tags/Google/" style="font-size: 10px;">Google</a> <a href="/tags/Graph/" style="font-size: 11.05px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.11px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.32px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 13.16px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 13.16px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.58px;">Iterator</a> <a href="/tags/Knowledge-Base/" style="font-size: 17.37px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 14.21px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.11px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 15.26px;">Math</a> <a href="/tags/Matrix/" style="font-size: 13.16px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.58px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.53px;">Merge Sort</a> <a href="/tags/Mtrix/" style="font-size: 10px;">Mtrix</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 15.79px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.53px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.53px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 11.05px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.58px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.53px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 18.42px;">Stack</a> <a href="/tags/String/" style="font-size: 17.89px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.05px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.63px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.05px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.21px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.53px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.53px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
+    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 13.53px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 12.94px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 16.47px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 13.53px;">Binary Tree</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10.59px;">Bit Manipulation</a> <a href="/tags/Bloomberg/" style="font-size: 10.59px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 16.47px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 18.82px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 14.71px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.76px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.76px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 10.59px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.41px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 18.24px;">Facebook</a> <a href="/tags/Google/" style="font-size: 10.59px;">Google</a> <a href="/tags/Graph/" style="font-size: 11.76px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.35px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 15.88px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 12.94px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 12.94px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.76px;">Iterator</a> <a href="/tags/Knowledge-Base/" style="font-size: 17.06px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 14.71px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.35px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 15.29px;">Math</a> <a href="/tags/Matrix/" style="font-size: 12.94px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.76px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.59px;">Merge Sort</a> <a href="/tags/Microsoft/" style="font-size: 10px;">Microsoft</a> <a href="/tags/Mtrix/" style="font-size: 10px;">Mtrix</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 15.29px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.59px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.59px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 11.18px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.76px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.59px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 18.24px;">Stack</a> <a href="/tags/String/" style="font-size: 17.65px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.76px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 12.94px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.76px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.12px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.59px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.59px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
   </div>
 </div>
 
