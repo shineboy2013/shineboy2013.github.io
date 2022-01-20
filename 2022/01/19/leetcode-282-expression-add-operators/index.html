@@ -1,0 +1,193 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+  
+  <title>LeetCode 282 Expression Add Operators › KK&#39;s blog</title>
+  <meta name="author" content="KK Shum">
+  
+  <meta name="description" content="LeetCode
+Given a string num that contains only digits and an integer target, return all possibilities to insert the binary operators &amp;#39;+&amp;#39;, &amp;#39">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="LeetCode 282 Expression Add Operators"/>
+  <meta property="og:site_name" content="KK&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="KK&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]--><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+</head>
+
+
+<body>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><header id="header"><div class="meta inner">
+  <h1><a href="/">KK&#39;s blog</a></h1>
+  <h2><a href="/">每天积累多一些</a></h2>
+  <nav id="main-nav">
+    <ul>
+      
+      <li><a href="/about">About</a></li>
+      
+      <li><a href="/archives">Archives</a></li>
+      
+      <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+</div>
+<div class="clearfix"></div>
+
+	<script data-ad-client="ca-pub-3350210696528821" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  </header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title">LeetCode 282 Expression Add Operators</h1>
+  
+
+      
+        <time datetime="2022-01-20T07:00:41.425Z">2022-01-19</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/expression-add-operators" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>Given a string <code>num</code> that contains only digits and an integer <code>target</code>, return <em><strong>all possibilities</strong> to insert the binary operators</em> <code>&#39;+&#39;</code><em>,</em> <code>&#39;-&#39;</code><em>, and/or</em> <code>&#39;*&#39;</code> <em>between the digits of</em> <code>num</code> <em>so that the resultant expression evaluates to the</em> <code>target</code> <em>value</em>.<br><br>Note that operands in the returned expressions <strong>should not</strong> contain leading zeros.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> num = “123”, target = 6<br><strong>Output:</strong> [“1<em>2</em>3”,”1+2+3”]<br><strong>Explanation:</strong> Both “1<em>2</em>3” and “1+2+3” evaluate to 6.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> num = “232”, target = 8<br><strong>Output:</strong> [“2<em>3+2”,”2+3</em>2”]<br><strong>Explanation:</strong> Both “2<em>3+2” and “2+3</em>2” evaluate to 8.<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> num = “3456237490”, target = 9191<br><strong>Output:</strong> []<br><strong>Explanation:</strong> There are no expressions that can be created from “3456237490” to evaluate to 9191.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= num.length &lt;= 10</code>
+</em>   <code>num</code> consists of only digits.<br>*   <code>-2&lt;sup&gt;31&lt;/sup&gt; &lt;= target &lt;= 2&lt;sup&gt;31&lt;/sup&gt; - 1</code><br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>N/A</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>求所有可能用DFS。属于分割型DFS，在数位之间加符号，数位可以是1个到多个。<br>一轮递归分割出符号 + 数字<br>另一种选择是数字 + 符号，但需要额外变量sign，因为不能立刻计算到结果。也不符合正常逻辑。所以选择前者。</p>
+<p>由于运算都是二元，也就是用上述分割法，第一个数要特别处理。所以DFS中要特别处理第一个数。这样可以开始写加减。引入prev_res作为DFS参数，这样只要prev_res 加减 该轮数字即可得到该轮结果。用DFS模板5个标准参数外加prev_res：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">def dfs(self, num, st, target, prev_res, path, res):</span><br></pre></td></tr></table></figure></p>
+<p>这样只处理加减的DFS比较容易实现  </p>
+<p>最大难点在于乘法，参考LeetCode 227 Basic Calculator II，加减和乘除属于两层计算需要分别处理，所以引入<strong>新参数prev_multi_res，用于保存乘法结果，而刚才的命名为prev_add_res保存加减乘的全部结果</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">def dfs(self, num, st, target, prev_add_res, prev_multi_res, path, res):</span><br></pre></td></tr></table></figure></p>
+<p>举例2+3*4，按照原来的逻辑会计算到2+3=5，但此时如果遇到乘号，就要重新计算加法结果，先减去乘法结果，退回到2，再计算3*4=12这是乘法结果，再加回2得到新加法结果。进一步理解prev_multi_res，如果该轮是加减法，仍要将该轮的数作为prev_multi_res传到下轮DFS，因为如果下一轮是乘法，它就是第一个乘法的数。</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><ol>
+<li>先实现加减法</li>
+<li>再实现乘法</li>
+</ol>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>分割型DFS，选择每轮递归分割符号 + 数字。由于运算都是二元，<strong>特别处理第一个数</strong></li>
+<li>引入参数prev_add_res, prev_multi_res. <strong>prev_multi_res若是加减，用(+/-)cur_num, 否则用乘法结果prev_multi_res * cur_num</strong>。注意若是减法cur_num用负号</li>
+<li>分割时数字不能有前缀0</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">addOperators</span><span class="params">(self, num: str, target: int)</span> -&gt; List[str]:</span></span><br><span class="line">	res = []</span><br><span class="line">	self.dfs(num, <span class="number">0</span>, target, <span class="number">0</span>, <span class="number">0</span>, <span class="string">''</span>, res)</span><br><span class="line">	<span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dfs</span><span class="params">(self, num, st, target, prev_add_res, prev_multi_res, path, res)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> st == len(num):</span><br><span class="line">		<span class="keyword">if</span> target == prev_add_res:</span><br><span class="line">			res.append(path)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(st, len(num)):</span><br><span class="line">		<span class="keyword">if</span> i &gt; st <span class="keyword">and</span> num[st] == <span class="string">'0'</span>: <span class="comment"># remember</span></span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		cur_num = int(num[st:i + <span class="number">1</span>])</span><br><span class="line">		<span class="keyword">if</span> <span class="keyword">not</span> path: <span class="comment"># remember</span></span><br><span class="line">			self.dfs(num, i + <span class="number">1</span>, target, prev_add_res + cur_num, cur_num, str(cur_num), res)</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			self.dfs(num, i + <span class="number">1</span>, target, prev_add_res + cur_num, cur_num, path + <span class="string">'+'</span> + str(cur_num), res) <span class="comment"># use cur_num rather than cur</span></span><br><span class="line">			self.dfs(num, i + <span class="number">1</span>, target, prev_add_res - cur_num, -cur_num, path + <span class="string">'-'</span> + str(cur_num), res) <span class="comment"># -cur_num rather than cur_num</span></span><br><span class="line">			self.dfs(num, i + <span class="number">1</span>, target, (prev_add_res - prev_multi_res) + prev_multi_res * cur_num, prev_multi_res * cur_num, path + <span class="string">'*'</span> + str(cur_num), res) <span class="comment"># prev_multi_res * cur_num not cur_num</span></span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(4<sup>n</sup>)</code>，空间复杂度<code>O(n)</code>, 因为每个字符之间都有不加操作符，加3个操作符，所以是4，有n-1个间隔  </p>
+
+      
+    </div>
+      
+      <footer>
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/Math/">Math</a>, <a href="/tags/String/">String</a>, <a href="/tags/Facebook/">Facebook</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  
+</section>
+
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="q" value="site:shineboy2013.github.com">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">Recent Posts</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2022/01/19/leetcode-282-expression-add-operators/">LeetCode 282 Expression Add Operators</a>
+      </li>
+    
+      <li>
+        <a href="/2022/01/19/leetcode-277-find-the-celebrity/">LeetCode 277 Find the Celebrity</a>
+      </li>
+    
+      <li>
+        <a href="/2022/01/19/leetcode-270-closest-binary-search-tree-value/">LeetCode 270 Closest Binary Search Tree Value</a>
+      </li>
+    
+      <li>
+        <a href="/2022/01/19/leetcode-268-missing-number/">LeetCode 268 Missing Number</a>
+      </li>
+    
+      <li>
+        <a href="/2022/01/19/leetcode-266-palindrome-permutation/">LeetCode 266 Palindrome Permutation</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">Tag Cloud</h3>
+  <div class="entry">
+    <a href="/tags/Array/" style="font-size: 18px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 12px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 12px;">Binary Search</a> <a href="/tags/Classic/" style="font-size: 10px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 10px;">Depth-first Search</a> <a href="/tags/Dynamic-Programming/" style="font-size: 10px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 16px;">Facebook</a> <a href="/tags/Graph/" style="font-size: 10px;">Graph</a> <a href="/tags/Heap/" style="font-size: 10px;">Heap</a> <a href="/tags/Knowledge-Base/" style="font-size: 16px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 14px;">Linked List</a> <a href="/tags/Math/" style="font-size: 18px;">Math</a> <a href="/tags/Matrix/" style="font-size: 16px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 10px;">Memoization</a> <a href="/tags/Python-KB/" style="font-size: 10px;">Python KB</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/String/" style="font-size: 20px;">String</a> <a href="/tags/Tree/" style="font-size: 16px;">Tree</a>
+  </div>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2022 KK Shum
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+
+</body>
+</html>
+
