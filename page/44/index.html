@@ -53,6 +53,68 @@
     <header>
       
   
+    <h1 class="title"><a href="/2021/11/13/lee-275/">LeetCode 275 H-Index II</a></h1>
+  
+
+      
+        <time datetime="2021-11-14T02:02:07.986Z">2021-11-13</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/h-index-ii/" target="_blank" rel="noopener">LeetCode 275 H-Index II</a></strong></p>
+<p>Given an array of integers <code>citations</code> where <code>citations[i]</code> is the number of citations a researcher received for their <code>i&lt;sup&gt;th&lt;/sup&gt;</code> paper and <code>citations</code> is sorted in an <strong>ascending order</strong>, return compute the researcher’s <code>h</code><strong>-index</strong>.</p>
+<p>According to the <a href="https://en.wikipedia.org/wiki/H-index" target="_blank" rel="noopener">definition of h-index on Wikipedia</a>: A scientist has an index <code>h</code> if <code>h</code> of their <code>n</code> papers have at least <code>h</code> citations each, and the other <code>n − h</code> papers have no more than <code>h</code> citations each.</p>
+<p>If there are several possible values for <code>h</code>, the maximum one is taken as the <code>h</code><strong>-index</strong>.</p>
+<p>You must write an algorithm that runs in logarithmic time.</p>
+<p><strong>Example 1:</strong></p>
+<pre>**Input:** citations = [0,1,3,5,6]
+**Output:** 3
+**Explanation:** [0,1,3,5,6] means the researcher has 5 papers in total and each of them had received 0, 1, 3, 5, 6 citations respectively.
+Since the researcher has 3 papers with at least 3 citations each and the remaining two with no more than 3 citations each, their h-index is 3.
+</pre>
+
+<p><strong>Example 2:</strong></p>
+<pre>**Input:** citations = [1,2,100]
+**Output:** 2
+</pre>
+
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>n == citations.length</code></li>
+<li><code>1 &lt;= n &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code></li>
+<li><code>0 &lt;= citations[i] &lt;= 1000</code></li>
+<li><code>citations</code> is sorted in <strong>ascending order</strong>.</li>
+</ul>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>一个人的学术文章有n篇分别被引用了n次及以上，那么H指数就是n  </p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>数组有序，论文数从小到大有序(符合引用次数的论文数从右向左递减)，引用次数由小到大排序，所以只要从右向左遍历数组，数值和索引相交的值就是所求。  </p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>二分法可提高效率，用的是</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>此题是寻找单一目标，所以等号可以并入任一个if statement，但循环出来后，start必须先比较，因为贪婪法，下标越向左，越容易获得更大的结果。从这一意义上看，此题接近于first_position  </li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hIndex</span><span class="params">(self, citations: List[int])</span> -&gt; int:</span></span><br><span class="line">	<span class="keyword">if</span> citations <span class="keyword">is</span> <span class="keyword">None</span> <span class="keyword">or</span> len(citations) == <span class="number">0</span>:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">	start, end = <span class="number">0</span>, len(citations) - <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> start + <span class="number">1</span> &lt; end:</span><br><span class="line">		mid = start + (end - start) // <span class="number">2</span></span><br><span class="line">		<span class="keyword">if</span> citations[mid] &gt;= len(citations) - mid:</span><br><span class="line">			end = mid</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			start = mid</span><br><span class="line">	<span class="keyword">if</span> citations[start] &gt;= len(citations) - start:</span><br><span class="line">		<span class="keyword">return</span> len(citations) - start</span><br><span class="line">	<span class="keyword">if</span> citations[end] &gt;= len(citations) - end:</span><br><span class="line">		<span class="keyword">return</span> len(citations) - end</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span></span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(logn)</code>，空间复杂度<code>O(1)</code>。</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2021/11/13/kb-alg/">算法知识点目录</a></h1>
   
 
@@ -75,15 +137,15 @@
 <h3 id="Sorting"><a href="#Sorting" class="headerlink" title="Sorting"></a><strong>Sorting</strong></h3><p><a href="https://shineboy2013.github.io/2020/04/26/quick-sort/" target="_blank" rel="noopener">Quick sort</a><br>Partition的应用, O(1)空间且注意循环外处理最后一部分：<br><a href="https://shineboy2013.github.io/2022/01/20/leetcode-283-move-zeroes/" target="_blank" rel="noopener">LeetCode 283 Move Zeroes</a><br><a href="https://shineboy2013.github.io/2021/12/20/lee-443/" target="_blank" rel="noopener">LeetCode 443 String Compression</a><br><a href="https://shineboy2013.github.io/2021/12/05/lee-075/" target="_blank" rel="noopener">LeetCode 075 Sort Colors</a><br><a href="https://shineboy2013.github.io/2021/12/05/lee-696/" target="_blank" rel="noopener">LeetCode 696 Count Binary Substrings</a><br><a href="https://shineboy2013.github.io/2021/12/16/lee-041/" target="_blank" rel="noopener">LeetCode 041 First Missing Positive</a><br><a href="https://shineboy2013.github.io/2020/04/26/quick-sort/" target="_blank" rel="noopener">Quick select</a><br><a href="https://shineboy2013.github.io/2021/11/15/merge-sort/" target="_blank" rel="noopener">Merge sort</a><br><a href="https://shineboy2013.github.io/2021/12/25/lee-244/" target="_blank" rel="noopener">LeetCode 244 Shortest Word Distance II</a><br><a href="https://shineboy2013.github.io/2018/04/30/lee-493/" target="_blank" rel="noopener">LeetCode 493 Reverse Pairs</a><br>Bucket sort<br><a href="https://shineboy2013.github.io/2017/12/31/lee-347/" target="_blank" rel="noopener">LeetCode 347 Top K Frequent Elements</a><br><a href="https://shineboy2013.github.io/2021/11/20/lee-2080/" target="_blank" rel="noopener">LeetCode 2080 Range Frequency Queries</a>  </p>
 <h3 id="Binary-Search"><a href="#Binary-Search" class="headerlink" title="Binary Search"></a><strong>Binary Search</strong></h3><p><a href="https://shineboy2013.github.io/2020/04/21/binary-search/" target="_blank" rel="noopener">Binary Search</a><br><a href="https://shineboy2013.github.io/2021/12/05/lee-278/" target="_blank" rel="noopener">LeetCode 278 First Bad Version</a><br><a href="https://shineboy2013.github.io/2021/12/05/lee-153/" target="_blank" rel="noopener">LeetCode 153 Find Minimum in Rotated Sorted Array</a><br><a href="https://shineboy2013.github.io/2021/12/05/lee-033/" target="_blank" rel="noopener">LeetCode 033 Search in Rotated Sorted Array</a><br><a href="https://shineboy2013.github.io/2019/02/26/lee-540/" target="_blank" rel="noopener">LeetCode 540 Single Element in a Sorted Array</a><br><a href="https://shineboy2013.github.io/2021/11/13/lee-275/" target="_blank" rel="noopener">LeetCode 275 H-Index II</a><br><a href="https://shineboy2013.github.io/2020/04/21/binary-search/" target="_blank" rel="noopener">Binary Select</a><br>适用条件：试某个数接近于最优解，全部试一遍就是*logn的复杂度<br><a href="https://shineboy2013.github.io/2021/11/14/lee-378/" target="_blank" rel="noopener">LeetCode 378 Kth Smallest Element in a Sorted Matrix</a><br><a href="https://shineboy2013.github.io/2018/01/31/lee-004/" target="_blank" rel="noopener">LeetCode 004 Median of Two Sorted Arrays</a>  </p>
 <h3 id="Tree"><a href="#Tree" class="headerlink" title="Tree"></a><strong>Tree</strong></h3><p>检查方法： None, 一个节点，两个节点(只有左或右)，三个节点<br><a href="https://shineboy2013.github.io/2021/07/27/lee-104/" target="_blank" rel="noopener">LeetCode 104 Maximum Depth of Binary Tree</a><br><a href="https://shineboy2013.github.io/2021/12/05/lee-230/" target="_blank" rel="noopener">LeetCode 230 Kth Smallest Element in a BST</a><br><a href="https://shineboy2013.github.io/2021/12/29/lee-114/" target="_blank" rel="noopener">LeetCode 114 Flatten Binary Tree to Linked List</a><br><a href="https://shineboy2013.github.io/2021/12/05/lee-105/" target="_blank" rel="noopener">LeetCode 105 Construct Binary Tree from Preorder and Inorder Traversal</a><br><a href="https://shineboy2013.github.io/2021/12/24/lee-314/" target="_blank" rel="noopener">LeetCode 314 Binary Tree Vertical Order Traversal</a><br>方法：用Map记录子节点到父节点关系等价于形成双向Tree<br><a href="https://shineboy2013.github.io/2021/12/28/lee-1650/" target="_blank" rel="noopener">LeetCode 1650 Lowest Common Ancestor of a Binary Tree III</a><br><a href="https://shineboy2013.github.io/2021/12/04/lee-236/" target="_blank" rel="noopener">LeetCode 236 Lowest Common Ancestor of a Binary Tree</a><br><a href="https://shineboy2013.github.io/2021/12/06/lee-863/" target="_blank" rel="noopener">LeetCode 863 All Nodes Distance K in Binary Tree</a>  </p>
-<h3 id="BFS"><a href="#BFS" class="headerlink" title="BFS"></a><strong>BFS</strong></h3><p>适用条件： 可行性，最大和最小值且每个点不能重复访问<br><a href="https://shineboy2013.github.io/2017/12/03/bfs/" target="_blank" rel="noopener">图BFS</a><br><a href="https://shineboy2013.github.io/2017/12/23/lee-200/" target="_blank" rel="noopener">LeetCode 200 Number of Islands</a><br><a href="https://shineboy2013.github.io/2020/04/20/lee-1197/" target="_blank" rel="noopener">LeetCode 1197 Minimum Knight Moves</a><br><a href="https://shineboy2013.github.io/2020/04/19/lee-133/" target="_blank" rel="noopener">LeetCode 133 Clone Graph</a><br><a href="https://shineboy2013.github.io/2020/04/20/lee-297/" target="_blank" rel="noopener">LeetCode 297 Serialize and Deserialize Binary Tree</a><br><a href="https://shineboy2013.github.io/2020/04/20/lee-127/" target="_blank" rel="noopener">LeetCode 127 Word Ladder</a><br><a href="https://shineboy2013.github.io/2021/12/05/lee-1654/" target="_blank" rel="noopener">LeetCode 301 Remove Invalid Parenthesess</a><br><a href="https://shineboy2013.github.io/2021/12/15/lee-055/" target="_blank" rel="noopener">LeetCode 055 Jump Game</a><br><a href="https://shineboy2013.github.io/2021/12/05/lee-1654/" target="_blank" rel="noopener">LeetCode 1654 Minimum Jumps to Reach Home</a><br><a href="https://shineboy2013.github.io/2022/01/20/leetcode-286-walls-and-gates/" target="_blank" rel="noopener">LeetCode 286 Walls and Gates</a> 多始点BFS<br><a href="https://shineboy2013.github.io/2021/12/05/lee-490/" target="_blank" rel="noopener">LeetCode 490 The Maze</a> 一组节点作为一层的BFS<br><a href="https://shineboy2013.github.io/2021/12/19/lee-815/" target="_blank" rel="noopener">LeetCode 815 Bus Routes</a> 一组节点作为一层的BFS<br><a href="https://shineboy2013.github.io/2017/12/03/topological/" target="_blank" rel="noopener">拓扑排序</a><br><a href="https://shineboy2013.github.io/2021/12/05/lee-210/" target="_blank" rel="noopener">LeetCode 210 Course Schedule II</a><br><a href="https://shineboy2013.github.io/2021/11/29/lee-269/" target="_blank" rel="noopener">LeetCode 269 Alien Dictionary</a>    </p>
+<h3 id="BFS"><a href="#BFS" class="headerlink" title="BFS"></a><strong>BFS</strong></h3><p>适用条件： 可行性，最大和最小值且每个点不能重复访问<br><a href="https://shineboy2013.github.io/2017/12/03/bfs/" target="_blank" rel="noopener">图BFS</a><br><a href="https://shineboy2013.github.io/2017/12/23/lee-200/" target="_blank" rel="noopener">LeetCode 200 Number of Islands</a> 连通集问题<br><a href="https://shineboy2013.github.io/2020/04/20/lee-1197/" target="_blank" rel="noopener">LeetCode 1197 Minimum Knight Moves</a><br><a href="https://shineboy2013.github.io/2020/04/19/lee-133/" target="_blank" rel="noopener">LeetCode 133 Clone Graph</a><br><a href="https://shineboy2013.github.io/2020/04/20/lee-297/" target="_blank" rel="noopener">LeetCode 297 Serialize and Deserialize Binary Tree</a><br><a href="https://shineboy2013.github.io/2020/04/20/lee-127/" target="_blank" rel="noopener">LeetCode 127 Word Ladder</a><br><a href="https://shineboy2013.github.io/2021/12/05/lee-1654/" target="_blank" rel="noopener">LeetCode 301 Remove Invalid Parenthesess</a><br><a href="https://shineboy2013.github.io/2021/12/15/lee-055/" target="_blank" rel="noopener">LeetCode 055 Jump Game</a><br><a href="https://shineboy2013.github.io/2021/12/05/lee-1654/" target="_blank" rel="noopener">LeetCode 1654 Minimum Jumps to Reach Home</a><br><a href="https://shineboy2013.github.io/2022/01/20/leetcode-286-walls-and-gates/" target="_blank" rel="noopener">LeetCode 286 Walls and Gates</a> 多始点BFS<br><a href="https://shineboy2013.github.io/2021/12/05/lee-490/" target="_blank" rel="noopener">LeetCode 490 The Maze</a> 一组节点作为一层的BFS<br><a href="https://shineboy2013.github.io/2021/12/19/lee-815/" target="_blank" rel="noopener">LeetCode 815 Bus Routes</a> 一组节点作为一层的BFS<br><a href="https://shineboy2013.github.io/2017/12/03/topological/" target="_blank" rel="noopener">拓扑排序</a><br><a href="https://shineboy2013.github.io/2021/12/05/lee-210/" target="_blank" rel="noopener">LeetCode 210 Course Schedule II</a><br><a href="https://shineboy2013.github.io/2021/11/29/lee-269/" target="_blank" rel="noopener">LeetCode 269 Alien Dictionary</a>    </p>
 <h3 id="DFS"><a href="#DFS" class="headerlink" title="DFS"></a><strong>DFS</strong></h3><p>适用条件： 种数(优先用DP，次选用DFS)，可行性<br><a href="https://shineboy2013.github.io/2017/12/24/dfs/" target="_blank" rel="noopener">图DFS/填位法</a><br><a href="https://shineboy2013.github.io/2020/05/03/permutation/" target="_blank" rel="noopener">排列</a><br><a href="https://shineboy2013.github.io/2021/12/26/lee-526/" target="_blank" rel="noopener">LeetCode 526 Beautiful Arrangement</a><br><a href="https://shineboy2013.github.io/2020/05/03/combination/" target="_blank" rel="noopener">组合</a><br><a href="https://shineboy2013.github.io/2021/12/29/lee-039/" target="_blank" rel="noopener">LeetCode 039 Combination Sum</a><br><a href="https://shineboy2013.github.io/2021/12/29/lee-077/" target="_blank" rel="noopener">LeetCode 077 Combinations</a><br><a href="https://shineboy2013.github.io/2021/12/29/lee-216/" target="_blank" rel="noopener">LeetCode 216 Combination Sum III</a><br><a href="https://shineboy2013.github.io/2021/10/21/lee-017/" target="_blank" rel="noopener">LeetCode 017 Letter Combinations of a Phone Number</a>  填位法<br><a href="https://shineboy2013.github.io/2021/12/05/lee-051/" target="_blank" rel="noopener">LeetCode 051 N-Queens</a> 填位法<br><a href="https://shineboy2013.github.io/2021/12/28/lee-037/" target="_blank" rel="noopener">LeetCode 037 Sudoku Solver</a> 填位法<br><a href="https://shineboy2013.github.io/2022/01/16/lee-093/" target="_blank" rel="noopener">LeetCode 093 Restore IP Addresses</a> 分割型，结果分组型DFS<br><a href="https://shineboy2013.github.io/2021/12/04/lee-291/" target="_blank" rel="noopener">LeetCode 291 Word Pattern II</a> 分割型<br><a href="https://shineboy2013.github.io/2021/12/03/lee-079/" target="_blank" rel="noopener">LeetCode 079 Word Search</a> 图DFS + 分割型<br><a href="https://shineboy2013.github.io/2020/05/03/lee-126/" target="_blank" rel="noopener">LeetCode 126 Word Ladder II</a> 图DFS<br><a href="https://shineboy2013.github.io/2020/05/09/memoization/" target="_blank" rel="noopener">记忆性搜索</a><br><a href="https://shineboy2013.github.io/2020/05/09/lee-140/" target="_blank" rel="noopener">LeetCode 140 Word Break II</a> 分割型<br><a href="https://shineboy2013.github.io/2022/01/18/leetcode-095-unique-binary-search-trees-ii/" target="_blank" rel="noopener">LeetCode 095 Unique Binary Search Trees II</a> Catalan型DFS<br><a href="https://shineboy2013.github.io/2022/01/18/leetcode-241-different-ways-to-add-parentheses/" target="_blank" rel="noopener">LeetCode 241 Different Ways to Add Parentheses</a> Catalan型DFS     </p>
 <h3 id="DP"><a href="#DP" class="headerlink" title="DP"></a><strong>DP</strong></h3><p>适用条件： 最值，种数，可行性。输入数据有序,暴力法非多项式<br><a href="https://shineboy2013.github.io/2021/11/27/dp/" target="_blank" rel="noopener">DP</a><br><a href="https://shineboy2013.github.io/2021/12/29/lee-070/" target="_blank" rel="noopener">LeetCode 070 Climbing Stairs</a> 单序列型<br><a href="https://shineboy2013.github.io/2022/01/16/lee-091/" target="_blank" rel="noopener">LeetCode 091 Decode Ways</a> 单序列型<br><a href="https://shineboy2013.github.io/2021/12/05/lee-198/" target="_blank" rel="noopener">LeetCode 198 House Robber</a> 单序列型<br><a href="https://shineboy2013.github.io/2021/12/29/lee-377/" target="_blank" rel="noopener">LeetCode 377 Combination Sum IV</a> <strong>数值到个数DP</strong><br><a href="https://shineboy2013.github.io/2021/12/06/lee-322/" target="_blank" rel="noopener">LeetCode 322 Coin Change</a> 数值到个数DP<br><a href="https://shineboy2013.github.io/2022/01/05/lee-063/" target="_blank" rel="noopener">LeetCode 063 Unique Paths II</a> 坐标型DP<br><a href="https://shineboy2013.github.io/2022/01/05/lee-064/" target="_blank" rel="noopener">LeetCode 064 Minimum Path Sum</a> 坐标型DP<br><a href="https://shineboy2013.github.io/2022/01/18/leetcode-221-maximal-square/" target="_blank" rel="noopener">LeetCode 221 Maximal Square</a> 坐标型DP<br><a href="https://shineboy2013.github.io/2021/12/22/lee-174/" target="_blank" rel="noopener">LeetCode 174 Dungeon Game</a> 坐标型DP<br><a href="https://shineboy2013.github.io/2021/12/23/lee-718/" target="_blank" rel="noopener">LeetCode 718 Maximum Length of Repeated Subarray</a> 匹配型DP<br><a href="https://shineboy2013.github.io/2021/12/01/lee-300/" target="_blank" rel="noopener">LeetCode 300 LIS</a> 匹配型DP<br><a href="https://shineboy2013.github.io/2020/05/09/lee-139/" target="_blank" rel="noopener">LeetCode 139 Word Break</a> 匹配型DP<br><a href="https://shineboy2013.github.io/2022/01/15/lee-072/" target="_blank" rel="noopener">LeetCode 072 Edit Distance</a> 匹配型DP<br><a href="https://shineboy2013.github.io/2020/05/10/lee-044/" target="_blank" rel="noopener">LeetCode 044 Wildcard Matching</a> 匹配型DP<br><a href="https://shineboy2013.github.io/2020/05/10/lee-010/" target="_blank" rel="noopener">LeetCode 010 Regular Expression Matching</a> 匹配型DP<br><a href="https://shineboy2013.github.io/2021/12/05/lee-516/" target="_blank" rel="noopener">LeetCode 516 Longest Palindromic Subsequence</a>  区间型DP<br><a href="https://shineboy2013.github.io/2017/12/28/lee-312/" target="_blank" rel="noopener">LeetCode 312 Burst Balloons</a> 区间型DP<br>多状态DP需要同时赋值<br><a href="https://shineboy2013.github.io/2022/01/17/leetcode-152-maximum-product-subarray/" target="_blank" rel="noopener">LeetCode 152 Maximum Product Subarray</a> 多状态DP<br><a href="https://shineboy2013.github.io/2021/12/26/lee-926/" target="_blank" rel="noopener">LeetCode 926 Flip String to Monotone Increasing</a> 多状态DP<br>[LeetCode 256 Paint House] 多状态DP  </p>
-<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a><strong>其他</strong></h3><p><a href="https://shineboy2013.github.io/2017/12/24/union-find/" target="_blank" rel="noopener">Union Find</a><br>[双向BFS]<a href="https://shineboy2013.github.io/2020/04/20/lee-127/" target="_blank" rel="noopener">LeetCode 127 Word Ladder</a><br>[线段树]<a href="https://shineboy2013.github.io/2021/12/05/lee-729/" target="_blank" rel="noopener">LeetCode 729 My Calendar I</a>  </p>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a><strong>其他</strong></h3><p>动态计算连接数，其他均用BFS<br><a href="https://shineboy2013.github.io/2017/12/24/union-find/" target="_blank" rel="noopener">Union Find</a><br>[LeetCode 721 Accounts Merge]<br>[双向BFS]<a href="https://shineboy2013.github.io/2020/04/20/lee-127/" target="_blank" rel="noopener">LeetCode 127 Word Ladder</a><br>[线段树]<a href="https://shineboy2013.github.io/2021/12/05/lee-729/" target="_blank" rel="noopener">LeetCode 729 My Calendar I</a>  </p>
 <h2 id="最大的k个-最大的前k个数-无序数值数组"><a href="#最大的k个-最大的前k个数-无序数值数组" class="headerlink" title="最大的k个/最大的前k个数(无序数值数组)"></a>最大的k个/最大的前k个数(无序数值数组)</h2><p><a href="https://shineboy2013.github.io/2017/12/31/lee-347/" target="_blank" rel="noopener">LeetCode 347 Top K Frequent Elements</a><br>优先考虑Heap，因为Heap支持<strong>动态</strong>和静态数据。适用范围最广，动态包括Data stream，不将整个数组读入从而优化复杂度<br><a href="https://shineboy2013.github.io/2021/12/06/lee-295/" target="_blank" rel="noopener">LeetCode 295 Find Median from Data Stream</a><br><a href="https://shineboy2013.github.io/2021/11/14/lee-378/" target="_blank" rel="noopener">LeetCode 378 Kth Smallest Element in a Sorted Matrix</a><br>Binary select，数值法计算个数，不能用于动态，实现较复杂<br><a href="https://shineboy2013.github.io/2018/01/31/lee-004/" target="_blank" rel="noopener">LeetCode 004 Median of Two Sorted Arrays</a><br>Quick select, binary select的特殊版，只能用于一维数组   </p>
 <h2 id="数组区间内动态最大值最小值或保留数组顺序-数值数组"><a href="#数组区间内动态最大值最小值或保留数组顺序-数值数组" class="headerlink" title="数组区间内动态最大值最小值或保留数组顺序(数值数组)"></a>数组区间内动态最大值最小值或保留数组顺序(数值数组)</h2><p>由于保留顺序，首选stack<br><a href="https://shineboy2013.github.io/2021/12/12/lee-2104/" target="_blank" rel="noopener">LeetCode 2104 Sum of Subarray Ranges</a>  </p>
 <h2 id="二维坐标最短距离"><a href="#二维坐标最短距离" class="headerlink" title="二维坐标最短距离"></a>二维坐标最短距离</h2><p>BFS首选，然后DP。若状态转移是无序用BFS，否则DP(可从上到下，从左到右)<br>BFS<br><a href="https://shineboy2013.github.io/2020/04/20/lee-1197/" target="_blank" rel="noopener">LeetCode 1197 Minimum Knight Moves</a><br><a href="https://shineboy2013.github.io/2021/12/27/lee-909/" target="_blank" rel="noopener">LeetCode 909 Snakes and Ladders</a><br>DP<br><a href="https://shineboy2013.github.io/2021/12/22/lee-174/" target="_blank" rel="noopener">LeetCode 174 Dungeon Game</a> 坐标型DP   </p>
 <h2 id="累计思想"><a href="#累计思想" class="headerlink" title="累计思想"></a>累计思想</h2><p>将相连的批量计算提高效率或者满足累计条件<br><a href="https://shineboy2013.github.io/2021/12/08/lee-032/" target="_blank" rel="noopener">LeetCode 032 Longest Valid Parentheses</a>  统计左括号个数保证其一直为非负数<br><a href="https://shineboy2013.github.io/2021/12/09/lee-134/" target="_blank" rel="noopener">LeetCode 134 Gas Station</a>  保证gas一直为非负数<br>数组的presum<br><a href="https://shineboy2013.github.io/2021/12/05/lee-696/" target="_blank" rel="noopener">LeetCode 696 Count Binary Substrings</a><br><a href="https://shineboy2013.github.io/2021/12/13/lee-560/" target="_blank" rel="noopener">LeetCode 560 Subarray Sum Equals K</a><br><a href="https://shineboy2013.github.io/2021/12/28/lee-238/" target="_blank" rel="noopener">LeetCode 238 Product of Array Except Self</a><br>子矩阵的presum<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">res = presum[x][y] - left - top + diag</span><br><span class="line"></span><br><span class="line">presum[i][j] = row_sum + (presum[i - 1][j] if i &gt; 0 else 0)</span><br></pre></td></tr></table></figure></p>
-<p><a href="https://shineboy2013.github.io/2022/01/04/lee-427/" target="_blank" rel="noopener">LeetCode 427 Construct Quad Tree</a>  </p>
+<p>[LeetCode 304 Range Sum Query 2D - Immutable]<br><a href="https://shineboy2013.github.io/2022/01/04/lee-427/" target="_blank" rel="noopener">LeetCode 427 Construct Quad Tree</a>  </p>
 <h2 id="括号题或者字符串运算题"><a href="#括号题或者字符串运算题" class="headerlink" title="括号题或者字符串运算题"></a>括号题或者字符串运算题</h2><p><a href="https://shineboy2013.github.io/2021/12/07/parenthesis/" target="_blank" rel="noopener">括号题或者字符串运算题</a>优先用Stack<br><a href="https://shineboy2013.github.io/2021/12/06/lee-020/" target="_blank" rel="noopener">LeetCode 020 Valid Parentheses</a><br><a href="https://shineboy2013.github.io/2021/12/08/lee-032/" target="_blank" rel="noopener">LeetCode 032 Longest Valid Parentheses</a><br><a href="https://shineboy2013.github.io/2021/12/07/lee-1249/" target="_blank" rel="noopener">LeetCode 1249 Minimum Remove to Make Valid Parentheses</a> 括号下标<br><a href="https://shineboy2013.github.io/2021/12/08/lee-678/" target="_blank" rel="noopener">LeetCode 678 Valid Parenthesis String</a><br><a href="https://shineboy2013.github.io/2021/12/11/lee-022/" target="_blank" rel="noopener">LeetCode 022 Generate Parentheses</a><br><a href="https://shineboy2013.github.io/2021/12/26/lee-071/" target="_blank" rel="noopener">LeetCode 071 Simplify Path</a><br>字符串运算题<br><a href="https://shineboy2013.github.io/2021/12/06/lee-227/" target="_blank" rel="noopener">LeetCode 227 Basic Calculator II</a><br><a href="https://shineboy2013.github.io/2021/12/08/lee-224/" target="_blank" rel="noopener">LeetCode 224 Basic Calculator</a><br><a href="https://shineboy2013.github.io/2021/12/13/lee-394/" target="_blank" rel="noopener">LeetCode 394 Decode String</a>  </p>
 <h2 id="游戏题"><a href="#游戏题" class="headerlink" title="游戏题"></a>游戏题</h2><p>数据结构设计 + 模拟<br>[LeetCode 348 Design Tic-Tac-Toe] 设计游戏<br><a href="https://shineboy2013.github.io/2021/12/05/lee-051/" target="_blank" rel="noopener">LeetCode 051 N-Queens</a> 求游戏所有解<br><a href="https://shineboy2013.github.io/2021/12/28/lee-037/" target="_blank" rel="noopener">LeetCode 037 Sudoku Solver</a> 求游戏是否有解  </p>
 <h2 id="区间重合题"><a href="#区间重合题" class="headerlink" title="区间重合题"></a>区间重合题</h2><p>条件区间重合且<strong>区间始点有序</strong>。用端点排序法(更常用)或Heap(处理重合情况下的计算)<br><a href="https://shineboy2013.github.io/2018/01/29/lee-253/" target="_blank" rel="noopener">LeetCode 253 Meeting Rooms II</a><br><a href="https://shineboy2013.github.io/2018/01/28/lee-056/" target="_blank" rel="noopener">LeetCode 056 Merge Intervals</a><br><a href="https://shineboy2013.github.io/2021/12/26/lee-759/" target="_blank" rel="noopener">LeetCode 759 Employee Free Time</a><br><a href="https://shineboy2013.github.io/2021/12/05/lee-1235/" target="_blank" rel="noopener">LeetCode 1235 Maximum Profit in Job Scheduling</a><br><a href="https://shineboy2013.github.io/2021/12/28/lee-871/" target="_blank" rel="noopener">LeetCode 871 Minimum Number of Refueling Stops</a><br><a href="https://shineboy2013.github.io/2022/01/18/leetcode-218-the-skyline-problem/" target="_blank" rel="noopener">LeetCode 218 The Skyline Problem</a> 端点排序法 + Heap  </p>
@@ -294,69 +356,6 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2021/07/27/lee-104/">LeetCode 104 Maximum Depth of Binary Tree</a></h1>
-  
-
-      
-        <time datetime="2021-07-28T04:03:44.554Z">2021-07-27</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/maximum-depth-of-binary-tree/" target="_blank" rel="noopener">LeetCode 104 Maximum Depth of Binary Tree</a></strong></p>
-<p>Given the <code>root</code> of a binary tree, return <em>its maximum depth</em>.</p>
-<p>A binary tree’s <strong>maximum depth</strong> is the number of nodes along the longest path from the root node down to the farthest leaf node.</p>
-<p><strong>Example 1:</strong></p>
-<p><img src="https://assets.leetcode.com/uploads/2020/11/26/tmp-tree.jpg" alt=""></p>
-<pre>**Input:** root = [3,9,20,null,null,15,7]
-**Output:** 3
-</pre>
-
-<p><strong>Example 2:</strong></p>
-<pre>**Input:** root = [1,null,2]
-**Output:** 2
-</pre>
-
-<p><strong>Example 3:</strong></p>
-<pre>**Input:** root = []
-**Output:** 0
-</pre>
-
-<p><strong>Example 4:</strong></p>
-<pre>**Input:** root = [0]
-**Output:** 1
-</pre>
-
-<p><strong>Constraints:</strong></p>
-<ul>
-<li>The number of nodes in the tree is in the range <code>[0, 10&lt;sup&gt;4&lt;/sup&gt;]</code>.</li>
-<li><code>-100 &lt;= Node.val &lt;= 100</code></li>
-</ul>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求二叉树高度。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>公式dfs(root)=1+max(dfs(root.left),dfs(root.right))  </p>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">maxDepth</span><span class="params">(self, root: TreeNode)</span> -&gt; int:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> root:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">1</span> + max(self.maxDepth(root.left), self.maxDepth(root.right))</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>。</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -381,7 +380,11 @@
   <ul class="entry">
     
       <li>
-        <a href="/2022/01/20/leetcode-721/">LeetCode</a>
+        <a href="/2022/01/21/leetcode-304-range-sum-query-2d-immutable/">LeetCode 304 Range Sum Query 2D - Immutable</a>
+      </li>
+    
+      <li>
+        <a href="/2022/01/20/leetcode-721-accounts-mergesolution/">LeetCode 721 Accounts Merge</a>
       </li>
     
       <li>
@@ -396,10 +399,6 @@
         <a href="/2022/01/20/leetcode-283-move-zeroes/">LeetCode 283 Move Zeroes</a>
       </li>
     
-      <li>
-        <a href="/2022/01/19/leetcode-282-expression-add-operators/">LeetCode 282 Expression Add Operators</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -410,7 +409,7 @@
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 13.68px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.68px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 17.37px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 13.68px;">Binary Tree</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10.53px;">Bit Manipulation</a> <a href="/tags/Bloomberg/" style="font-size: 10.53px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.37px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 18.95px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15.26px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.58px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.58px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 10.53px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.47px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 18.42px;">Facebook</a> <a href="/tags/Google/" style="font-size: 10.53px;">Google</a> <a href="/tags/Graph/" style="font-size: 12.11px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.63px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.84px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 13.68px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 13.16px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.58px;">Iterator</a> <a href="/tags/Knowledge-Base/" style="font-size: 17.37px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 15.79px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.63px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 17.89px;">Math</a> <a href="/tags/Matrix/" style="font-size: 15.26px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.58px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.53px;">Merge Sort</a> <a href="/tags/Microsoft/" style="font-size: 10px;">Microsoft</a> <a href="/tags/Mtrix/" style="font-size: 10px;">Mtrix</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 16.32px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 11.05px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.53px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 11.05px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.58px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.53px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 17.89px;">Stack</a> <a href="/tags/String/" style="font-size: 18.42px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.58px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 14.74px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.58px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.21px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.53px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.53px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
+    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 13.18px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.18px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 16.36px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 13.18px;">Binary Tree</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10.45px;">Bit Manipulation</a> <a href="/tags/Bloomberg/" style="font-size: 10.45px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 16.82px;">Breadth-first Search</a> <a href="/tags/Classic/" style="font-size: 19.09px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 14.55px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.36px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.36px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 10.45px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.55px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 18.64px;">Facebook</a> <a href="/tags/Google/" style="font-size: 10.45px;">Google</a> <a href="/tags/Graph/" style="font-size: 11.82px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.27px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 15.91px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 13.18px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 12.73px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.36px;">Iterator</a> <a href="/tags/Knowledge-Base/" style="font-size: 16.36px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 15px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.27px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 17.73px;">Math</a> <a href="/tags/Matrix/" style="font-size: 15px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.36px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.45px;">Merge Sort</a> <a href="/tags/Microsoft/" style="font-size: 10px;">Microsoft</a> <a href="/tags/Mtrix/" style="font-size: 10px;">Mtrix</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 15.45px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.91px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.45px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10.91px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.36px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.45px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 17.27px;">Stack</a> <a href="/tags/String/" style="font-size: 18.18px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.36px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 14.09px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.36px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 13.64px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.45px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.45px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
   </div>
 </div>
 
