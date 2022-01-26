@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://shineboy2013.github.com/"/>
-  <updated>2022-01-24T10:56:45.195Z</updated>
+  <updated>2022-01-26T07:38:24.107Z</updated>
   <id>https://shineboy2013.github.com/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>LeetCode 359 Logger Rate Limiter</title>
+    <link href="https://shineboy2013.github.com/2022/01/25/leetcode-359-logger-rate-limiter/"/>
+    <id>https://shineboy2013.github.com/2022/01/25/leetcode-359-logger-rate-limiter/</id>
+    <published>2022-01-26T07:30:11.442Z</published>
+    <updated>2022-01-26T07:38:24.107Z</updated>
+    
+    <content type="html"><![CDATA[<p><strong><a href="https://leetcode.com/problems/logger-rate-limiter/" target="_blank" rel="noopener">LeetCode</a></strong></p><div><br><br>Design a logger system that receives a stream of messages along with their timestamps. Each <strong>unique</strong> message should only be printed <strong>at most every 10 seconds</strong> (i.e. a message printed at timestamp <code>t</code> will prevent other identical messages from being printed until timestamp <code>t + 10</code>).<br><br>All messages will come in chronological order. Several messages may arrive at the same timestamp.<br><br>Implement the <code>Logger</code> class:<br><br><em>   <code>Logger()</code> Initializes the <code>logger</code> object.</em>   <code>bool shouldPrintMessage(int timestamp, string message)</code> Returns <code>true</code> if the <code>message</code> should be printed in the given <code>timestamp</code>, otherwise returns <code>false</code>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input</strong><br>[“Logger”, “shouldPrintMessage”, “shouldPrintMessage”, “shouldPrintMessage”, “shouldPrintMessage”, “shouldPrintMessage”, “shouldPrintMessage”]<br>[[], [1, “foo”], [2, “bar”], [3, “foo”], [8, “bar”], [10, “foo”], [11, “foo”]]<br><strong>Output</strong><br>[null, true, true, false, false, false, true]<br><br><strong>Explanation</strong><br>Logger logger = new Logger();<br>logger.shouldPrintMessage(1, “foo”);  // return true, next allowed timestamp for “foo” is 1 + 10 = 11<br>logger.shouldPrintMessage(2, “bar”);  // return true, next allowed timestamp for “bar” is 2 + 10 = 12<br>logger.shouldPrintMessage(3, “foo”);  // 3 &lt; 11, return false<br>logger.shouldPrintMessage(8, “bar”);  // 8 &lt; 12, return false<br>logger.shouldPrintMessage(10, “foo”); // 10 &lt; 11, return false<br>logger.shouldPrintMessage(11, “foo”); // 11 &gt;= 11, return true, next allowed timestamp for “foo” is 11 + 10 = 21<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>0 &lt;= timestamp &lt;= 10&lt;sup&gt;9&lt;/sup&gt;</code></em>   Every <code>timestamp</code> will be passed in non-decreasing order (chronological order).<br><em>   <code>1 &lt;= message.length &lt;= 30</code></em>   At most <code>10&lt;sup&gt;4&lt;/sup&gt;</code> calls will be made to <code>shouldPrintMessage</code>.<br><br></div><h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>实现Logger打印的rate limiter</p><h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>题不难，但有实际意义</p><h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p><h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol><li>shouldPrintMessage只有返回True时候才记录时间点。否则不记录</li></ol><h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Logger</span><span class="params">(TestCases)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.throttle_interval = <span class="number">10</span></span><br><span class="line">        self.msg_to_timestamp = &#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">shouldPrintMessage</span><span class="params">(self, timestamp: int, message: str)</span> -&gt; bool:</span></span><br><span class="line">        <span class="keyword">if</span> message <span class="keyword">in</span> self.msg_to_timestamp <span class="keyword">and</span> timestamp - self.msg_to_timestamp[message] &lt; self.throttle_interval:</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">        self.msg_to_timestamp[message] = timestamp</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">True</span></span><br></pre></td></tr></table></figure><h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(1)</code>，空间复杂度<code>O(n)</code>  </p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;&lt;strong&gt;&lt;a href=&quot;https://leetcode.com/problems/logger-rate-limiter/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;LeetCode&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;div&gt;&lt;br&gt;&lt;b
+      
+    
+    </summary>
+    
+    
+      <category term="Hash Table" scheme="https://shineboy2013.github.com/tags/Hash-Table/"/>
+    
+      <category term="Google" scheme="https://shineboy2013.github.com/tags/Google/"/>
+    
+  </entry>
   
   <entry>
     <title>LeetCode 337 House Robber III</title>
@@ -497,32 +523,6 @@
     
     
       <category term="Dynamic Programming" scheme="https://shineboy2013.github.com/tags/Dynamic-Programming/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>LeetCode 249 Group Shifted Strings</title>
-    <link href="https://shineboy2013.github.com/2022/01/18/leetcode-249-group-shifted-strings/"/>
-    <id>https://shineboy2013.github.com/2022/01/18/leetcode-249-group-shifted-strings/</id>
-    <published>2022-01-19T07:01:09.770Z</published>
-    <updated>2022-01-19T07:07:20.537Z</updated>
-    
-    <content type="html"><![CDATA[<p><strong><a href="https://leetcode.com/problems/group-shifted-strings/" target="_blank" rel="noopener">LeetCode</a></strong></p><div><br><br>We can shift a string by shifting each of its letters to its successive letter.<br><br><em>   For example, <code>&quot;abc&quot;</code> can be shifted to be <code>&quot;bcd&quot;</code>.<br><br>We can keep shifting the string to form a sequence.</em>   For example, we can keep shifting <code>&quot;abc&quot;</code> to form the sequence: <code>&quot;abc&quot; -&gt; &quot;bcd&quot; -&gt; ... -&gt; &quot;xyz&quot;</code>.<br><br>Given an array of strings <code>strings</code>, group all <code>strings[i]</code> that belong to the same shifting sequence. You may return the answer in <strong>any order</strong>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> strings = [“abc”,”bcd”,”acef”,”xyz”,”az”,”ba”,”a”,”z”]<br><strong>Output:</strong> [[“acef”],[“a”,”z”],[“abc”,”bcd”,”xyz”],[“az”,”ba”]]<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> strings = [“a”]<br><strong>Output:</strong> [[“a”]]<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= strings.length &lt;= 200</code></em>   <code>1 &lt;= strings[i].length &lt;= 50</code><br>*   <code>strings[i]</code> consists of lowercase English letters.<br><br></div><h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>将单词按等偏移量分组</p><h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>单词分组题，设计一个id。组内的每个单词里字母之间的差值是一致的，如abd, wxz, 差值分别为1和2，这是同一组。</p><h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p><h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol><li>求每个单词每个字母之间的差值，用下滑线连接作为id。注意差值可能为负数，所以要取mod变正</li><li>单一字母单词，不存在偏移量，id为空，所以代码不需要特殊处理</li></ol><h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">groupStrings</span><span class="params">(self, strings: List[str])</span> -&gt; List[List[str]]:</span></span><br><span class="line">res = collections.defaultdict(list)</span><br><span class="line"><span class="keyword">for</span> s <span class="keyword">in</span> strings:</span><br><span class="line">_id = <span class="string">''</span></span><br><span class="line"><span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">1</span>, len(s)):</span><br><span class="line">_id += str((ord(s[j]) - ord(s[j - <span class="number">1</span>])) % <span class="number">26</span>) + <span class="string">'_'</span></span><br><span class="line">res[_id].append(s)</span><br><span class="line"><span class="keyword">return</span> list(res.values())</span><br></pre></td></tr></table></figure><h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nm)</code>，空间复杂度<code>O(1)</code>, n为单词个数, m为单词最长长度。  </p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;&lt;strong&gt;&lt;a href=&quot;https://leetcode.com/problems/group-shifted-strings/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;LeetCode&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
-&lt;div&gt;&lt;br&gt;
-      
-    
-    </summary>
-    
-    
-      <category term="String" scheme="https://shineboy2013.github.com/tags/String/"/>
-    
-      <category term="Facebook" scheme="https://shineboy2013.github.com/tags/Facebook/"/>
     
   </entry>
   
