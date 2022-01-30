@@ -53,6 +53,273 @@
     <header>
       
   
+    <h1 class="title"><a href="/2017/12/13/lee-124/">LeetCode 124 Binary Tree Maximum Path Sum</a></h1>
+  
+
+      
+        <time datetime="2017-12-14T06:36:59.880Z">2017-12-13</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/binary-tree-maximum-path-sum" target="_blank" rel="noopener">LeetCode 124 Binary Tree Maximum Path Sum</a></strong></p>
+<p>Given a binary tree, find the maximum path sum.</p>
+<p>For this problem, a path is defined as any sequence of nodes from some starting node to any node in the tree along the parent-child connections. The path must contain <strong>at least one node</strong> and does not need to go through the root.</p>
+<p>For example:<br>
+Given the below binary tree,</p>
+<p>&lt;pre&gt;<br>
+1
+/ <br>
+2   3
+&lt;/pre&gt;</p>
+<p>Return <code>6</code>.</p>
+<h3><strong>题目大意：</strong></h3>
+<p>给定一棵二叉树，寻找最大路径和。路径指的是从任意起始节点出发沿着父亲-孩子链接到达某个终止节点的节点序列。路径不一定要穿过根节点。</p>
+<h3><strong>解题思路：</strong></h3>
+<p>DFS搜索，二叉树的题。步骤主要是考虑</p>
+<ol>
+<li>空指针</li>
+<li>一个node情况或多个node情况（可合并）<br>
+多个node情况下（比如3个节点），有4种情况下含根节点的和：左子树+根节点，右子树+跟节点，根节点，左子树+根节点+右子树。这些情况包含了所有可能的和的情况。但值得注意的是，前三种<br>
+情况可以是子问题的解，也就是它返回值将成为此根节点父亲的左或右子树的解，但第四种情况例外，因为此情况形成的路径与根节点父亲并不在一条路径上。所以此情况应在全局变量中比较<br>
+并不能作为返回值。
+gmax = max {return max{val,left+val,right+val}  or left+val+right}</li>
+</ol>
+<h3><strong>注意事项：</strong></h3>
+<ol>
+<li>4种情况</li>
+<li>全局最大值作为返回值，初始值为负无穷float('-inf')。</li>
+</ol>
+<h3><strong>Python代码：</strong></h3>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">maxPathSum</span><span class="params">(self, root: TreeNode)</span> -&gt; int:</span></span><br><span class="line">	path_sum, path_gsum = self.dfs(root)</span><br><span class="line">	<span class="keyword">return</span> path_gsum</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dfs</span><span class="params">(self, root: TreeNode)</span> -&gt; int:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> root:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>, float(<span class="string">'-inf'</span>)</span><br><span class="line">	left_sum, left_gsum = self.dfs(root.left)</span><br><span class="line">	right_sum, right_gsum = self.dfs(root.right)</span><br><span class="line">	max_path_sum = max(left_sum + root.val, right_sum + root.val, root.val)</span><br><span class="line">	max_path_gsum = max(max_path_sum, left_gsum, right_gsum, left_sum + root.val + right_sum)</span><br><span class="line">	<span class="keyword">return</span> max_path_sum, max_path_gsum</span><br></pre></td></tr></table></figure></p>
+<h3><strong>注意事项：</strong></h3>
+<ol>
+<li>4种情况</li>
+<li>定义全局变量来比较最大值，因为左到右情况不能返回。全局变量初始值为负无穷。</li>
+</ol>
+<h3><strong>Java代码：</strong></h3>
+<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> gsum = Integer.MIN_VALUE;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxPathSum</span><span class="params">(TreeNode root)</span></span>&#123;</span><br><span class="line">	gsum = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> a = max(root);</span><br><span class="line">	<span class="keyword">return</span> gsum;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">max</span><span class="params">(TreeNode root)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(root==<span class="keyword">null</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> lmax = max(root.left);</span><br><span class="line">	<span class="keyword">int</span> rmax = max(root.right);</span><br><span class="line">	<span class="keyword">int</span> sum = Math.max(Math.max(lmax, rmax)+root.val,root.val);</span><br><span class="line">	gsum = Math.max(Math.max(gsum, sum), lmax+root.val+rmax);</span><br><span class="line">	<span class="keyword">return</span> sum;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3><strong>算法分析：</strong></h3>
+<p>两种方法时间复杂度为<code>O(n)</code>，n为节点数。空间复杂度为<code>O(h)</code>，h为二叉树高度。</p>
+<h3><strong>相关题目：</strong></h3>
+<p>LeetCode 112 Path Sum
+LeetCode 124 Binary Tree Maximum Path Sum</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2017/12/13/lee-112/">LeetCode 112 Path Sum</a></h1>
+  
+
+      
+        <time datetime="2017-12-14T06:08:39.112Z">2017-12-13</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/path-sum/" target="_blank" rel="noopener">LeetCode 112 Path Sum</a></strong></p>
+<p>Given a binary tree and a sum, determine if the tree has a root-to-leaf path such that adding up all the values along the path equals the given sum.</p>
+<p>For example:<br>
+Given the below binary tree and <code>sum = 22</code>,</p>
+<p>&lt;pre&gt;<br>
+5
+/ <br>
+4   8
+/   / <br>
+11  13  4
+/  \      <br>
+7    2      1
+&lt;/pre&gt;</p>
+<p>return true, as there exist a root-to-leaf path <code>5-&gt;4-&gt;11-&gt;2</code> which sum is 22.</p>
+<h3><strong>题目大意：</strong></h3>
+<p>给定一个二叉树root和一个和sum，决定这个树是否存在一条从根到叶子的路径使得沿路所有节点的和等于给定的sum。</p>
+<h3><strong>解题思路：</strong></h3>
+<p>DFS搜索，二叉树的题。步骤主要是考虑</p>
+<ol>
+<li>空指针</li>
+<li>一个node情况或多个node情况（可合并）</li>
+</ol>
+<h3><strong>注意事项：</strong></h3>
+<ol>
+<li>叶子节点是不含左儿子和右儿子</li>
+</ol>
+<h3><strong>Java代码：</strong></h3>
+<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">hasPathSum</span><span class="params">(TreeNode root, <span class="keyword">int</span> sum)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(root == <span class="keyword">null</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	<span class="keyword">if</span>(root.left==<span class="keyword">null</span> &amp;&amp; root.right==<span class="keyword">null</span> &amp;&amp; root.val==sum)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">	<span class="keyword">return</span> hasPathSum(root.left, sum-root.val) || hasPathSum(root.right, sum-root.val);        </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3><strong>算法分析：</strong></h3>
+<p>两种方法时间复杂度为<code>O(n)</code>，n为节点数。空间复杂度为<code>O(h)</code>，h为二叉树高度。</p>
+<h3><strong>相关题目：</strong></h3>
+<p>LeetCode 112 Path Sum
+LeetCode 124 Binary Tree Maximum Path Sum</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2017/12/11/lee-309/">LeetCode 309 Best Time to Buy and Sell Stock with Cooldown</a></h1>
+  
+
+      
+        <time datetime="2017-12-12T04:24:30.811Z">2017-12-11</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/" target="_blank" rel="noopener">LeetCode 309 Best Time to Buy and Sell Stock with Cooldown</a></strong></p>
+<p>Say you have an array for which the <em>i</em>&lt;sup&gt;th&lt;/sup&gt; element is the price of a given stock on day <em>i</em>.</p>
+<p>Design an algorithm to find the maximum profit. You may complete as many transactions as you like (ie, buy one and sell one share of the stock multiple times) with the following restrictions:</p>
+<ul>
+<li>You may not engage in multiple transactions at the same time (ie, you must sell the stock before you buy again).</li>
+<li>After you sell your stock, you cannot buy stock on next day. (ie, cooldown 1 day)</li>
+</ul>
+<p><strong>Example:</strong></p>
+<p>&lt;pre&gt;
+prices = [1, 2, 3, 0, 2]
+maxProfit = 3
+transactions = [buy, sell, cooldown, buy, sell]
+&lt;/pre&gt;</p>
+<h3><strong>题目大意：</strong></h3>
+<p>给定一个数组，第i个元素代表某只股票在第i天的价格。 设计一个算法计算最大收益。你可以完成多次交易（多次买入、卖出同一只股票），需要满足下列限制：
+你不可以在同一时间参与多个交易（在买入股票之前必须卖出）。
+在卖出股票之后，你不可以在第二天马上买入。（需要一天的冷却（CD）时间）。<strong>也就是卖出后过两天才能买入。</strong></p>
+<h3><strong>解题思路：</strong></h3>
+<p>因为有限制条件，所以没有特别方法，只能计算所有结果，也就是用动态规划。动态规划首先是写出递归式（数学归纳法）。</p>
+<ol>
+<li>定义f(n)为第n日卖出股票（一定要卖出，不能持有）的利润，加强了命题。</li>
+<li>递归式如下图，f(n)只能由f(n-1)卖出后立刻买入（相当于n-1时候不卖出）或者f(n-3)卖出n-1时候买入两种情况。
+<img src="/images/L309.png" alt=""><br>
+现在可以写出递归式：<br>
+<img src="/images/L309-2.png" alt=""><br>
+F(x)=max{f(1),...,f(n)}求加强命题最大值即为本题解。
+这里考虑到负数，方便程序实现，否则，f(n)的前3个值计算就不能放入循环而要特别处理了。</li>
+</ol>
+<h3><strong>注意事项：</strong></h3>
+<ol>
+<li>数组为空或者1个</li>
+<li>负数组的实现方法</li>
+</ol>
+<h3><strong>Java代码：</strong></h3>
+<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxProfit</span><span class="params">(<span class="keyword">int</span>[] prices)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> sell[] = <span class="keyword">new</span> <span class="keyword">int</span>[prices.length];</span><br><span class="line">	<span class="keyword">int</span> max = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;prices.length;i++)&#123;</span><br><span class="line">		sell[i] = Math.max(f(i-<span class="number">3</span>, sell), f(i-<span class="number">1</span>, sell))+ prices[i]-prices[i-<span class="number">1</span>];</span><br><span class="line">		<span class="keyword">if</span>(sell[i]&gt;max)</span><br><span class="line">			max = sell[i];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> max;		</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">f</span><span class="params">(<span class="keyword">int</span> i, <span class="keyword">int</span>[] r)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(i&lt;<span class="number">1</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		<span class="keyword">return</span> r[i];</span><br></pre></td></tr></table></figure></p>
+<p>这个实现有个错误就是忽略了一种重要的情况：f(n-4),...,f(1)的情况。看以下例子：[6,1,6,4,3,0,2]</p>
+<table>
+<thead>
+<tr>
+<th>Index</th>
+<th style="text-align:center">0</th>
+<th style="text-align:center">1</th>
+<th style="text-align:center">2</th>
+<th style="text-align:center">3</th>
+<th style="text-align:center">4</th>
+<th style="text-align:center">5</th>
+<th style="text-align:center">6</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>price</td>
+<td style="text-align:center">6</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">6</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">3</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">2</td>
+</tr>
+<tr>
+<td>f(n)</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">-5</td>
+<td style="text-align:center">5</td>
+<td style="text-align:center">3</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">5</td>
+</tr>
+</tbody>
+</table>
+<p>按照上面算法结果为5，但是很容易看出来1-&gt;6, 0-&gt;2结果是7。问题出在最后一个f(6)=max{f(3),f(5)}+2=max{3,2}+2。很明显，第3天卖出获利为3并不是最佳，第二天卖出获利为5才是最佳，我们忽略了f(n-3)之前的所有情况。解决方案是再创建一个数组维护前n天最大获利值。
+定义g(n)为第n日（包括第n日）前卖出股票（不一定要第n天卖出）的利润。修改递归式为，把f(n-3)改为g(n-3)：
+<img src="/images/L309-3.png" alt=""></p>
+<h3><strong>Java代码：</strong></h3>
+<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxProfit2</span><span class="params">(<span class="keyword">int</span>[] prices)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> sell[] = <span class="keyword">new</span> <span class="keyword">int</span>[prices.length];</span><br><span class="line">	<span class="keyword">int</span> preSell[] = <span class="keyword">new</span> <span class="keyword">int</span>[prices.length];</span><br><span class="line">	<span class="keyword">int</span> max = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;prices.length;i++)&#123;</span><br><span class="line">		sell[i] = Math.max(g(i-<span class="number">3</span>, preSell), f(i-<span class="number">1</span>, sell))+ prices[i]-prices[i-<span class="number">1</span>];</span><br><span class="line">		<span class="keyword">if</span>(sell[i]&gt;max)</span><br><span class="line">			max = sell[i];</span><br><span class="line">		</span><br><span class="line">		preSell[i] = Math.max(preSell[i-<span class="number">1</span>], sell[i]);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> max;		</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">f</span><span class="params">(<span class="keyword">int</span> i, <span class="keyword">int</span>[] r)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(i&lt;<span class="number">1</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		<span class="keyword">return</span> r[i];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">g</span><span class="params">(<span class="keyword">int</span> i, <span class="keyword">int</span>[] g)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(i&lt;<span class="number">1</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		<span class="keyword">return</span> g[i];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3><strong>算法分析：</strong></h3>
+<p>时间复杂度为<code>O(n)</code>，n为数组长度，空间复杂度<code>O(n)</code>。</p>
+<h3><strong>空间优化：</strong></h3>
+<p>由于此题目，f(n)只与前三个状态有关f(n-1), f(n-2)(虽然没直接关系，但程序实现需要记录),g(n-3)。四个状态可以用三个变量<br>
+推进，如sell=Math.max(preSell, sell)，同一个变量旧状态更新到新状态，所以可以避免维护数组开销。
+代入preSell=g(n-3), sell_1=f(n-2), sell=f(n-1)到公式即得
+f(n) = sell = max{preSell, sell}+prices[n]-prices[i-1]
+g(n-2) = preSell = max{g(n-3), f(n-2)} = max{preSell, sell_1}
+f(n-1) = sell_1 = PreValue(sell)
+本题解就是preSell, sell_1, sell的最大值。</p>
+<h3><strong>Java代码：</strong></h3>
+<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxProfit</span><span class="params">(<span class="keyword">int</span>[] prices)</span></span>&#123;</span><br><span class="line">	<span class="comment">//g(n-3), f(n-2), f(n-1)</span></span><br><span class="line">	<span class="keyword">int</span> preSell=<span class="number">0</span>, sell_1=<span class="number">0</span>, sell = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;prices.length;i++)&#123;</span><br><span class="line">		<span class="keyword">int</span> tmp = sell;</span><br><span class="line">		sell = Math.max(preSell, sell)+ prices[i]-prices[i-<span class="number">1</span>];</span><br><span class="line">		preSell = Math.max(preSell, sell_1);</span><br><span class="line">		sell_1 = tmp;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> Math.max(Math.max(preSell, sell_1), sell);		</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3><strong>算法分析：</strong></h3>
+<p>时间复杂度为<code>O(n)</code>，n为数组长度，空间复杂度<code>O(1)</code>。本题有更简单解法但比较难想出。</p>
+<h3><strong>最后注意事项：</strong></h3>
+<ol>
+<li>数组为空或者1个</li>
+<li>三种情况f(n-1),f(n-3),g(n-3)可以得到f(n)。解就是preSell, sell_1, sell的最大值。</li>
+<li>DP流程，定义函数（是否加强）、递归式、空间优化。</li>
+</ol>
+<h3><strong>相关题目：</strong></h3>
+<p><a href="https://shineboy2013.github.io/2017/11/27/lee-121/" target="_blank" rel="noopener">LeetCode 121 Best Time to Buy and Sell Stock</a><br>
+<a href="https://shineboy2013.github.io/2017/11/28/lee-122/" target="_blank" rel="noopener">LeetCode 122 Best Time to Buy and Sell Stock II</a>
+<a href="https://shineboy2013.github.io/2017/12/11/lee-309/" target="_blank" rel="noopener">LeetCode 309 Best Time to Buy and Sell Stock with Cooldown</a>
+<a href="https://shineboy2013.github.io/2017/12/24/lee-123/" target="_blank" rel="noopener">LeetCode 123 Best Time to Buy and Sell Stock III</a></p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2017/12/04/lee-310/">LeetCode 310 Minimum Height Trees</a></h1>
   
 
@@ -64,42 +331,47 @@
       
         <p><strong><a href="https://leetcode.com/problems/minimum-height-trees" target="_blank" rel="noopener">LeetCode 310 Minimum Height Trees</a></strong></p>
 <p>For a undirected graph with tree characteristics, we can choose any node as the root. The result graph is then a rooted tree. Among all possible rooted trees, those with minimum height are called minimum height trees (MHTs). Given such a graph, write a function to find all the MHTs and return a list of their root labels.</p>
-<p><strong>Format</strong><br>The graph contains <code>n</code> nodes which are labeled from <code>0</code> to <code>n - 1</code>. You will be given the number <code>n</code> and a list of undirected <code>edges</code> (each edge is a pair of labels).</p>
+<p><strong>Format</strong><br>
+The graph contains <code>n</code> nodes which are labeled from <code>0</code> to <code>n - 1</code>. You will be given the number <code>n</code> and a list of undirected <code>edges</code> (each edge is a pair of labels).</p>
 <p>You can assume that no duplicate edges will appear in <code>edges</code>. Since all edges are undirected, <code>[0, 1]</code> is the same as <code>[1, 0]</code> and thus will not appear together in <code>edges</code>.</p>
 <p><strong>Example 1:</strong></p>
 <p>Given <code>n = 4</code>, <code>edges = [[1, 0], [1, 2], [1, 3]]</code></p>
-<pre>        0
-        |
-        1
-       / \
-      2   3
-</pre>
-
+<p>&lt;pre&gt;        0
+|
+1
+/ <br>
+2   3
+&lt;/pre&gt;</p>
 <p>return <code>[1]</code></p>
 <p><strong>Example 2:</strong></p>
 <p>Given <code>n = 6</code>, <code>edges = [[0, 3], [1, 3], [2, 3], [4, 3], [5, 4]]</code></p>
-<pre>     0  1  2
-      \ | /
-        3
-        |
-        4
-        |
-        5
-</pre>
-
+<p>&lt;pre&gt;     0  1  2
+\ | /
+3
+|
+4
+|
+5
+&lt;/pre&gt;</p>
 <p>return <code>[3, 4]</code></p>
 <p><strong>Note</strong>:</p>
-<p>(1) According to the <a href="https://en.wikipedia.org/wiki/Tree_(graph_theory" target="_blank" rel="noopener">definition of tree on Wikipedia</a>): “a tree is an undirected graph in which any two vertices are connected by <em>exactly</em> one path. In other words, any connected graph without simple cycles is a tree.”</p>
+<p>(1) According to the <a href="https://en.wikipedia.org/wiki/Tree_(graph_theory)" target="_blank" rel="noopener">definition of tree on Wikipedia</a>: “a tree is an undirected graph in which any two vertices are connected by <em>exactly</em> one path. In other words, any connected graph without simple cycles is a tree.”</p>
 <p>(2) The height of a rooted tree is the number of edges on the longest downward path between the root and a leaf.</p>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>对于一棵无向树，我们可以选择它的任意节点作为根。得到的结果就是有根树。在所有可能的有根树中，高度最小的称为最小高度树（MHT）。<br>给定一个无向图，编写函数找出所有的最小高度树，并返回其根标号的列表。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>此题本质上求最长路径上的中间1-2个节点。由于根节点不确定，从叶节点出发，层层剥离，这就是拓扑排序(inDegree数组)。而且需要知道最后一层的1-2个节点，所以考虑用按层遍历BFS（两数组）。见KB。</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<h3><strong>题目大意：</strong></h3>
+<p>对于一棵无向树，我们可以选择它的任意节点作为根。得到的结果就是有根树。在所有可能的有根树中，高度最小的称为最小高度树（MHT）。<br>
+给定一个无向图，编写函数找出所有的最小高度树，并返回其根标号的列表。</p>
+<h3><strong>解题思路：</strong></h3>
+<p>此题本质上求最长路径上的中间1-2个节点。由于根节点不确定，从叶节点出发，层层剥离，这就是拓扑排序(inDegree数组)。而且需要知道最后一层的1-2个节点，所以考虑用按层遍历BFS（两数组）。见KB。</p>
+<h3><strong>注意事项：</strong></h3>
+<ol>
 <li>由于最后一层可能是1-2个节点，所以要用一个变量res把最后一层记录下来, res = list(queue)在开始和循环中。</li>
 <li>还有一点要注意的是这是无向图，所以入度=1而不是0时候即入队列。</li>
 <li>单一节点(没有边)返回空列表</li>
 </ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">findMinHeightTrees</span><span class="params">(self, n: int, edges: List[List[int]])</span> -&gt; List[int]:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> edges:</span><br><span class="line">		<span class="keyword">return</span> [<span class="number">0</span>] <span class="comment"># remember</span></span><br><span class="line">	graph = collections.defaultdict(list)</span><br><span class="line">	in_degree = [<span class="number">0</span>] * n</span><br><span class="line">	<span class="keyword">for</span> li <span class="keyword">in</span> edges:</span><br><span class="line">		graph[li[<span class="number">0</span>]].append(li[<span class="number">1</span>])</span><br><span class="line">		graph[li[<span class="number">1</span>]].append(li[<span class="number">0</span>])</span><br><span class="line">		in_degree[li[<span class="number">0</span>]] += <span class="number">1</span></span><br><span class="line">		in_degree[li[<span class="number">1</span>]] += <span class="number">1</span></span><br><span class="line">	queue = collections.deque([i <span class="keyword">for</span> i <span class="keyword">in</span> range(len(in_degree)) <span class="keyword">if</span> in_degree[i] == <span class="number">1</span>])</span><br><span class="line">	res = list(queue) <span class="comment"># remember</span></span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		<span class="keyword">for</span> _ <span class="keyword">in</span> range(len(queue)):</span><br><span class="line">			node = queue.popleft()</span><br><span class="line">			<span class="keyword">for</span> neighbor <span class="keyword">in</span> graph[node]:</span><br><span class="line">				in_degree[neighbor] -= <span class="number">1</span></span><br><span class="line">				<span class="keyword">if</span> in_degree[neighbor] == <span class="number">1</span>:</span><br><span class="line">					queue.append(neighbor)</span><br><span class="line">		<span class="keyword">if</span> queue: <span class="comment"># remember</span></span><br><span class="line">			res = list(queue)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<h3><strong>Python代码：</strong></h3>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">findMinHeightTrees</span><span class="params">(self, n: int, edges: List[List[int]])</span> -&gt; List[int]:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> edges:</span><br><span class="line">		<span class="keyword">return</span> [<span class="number">0</span>] <span class="comment"># remember</span></span><br><span class="line">	graph = collections.defaultdict(list)</span><br><span class="line">	in_degree = [<span class="number">0</span>] * n</span><br><span class="line">	<span class="keyword">for</span> li <span class="keyword">in</span> edges:</span><br><span class="line">		graph[li[<span class="number">0</span>]].append(li[<span class="number">1</span>])</span><br><span class="line">		graph[li[<span class="number">1</span>]].append(li[<span class="number">0</span>])</span><br><span class="line">		in_degree[li[<span class="number">0</span>]] += <span class="number">1</span></span><br><span class="line">		in_degree[li[<span class="number">1</span>]] += <span class="number">1</span></span><br><span class="line">	queue = collections.deque([i <span class="keyword">for</span> i <span class="keyword">in</span> range(len(in_degree)) <span class="keyword">if</span> in_degree[i] == <span class="number">1</span>])</span><br><span class="line">	res = list(queue) <span class="comment"># remember</span></span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		<span class="keyword">for</span> _ <span class="keyword">in</span> range(len(queue)):</span><br><span class="line">			node = queue.popleft()</span><br><span class="line">			<span class="keyword">for</span> neighbor <span class="keyword">in</span> graph[node]:</span><br><span class="line">				in_degree[neighbor] -= <span class="number">1</span></span><br><span class="line">				<span class="keyword">if</span> in_degree[neighbor] == <span class="number">1</span>:</span><br><span class="line">					queue.append(neighbor)</span><br><span class="line">		<span class="keyword">if</span> queue: <span class="comment"># remember</span></span><br><span class="line">			res = list(queue)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure></p>
+<h3><strong>注意事项：</strong></h3>
+<ol>
 <li>由于最后一层可能是1-2个节点，所以要用一个变量把最后一层记录下来。</li>
 <li>还有一点要注意的是这是无向图，所以入度=1而不是0时候即入队列。</li>
 </ol>
@@ -109,8 +381,10 @@
 <li>找出度数为0的节点加入到Queue</li>
 <li>取出队首节点，把此节点邻接的节点度数减1，如果度数为0，加入到队列，循环直到队列为空</li>
 </ol>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;Integer&gt; <span class="title">findMinHeightTrees</span><span class="params">(<span class="keyword">int</span> n, <span class="keyword">int</span>[][] edges)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(n==<span class="number">1</span> &amp;&amp; edges.length==<span class="number">0</span>)&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">new</span> ArrayList&lt;Integer&gt;(Arrays.asList(<span class="keyword">new</span> Integer[]&#123;<span class="number">0</span>&#125;));</span><br><span class="line">	&#125;</span><br><span class="line">	ArrayList&lt;ArrayList&lt;Integer&gt;&gt; graph = <span class="keyword">new</span> ArrayList&lt;ArrayList&lt;Integer&gt;&gt;();</span><br><span class="line">	<span class="keyword">int</span> num = n;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++)</span><br><span class="line">		graph.add(<span class="keyword">new</span> ArrayList&lt;Integer&gt;());</span><br><span class="line">	<span class="keyword">int</span>[] inDegree = <span class="keyword">new</span> <span class="keyword">int</span>[n];</span><br><span class="line">	<span class="comment">//populate inDegree &amp; convert to graph</span></span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;edges.length;i++)&#123;</span><br><span class="line">		inDegree[edges[i][<span class="number">0</span>]]++;</span><br><span class="line">		inDegree[edges[i][<span class="number">1</span>]]++;</span><br><span class="line">		graph.get(edges[i][<span class="number">1</span>]).add(edges[i][<span class="number">0</span>]);</span><br><span class="line">		graph.get(edges[i][<span class="number">0</span>]).add(edges[i][<span class="number">1</span>]);</span><br><span class="line">	&#125;</span><br><span class="line">	Queue&lt;Integer&gt; q = <span class="keyword">new</span> LinkedList&lt;Integer&gt;();</span><br><span class="line">	Queue&lt;Integer&gt; q2 = <span class="keyword">new</span> LinkedList&lt;Integer&gt;();</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;inDegree.length;i++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(inDegree[i]==<span class="number">1</span>)</span><br><span class="line">			q.offer(i);</span><br><span class="line">	&#125;</span><br><span class="line">	Queue&lt;Integer&gt; lastLayerQ = <span class="keyword">new</span> LinkedList&lt;Integer&gt;(q);</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty())&#123;</span><br><span class="line">		Integer v = q.poll();</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> neighbor : graph.get(v))&#123;</span><br><span class="line">			<span class="keyword">if</span>(--inDegree[neighbor]==<span class="number">1</span>)</span><br><span class="line">				q2.offer(neighbor);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(q.isEmpty() &amp;&amp; !q2.isEmpty())&#123;</span><br><span class="line">			q = q2;</span><br><span class="line">			q2 = <span class="keyword">new</span> LinkedList&lt;Integer&gt;();</span><br><span class="line">			lastLayerQ = <span class="keyword">new</span> LinkedList&lt;Integer&gt;(q);</span><br><span class="line">		&#125;</span><br><span class="line">			</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> (List)lastLayerQ;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，w为树的所有层里面的最大长度，空间复杂度<code>O(w)</code>。</p>
+<h3><strong>Java代码：</strong></h3>
+<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;Integer&gt; <span class="title">findMinHeightTrees</span><span class="params">(<span class="keyword">int</span> n, <span class="keyword">int</span>[][] edges)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(n==<span class="number">1</span> &amp;&amp; edges.length==<span class="number">0</span>)&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">new</span> ArrayList&lt;Integer&gt;(Arrays.asList(<span class="keyword">new</span> Integer[]&#123;<span class="number">0</span>&#125;));</span><br><span class="line">	&#125;</span><br><span class="line">	ArrayList&lt;ArrayList&lt;Integer&gt;&gt; graph = <span class="keyword">new</span> ArrayList&lt;ArrayList&lt;Integer&gt;&gt;();</span><br><span class="line">	<span class="keyword">int</span> num = n;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++)</span><br><span class="line">		graph.add(<span class="keyword">new</span> ArrayList&lt;Integer&gt;());</span><br><span class="line">	<span class="keyword">int</span>[] inDegree = <span class="keyword">new</span> <span class="keyword">int</span>[n];</span><br><span class="line">	<span class="comment">//populate inDegree &amp; convert to graph</span></span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;edges.length;i++)&#123;</span><br><span class="line">		inDegree[edges[i][<span class="number">0</span>]]++;</span><br><span class="line">		inDegree[edges[i][<span class="number">1</span>]]++;</span><br><span class="line">		graph.get(edges[i][<span class="number">1</span>]).add(edges[i][<span class="number">0</span>]);</span><br><span class="line">		graph.get(edges[i][<span class="number">0</span>]).add(edges[i][<span class="number">1</span>]);</span><br><span class="line">	&#125;</span><br><span class="line">	Queue&lt;Integer&gt; q = <span class="keyword">new</span> LinkedList&lt;Integer&gt;();</span><br><span class="line">	Queue&lt;Integer&gt; q2 = <span class="keyword">new</span> LinkedList&lt;Integer&gt;();</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;inDegree.length;i++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(inDegree[i]==<span class="number">1</span>)</span><br><span class="line">			q.offer(i);</span><br><span class="line">	&#125;</span><br><span class="line">	Queue&lt;Integer&gt; lastLayerQ = <span class="keyword">new</span> LinkedList&lt;Integer&gt;(q);</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty())&#123;</span><br><span class="line">		Integer v = q.poll();</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> neighbor : graph.get(v))&#123;</span><br><span class="line">			<span class="keyword">if</span>(--inDegree[neighbor]==<span class="number">1</span>)</span><br><span class="line">				q2.offer(neighbor);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(q.isEmpty() &amp;&amp; !q2.isEmpty())&#123;</span><br><span class="line">			q = q2;</span><br><span class="line">			q2 = <span class="keyword">new</span> LinkedList&lt;Integer&gt;();</span><br><span class="line">			lastLayerQ = <span class="keyword">new</span> LinkedList&lt;Integer&gt;(q);</span><br><span class="line">		&#125;</span><br><span class="line">			</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> (List)lastLayerQ;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3><strong>算法分析：</strong></h3>
+<p>时间复杂度为<code>O(n)</code>，w为树的所有层里面的最大长度，空间复杂度<code>O(w)</code>。</p>
 
       
     </div>
@@ -141,192 +415,34 @@
     </header>
     <div class="entry">
       
-        <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>对于拓扑排序来说， 我们的中心思想是要我们可以找到一个顺序，每一次我们可以进行的工序是现在没有先序依赖的工序，<br>按照这个顺序可以流畅的完成我们的任务。<br>思路基于BFS的队列实现。区别在于统计每个节点的入度数。此法也可用于无向图。</p>
+        <h3><strong>算法思路：</strong></h3>
+<p>对于拓扑排序来说， 我们的中心思想是要我们可以找到一个顺序，每一次我们可以进行的工序是现在没有先序依赖的工序，<br>
+按照这个顺序可以流畅的完成我们的任务。
+思路基于BFS的队列实现。区别在于统计每个节点的入度数。此法也可用于无向图。</p>
 <ol>
 <li>根据边统计每个节点的入度数记入in[i]，<strong>其他节点（含无边节点）入度数为0</strong></li>
 <li>找出度数为0的节点加入到Queue</li>
 <li>取出队首节点，把此节点邻接的节点度数减1，如果度数为0，加入到队列，循环直到队列为空</li>
 <li>如果队列为空但仍有节点度数不为0，<strong>存在循环，否则不存在</strong></li>
 </ol>
-<h3 id="应用："><a href="#应用：" class="headerlink" title="应用："></a><strong>应用：</strong></h3><ol>
+<h3><strong>应用：</strong></h3>
+<ol>
 <li>求最长或最短路径(Leetcode 310)</li>
 <li>判断拓扑顺序(Leetcode外星人字典)</li>
 <li>判断循环(Python代码返回None)</li>
 </ol>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>graph要含所有节点，包括没有边的节点。否则结果会有遗漏  </li>
+<h3><strong>注意事项：</strong></h3>
+<ol>
+<li>graph要含所有节点，包括没有边的节点。否则结果会有遗漏</li>
 <li>in_degree初始化要对所有节点赋0</li>
-<li>第四步判断是否含循环必不可少，要根据题目要求来处理。除非L310 min height明确一定有解，而L269外星人字典就明确可能无解  </li>
+<li>第四步判断是否含循环必不可少，要根据题目要求来处理。除非L310 min height明确一定有解，而L269外星人字典就明确可能无解</li>
 </ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">topological_sort</span><span class="params">(self, graph: List[List[int]], n: int)</span> -&gt; List[int]:</span></span><br><span class="line">	in_degree = [<span class="number">0</span>] * n</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(graph)):</span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> range(len(graph[i])):</span><br><span class="line">			in_degree[graph[i][j]] += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">	start_nodes = [i <span class="keyword">for</span> i <span class="keyword">in</span> range(len(in_degree)) <span class="keyword">if</span> in_degree[i] == <span class="number">0</span>]</span><br><span class="line">	queue, res = deque(start_nodes), []</span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		root = queue.popleft()</span><br><span class="line">		res.append(root)</span><br><span class="line">		<span class="keyword">for</span> i <span class="keyword">in</span> graph[root]:</span><br><span class="line">			in_degree[i] -= <span class="number">1</span></span><br><span class="line">			<span class="keyword">if</span> in_degree[i] == <span class="number">0</span>:</span><br><span class="line">				queue.append(i)</span><br><span class="line">	<span class="keyword">return</span> res <span class="keyword">if</span> len(res) == n <span class="keyword">else</span> <span class="keyword">None</span></span><br></pre></td></tr></table></figure>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * graph: 邻接表</span></span><br><span class="line"><span class="comment"> * num: 节点个数 </span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">topologicalSort</span><span class="params">(ArrayList&lt;ArrayList&lt;Integer&gt;&gt; graph, <span class="keyword">int</span> num)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span>[] inDegree = <span class="keyword">new</span> <span class="keyword">int</span>[num];</span><br><span class="line">	<span class="comment">//populate inDegree</span></span><br><span class="line">	<span class="keyword">for</span>(ArrayList&lt;Integer&gt; adjacencyList : graph)&#123;</span><br><span class="line">		<span class="keyword">for</span>(Integer node : adjacencyList)&#123;</span><br><span class="line">			inDegree[node]++;</span><br><span class="line">		&#125;       	</span><br><span class="line">	&#125;</span><br><span class="line">	Queue&lt;Integer&gt; q = <span class="keyword">new</span> LinkedList&lt;Integer&gt;();</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;inDegree.length;i++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(inDegree[i]==<span class="number">0</span>)</span><br><span class="line">			q.offer(i);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty())&#123;</span><br><span class="line">		Integer v = q.poll();</span><br><span class="line">		count++;</span><br><span class="line">		System.out.print(v + <span class="string">"-&gt;"</span>);</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> neighbor : graph.get(v))&#123;</span><br><span class="line">			<span class="keyword">if</span>(--inDegree[neighbor]==<span class="number">0</span>)</span><br><span class="line">				q.offer(neighbor);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">/* check isCyclic  or not</span></span><br><span class="line"><span class="comment">	return count == num;;</span></span><br><span class="line"><span class="comment">	*/</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，w为树的所有层里面的最大长度，空间复杂度<code>O(w)</code>。</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2017/12/03/bfs/">BFS</a></h1>
-  
-
-      
-        <time datetime="2017-12-04T06:20:41.008Z">2017-12-03</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>图用邻接表为输入，思路用Queue实现, 还要一个机制记录节点访问过没有，可以用HashSet，同时它作为结果存储BFS访问结果。<br><strong>BFS多用于找最短路径</strong><br><strong>DFS多用于快速发现底部节点和具体路劲问题（如路径和或打印路径）。</strong></p>
-<p>BFS优缺点：<br>同一层的所有节点都会加入队列，所以耗用大量空间<br>仅能非递归实现<br>相比DFS较快，空间换时间<br>适合广度大的图<br>找环的话需要用拓扑排序</p>
-<p>DFS优缺点：<br>无论是系统栈还是用户栈保存的节点数都只是树的深度，所以空间耗用小<br>有递归和非递归实现<br>由于有大量栈操作（特别是递归实现时候的系统调用），执行速度较BFS慢<br>适合深度大的图<br>找环的话比较容易实现</p>
-<p><strong>如果BFS和DFS都可以用，建议用BFS</strong>，因为工业应用中，BFS不用有限的栈空间，可以利用到所有内存。<br><strong>BFS题目问自己是否需要按层遍历，是否需要visited</strong></p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>只要把节点放入队列立即标记其为访问，不要在出列的时候才标记。否则同一个节点会入列多次。<br>比如下图, 入列顺序为1,2,3,4,4。4入列了两次。</li>
-<li>pop(0)记得有0<br><img src="/images/bfs.png" alt=""></li>
-<li>q.isEmpty() &amp;&amp; !q2.isEmpty()</li>
-<li>矩阵的遍历用方向List: OFFSETS = [(1, 0), (-1, 0), (0, 1), (0, -1)]</li>
-<li>坐标型BFS，注意输入为(i, j)时候，x = node[0] + _dx[0], <strong>用x不要用输入的i</strong>  </li>
-</ol>
-<h2 id="图遍历"><a href="#图遍历" class="headerlink" title="图遍历"></a>图遍历</h2><h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">bfs</span><span class="params">(self, graph, visited, start)</span> -&gt; List[int]:</span></span><br><span class="line">	queue, res = deque([start]), []</span><br><span class="line">	visited.add(start)</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.popleft()</span><br><span class="line">		res.append(node)</span><br><span class="line">		<span class="keyword">for</span> neighbor <span class="keyword">in</span> graph[node]:</span><br><span class="line">			<span class="keyword">if</span> neighbor <span class="keyword">in</span> visited:</span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			queue.append(neighbor)</span><br><span class="line">			visited.add(neighbor)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-<p>树模板只要把visited去掉，neighbor改成left和right  </p>
-<h2 id="计算最短距离的图遍历-最常考的模板"><a href="#计算最短距离的图遍历-最常考的模板" class="headerlink" title="计算最短距离的图遍历(最常考的模板)"></a>计算最短距离的图遍历(最常考的模板)</h2><ul>
-<li>只要加line 4和14</li>
-<li>visited在函数内定义  </li>
-<li>遇到target就返回最短距离，若离开循环返回-1，<strong>问清楚是否存在路径不存在的情况</strong></li>
-<li>求距离公式不需要用min，因为这个遍历保证了最短距离了。    </li>
-</ul>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">bfs_layer</span><span class="params">(self, graph, start)</span> -&gt; List[int]:</span></span><br><span class="line">	queue = deque([start])</span><br><span class="line">	visited = set([start])</span><br><span class="line">	distance = &#123;start: <span class="number">1</span>&#125;</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.popleft()</span><br><span class="line">		<span class="keyword">if</span> node == target:</span><br><span class="line">			<span class="keyword">return</span> distance[node]</span><br><span class="line">		<span class="keyword">for</span> neighbor <span class="keyword">in</span> graph[node]:</span><br><span class="line">			<span class="keyword">if</span> neighbor <span class="keyword">in</span> visited:</span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			queue.append(neighbor)</span><br><span class="line">			visited.add(neighbor)</span><br><span class="line">			distance[neighbor] = distance[node] + <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure>
-<h2 id="按层遍历"><a href="#按层遍历" class="headerlink" title="按层遍历"></a>按层遍历</h2><p>核心是加这一行for _ in range(len(queue))<br>具体还要加line 5, 6和14, 15. 二叉树不需要visited。能用distance dict就尽量不用此法，因为多了一个循环。  </p>
-<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>关键行： 多这一行for循环 </li>
-</ol>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">bfs_layer2</span><span class="params">(self, graph, visited, start)</span> -&gt; List[List[int]]:</span></span><br><span class="line">	queue, res, layer = deque([start]), [], <span class="number">0</span></span><br><span class="line">	visited.add(start)</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		<span class="keyword">for</span> _ <span class="keyword">in</span> range(len(queue)):</span><br><span class="line">			node = queue.popleft()</span><br><span class="line">			<span class="keyword">for</span> neighbor <span class="keyword">in</span> graph[node]:</span><br><span class="line">				<span class="keyword">if</span> neighbor <span class="keyword">in</span> visited:</span><br><span class="line">					<span class="keyword">continue</span></span><br><span class="line">				queue.append(neighbor)</span><br><span class="line">				visited.add(neighbor)</span><br><span class="line">		layer += <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * graph: 邻接表</span></span><br><span class="line"><span class="comment"> * visited: 记录已访问节点，避免重复访问</span></span><br><span class="line"><span class="comment"> * start: BFS的根节点</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">bfs</span><span class="params">(HashMap&lt;Integer, LinkedList&lt;Integer&gt;&gt; graph, HashSet&lt;Integer&gt; visited, <span class="keyword">int</span> start)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> num=<span class="number">0</span>;</span><br><span class="line">	Queue&lt;Integer&gt; q=<span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">	q.offer(start);</span><br><span class="line">	visited.add(start);</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty())&#123;</span><br><span class="line">		<span class="keyword">int</span> node = q.poll();</span><br><span class="line">		LinkedList&lt;Integer&gt; children = graph.get(node);</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> child : children)&#123;</span><br><span class="line">			<span class="keyword">if</span> (!visited.contains(child))&#123;</span><br><span class="line">				q.offer(child);</span><br><span class="line">				visited.add(child);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="错误算法："><a href="#错误算法：" class="headerlink" title="错误算法："></a><strong>错误算法：</strong></h3><p>问题是加入到queue里面的child没有去重，这样容易queue爆炸式增长。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">bfs</span><span class="params">(HashMap&lt;Integer, LinkedList&lt;Integer&gt;&gt; graph, HashSet&lt;Integer&gt; visited, <span class="keyword">int</span> start)</span></span>&#123;</span><br><span class="line">	Queue&lt;Integer&gt; q=<span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">	q.offer(start);</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty())&#123;</span><br><span class="line">		<span class="keyword">int</span> node = q.poll();</span><br><span class="line">		visited.add(node);</span><br><span class="line">		LinkedList&lt;Integer&gt; children = graph.get(node);</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> child : children)&#123;</span><br><span class="line">			<span class="keyword">if</span> (!visited.contains(child))</span><br><span class="line">				q.offer(child);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3 id="按层次遍历："><a href="#按层次遍历：" class="headerlink" title="按层次遍历："></a><strong>按层次遍历：</strong></h3><p>第一个思路是三重循环，先queue，然后该层所有节点，最后该层每一个节点的儿子。关键在于size = q.size();</p>
-<h3 id="Java代码：-1"><a href="#Java代码：-1" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">bfsByLayer3</span><span class="params">(HashMap&lt;Integer, LinkedList&lt;Integer&gt;&gt; graph, <span class="keyword">int</span> start)</span></span>&#123;</span><br><span class="line">	Queue&lt;Integer&gt; q=<span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">	<span class="keyword">int</span> layer = <span class="number">1</span>;</span><br><span class="line">	q.offer(start);</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty())&#123;</span><br><span class="line">		<span class="keyword">int</span> size = q.size();</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size; i++) &#123;<span class="comment">// loop this layer</span></span><br><span class="line">			<span class="keyword">int</span> node = q.poll();</span><br><span class="line">			System.out.println(<span class="string">"node:"</span>+node+<span class="string">" in layer "</span>+ layer);</span><br><span class="line">			LinkedList&lt;Integer&gt; children = graph.get(node);</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> child : children)&#123;<span class="comment">// loop its children</span></span><br><span class="line">				q.add(child);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		layer++;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>上述代码三重循环看似可读性不够好，所有可以用hashMap来记录每个点的距离从而减少第二重循环。<br>nodeToHeight.put(start, 1);<br>nodeToHeight.put(child, nodeToHeight.get(node) + 1);  </p>
-<h3 id="Java代码：-2"><a href="#Java代码：-2" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">bfsByLayer4</span><span class="params">(HashMap&lt;Integer, LinkedList&lt;Integer&gt;&gt; graph, <span class="keyword">int</span> start)</span></span>&#123;</span><br><span class="line">	Queue&lt;Integer&gt; q = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">	q.offer(start);</span><br><span class="line">	Map&lt;Integer, Integer&gt; nodeToHeight = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">	nodeToHeight.put(start, <span class="number">1</span>);</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty())&#123;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">int</span> node = q.poll();</span><br><span class="line">		System.out.println(<span class="string">"node:"</span>+node+<span class="string">" in layer "</span>+ nodeToHeight.get(node));</span><br><span class="line">		LinkedList&lt;Integer&gt; children = graph.get(node);</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> child : children)&#123;<span class="comment">// loop its children</span></span><br><span class="line">			q.add(child);</span><br><span class="line">			nodeToHeight.put(child, nodeToHeight.get(node) + <span class="number">1</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>第三思路是用两个队列来实现：用第一个队列存储该层的节点，第二个队列存储第一个队列中节点的儿子节点，<br>也就是下一次的节点。此思路比较容易实现。</p>
-<h3 id="Java代码：-3"><a href="#Java代码：-3" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 假设不循环</span></span><br><span class="line"><span class="comment"> * graph: 邻接表</span></span><br><span class="line"><span class="comment"> * start: BFS的根节点</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">bfsByLayer</span><span class="params">(HashMap&lt;Integer, LinkedList&lt;Integer&gt;&gt; graph, <span class="keyword">int</span> start)</span></span>&#123;</span><br><span class="line">	Queue&lt;Integer&gt; q=<span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">	Queue&lt;Integer&gt; q2=<span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">	<span class="keyword">int</span> layer = <span class="number">1</span>;</span><br><span class="line">	q.offer(start);</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty())&#123;</span><br><span class="line">		<span class="keyword">int</span> node = q.poll();</span><br><span class="line">		System.out.println(<span class="string">"node:"</span>+node+<span class="string">" in layer "</span>+ layer);</span><br><span class="line">		LinkedList&lt;Integer&gt; children = graph.get(node);</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> child : children)&#123;</span><br><span class="line">			q2.offer(child);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(q.isEmpty() &amp;&amp; !q2.isEmpty())&#123;</span><br><span class="line">			q = q2;</span><br><span class="line">			q2 = <span class="keyword">new</span> LinkedList&lt;&gt;(); </span><br><span class="line">			layer++;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>第四思路是只用一个队列来实现：层与层之间用结束符间隔，每遇到结束符，表示该层访问结束，下一层的节点也准备好<br>（不会再有新的节点加入到这一层），此时再往队列加入新的结束符。此思路对数据有一定限制，实现起来注意事项较多。</p>
-<h3 id="Java代码：-4"><a href="#Java代码：-4" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">bfsByLayer2</span><span class="params">(HashMap&lt;Integer, LinkedList&lt;Integer&gt;&gt; graph, <span class="keyword">int</span> start)</span></span>&#123;</span><br><span class="line">	Queue&lt;Integer&gt; q=<span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">	<span class="keyword">int</span> layer = <span class="number">1</span>;</span><br><span class="line">	q.offer(start);</span><br><span class="line">	q.offer(-<span class="number">1</span>);</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty())&#123;</span><br><span class="line">		<span class="keyword">int</span> node = q.poll();</span><br><span class="line">		<span class="keyword">if</span>(node == -<span class="number">1</span>)&#123;</span><br><span class="line">			<span class="comment">//确保有非结束符节点</span></span><br><span class="line">			<span class="keyword">if</span>(q.size()&gt;<span class="number">0</span>)&#123;</span><br><span class="line">				q.offer(-<span class="number">1</span>);</span><br><span class="line">				layer++;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">continue</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		System.out.println(<span class="string">"node:"</span>+node+<span class="string">" in layer "</span>+ layer);</span><br><span class="line">		LinkedList&lt;Integer&gt; children = graph.get(node);</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> child : children)&#123;</span><br><span class="line">			q.offer(child);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，w为树的所有层里面的最大长度，空间复杂度<code>O(w)</code>。</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2017/11/28/lee-122/">LeetCode 122 Best Time to Buy and Sell Stock II</a></h1>
-  
-
-      
-        <time datetime="2017-11-28T09:39:08.642Z">2017-11-28</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/best-time-to-buy-and-sell-stock-ii/" target="_blank" rel="noopener">LeetCode 122 Best Time to Buy and Sell Stock II</a></strong></p>
-<div><br><br>You are given an integer array <code>prices</code> where <code>prices[i]</code> is the price of a given stock on the <code>i&lt;sup&gt;th&lt;/sup&gt;</code> day.<br><br>On each day, you may decide to buy and/or sell the stock. You can only hold <strong>at most one</strong> share of the stock at any time. However, you can buy it then immediately sell it on the <strong>same day</strong>.<br><br>Find and return <em>the <strong>maximum</strong> profit you can achieve</em>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> prices = [7,1,5,3,6,4]<br><strong>Output:</strong> 7<br><strong>Explanation:</strong> Buy on day 2 (price = 1) and sell on day 3 (price = 5), profit = 5-1 = 4.<br>Then buy on day 4 (price = 3) and sell on day 5 (price = 6), profit = 6-3 = 3.<br>Total profit is 4 + 3 = 7.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> prices = [1,2,3,4,5]<br><strong>Output:</strong> 4<br><strong>Explanation:</strong> Buy on day 1 (price = 1) and sell on day 5 (price = 5), profit = 5-1 = 4.<br>Total profit is 4.<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> prices = [7,6,4,3,1]<br><strong>Output:</strong> 0<br><strong>Explanation:</strong> There is no way to make a positive profit, so we never buy the stock to achieve the maximum profit of 0.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   `1 &lt;= prices.length &lt;= 3 </em> 10<sup>4</sup><code>*</code>0 &lt;= prices[i] &lt;= 10<sup>4</sup>`<br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>设计一个算法寻找最大收益。你可以随便完成多少次交易（比如，多次买入卖出）。然而你不能一次进行多次交易。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>仍然是求最大利润，可以交易多次，但要先卖再买。容易想到是求所有上升坡的的总和。更简单而言，若将每一个上升坡，分成一小段(每天的交易)，求这些小段的和即可。<br>如：[6, 1, 2, 3, 4]中的1, 2, 3, 4序列来说，对于两种操作方案：<br>1 在1买入，4卖出<br>2 在1买入，2卖出同时买入，3卖出同时买入，4卖出<br>这两种操作下，收益是一样的。这种方法，避免检测下坡以及计算每段的和。</p>
-<p><img src="/images/L122.png" alt=""></p>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">maxProfit</span><span class="params">(self, prices: List[int])</span> -&gt; int:</span></span><br><span class="line">	res = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, len(prices)):</span><br><span class="line">		<span class="keyword">if</span> prices[i] - prices[i - <span class="number">1</span>] &gt; <span class="number">0</span>:</span><br><span class="line">			res += prices[i] - prices[i - <span class="number">1</span>]</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>数组为空</li>
-</ol>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxProfit</span><span class="params">(<span class="keyword">int</span>[] prices)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(prices.length==<span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> profit = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;prices.length;i++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(prices[i-<span class="number">1</span>]&lt;prices[i])</span><br><span class="line">			profit += prices[i] - prices[i-<span class="number">1</span>];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> profit;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，n为字符串长度，空间复杂度<code>O(1)</code>。</p>
-<h3 id="相关题目："><a href="#相关题目：" class="headerlink" title="相关题目："></a><strong>相关题目：</strong></h3><p><a href="https://shineboy2013.github.io/2017/11/27/lee-121/" target="_blank" rel="noopener">LeetCode 121 Best Time to Buy and Sell Stock</a><br><a href="https://shineboy2013.github.io/2017/11/28/lee-122/" target="_blank" rel="noopener">LeetCode 122 Best Time to Buy and Sell Stock II</a><br><a href="https://shineboy2013.github.io/2017/12/11/lee-309/" target="_blank" rel="noopener">LeetCode 309 Best Time to Buy and Sell Stock with Cooldown</a><br><a href="https://shineboy2013.github.io/2017/12/24/lee-123/" target="_blank" rel="noopener">LeetCode 123 Best Time to Buy and Sell Stock III</a></p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2017/11/27/lee-121/">LeetCode 121 Best Time to Buy and Sell Stock</a></h1>
-  
-
-      
-        <time datetime="2017-11-27T08:05:59.671Z">2017-11-27</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/best-time-to-buy-and-sell-stock/" target="_blank" rel="noopener">LeetCode 121 Best Time to Buy and Sell Stock</a></strong></p>
-<p>Say you have an array for which the <em>i</em><sup>th</sup> element is the price of a given stock on day <em>i</em>.</p>
-<p>If you were only permitted to complete at most one transaction (ie, buy one and sell one share of the stock), design an algorithm to find the maximum profit.</p>
-<p><strong>Example 1:</strong>  </p>
-<pre>Input: [7, 1, 5, 3, 6, 4]
-Output: 5
-
-max. difference = 6-1 = 5 (not 7-1 = 6, as selling price needs to be larger than buying price)
-</pre>
-
-<p><strong>Example 2:</strong>  </p>
-<pre>Input: [7, 6, 4, 3, 1]
-Output: 0
-
-In this case, no transaction is done, i.e. max profit = 0.
-</pre>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>如果你只能进行一次交易（比如购买或者销售一个股票），设计一个算法来获取最大利润。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>利润=当前价格-买入价，利润作为第一个变量求其最大值。由于买入价越低，利润可能会越大，所以第二个变量就要不断更新买入价<br>（最小值）。本题核心思路就是维护两个变量：最低价，利润。为什么不用最高价而选择利润呢？因为最低价和最高价没有顺序，最高价<br>必须在最低价后面，这样的利润才可实现，但如果是最低价和利润，就能确保这个顺序了，因为利润一定是在最低价后，否则这个利<br>润为负，不能为最大值。另一种稍麻烦的方法是凡是min更新，最高价就reset为0，大原则就是保持顺序。</p>
-<p><img src="/images/L121.png" alt=""></p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>数组为空</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">maxProfit</span><span class="params">(self, prices: List[int])</span> -&gt; int:</span></span><br><span class="line">	min_buy_idx, max_profit = <span class="number">0</span>, <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(prices)):</span><br><span class="line">		max_profit = max(max_profit, prices[i] - prices[min_buy_idx])</span><br><span class="line">		<span class="keyword">if</span> prices[i] &lt; prices[min_buy_idx]:</span><br><span class="line">			min_buy_idx = i</span><br><span class="line">	<span class="keyword">return</span> max_profit</span><br></pre></td></tr></table></figure>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxProfit</span><span class="params">(<span class="keyword">int</span>[] prices)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(prices.length==<span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> min = prices[<span class="number">0</span>];</span><br><span class="line">	<span class="keyword">int</span> curProfit = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;prices.length;i++)&#123;</span><br><span class="line">		<span class="keyword">int</span> todayProfit = prices[i]-min;</span><br><span class="line">		<span class="keyword">if</span>(todayProfit&gt;curProfit)</span><br><span class="line">			curProfit = todayProfit;</span><br><span class="line">		<span class="keyword">if</span>(min&gt;prices[i])</span><br><span class="line">			min = prices[i];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> curProfit;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，n为字符串长度，空间复杂度<code>O(1)</code>。</p>
-<h3 id="相关题目："><a href="#相关题目：" class="headerlink" title="相关题目："></a><strong>相关题目：</strong></h3><p><a href="https://shineboy2013.github.io/2017/11/27/lee-121/" target="_blank" rel="noopener">LeetCode 121 Best Time to Buy and Sell Stock</a><br><a href="https://shineboy2013.github.io/2017/11/28/lee-122/" target="_blank" rel="noopener">LeetCode 122 Best Time to Buy and Sell Stock II</a><br><a href="https://shineboy2013.github.io/2017/12/11/lee-309/" target="_blank" rel="noopener">LeetCode 309 Best Time to Buy and Sell Stock with Cooldown</a><br><a href="https://shineboy2013.github.io/2017/12/24/lee-123/" target="_blank" rel="noopener">LeetCode 123 Best Time to Buy and Sell Stock III</a></p>
+<h3><strong>Python代码：</strong></h3>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">topological_sort</span><span class="params">(self, graph: List[List[int]], n: int)</span> -&gt; List[int]:</span></span><br><span class="line">	in_degree = [<span class="number">0</span>] * n</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(graph)):</span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> range(len(graph[i])):</span><br><span class="line">			in_degree[graph[i][j]] += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">	start_nodes = [i <span class="keyword">for</span> i <span class="keyword">in</span> range(len(in_degree)) <span class="keyword">if</span> in_degree[i] == <span class="number">0</span>]</span><br><span class="line">	queue, res = deque(start_nodes), []</span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		root = queue.popleft()</span><br><span class="line">		res.append(root)</span><br><span class="line">		<span class="keyword">for</span> i <span class="keyword">in</span> graph[root]:</span><br><span class="line">			in_degree[i] -= <span class="number">1</span></span><br><span class="line">			<span class="keyword">if</span> in_degree[i] == <span class="number">0</span>:</span><br><span class="line">				queue.append(i)</span><br><span class="line">	<span class="keyword">return</span> res <span class="keyword">if</span> len(res) == n <span class="keyword">else</span> <span class="keyword">None</span></span><br></pre></td></tr></table></figure></p>
+<h3><strong>Java代码：</strong></h3>
+<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * graph: 邻接表</span></span><br><span class="line"><span class="comment"> * num: 节点个数 </span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">topologicalSort</span><span class="params">(ArrayList&lt;ArrayList&lt;Integer&gt;&gt; graph, <span class="keyword">int</span> num)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span>[] inDegree = <span class="keyword">new</span> <span class="keyword">int</span>[num];</span><br><span class="line">	<span class="comment">//populate inDegree</span></span><br><span class="line">	<span class="keyword">for</span>(ArrayList&lt;Integer&gt; adjacencyList : graph)&#123;</span><br><span class="line">		<span class="keyword">for</span>(Integer node : adjacencyList)&#123;</span><br><span class="line">			inDegree[node]++;</span><br><span class="line">		&#125;       	</span><br><span class="line">	&#125;</span><br><span class="line">	Queue&lt;Integer&gt; q = <span class="keyword">new</span> LinkedList&lt;Integer&gt;();</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;inDegree.length;i++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(inDegree[i]==<span class="number">0</span>)</span><br><span class="line">			q.offer(i);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty())&#123;</span><br><span class="line">		Integer v = q.poll();</span><br><span class="line">		count++;</span><br><span class="line">		System.out.print(v + <span class="string">"-&gt;"</span>);</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> neighbor : graph.get(v))&#123;</span><br><span class="line">			<span class="keyword">if</span>(--inDegree[neighbor]==<span class="number">0</span>)</span><br><span class="line">				q.offer(neighbor);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">/* check isCyclic  or not</span></span><br><span class="line"><span class="comment">	return count == num;;</span></span><br><span class="line"><span class="comment">	*/</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3><strong>算法分析：</strong></h3>
+<p>时间复杂度为<code>O(n)</code>，w为树的所有层里面的最大长度，空间复杂度<code>O(w)</code>。</p>
 
       
     </div>
@@ -367,23 +483,23 @@ In this case, no transaction is done, i.e. max profit = 0.
   <ul class="entry">
     
       <li>
+        <a href="/2022/01/29/leetcode-259-3sum-smaller/">LeetCode 259 3Sum Smaller</a>
+      </li>
+    
+      <li>
+        <a href="/2022/01/29/leetcode-628-maximum-product-of-three-numbers/">LeetCode 628 Maximum Product of Three Numbers</a>
+      </li>
+    
+      <li>
+        <a href="/2022/01/29/leetcode-1143-longest-common-subsequence/">LeetCode 1143 Longest Common Subsequence</a>
+      </li>
+    
+      <li>
         <a href="/2022/01/27/leetcode-399-evaluate-division/">LeetCode 399 Evaluate Division</a>
       </li>
     
       <li>
         <a href="/2022/01/27/leetcode-384-shuffle-an-array/">LeetCode 384 Shuffle an Array</a>
-      </li>
-    
-      <li>
-        <a href="/2022/01/27/leetcode-370-range-addition/">LeetCode 370 Range Addition</a>
-      </li>
-    
-      <li>
-        <a href="/2022/01/26/leetcode-366-find-leaves-of-binary-tree/">LeetCode 366 Find Leaves of Binary Tree</a>
-      </li>
-    
-      <li>
-        <a href="/2022/01/26/leetcode-364-nested-list-weight-sum-ii/">LeetCode 364 Nested List Weight Sum II</a>
       </li>
     
   </ul>
@@ -396,7 +512,7 @@ In this case, no transaction is done, i.e. max profit = 0.
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 14.09px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.64px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 16.82px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 13.64px;">Binary Tree</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10.45px;">Bit Manipulation</a> <a href="/tags/Bloomberg/" style="font-size: 10.45px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.73px;">Breadth-first Search</a> <a href="/tags/Citadel/" style="font-size: 10px;">Citadel</a> <a href="/tags/Classic/" style="font-size: 19.09px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 14.55px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.36px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.36px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 10.45px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.55px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 19.09px;">Facebook</a> <a href="/tags/Google/" style="font-size: 11.82px;">Google</a> <a href="/tags/Graph/" style="font-size: 12.27px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.27px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.82px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 13.64px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 13.18px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.36px;">Iterator</a> <a href="/tags/Knowledge-Base/" style="font-size: 16.82px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 15.45px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.73px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 18.18px;">Math</a> <a href="/tags/Matrix/" style="font-size: 15.91px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.36px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.91px;">Merge Sort</a> <a href="/tags/Microsoft/" style="font-size: 10px;">Microsoft</a> <a href="/tags/Mtrix/" style="font-size: 10px;">Mtrix</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 16.36px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.91px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.45px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10.91px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.36px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.45px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 17.27px;">Stack</a> <a href="/tags/String/" style="font-size: 18.64px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.36px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 15px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.36px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.09px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.45px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.45px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
+    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 13.91px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.48px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 16.96px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 13.48px;">Binary Tree</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10.43px;">Bit Manipulation</a> <a href="/tags/Bloomberg/" style="font-size: 10.43px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.83px;">Breadth-first Search</a> <a href="/tags/Citadel/" style="font-size: 10.43px;">Citadel</a> <a href="/tags/Classic/" style="font-size: 19.13px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 14.78px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.3px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.3px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 10.43px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.57px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 19.13px;">Facebook</a> <a href="/tags/Google/" style="font-size: 11.74px;">Google</a> <a href="/tags/Graph/" style="font-size: 12.17px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.17px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.96px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 13.48px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 13.04px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.3px;">Iterator</a> <a href="/tags/Knowledge-Base/" style="font-size: 16.96px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 15.65px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.61px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 18.26px;">Math</a> <a href="/tags/Matrix/" style="font-size: 16.09px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.3px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.87px;">Merge Sort</a> <a href="/tags/Microsoft/" style="font-size: 10px;">Microsoft</a> <a href="/tags/Mtrix/" style="font-size: 10px;">Mtrix</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 16.52px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.87px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.43px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10.87px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.3px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.43px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 17.39px;">Stack</a> <a href="/tags/String/" style="font-size: 18.7px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.3px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 15.22px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.3px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.35px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.43px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.43px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
   </div>
 </div>
 

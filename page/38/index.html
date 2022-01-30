@@ -53,6 +53,214 @@
     <header>
       
   
+    <h1 class="title"><a href="/2021/12/06/lee-227/">LeetCode 227 Basic Calculator II</a></h1>
+  
+
+      
+        <time datetime="2021-12-06T08:35:57.253Z">2021-12-06</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/basic-calculator-ii/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<p>&lt;div&gt;</p>
+<p>Given a string <code>s</code> which represents an expression, <em>evaluate this expression and return its value</em>.</p>
+<p>The integer division should truncate toward zero.</p>
+<p>You may assume that the given expression is always valid. All intermediate results will be in the range of <code>[-2&lt;sup&gt;31&lt;/sup&gt;, 2&lt;sup&gt;31&lt;/sup&gt; - 1]</code>.</p>
+<p><strong>Note:</strong> You are not allowed to use any built-in function which evaluates strings as mathematical expressions, such as <code>eval()</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> s = &quot;3+2*2&quot;
+<strong>Output:</strong> 7
+&lt;/pre&gt;</p>
+<p><strong>Example 2:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> s = &quot; 3/2 &quot;
+<strong>Output:</strong> 1
+&lt;/pre&gt;</p>
+<p><strong>Example 3:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> s = &quot; 3+5 / 2 &quot;
+<strong>Output:</strong> 5
+&lt;/pre&gt;</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= s.length &lt;= 3 * 10&lt;sup&gt;5&lt;/sup&gt;</code></li>
+<li><code>s</code> consists of integers and operators <code>('+', '-', '*', '/')</code> separated by some number of spaces.</li>
+<li><code>s</code> represents <strong>a valid expression</strong>.</li>
+<li>All the integers in the expression are non-negative integers in the range <code>[0, 2&lt;sup&gt;31&lt;/sup&gt; - 1]</code>.</li>
+<li>The answer is <strong>guaranteed</strong> to fit in a <strong>32-bit integer</strong>.</li>
+</ul>
+<p>&lt;/div&gt;</p>
+<h3><strong>题目大意：</strong></h3>
+<p>实现字符串加减乘除，但无括号。</p>
+<h3><strong>算法思路：</strong></h3>
+<p>逆波兰式的实现用Stack。Stack只存数，而且<strong>只存加号操作符</strong>的数，也就是说，<br>
+如果是减，就将-num入栈，<br>
+如果是乘除，立刻计算stack[-1]乘除num的结果再压入栈，因为乘除是最高优先级可以直接计算，而加减不可以。<br>
+所以用<strong>一个stack</strong></p>
+<p>代码中含三种情况：空格，运算符，数字</p>
+<h3><strong>注意事项：</strong></h3>
+<p>此题没有括号，不能用模板，要借用op来记录前一个操作符</p>
+<ol>
+<li>op记录前一个运算符，char为运算符或当前字符。计算时候根据op，因为char(+)只是第二个操作数(1-2+)的终结字符，此时表明操作数stack[-1], num以及操作符op均已完成，可以计算</li>
+<li>最容易错的是向下取整Line 18, 题目返回要求整数。所以<strong>要除法后取整int(prev / num)</strong></li>
+<li>s末尾加入加号，方便parse最后一个num</li>
+</ol>
+<h3><strong>Python代码：</strong></h3>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">calculate</span><span class="params">(self, s: str)</span> -&gt; int:</span></span><br><span class="line">	s += <span class="string">'+'</span></span><br><span class="line">	res, num, stack, op = <span class="number">0</span>, <span class="number">0</span>, [], <span class="string">'+'</span></span><br><span class="line">	<span class="keyword">for</span> char <span class="keyword">in</span> s:</span><br><span class="line">		<span class="keyword">if</span> char == <span class="string">' '</span>:</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		<span class="keyword">elif</span> char.isdigit():</span><br><span class="line">			num = num * <span class="number">10</span> + int(char)</span><br><span class="line">		<span class="keyword">elif</span> op == <span class="string">'-'</span>:</span><br><span class="line">			stack.append(-num)</span><br><span class="line">		<span class="keyword">elif</span> op == <span class="string">'+'</span>:</span><br><span class="line">			stack.append(num) <span class="comment"># [4+2*1]</span></span><br><span class="line">		<span class="keyword">elif</span> op == <span class="string">'*'</span>:</span><br><span class="line">			prev = stack.pop()</span><br><span class="line">			stack.append(prev * num)</span><br><span class="line">		<span class="keyword">elif</span> op == <span class="string">'/'</span>:</span><br><span class="line">			prev = stack.pop()</span><br><span class="line">			stack.append(int(prev / num))  <span class="comment"># remember</span></span><br><span class="line">		<span class="keyword">if</span> char <span class="keyword">in</span> <span class="string">'+-*/'</span>:</span><br><span class="line">			num = <span class="number">0</span></span><br><span class="line">			op = char</span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> stack:</span><br><span class="line">		n = stack.pop()</span><br><span class="line">		res += n</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure></p>
+<h3><strong>算法分析：</strong></h3>
+<p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code></p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2021/12/06/lee-301/">LeetCode 301 Remove Invalid Parentheses</a></h1>
+  
+
+      
+        <time datetime="2021-12-06T08:01:52.622Z">2021-12-06</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/remove-invalid-parentheses/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<p>&lt;div&gt;</p>
+<p>Given a string <code>s</code> that contains parentheses and letters, remove the minimum number of invalid parentheses to make the input string valid.</p>
+<p>Return <em>all the possible results</em>. You may return the answer in <strong>any order</strong>.</p>
+<p><strong>Example 1:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> s = &quot;()())()&quot;
+<strong>Output:</strong> [&quot;(())()&quot;,&quot;()()()&quot;]
+&lt;/pre&gt;</p>
+<p><strong>Example 2:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> s = &quot;(a)())()&quot;
+<strong>Output:</strong> [&quot;(a())()&quot;,&quot;(a)()()&quot;]
+&lt;/pre&gt;</p>
+<p><strong>Example 3:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> s = &quot;)(&quot;
+<strong>Output:</strong> [&quot;&quot;]
+&lt;/pre&gt;</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= s.length &lt;= 25</code></li>
+<li><code>s</code> consists of lowercase English letters and parentheses <code>'('</code> and <code>')'</code>.</li>
+<li>There will be at most <code>20</code> parentheses in <code>s</code>.</li>
+</ul>
+<p>&lt;/div&gt;</p>
+<h3><strong>题目大意：</strong></h3>
+<p>求最小去掉不合法括号数之后的所有结果</p>
+<h3><strong>算法思路：</strong></h3>
+<p>最值问题考虑用DP和BFS，DP难以拆分子问题。所以考虑用BFS + 括号是否合法</p>
+<h3><strong>注意事项：</strong></h3>
+<ol>
+<li>由于()())() -&gt; (())()，所以去掉的括号不一定都不合法，所以<strong>BFS要尝试删除每一个括号</strong>。若节点合法，加入结果且记录最小删除数，因为要求同一距离下的所有结果，所以<strong>用这个最小数来剪枝</strong>。</li>
+<li>输入含小写字母，所以<strong>无论是判断括号是否合法还是生成儿子节点都要跳过</strong></li>
+<li>模板中含if neighbor in visited，不能忘记写</li>
+</ol>
+<h3><strong>Python代码：</strong></h3>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">removeInvalidParentheses</span><span class="params">(self, s: str)</span> -&gt; List[str]:</span></span><br><span class="line">	queue = collections.deque([s])</span><br><span class="line">	visited = set([s])</span><br><span class="line">	res, min_dis = [], float(<span class="string">'inf'</span>)</span><br><span class="line">	distance = collections.defaultdict(int)</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.popleft()</span><br><span class="line">		<span class="keyword">if</span> self.is_valid(node):</span><br><span class="line">			res.append(node)</span><br><span class="line">			min_dis = min(min_dis, distance[node])</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		<span class="keyword">if</span> distance[node] &gt; min_dis:</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		<span class="keyword">for</span> i <span class="keyword">in</span> range(len(node)):</span><br><span class="line">			<span class="keyword">if</span> node[i] <span class="keyword">not</span> <span class="keyword">in</span> [<span class="string">'('</span>, <span class="string">')'</span>]:  <span class="comment"># remember</span></span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			child = node[:i] + node[i + <span class="number">1</span>:]</span><br><span class="line">			<span class="keyword">if</span> child <span class="keyword">in</span> visited: <span class="comment"># remember</span></span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			queue.append(child)</span><br><span class="line">			visited.add(child)</span><br><span class="line">			distance[child] = distance[node] + <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">is_valid</span><span class="params">(self, s)</span>:</span> <span class="comment"># remember not to use get_invalid_index ()())() -&gt; (())()</span></span><br><span class="line">	stack = []</span><br><span class="line">	<span class="keyword">for</span> i, char <span class="keyword">in</span> enumerate(s):</span><br><span class="line">		<span class="keyword">if</span> char <span class="keyword">not</span> <span class="keyword">in</span> [<span class="string">'('</span>, <span class="string">')'</span>]: <span class="comment"># remember</span></span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		<span class="keyword">if</span> char == <span class="string">')'</span> <span class="keyword">and</span> stack <span class="keyword">and</span> s[stack[<span class="number">-1</span>]] == <span class="string">'('</span>:</span><br><span class="line">			stack.pop()</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			stack.append(i)</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">False</span> <span class="keyword">if</span> stack <span class="keyword">else</span> <span class="keyword">True</span></span><br></pre></td></tr></table></figure></p>
+<h3><strong>算法分析：</strong></h3>
+<p>时间复杂度为&lt;code&gt;O(2&lt;sup&gt;n&lt;/sup&gt;)&lt;/code&gt;，空间复杂度<code>O(n)</code></p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2021/12/05/lee-516/">LeetCode 516 Longest Palindromic Subsequence</a></h1>
+  
+
+      
+        <time datetime="2021-12-06T07:27:35.791Z">2021-12-05</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/longest-palindromic-subsequence/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<p>&lt;div&gt;</p>
+<p>Given a string <code>s</code>, find <em>the longest palindromic <strong>subsequence</strong>'s length in</em> <code>s</code>.</p>
+<p>A <strong>subsequence</strong> is a sequence that can be derived from another sequence by deleting some or no elements without changing the order of the remaining elements.</p>
+<p><strong>Example 1:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> s = &quot;bbbab&quot;
+<strong>Output:</strong> 4
+<strong>Explanation:</strong> One possible longest palindromic subsequence is &quot;bbbb&quot;.
+&lt;/pre&gt;</p>
+<p><strong>Example 2:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> s = &quot;cbbd&quot;
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> One possible longest palindromic subsequence is &quot;bb&quot;.
+&lt;/pre&gt;</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= s.length &lt;= 1000</code></li>
+<li><code>s</code> consists only of lowercase English letters.</li>
+</ul>
+<p>&lt;/div&gt;</p>
+<h3><strong>题目大意：</strong></h3>
+<p>求字符串中最长回文序列</p>
+<h3><strong>算法思路：</strong></h3>
+<p>一开始看到子序列如LIS就想用DP，dp[i]表示以s[i]为结尾的最长回文子序列。但不容易推导公式，难点是没有限制左边界
+所以应该扩展到二维dp[i][j]表示[i, j]之间的最长回文子序列。公式就简单多了<br>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dp[i][j] = dp[i+1][j-1] + 2,             s[i] == s[j]</span><br><span class="line">         = max(dp[i+1][j], dp[i][j-1]),  s[i] != s[j]</span><br></pre></td></tr></table></figure></p>
+<h3><strong>注意事项：</strong></h3>
+<ol>
+<li>难点是想到用二维DP(区间型DP)。用区间型递归模板，注意dp[i + 1][j]并不是i - 1</li>
+<li>初始值为dp[i][i] = 1</li>
+</ol>
+<h3><strong>Python代码：</strong></h3>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">longestPalindromeSubseq</span><span class="params">(self, s: str)</span> -&gt; int:</span></span><br><span class="line">	dp = [[<span class="number">0</span> <span class="keyword">for</span> _ <span class="keyword">in</span> range(len(s))] <span class="keyword">for</span> _ <span class="keyword">in</span> range(len(s))]</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(s)):</span><br><span class="line">		dp[i][i] = <span class="number">1</span></span><br><span class="line">	<span class="keyword">for</span> k <span class="keyword">in</span> range(<span class="number">1</span>, len(s)):</span><br><span class="line">		<span class="keyword">for</span> i <span class="keyword">in</span> range(len(s) - k):</span><br><span class="line">			j = i + k</span><br><span class="line">			<span class="keyword">if</span> s[i] == s[j]:</span><br><span class="line">				dp[i][j] = dp[i + <span class="number">1</span>][j - <span class="number">1</span>] + <span class="number">2</span></span><br><span class="line">			<span class="keyword">else</span>:</span><br><span class="line">				dp[i][j] = max(dp[i + <span class="number">1</span>][j], dp[i][j - <span class="number">1</span>])</span><br><span class="line">	<span class="keyword">return</span> dp[<span class="number">0</span>][<span class="number">-1</span>]</span><br></pre></td></tr></table></figure></p>
+<h3><strong>算法分析：</strong></h3>
+<p>时间复杂度为<code>O(n*n)</code>，空间复杂度<code>O(n*n)</code></p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2021/12/05/lee-731/">LeetCode 731 My Calendar II</a></h1>
   
 
@@ -63,25 +271,59 @@
     <div class="entry">
       
         <p><strong><a href="https://leetcode.com/problems/my-calendar-ii/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>You are implementing a program to use as your calendar. We can add a new event if adding the event will not cause a <strong>triple booking</strong>.<br><br>A <strong>triple booking</strong> happens when three events have some non-empty intersection (i.e., some moment is common to all the three events.).<br><br>The event can be represented as a pair of integers <code>start</code> and <code>end</code> that represents a booking on the half-open interval <code>[start, end)</code>, the range of real numbers <code>x</code> such that <code>start &lt;= x &lt; end</code>.<br><br>Implement the <code>MyCalendarTwo</code> class:<br><br><em>   <code>MyCalendarTwo()</code> Initializes the calendar object.
-</em>   <code>boolean book(int start, int end)</code> Returns <code>true</code> if the event can be added to the calendar successfully without causing a <strong>triple booking</strong>. Otherwise, return <code>false</code> and do not add the event to the calendar.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input</strong><br>[“MyCalendarTwo”, “book”, “book”, “book”, “book”, “book”, “book”]<br>[[], [10, 20], [50, 60], [10, 40], [5, 15], [5, 10], [25, 55]]<br><strong>Output</strong><br>[null, true, true, true, false, true, true]<br><br><strong>Explanation</strong><br>MyCalendarTwo myCalendarTwo = new MyCalendarTwo();<br>myCalendarTwo.book(10, 20); // return True, The event can be booked.<br>myCalendarTwo.book(50, 60); // return True, The event can be booked.<br>myCalendarTwo.book(10, 40); // return True, The event can be double booked.<br>myCalendarTwo.book(5, 15);  // return False, The event ca not be booked, because it would result in a triple booking.<br>myCalendarTwo.book(5, 10); // return True, The event can be booked, as it does not use time 10 which is already double booked.<br>myCalendarTwo.book(25, 55); // return True, The event can be booked, as the time in [25, 40) will be double booked with the third event, the time [40, 50) will be single booked, and the time [50, 55) will be double booked with the second event.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>0 &lt;= start &lt; end &lt;= 10&lt;sup&gt;9&lt;/sup&gt;</code>
-</em>   At most <code>1000</code> calls will be made to <code>book</code>.<br><br></div>
-
-
-<h3 id="暴力法算法思路-推荐-："><a href="#暴力法算法思路-推荐-：" class="headerlink" title="暴力法算法思路(推荐)："></a><strong>暴力法算法思路(推荐)：</strong></h3><p>存储所有区间和重合区间</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>区间比较难写，用符合加入会议条件的相反来写，not (start &gt;= root.end or end &lt;= root.start)      </li>
+<p>&lt;div&gt;</p>
+<p>You are implementing a program to use as your calendar. We can add a new event if adding the event will not cause a <strong>triple booking</strong>.</p>
+<p>A <strong>triple booking</strong> happens when three events have some non-empty intersection (i.e., some moment is common to all the three events.).</p>
+<p>The event can be represented as a pair of integers <code>start</code> and <code>end</code> that represents a booking on the half-open interval <code>[start, end)</code>, the range of real numbers <code>x</code> such that <code>start &lt;= x &lt; end</code>.</p>
+<p>Implement the <code>MyCalendarTwo</code> class:</p>
+<ul>
+<li><code>MyCalendarTwo()</code> Initializes the calendar object.</li>
+<li><code>boolean book(int start, int end)</code> Returns <code>true</code> if the event can be added to the calendar successfully without causing a <strong>triple booking</strong>. Otherwise, return <code>false</code> and do not add the event to the calendar.</li>
+</ul>
+<p><strong>Example 1:</strong></p>
+<p>&lt;pre&gt;<strong>Input</strong>
+[&quot;MyCalendarTwo&quot;, &quot;book&quot;, &quot;book&quot;, &quot;book&quot;, &quot;book&quot;, &quot;book&quot;, &quot;book&quot;]
+[[], [10, 20], [50, 60], [10, 40], [5, 15], [5, 10], [25, 55]]
+<strong>Output</strong>
+[null, true, true, true, false, true, true]</p>
+<p><strong>Explanation</strong>
+MyCalendarTwo myCalendarTwo = new MyCalendarTwo();
+myCalendarTwo.book(10, 20); // return True, The event can be booked.
+myCalendarTwo.book(50, 60); // return True, The event can be booked.
+myCalendarTwo.book(10, 40); // return True, The event can be double booked.
+myCalendarTwo.book(5, 15);  // return False, The event ca not be booked, because it would result in a triple booking.
+myCalendarTwo.book(5, 10); // return True, The event can be booked, as it does not use time 10 which is already double booked.
+myCalendarTwo.book(25, 55); // return True, The event can be booked, as the time in [25, 40) will be double booked with the third event, the time [40, 50) will be single booked, and the time [50, 55) will be double booked with the second event.
+&lt;/pre&gt;</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>0 &lt;= start &lt; end &lt;= 10&lt;sup&gt;9&lt;/sup&gt;</code></li>
+<li>At most <code>1000</code> calls will be made to <code>book</code>.</li>
+</ul>
+<p>&lt;/div&gt;</p>
+<h3><strong>暴力法算法思路(推荐)：</strong></h3>
+<p>存储所有区间和重合区间</p>
+<h3><strong>注意事项：</strong></h3>
+<ol>
+<li>区间比较难写，用符合加入会议条件的相反来写，not (start &gt;= root.end or end &lt;= root.start)</li>
 </ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyCalendar</span><span class="params">(TestCases)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.calendar = []</span><br><span class="line">        self.overlaps = []</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">book</span><span class="params">(self, start: int, end: int)</span> -&gt; bool:</span></span><br><span class="line">        <span class="keyword">for</span> s, e <span class="keyword">in</span> self.overlaps:</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> (start &gt;= e <span class="keyword">or</span> end &lt;= s):</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> s, e <span class="keyword">in</span> self.calendar:</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> (start &gt;= e <span class="keyword">or</span> end &lt;= s):</span><br><span class="line">                self.overlaps.append((max(start, s), min(end, e)))</span><br><span class="line">        self.calendar.append((start, end))</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">True</span></span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n<sup>2</sup>)</code>, 空间复杂度<code>O(n)</code> </p>
+<h3><strong>Python代码：</strong></h3>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyCalendar</span><span class="params">(TestCases)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.calendar = []</span><br><span class="line">        self.overlaps = []</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">book</span><span class="params">(self, start: int, end: int)</span> -&gt; bool:</span></span><br><span class="line">        <span class="keyword">for</span> s, e <span class="keyword">in</span> self.overlaps:</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> (start &gt;= e <span class="keyword">or</span> end &lt;= s):</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> s, e <span class="keyword">in</span> self.calendar:</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> (start &gt;= e <span class="keyword">or</span> end &lt;= s):</span><br><span class="line">                self.overlaps.append((max(start, s), min(end, e)))</span><br><span class="line">        self.calendar.append((start, end))</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">True</span></span><br></pre></td></tr></table></figure></p>
+<h3><strong>算法分析：</strong></h3>
+<p>时间复杂度为&lt;code&gt;O(n&lt;sup&gt;2&lt;/sup&gt;)&lt;/code&gt;, 空间复杂度<code>O(n)</code></p>
 <hr>
-<h3 id="算法II解题思路："><a href="#算法II解题思路：" class="headerlink" title="算法II解题思路："></a><strong>算法II解题思路：</strong></h3><p>有重复区间，考虑用meeting rooms的方法二。用一个map来存储endpoint包括start和end的频率，若遇到start，map[start]++, 若遇到end, map[end]–，插入一个区间后，遍历所有endpoints，若超过3就返回False<br>虽然复杂度稍差，系数更大。但此法更有推广性，如果允许重复会议更多，此法可扩展  </p>
-<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>先插入有序区间，然后统计看是否有重复区间超过2. </li>
-<li>若是False，用remove这个函数要删除刚插入的。  </li>
+<h3><strong>算法II解题思路：</strong></h3>
+<p>有重复区间，考虑用meeting rooms的方法二。用一个map来存储endpoint包括start和end的频率，若遇到start，map[start]++, 若遇到end, map[end]--，插入一个区间后，遍历所有endpoints，若超过3就返回False<br>
+虽然复杂度稍差，系数更大。但此法更有推广性，如果允许重复会议更多，此法可扩展</p>
+<h3><strong>注意事项：</strong></h3>
+<ol>
+<li>先插入有序区间，然后统计看是否有重复区间超过2.</li>
+<li>若是False，用remove这个函数要删除刚插入的。</li>
 </ol>
-<h3 id="Python代码：-1"><a href="#Python代码：-1" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyCalendar</span><span class="params">(TestCases)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.calendar = []</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">book</span><span class="params">(self, start: int, end: int)</span> -&gt; bool:</span></span><br><span class="line">        bisect.insort(self.calendar, (start, <span class="number">1</span>))</span><br><span class="line">        bisect.insort(self.calendar, (end, <span class="number">-1</span>))</span><br><span class="line">        active_meeting = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> endpoint, _type <span class="keyword">in</span> self.calendar:</span><br><span class="line">            <span class="keyword">if</span> _type == <span class="number">1</span>:</span><br><span class="line">                active_meeting += <span class="number">1</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                active_meeting -= <span class="number">1</span></span><br><span class="line">            <span class="keyword">if</span> active_meeting &gt;= <span class="number">3</span>:</span><br><span class="line">                self.calendar.remove((start, <span class="number">1</span>))</span><br><span class="line">                self.calendar.remove((end, <span class="number">-1</span>))</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">True</span></span><br></pre></td></tr></table></figure>
-<h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n<sup>2</sup>)</code>, 空间复杂度<code>O(n)</code> </p>
+<h3><strong>Python代码：</strong></h3>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyCalendar</span><span class="params">(TestCases)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.calendar = []</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">book</span><span class="params">(self, start: int, end: int)</span> -&gt; bool:</span></span><br><span class="line">        bisect.insort(self.calendar, (start, <span class="number">1</span>))</span><br><span class="line">        bisect.insort(self.calendar, (end, <span class="number">-1</span>))</span><br><span class="line">        active_meeting = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> endpoint, _type <span class="keyword">in</span> self.calendar:</span><br><span class="line">            <span class="keyword">if</span> _type == <span class="number">1</span>:</span><br><span class="line">                active_meeting += <span class="number">1</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                active_meeting -= <span class="number">1</span></span><br><span class="line">            <span class="keyword">if</span> active_meeting &gt;= <span class="number">3</span>:</span><br><span class="line">                self.calendar.remove((start, <span class="number">1</span>))</span><br><span class="line">                self.calendar.remove((end, <span class="number">-1</span>))</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">True</span></span><br></pre></td></tr></table></figure></p>
+<h3><strong>算法分析：</strong></h3>
+<p>时间复杂度为&lt;code&gt;O(n&lt;sup&gt;2&lt;/sup&gt;)&lt;/code&gt;, 空间复杂度<code>O(n)</code></p>
 
       
     </div>
@@ -113,167 +355,53 @@
     <div class="entry">
       
         <p><strong><a href="https://leetcode.com/problems/the-maze/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>There is a ball in a <code>maze</code> with empty spaces (represented as <code>0</code>) and walls (represented as <code>1</code>). The ball can go through the empty spaces by rolling <strong>up, down, left or right</strong>, but it won’t stop rolling until hitting a wall. When the ball stops, it could choose the next direction.<br><br>Given the <code>m x n</code> <code>maze</code>, the ball’s <code>start</code> position and the <code>destination</code>, where <code>start = [start&lt;sub&gt;row&lt;/sub&gt;, start&lt;sub&gt;col&lt;/sub&gt;]</code> and <code>destination = [destination&lt;sub&gt;row&lt;/sub&gt;, destination&lt;sub&gt;col&lt;/sub&gt;]</code>, return <code>true</code> if the ball can stop at the destination, otherwise return <code>false</code>.<br><br>You may assume that <strong>the borders of the maze are all walls</strong> (see examples).<br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/03/31/maze1-1-grid.jpg" alt=""><br><br><pre><strong>Input:</strong> maze = [[0,0,1,0,0],[0,0,0,0,0],[0,0,0,1,0],[1,1,0,1,1],[0,0,0,0,0]], start = [0,4], destination = [4,4]<br><strong>Output:</strong> true<br><strong>Explanation:</strong> One possible way is : left -&gt; down -&gt; left -&gt; down -&gt; right -&gt; down -&gt; right.<br></pre><br><br><strong>Example 2:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/03/31/maze1-2-grid.jpg" alt=""><br><br><pre><strong>Input:</strong> maze = [[0,0,1,0,0],[0,0,0,0,0],[0,0,0,1,0],[1,1,0,1,1],[0,0,0,0,0]], start = [0,4], destination = [3,2]<br><strong>Output:</strong> false<br><strong>Explanation:</strong> There is no way for the ball to stop at the destination. Notice that you can pass through the destination but you cannot stop there.<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> maze = [[0,0,0,0,0],[1,1,0,0,1],[0,0,0,0,0],[0,1,0,0,1],[0,1,0,0,0]], start = [4,3], destination = [0,1]<br><strong>Output:</strong> false<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>m == maze.length</code>
-</em>   <code>n == maze[i].length</code><br><em>   <code>1 &lt;= m, n &lt;= 100</code>
-</em>   <code>maze[i][j]</code> is <code>0</code> or <code>1</code>.<br><em>   <code>start.length == 2</code>
-</em>   <code>destination.length == 2</code><br><em>   <code>0 &lt;= start&lt;sub&gt;row&lt;/sub&gt;, destination&lt;sub&gt;row&lt;/sub&gt; &lt;= m</code>
-</em>   <code>0 &lt;= start&lt;sub&gt;col&lt;/sub&gt;, destination&lt;sub&gt;col&lt;/sub&gt; &lt;= n</code><br><em>   Both the ball and the destination exist in an empty space, and they will not be in the same position initially.
-</em>   The maze contains <strong>at least 2 empty spaces</strong>.<br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>球在玉米迷宫上滚，当遇到边界或玉米会停下，停下后可以转任意方向。求能否停在目标上。</p>
-<h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>二维数组求目标第一时间想到用BFS，此题求能停下的点而不是所有点。所以属于<strong>一组节点作为一层的BFS</strong>，也就是说只有能停下的位置才算BFS的一层，才加入都队列，其他停不来的点均忽略。这是此题的难点。  </p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<p>&lt;div&gt;</p>
+<p>There is a ball in a <code>maze</code> with empty spaces (represented as <code>0</code>) and walls (represented as <code>1</code>). The ball can go through the empty spaces by rolling <strong>up, down, left or right</strong>, but it won't stop rolling until hitting a wall. When the ball stops, it could choose the next direction.</p>
+<p>Given the <code>m x n</code> <code>maze</code>, the ball's <code>start</code> position and the <code>destination</code>, where <code>start = [start&lt;sub&gt;row&lt;/sub&gt;, start&lt;sub&gt;col&lt;/sub&gt;]</code> and <code>destination = [destination&lt;sub&gt;row&lt;/sub&gt;, destination&lt;sub&gt;col&lt;/sub&gt;]</code>, return <code>true</code> if the ball can stop at the destination, otherwise return <code>false</code>.</p>
+<p>You may assume that <strong>the borders of the maze are all walls</strong> (see examples).</p>
+<p><strong>Example 1:</strong></p>
+<p><img src="https://assets.leetcode.com/uploads/2021/03/31/maze1-1-grid.jpg" alt=""></p>
+<p>&lt;pre&gt;<strong>Input:</strong> maze = [[0,0,1,0,0],[0,0,0,0,0],[0,0,0,1,0],[1,1,0,1,1],[0,0,0,0,0]], start = [0,4], destination = [4,4]
+<strong>Output:</strong> true
+<strong>Explanation:</strong> One possible way is : left -&gt; down -&gt; left -&gt; down -&gt; right -&gt; down -&gt; right.
+&lt;/pre&gt;</p>
+<p><strong>Example 2:</strong></p>
+<p><img src="https://assets.leetcode.com/uploads/2021/03/31/maze1-2-grid.jpg" alt=""></p>
+<p>&lt;pre&gt;<strong>Input:</strong> maze = [[0,0,1,0,0],[0,0,0,0,0],[0,0,0,1,0],[1,1,0,1,1],[0,0,0,0,0]], start = [0,4], destination = [3,2]
+<strong>Output:</strong> false
+<strong>Explanation:</strong> There is no way for the ball to stop at the destination. Notice that you can pass through the destination but you cannot stop there.
+&lt;/pre&gt;</p>
+<p><strong>Example 3:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> maze = [[0,0,0,0,0],[1,1,0,0,1],[0,0,0,0,0],[0,1,0,0,1],[0,1,0,0,0]], start = [4,3], destination = [0,1]
+<strong>Output:</strong> false
+&lt;/pre&gt;</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>m == maze.length</code></li>
+<li><code>n == maze[i].length</code></li>
+<li><code>1 &lt;= m, n &lt;= 100</code></li>
+<li><code>maze[i][j]</code> is <code>0</code> or <code>1</code>.</li>
+<li><code>start.length == 2</code></li>
+<li><code>destination.length == 2</code></li>
+<li><code>0 &lt;= start&lt;sub&gt;row&lt;/sub&gt;, destination&lt;sub&gt;row&lt;/sub&gt; &lt;= m</code></li>
+<li><code>0 &lt;= start&lt;sub&gt;col&lt;/sub&gt;, destination&lt;sub&gt;col&lt;/sub&gt; &lt;= n</code></li>
+<li>Both the ball and the destination exist in an empty space, and they will not be in the same position initially.</li>
+<li>The maze contains <strong>at least 2 empty spaces</strong>.</li>
+</ul>
+<p>&lt;/div&gt;</p>
+<h3><strong>题目大意：</strong></h3>
+<p>球在玉米迷宫上滚，当遇到边界或玉米会停下，停下后可以转任意方向。求能否停在目标上。</p>
+<h3><strong>算法思路：</strong></h3>
+<p>二维数组求目标第一时间想到用BFS，此题求能停下的点而不是所有点。所以属于<strong>一组节点作为一层的BFS</strong>，也就是说只有能停下的位置才算BFS的一层，才加入都队列，其他停不来的点均忽略。这是此题的难点。</p>
+<h3><strong>注意事项：</strong></h3>
+<ol>
 <li>属于<strong>一组节点作为一层的BFS</strong>，能停下的点才加入到queue。比标准模板多了Line 10 - 11. 停下包括边界和<strong>玉米(maze[x][y] == 1</strong>)</li>
-<li>要滚回一步Line 12 - 15，因为line 10循环的终结状态为出界或玉米上。要滚回一步到空地上。 </li>
+<li>要滚回一步Line 12 - 15，因为line 10循环的终结状态为出界或玉米上。要滚回一步到空地上。</li>
 </ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hasPath</span><span class="params">(self, maze: List[List[int]], start: List[int], destination: List[int])</span> -&gt; bool:</span></span><br><span class="line">	queue = collections.deque([(start[<span class="number">0</span>], start[<span class="number">1</span>])])</span><br><span class="line">	visited = set([(start[<span class="number">0</span>], start[<span class="number">1</span>])])</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.popleft()</span><br><span class="line">		<span class="keyword">if</span> node[<span class="number">0</span>] == destination[<span class="number">0</span>] <span class="keyword">and</span> node[<span class="number">1</span>] == destination[<span class="number">1</span>]:</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line">		<span class="keyword">for</span> _dx, _dy <span class="keyword">in</span> OFFSETS:</span><br><span class="line">			x, y = node[<span class="number">0</span>], node[<span class="number">1</span>]</span><br><span class="line">			<span class="keyword">while</span> <span class="number">0</span> &lt;= x &lt; len(maze) <span class="keyword">and</span> <span class="number">0</span> &lt;= y &lt; len(maze[<span class="number">0</span>]) <span class="keyword">and</span> maze[x][y] == <span class="number">0</span>: <span class="comment"># remember maze[x][y] == 0</span></span><br><span class="line">				x, y = x + _dx, y + _dy</span><br><span class="line">			<span class="keyword">if</span> (x - _dx, y - _dy) <span class="keyword">in</span> visited: <span class="comment"># remember</span></span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			queue.append((x - _dx, y - _dy))</span><br><span class="line">			visited.add((x - _dx, y - _dy))</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">False</span></span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nm)</code>，空间复杂度<code>O(nm)</code>  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2021/12/05/lee-729/">LeetCode 729 My Calendar I</a></h1>
-  
-
-      
-        <time datetime="2021-12-06T05:41:01.328Z">2021-12-05</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/my-calendar-i/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>You are implementing a program to use as your calendar. We can add a new event if adding the event will not cause a <strong>double booking</strong>.<br><br>A <strong>double booking</strong> happens when two events have some non-empty intersection (i.e., some moment is common to both events.).<br><br>The event can be represented as a pair of integers <code>start</code> and <code>end</code> that represents a booking on the half-open interval <code>[start, end)</code>, the range of real numbers <code>x</code> such that <code>start &lt;= x &lt; end</code>.<br><br>Implement the <code>MyCalendar</code> class:<br><br><em>   <code>MyCalendar()</code> Initializes the calendar object.
-</em>   <code>boolean book(int start, int end)</code> Returns <code>true</code> if the event can be added to the calendar successfully without causing a <strong>double booking</strong>. Otherwise, return <code>false</code> and do not add the event to the calendar.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input</strong><br>[“MyCalendar”, “book”, “book”, “book”]<br>[[], [10, 20], [15, 25], [20, 30]]<br><strong>Output</strong><br>[null, true, false, true]<br><br><strong>Explanation</strong><br>MyCalendar myCalendar = new MyCalendar();<br>myCalendar.book(10, 20); // return True<br>myCalendar.book(15, 25); // return False, It can not be booked because time 15 is already booked by another event.<br>myCalendar.book(20, 30); // return True, The event can be booked, as the first event takes every time less than 20, but not including 20.</pre><br><br><strong>Constraints:</strong><br><br><em>   <code>0 &lt;= start &lt; end &lt;= 10&lt;sup&gt;9&lt;/sup&gt;</code>
-</em>   At most <code>1000</code> calls will be made to <code>book</code>.<br><br></div>
-
-<h3 id="暴力法算法思路-推荐-："><a href="#暴力法算法思路-推荐-：" class="headerlink" title="暴力法算法思路(推荐)："></a><strong>暴力法算法思路(推荐)：</strong></h3><p>存储所有区间</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>区间比较难写，用符合加入会议条件的相反来写，not (start &gt;= root.end or end &lt;= root.start)      </li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyCalendar</span><span class="params">(TestCases)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.calendar = []</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">book</span><span class="params">(self, start: int, end: int)</span> -&gt; bool:</span></span><br><span class="line">        <span class="keyword">for</span> s, e <span class="keyword">in</span> self.calendar:</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> (start &gt;= e <span class="keyword">or</span> end &lt;= s):</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">        self.calendar.append((start, end))</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">True</span></span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n<sup>2</sup>)</code>, 空间复杂度<code>O(n)</code> </p>
-<hr>
-<h3 id="端点排序法解题思路II："><a href="#端点排序法解题思路II：" class="headerlink" title="端点排序法解题思路II："></a><strong>端点排序法解题思路II：</strong></h3><p>区间重合题考虑用heap或者端点排序法，输入是必须有序，所以此题可以令区间有序，而heap用于处理重合情况下的计算，此题不适用，所以用端点排序法。</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>区间端点排序，(endpoint, 1/-1), 1表示始点，-1表示终点。用bisect搜索时，注意输入也要用两维(start, 1)    </li>
-<li>难点在于比较结果决定返回Ture or False。两种情况返回False：好的情况是输入区间的搜索结果的下标应该相等表示可以插入到现有两区间之间，所以<strong>若不等</strong>，就不符合。第二种是若现有区间完全覆盖新区间，此时搜索结果下标也一样，所以此情况<strong>新区间终点的搜索结果(后一个节点)是终点</strong>。同时为保证搜索结果不处理越界，<strong>加入空端点</strong>  </li>
-<li>若同一个端点同时存在始点和端点，不用合并，因为它们已经按-1, 1排序了。 </li>
-</ol>
-<h3 id="Python代码：-1"><a href="#Python代码：-1" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyCalendar</span><span class="params">(TestCases)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.calendar = [(float(<span class="string">'-inf'</span>), <span class="number">-1</span>), (float(<span class="string">'inf'</span>), <span class="number">1</span>)]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">book</span><span class="params">(self, start: int, end: int)</span> -&gt; bool:</span></span><br><span class="line">        index_start = bisect.bisect(self.calendar, (start, <span class="number">1</span>)) <span class="comment"># remember params</span></span><br><span class="line">        index_end = bisect.bisect(self.calendar, (end, <span class="number">-1</span>))</span><br><span class="line">        <span class="keyword">if</span> index_start != index_end <span class="keyword">or</span> self.calendar[index_end][<span class="number">1</span>] == <span class="number">-1</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">        <span class="comment"># no need to merge endpoints coz they are sorted in (a, -1), (a, 1) as expected</span></span><br><span class="line">        bisect.insort(self.calendar, (start, <span class="number">1</span>))</span><br><span class="line">        bisect.insort(self.calendar, (end, <span class="number">-1</span>))</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">True</span></span><br></pre></td></tr></table></figure>
-<h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n<sup>2</sup>)</code>，由于insort是插入需要移动数组，所以是O(n), 空间复杂度<code>O(n)</code>  </p>
-<hr>
-<h3 id="线段树算法III思路-不推荐-："><a href="#线段树算法III思路-不推荐-：" class="headerlink" title="线段树算法III思路(不推荐)："></a><strong>线段树算法III思路(不推荐)：</strong></h3><p>区间重合题考虑用heap类似meeting rooms，输入是必须有序，但这里新区间与已有区间不是有序且不能online处理，所以不能用heap。<br>考虑用start, end排序，二分法查找，只能处理单次，因为插入不方便。<br>要查找和插入都能低于O(n)，就只能用TreeMap。类似于线段树存储区间，此题每个Node存储一个区间。新区间的end，start分别与root的start和end比较，若不重合，就递归到左右子树。此树投影为离散且不重合的区间。   </p>
-<h3 id="注意事项：-2"><a href="#注意事项：-2" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>考察二叉树插入算法，<strong>返回值需要是TreeNode</strong>，如root.left = self.dfs(root.left, start, end)。由于需要知道是否成功插入，所以返回值多加一个boolean  </li>
-<li>区间比较难写，用符合加入会议条件的相反来写，not (start &gt;= root.end or end &lt;= root.start)      </li>
-<li>is_left or is_right任意一个加入成功都可以，所以是or不是and  </li>
-</ol>
-<h3 id="Python代码：-2"><a href="#Python代码：-2" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyCalendar</span><span class="params">(TestCases)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.head = <span class="keyword">None</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">book</span><span class="params">(self, start: int, end: int)</span> -&gt; bool:</span></span><br><span class="line">        root, is_booked = self.dfs(self.head, start, end)</span><br><span class="line">        self.head = root</span><br><span class="line">        <span class="keyword">return</span> is_booked</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">dfs</span><span class="params">(self, root, start, end)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> root:</span><br><span class="line">            <span class="keyword">return</span> TreeNode(start, end), <span class="keyword">True</span></span><br><span class="line">        <span class="comment">#if root.start &lt;= start &lt; root.end or root.start &lt; end &lt;= root.end: # remember</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> (start &gt;= root.end <span class="keyword">or</span> end &lt;= root.start):</span><br><span class="line">            <span class="keyword">return</span> root, <span class="keyword">False</span></span><br><span class="line">        is_left = is_right = <span class="keyword">False</span></span><br><span class="line">        <span class="keyword">if</span> end &lt;= root.start:</span><br><span class="line">            root.left, is_left = self.dfs(root.left, start, end)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            root.right, is_right = self.dfs(root.right, start, end)</span><br><span class="line">        <span class="keyword">return</span> root, is_left <span class="keyword">or</span> is_right <span class="comment"># remember or</span></span><br></pre></td></tr></table></figure>
-<h3 id="算法分析：-2"><a href="#算法分析：-2" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nlogn)</code>，最差情况为<code>O(n<sup>2</sup>)</code>，空间复杂度<code>O(n)</code>  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2021/12/05/lee-105/">LeetCode 105 Construct Binary Tree from Preorder and Inorder Traversal</a></h1>
-  
-
-      
-        <time datetime="2021-12-06T05:36:22.387Z">2021-12-05</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>Given two integer arrays <code>preorder</code> and <code>inorder</code> where <code>preorder</code> is the preorder traversal of a binary tree and <code>inorder</code> is the inorder traversal of the same tree, construct and return <em>the binary tree</em>.<br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/02/19/tree.jpg" alt=""><br><br><pre><strong>Input:</strong> preorder = [3,9,20,15,7], inorder = [9,3,15,20,7]<br><strong>Output:</strong> [3,9,20,null,null,15,7]<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> preorder = [-1], inorder = [-1]<br><strong>Output:</strong> [-1]<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= preorder.length &lt;= 3000</code>
-</em>   <code>inorder.length == preorder.length</code><br><em>   <code>-3000 &lt;= preorder[i], inorder[i] &lt;= 3000</code>
-</em>   <code>preorder</code> and <code>inorder</code> consist of <strong>unique</strong> values.<br><em>   Each value of <code>inorder</code> also appears in <code>preorder</code>.
-</em>   <code>preorder</code> is <strong>guaranteed</strong> to be the preorder traversal of the tree.<br><em>   <code>inorder</code> is <em>*guaranteed</em></em> to be the inorder traversal of the tree.<br><br></div>
-
-<h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>N/A </p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>用递归实现，in_order字符串分左右两段子串递归到左右儿子，<strong>pre_order字符串每轮递归用pop(0)原地去除首位</strong>，再递归到儿子节点  </li>
-<li><strong>终止条件为in_order字符串为空</strong>。    </li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">buildTree</span><span class="params">(self, preorder: List[int], inorder: List[int])</span> -&gt; TreeNode:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> inorder:</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">None</span></span><br><span class="line">	head = preorder.pop(<span class="number">0</span>)</span><br><span class="line">	index = inorder.index(head)</span><br><span class="line">	left_inorder, right_inorder = inorder[:index], inorder[index + <span class="number">1</span>:]</span><br><span class="line"></span><br><span class="line">	root = TreeNode(head)</span><br><span class="line">	root.left = self.buildTree(preorder, left_inorder)</span><br><span class="line">	root.right = self.buildTree(preorder, right_inorder)</span><br><span class="line">	<span class="keyword">return</span> root</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2021/12/05/lee-1235/">LeetCode 1235 Maximum Profit in Job Scheduling</a></h1>
-  
-
-      
-        <time datetime="2021-12-06T02:18:26.508Z">2021-12-05</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/maximum-profit-in-job-scheduling/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>We have <code>n</code> jobs, where every job is scheduled to be done from <code>startTime[i]</code> to <code>endTime[i]</code>, obtaining a profit of <code>profit[i]</code>.<br><br>You’re given the <code>startTime</code>, <code>endTime</code> and <code>profit</code> arrays, return the maximum profit you can take such that there are no two jobs in the subset with overlapping time range.<br><br>If you choose a job that ends at time <code>X</code> you will be able to start another job that starts at time <code>X</code>.<br><br><strong>Example 1:</strong><br><br><strong><img src="https://assets.leetcode.com/uploads/2019/10/10/sample1_1584.png" alt=""></strong><br><br><pre><strong>Input:</strong> startTime = [1,2,3,3], endTime = [3,4,5,6], profit = [50,10,40,70]<br><strong>Output:</strong> 120<br><strong>Explanation:</strong> The subset chosen is the first and fourth job.<br>Time range [1-3]+[3-6] , we get profit of 120 = 50 + 70.<br></pre><br><br><strong>Example 2:</strong><br><br><strong><img src="https://assets.leetcode.com/uploads/2019/10/10/sample22_1584.png" alt=""></strong><br><br><pre><strong>Input:</strong> startTime = [1,2,3,4,6], endTime = [3,5,10,6,9], profit = [20,20,100,70,60]<br><strong>Output:</strong> 150<br><strong>Explanation:</strong> The subset chosen is the first, fourth and fifth job.<br>Profit obtained 150 = 20 + 70 + 60.<br></pre><br><br><strong>Example 3:</strong><br><br><strong><img src="https://assets.leetcode.com/uploads/2019/10/10/sample3_1584.png" alt=""></strong><br><br><pre><strong>Input:</strong> startTime = [1,1,1], endTime = [2,3,4], profit = [5,6,4]<br><strong>Output:</strong> 6<br></pre><br><br><strong>Constraints:</strong><br><br><em>   `1 &lt;= startTime.length == endTime.length == profit.length &lt;= 5 </em> 10<sup>4</sup><code>*</code>1 &lt;= startTime[i] &lt; endTime[i] &lt;= 10<sup>9</sup><code>*</code>1 &lt;= profit[i] &lt;= 10<sup>4</sup>`<br><br></div>
-
-<h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>DP + 排序<br>一开始以为类似于meeting rooms II，所以用heap，但只能计算conflicts不能计算profits，但排序思想有用。<br>求最值问题第一时间考虑用DP，所以考虑以第i-1个job为结尾的最大利润：  </p>
-<p><pre><br>dp[i] = max -&gt; dp[j] + profits[i-1]), 第i个job的startTime[i-1] &gt;= endTime[j], 第j个job与第i个job没有conflicts<br>            -&gt; dp[j]                                                          第j个job与第i个job有conflicts<br></pre><br>复杂度为O(n^2)  </p>
-<p>写出递归式后，求startTime &gt;= endTime其实就是按endTime排序，这样有助于搜索这个条件. 这里有个难点是要加强命题至累计利润，因为正如Cooldown股票题一样，dp[j]不应该是以job j为结尾的最大利润，而应该是前j个job的最大利润，这些job不一定都是相邻<br>加强命题dp[i]是累计利润，也就是并不需要计算所有dp[j…i]的值（第一式子），公式变成  </p>
-<p><pre><br>dp[i] = max -&gt; dp[j] + profits[i-1]), j = start[i-1]对应的Endtime下标, 第j个job与第i个job没有conflicts<br>            -&gt; dp[j]                                                   第j个job与第i个job有conflicts<br></pre><br>要找出这个j，就对刚才排序了的endtime数组用bisect找下标。类似于LIS, 复杂度为O(nlogn)  </p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>bisect的使用求大于startTime的endTime下标，此下标j减一正是所求，但dp和数组中下标转换是差1，所以dp[j - 1 + 1]是前值的DP值。      </li>
-<li><strong>加强命题至累计利润</strong>dp[i], 见line 9 - 10 </li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">jobScheduling</span><span class="params">(self, startTime: List[int], endTime: List[int], profit: List[int])</span> -&gt; int:</span></span><br><span class="line">	job_by_endtime, dp, max_profit = [], [<span class="number">0</span>] * (len(startTime) + <span class="number">1</span>), <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(startTime)):</span><br><span class="line">		job_by_endtime.append((endTime[i], startTime[i], profit[i]))</span><br><span class="line">	job_by_endtime.sort()</span><br><span class="line">	end_time_sorted = [pair[<span class="number">0</span>] <span class="keyword">for</span> pair <span class="keyword">in</span> job_by_endtime]</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, len(dp)):</span><br><span class="line">		j = bisect.bisect(end_time_sorted, job_by_endtime[i - <span class="number">1</span>][<span class="number">1</span>]) <span class="comment"># previous end time &lt;= current start time</span></span><br><span class="line">		dp[i] = max(max_profit, dp[j] + job_by_endtime[i - <span class="number">1</span>][<span class="number">2</span>]) <span class="comment"># remember</span></span><br><span class="line">		max_profit = max(max_profit, dp[i]) <span class="comment"># remember</span></span><br><span class="line">	<span class="keyword">return</span> dp[<span class="number">-1</span>]</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nlogn)</code>，空间复杂度<code>O(n)</code>  </p>
+<h3><strong>Python代码：</strong></h3>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hasPath</span><span class="params">(self, maze: List[List[int]], start: List[int], destination: List[int])</span> -&gt; bool:</span></span><br><span class="line">	queue = collections.deque([(start[<span class="number">0</span>], start[<span class="number">1</span>])])</span><br><span class="line">	visited = set([(start[<span class="number">0</span>], start[<span class="number">1</span>])])</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.popleft()</span><br><span class="line">		<span class="keyword">if</span> node[<span class="number">0</span>] == destination[<span class="number">0</span>] <span class="keyword">and</span> node[<span class="number">1</span>] == destination[<span class="number">1</span>]:</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line">		<span class="keyword">for</span> _dx, _dy <span class="keyword">in</span> OFFSETS:</span><br><span class="line">			x, y = node[<span class="number">0</span>], node[<span class="number">1</span>]</span><br><span class="line">			<span class="keyword">while</span> <span class="number">0</span> &lt;= x &lt; len(maze) <span class="keyword">and</span> <span class="number">0</span> &lt;= y &lt; len(maze[<span class="number">0</span>]) <span class="keyword">and</span> maze[x][y] == <span class="number">0</span>: <span class="comment"># remember maze[x][y] == 0</span></span><br><span class="line">				x, y = x + _dx, y + _dy</span><br><span class="line">			<span class="keyword">if</span> (x - _dx, y - _dy) <span class="keyword">in</span> visited: <span class="comment"># remember</span></span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			queue.append((x - _dx, y - _dy))</span><br><span class="line">			visited.add((x - _dx, y - _dy))</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">False</span></span><br></pre></td></tr></table></figure></p>
+<h3><strong>算法分析：</strong></h3>
+<p>时间复杂度为<code>O(nm)</code>，空间复杂度<code>O(nm)</code></p>
 
       
     </div>
@@ -314,23 +442,23 @@
   <ul class="entry">
     
       <li>
+        <a href="/2022/01/29/leetcode-259-3sum-smaller/">LeetCode 259 3Sum Smaller</a>
+      </li>
+    
+      <li>
+        <a href="/2022/01/29/leetcode-628-maximum-product-of-three-numbers/">LeetCode 628 Maximum Product of Three Numbers</a>
+      </li>
+    
+      <li>
+        <a href="/2022/01/29/leetcode-1143-longest-common-subsequence/">LeetCode 1143 Longest Common Subsequence</a>
+      </li>
+    
+      <li>
         <a href="/2022/01/27/leetcode-399-evaluate-division/">LeetCode 399 Evaluate Division</a>
       </li>
     
       <li>
         <a href="/2022/01/27/leetcode-384-shuffle-an-array/">LeetCode 384 Shuffle an Array</a>
-      </li>
-    
-      <li>
-        <a href="/2022/01/27/leetcode-370-range-addition/">LeetCode 370 Range Addition</a>
-      </li>
-    
-      <li>
-        <a href="/2022/01/26/leetcode-366-find-leaves-of-binary-tree/">LeetCode 366 Find Leaves of Binary Tree</a>
-      </li>
-    
-      <li>
-        <a href="/2022/01/26/leetcode-364-nested-list-weight-sum-ii/">LeetCode 364 Nested List Weight Sum II</a>
       </li>
     
   </ul>
@@ -343,7 +471,7 @@
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 14.09px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.64px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 16.82px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 13.64px;">Binary Tree</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10.45px;">Bit Manipulation</a> <a href="/tags/Bloomberg/" style="font-size: 10.45px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.73px;">Breadth-first Search</a> <a href="/tags/Citadel/" style="font-size: 10px;">Citadel</a> <a href="/tags/Classic/" style="font-size: 19.09px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 14.55px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.36px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.36px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 10.45px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.55px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 19.09px;">Facebook</a> <a href="/tags/Google/" style="font-size: 11.82px;">Google</a> <a href="/tags/Graph/" style="font-size: 12.27px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.27px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.82px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 13.64px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 13.18px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.36px;">Iterator</a> <a href="/tags/Knowledge-Base/" style="font-size: 16.82px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 15.45px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.73px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 18.18px;">Math</a> <a href="/tags/Matrix/" style="font-size: 15.91px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.36px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.91px;">Merge Sort</a> <a href="/tags/Microsoft/" style="font-size: 10px;">Microsoft</a> <a href="/tags/Mtrix/" style="font-size: 10px;">Mtrix</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 16.36px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.91px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.45px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10.91px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.36px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.45px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 17.27px;">Stack</a> <a href="/tags/String/" style="font-size: 18.64px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.36px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 15px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.36px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.09px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.45px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.45px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
+    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 13.91px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.48px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 16.96px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 13.48px;">Binary Tree</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10.43px;">Bit Manipulation</a> <a href="/tags/Bloomberg/" style="font-size: 10.43px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.83px;">Breadth-first Search</a> <a href="/tags/Citadel/" style="font-size: 10.43px;">Citadel</a> <a href="/tags/Classic/" style="font-size: 19.13px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 14.78px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.3px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.3px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 10.43px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.57px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 19.13px;">Facebook</a> <a href="/tags/Google/" style="font-size: 11.74px;">Google</a> <a href="/tags/Graph/" style="font-size: 12.17px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.17px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.96px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 13.48px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 13.04px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.3px;">Iterator</a> <a href="/tags/Knowledge-Base/" style="font-size: 16.96px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 15.65px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.61px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 18.26px;">Math</a> <a href="/tags/Matrix/" style="font-size: 16.09px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.3px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.87px;">Merge Sort</a> <a href="/tags/Microsoft/" style="font-size: 10px;">Microsoft</a> <a href="/tags/Mtrix/" style="font-size: 10px;">Mtrix</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 16.52px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.87px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.43px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10.87px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.3px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.43px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 17.39px;">Stack</a> <a href="/tags/String/" style="font-size: 18.7px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.3px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 15.22px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.3px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.35px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.43px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.43px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
   </div>
 </div>
 
