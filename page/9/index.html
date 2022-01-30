@@ -53,6 +53,52 @@
     <header>
       
   
+    <h1 class="title"><a href="/2022/01/17/leetcode-211-design-add-and-search-words-data-structure/">LeetCode 211 Design Add and Search Words Data Structure</a></h1>
+  
+
+      
+        <time datetime="2022-01-18T07:26:28.464Z">2022-01-17</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/design-add-and-search-words-data-structure/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>Design a data structure that supports adding new words and finding if a string matches any previously added string.<br><br>Implement the <code>WordDictionary</code> class:<br><br><em>   <code>WordDictionary()</code> Initializes the object.
+</em>   <code>void addWord(word)</code> Adds <code>word</code> to the data structure, it can be matched later.<br><em>   <code>bool search(word)</code> Returns <code>true</code> if there is any string in the data structure that matches <code>word</code> or <code>false</code> otherwise. <code>word</code> may contain dots <code>&#39;.&#39;</code> where dots can be matched with any letter.<br><br><strong>Example:</strong><br><br><pre><strong>Input</strong><br>[“WordDictionary”,”addWord”,”addWord”,”addWord”,”search”,”search”,”search”,”search”]<br>[[],[“bad”],[“dad”],[“mad”],[“pad”],[“bad”],[“.ad”],[“b..”]]<br><strong>Output</strong><br>[null,null,null,null,false,true,true,true]<br><br><strong>Explanation</strong><br>WordDictionary wordDictionary = new WordDictionary();<br>wordDictionary.addWord(“bad”);<br>wordDictionary.addWord(“dad”);<br>wordDictionary.addWord(“mad”);<br>wordDictionary.search(“pad”); // return False<br>wordDictionary.search(“bad”); // return True<br>wordDictionary.search(“.ad”); // return True<br>wordDictionary.search(“b..”); // return True<br></pre><br><br><strong>Constraints:</strong>
+
+</em>   <code>1 &lt;= word.length &lt;= 500</code><br><em>   <code>word</code> in <code>addWord</code> consists lower-case English letters.
+</em>   <code>word</code> in <code>search</code> consist of  <code>&#39;.&#39;</code> or lower-case English letters.<br>*   At most <code>50000</code> calls will be made to <code>addWord</code> and <code>search</code>.<br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>设计一个数据结构支持加单词和查找单词。查找单词支持dot查询，表示配对任意字符</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>第一时间想到Trie，但难点在如果支持dot。一般Trie实现只支持单一单词查询，但是此题需要搜索所有可能节点。所以要将search加入TrieNode参数且转成DFS</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>search加入TrieNode参数且转成DFS</li>
+<li>终止条件第二个用TrieNode为空而不是用is_end</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">WordDictionary</span><span class="params">(TestCases)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.head = TrieNode()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">addWord</span><span class="params">(self, word: str)</span> -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        it = self.head</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(len(word)):</span><br><span class="line">            it = it.children[word[i]]</span><br><span class="line">        it.is_end = <span class="keyword">True</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span><span class="params">(self, word: str)</span> -&gt; bool:</span></span><br><span class="line">        <span class="keyword">return</span> self.search_one_node(word, self.head)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search_one_node</span><span class="params">(self, word, trie_node)</span> -&gt; bool:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> word <span class="keyword">and</span> trie_node.is_end:</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> word <span class="keyword">or</span> <span class="keyword">not</span> trie_node: <span class="comment"># remember not trie_node</span></span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">        <span class="keyword">if</span> word[<span class="number">0</span>] == <span class="string">'.'</span>:</span><br><span class="line">            <span class="keyword">for</span> child_node <span class="keyword">in</span> trie_node.children.values():</span><br><span class="line">                <span class="keyword">if</span> self.search_one_node(word[<span class="number">1</span>:], child_node):</span><br><span class="line">                    <span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">        <span class="keyword">if</span> word[<span class="number">0</span>] <span class="keyword">not</span> <span class="keyword">in</span> trie_node.children:</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">        <span class="keyword">return</span> self.search_one_node(word[<span class="number">1</span>:], trie_node.children[word[<span class="number">0</span>]])</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TrieNode</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.children = collections.defaultdict(TrieNode)  <span class="comment"># &#123;&#125;</span></span><br><span class="line">        self.is_end = <span class="keyword">False</span></span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>search中不含dot时间复杂度为<code>O(n)</code>, 含dot时间复杂度为<code>O(26<sup>n</sup>)</code>，空间复杂度<code>O(1)</code>, n为搜索单词长度.   </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2022/01/17/leetcode-207-course-schedule/">LeetCode 207 Course Schedule</a></h1>
   
 
@@ -63,47 +109,20 @@
     <div class="entry">
       
         <p><strong><a href="https://leetcode.com/problems/course-schedule/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<p>&lt;div&gt;</p>
-<p>There are a total of <code>numCourses</code> courses you have to take, labeled from <code>0</code> to <code>numCourses - 1</code>. You are given an array <code>prerequisites</code> where <code>prerequisites[i] = [a&lt;sub&gt;i&lt;/sub&gt;, b&lt;sub&gt;i&lt;/sub&gt;]</code> indicates that you <strong>must</strong> take course <code>b&lt;sub&gt;i&lt;/sub&gt;</code> first if you want to take course <code>a&lt;sub&gt;i&lt;/sub&gt;</code>.</p>
-<ul>
-<li>For example, the pair <code>[0, 1]</code>, indicates that to take course <code>0</code> you have to first take course <code>1</code>.</li>
-</ul>
-<p>Return <code>true</code> if you can finish all courses. Otherwise, return <code>false</code>.</p>
-<p><strong>Example 1:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> numCourses = 2, prerequisites = [[1,0]]
-<strong>Output:</strong> true
-<strong>Explanation:</strong> There are a total of 2 courses to take.
-To take course 1 you should have finished course 0. So it is possible.
-&lt;/pre&gt;</p>
-<p><strong>Example 2:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> numCourses = 2, prerequisites = [[1,0],[0,1]]
-<strong>Output:</strong> false
-<strong>Explanation:</strong> There are a total of 2 courses to take.
-To take course 1 you should have finished course 0, and to take course 0 you should also have finished course 1. So it is impossible.
-&lt;/pre&gt;</p>
-<p><strong>Constraints:</strong></p>
-<ul>
-<li><code>1 &lt;= numCourses &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code></li>
-<li><code>0 &lt;= prerequisites.length &lt;= 5000</code></li>
-<li><code>prerequisites[i].length == 2</code></li>
-<li><code>0 &lt;= a&lt;sub&gt;i&lt;/sub&gt;, b&lt;sub&gt;i&lt;/sub&gt; &lt; numCourses</code></li>
-<li>All the pairs prerequisites[i] are <strong>unique</strong>.</li>
-</ul>
-<p>&lt;/div&gt;</p>
-<h3><strong>题目大意：</strong></h3>
-<p>课程有先修课要求，求是否可以完成所有课程</p>
-<h3><strong>解题思路：</strong></h3>
-<p>跟LeetCode 210 Course Schedule II几乎一样，此题求可否完成，那题求课程顺序。区别在于return那一句返回bool还是res</p>
-<h3><strong>解题步骤：</strong></h3>
-<p>N/A</p>
-<h3><strong>注意事项：</strong></h3>
-<ol>
-<li></li>
+<div><br><br>There are a total of <code>numCourses</code> courses you have to take, labeled from <code>0</code> to <code>numCourses - 1</code>. You are given an array <code>prerequisites</code> where <code>prerequisites[i] = [a&lt;sub&gt;i&lt;/sub&gt;, b&lt;sub&gt;i&lt;/sub&gt;]</code> indicates that you <strong>must</strong> take course <code>b&lt;sub&gt;i&lt;/sub&gt;</code> first if you want to take course <code>a&lt;sub&gt;i&lt;/sub&gt;</code>.<br><br><em>   For example, the pair <code>[0, 1]</code>, indicates that to take course <code>0</code> you have to first take course <code>1</code>.<br><br>Return <code>true</code> if you can finish all courses. Otherwise, return <code>false</code>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> numCourses = 2, prerequisites = [[1,0]]<br><strong>Output:</strong> true<br><strong>Explanation:</strong> There are a total of 2 courses to take.<br>To take course 1 you should have finished course 0. So it is possible.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> numCourses = 2, prerequisites = [[1,0],[0,1]]<br><strong>Output:</strong> false<br><strong>Explanation:</strong> There are a total of 2 courses to take.<br>To take course 1 you should have finished course 0, and to take course 0 you should also have finished course 1. So it is impossible.<br></pre><br><br><strong>Constraints:</strong>
+
+</em>   <code>1 &lt;= numCourses &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code><br><em>   <code>0 &lt;= prerequisites.length &lt;= 5000</code>
+</em>   <code>prerequisites[i].length == 2</code><br><em>   <code>0 &lt;= a&lt;sub&gt;i&lt;/sub&gt;, b&lt;sub&gt;i&lt;/sub&gt; &lt; numCourses</code>
+</em>   All the pairs prerequisites[i] are <strong>unique</strong>.<br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>课程有先修课要求，求是否可以完成所有课程</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>跟LeetCode 210 Course Schedule II几乎一样，此题求可否完成，那题求课程顺序。区别在于return那一句返回bool还是res</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li><h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">canFinish</span><span class="params">(self, numCourses: int, prerequisites: List[List[int]])</span> -&gt; bool:</span></span><br><span class="line">	in_degree = [<span class="number">0</span>] * numCourses</span><br><span class="line">	graph = [[] <span class="keyword">for</span> _ <span class="keyword">in</span> range(numCourses)]</span><br><span class="line">	<span class="keyword">for</span> li <span class="keyword">in</span> prerequisites:</span><br><span class="line">		in_degree[li[<span class="number">0</span>]] += <span class="number">1</span></span><br><span class="line">		graph[li[<span class="number">1</span>]].append(li[<span class="number">0</span>])</span><br><span class="line">	queue = collections.deque([i <span class="keyword">for</span> i <span class="keyword">in</span> range(len(in_degree)) <span class="keyword">if</span> in_degree[i] == <span class="number">0</span>])</span><br><span class="line">	res = []</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.popleft()</span><br><span class="line">		res.append(node)</span><br><span class="line">		<span class="keyword">for</span> neighbor <span class="keyword">in</span> graph[node]:</span><br><span class="line">			in_degree[neighbor] -= <span class="number">1</span></span><br><span class="line">			<span class="keyword">if</span> in_degree[neighbor] == <span class="number">0</span>:</span><br><span class="line">				queue.append(neighbor)</span><br><span class="line">	<span class="keyword">return</span> numCourses == len(res)</span><br></pre></td></tr></table></figure>
+</li>
 </ol>
-<h3><strong>Python代码：</strong></h3>
-<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">canFinish</span><span class="params">(self, numCourses: int, prerequisites: List[List[int]])</span> -&gt; bool:</span></span><br><span class="line">	in_degree = [<span class="number">0</span>] * numCourses</span><br><span class="line">	graph = [[] <span class="keyword">for</span> _ <span class="keyword">in</span> range(numCourses)]</span><br><span class="line">	<span class="keyword">for</span> li <span class="keyword">in</span> prerequisites:</span><br><span class="line">		in_degree[li[<span class="number">0</span>]] += <span class="number">1</span></span><br><span class="line">		graph[li[<span class="number">1</span>]].append(li[<span class="number">0</span>])</span><br><span class="line">	queue = collections.deque([i <span class="keyword">for</span> i <span class="keyword">in</span> range(len(in_degree)) <span class="keyword">if</span> in_degree[i] == <span class="number">0</span>])</span><br><span class="line">	res = []</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.popleft()</span><br><span class="line">		res.append(node)</span><br><span class="line">		<span class="keyword">for</span> neighbor <span class="keyword">in</span> graph[node]:</span><br><span class="line">			in_degree[neighbor] -= <span class="number">1</span></span><br><span class="line">			<span class="keyword">if</span> in_degree[neighbor] == <span class="number">0</span>:</span><br><span class="line">				queue.append(neighbor)</span><br><span class="line">	<span class="keyword">return</span> numCourses == len(res)</span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code></p>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>  </p>
 
       
     </div>
@@ -135,44 +154,18 @@ To take course 1 you should have finished course 0, and to take course 0 you sho
     <div class="entry">
       
         <p><strong><a href="https://leetcode.com/problems/reverse-linked-list/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<p>&lt;div&gt;</p>
-<p>Given the <code>head</code> of a singly linked list, reverse the list, and return <em>the reversed list</em>.</p>
-<p><strong>Example 1:</strong></p>
-<p><img src="https://assets.leetcode.com/uploads/2021/02/19/rev1ex1.jpg" alt=""></p>
-<p>&lt;pre&gt;<strong>Input:</strong> head = [1,2,3,4,5]
-<strong>Output:</strong> [5,4,3,2,1]
-&lt;/pre&gt;</p>
-<p><strong>Example 2:</strong></p>
-<p><img src="https://assets.leetcode.com/uploads/2021/02/19/rev1ex2.jpg" alt=""></p>
-<p>&lt;pre&gt;<strong>Input:</strong> head = [1,2]
-<strong>Output:</strong> [2,1]
-&lt;/pre&gt;</p>
-<p><strong>Example 3:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> head = []
-<strong>Output:</strong> []
-&lt;/pre&gt;</p>
-<p><strong>Constraints:</strong></p>
-<ul>
-<li>The number of nodes in the list is the range <code>[0, 5000]</code>.</li>
-<li><code>-5000 &lt;= Node.val &lt;= 5000</code></li>
-</ul>
-<p><strong>Follow up:</strong> A linked list can be reversed either iteratively or recursively. Could you implement both?</p>
-<p>&lt;/div&gt;</p>
-<h3><strong>题目大意：</strong></h3>
-<p>反转LL</p>
-<h3><strong>解题思路：</strong></h3>
-<p>简单题，但是经典题。循环体为，左方一个单独节点，右方为一个LL，将LL的首节点指向单独节点</p>
-<h3><strong>解题步骤：</strong></h3>
-<p>N/A</p>
-<h3><strong>注意事项：</strong></h3>
-<ol>
+<div><br><br>Given the <code>head</code> of a singly linked list, reverse the list, and return <em>the reversed list</em>.<br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/02/19/rev1ex1.jpg" alt=""><br><br><pre><strong>Input:</strong> head = [1,2,3,4,5]<br><strong>Output:</strong> [5,4,3,2,1]<br></pre><br><br><strong>Example 2:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/02/19/rev1ex2.jpg" alt=""><br><br><pre><strong>Input:</strong> head = [1,2]<br><strong>Output:</strong> [2,1]<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> head = []<br><strong>Output:</strong> []<br></pre><br><br><strong>Constraints:</strong><br><br><em>   The number of nodes in the list is the range <code>[0, 5000]</code>.
+</em>   <code>-5000 &lt;= Node.val &lt;= 5000</code><br><br><strong>Follow up:</strong> A linked list can be reversed either iteratively or recursively. Could you implement both?<br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>反转LL</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>简单题，但是经典题。循环体为，左方一个单独节点，右方为一个LL，将LL的首节点指向单独节点</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
 <li>循环体为，左方一个单独节点，右方为一个LL。所以首节点next要赋None</li>
 <li>空节点的处理</li>
 </ol>
-<h3><strong>Python代码：</strong></h3>
-<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">reverseList</span><span class="params">(self, head: ListNode)</span> -&gt; ListNode:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> head:</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">None</span></span><br><span class="line">	it, it_next = head, head.next</span><br><span class="line">	it.next = <span class="keyword">None</span> <span class="comment"># remember</span></span><br><span class="line">	<span class="keyword">while</span> it <span class="keyword">and</span> it_next:</span><br><span class="line">		tmp = it_next.next</span><br><span class="line">		it_next.next = it</span><br><span class="line">		it, it_next = it_next, tmp</span><br><span class="line">	<span class="keyword">return</span> it</span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code></p>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">reverseList</span><span class="params">(self, head: ListNode)</span> -&gt; ListNode:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> head:</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">None</span></span><br><span class="line">	it, it_next = head, head.next</span><br><span class="line">	it.next = <span class="keyword">None</span> <span class="comment"># remember</span></span><br><span class="line">	<span class="keyword">while</span> it <span class="keyword">and</span> it_next:</span><br><span class="line">		tmp = it_next.next</span><br><span class="line">		it_next.next = it</span><br><span class="line">		it, it_next = it_next, tmp</span><br><span class="line">	<span class="keyword">return</span> it</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
 
       
     </div>
@@ -204,42 +197,18 @@ To take course 1 you should have finished course 0, and to take course 0 you sho
     <div class="entry">
       
         <p><strong><a href="https://leetcode.com/problems/count-primes/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<p>&lt;div&gt;</p>
-<p>Given an integer <code>n</code>, return <em>the number of prime numbers that are strictly less than</em> <code>n</code>.</p>
-<p><strong>Example 1:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> n = 10
-<strong>Output:</strong> 4
-<strong>Explanation:</strong> There are 4 prime numbers less than 10, they are 2, 3, 5, 7.
-&lt;/pre&gt;</p>
-<p><strong>Example 2:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> n = 0
-<strong>Output:</strong> 0
-&lt;/pre&gt;</p>
-<p><strong>Example 3:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> n = 1
-<strong>Output:</strong> 0
-&lt;/pre&gt;</p>
-<p><strong>Constraints:</strong></p>
-<ul>
-<li><code>0 &lt;= n &lt;= 5 * 10&lt;sup&gt;6&lt;/sup&gt;</code></li>
-</ul>
-<p>&lt;/div&gt;</p>
-<h3><strong>题目大意：</strong></h3>
-<p>求n内的素数个数</p>
-<h3><strong>解题思路：</strong></h3>
-<p>排除法：知道一个素数后删除它的倍数，剩下的就是下一个素数</p>
-<h3><strong>解题步骤：</strong></h3>
-<p>N/A</p>
-<h3><strong>注意事项：</strong></h3>
-<ol>
+<div><br><br>Given an integer <code>n</code>, return <em>the number of prime numbers that are strictly less than</em> <code>n</code>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> n = 10<br><strong>Output:</strong> 4<br><strong>Explanation:</strong> There are 4 prime numbers less than 10, they are 2, 3, 5, 7.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> n = 0<br><strong>Output:</strong> 0<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> n = 1<br><strong>Output:</strong> 0<br></pre><br><br><strong>Constraints:</strong><br><br><em>   `0 &lt;= n &lt;= 5 </em> 10<sup>6</sup>`<br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求n内的素数个数</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>排除法：知道一个素数后删除它的倍数，剩下的就是下一个素数</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
 <li>开一个prime大小数组，初始值为True表示是素数。</li>
 <li>素数不包括n</li>
 <li>提高效率：i遍历到n开方+1，删除的数不能超过n(一开始写没有break导致TLE), 最后用sum统计比for循环效率高点</li>
 </ol>
-<h3><strong>Python代码：</strong></h3>
-<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">countPrimes</span><span class="params">(self, n: int)</span> -&gt; int:</span></span><br><span class="line">	<span class="keyword">if</span> n &lt; <span class="number">2</span>:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">	primes = [<span class="keyword">True</span>] * n <span class="comment"># remember less than n</span></span><br><span class="line">	primes[<span class="number">0</span>] = primes[<span class="number">1</span>] = <span class="keyword">False</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">2</span>, int(math.sqrt(n)) + <span class="number">1</span>):</span><br><span class="line">		<span class="keyword">if</span> primes[i]:</span><br><span class="line">			<span class="keyword">for</span> j <span class="keyword">in</span> range(i * <span class="number">2</span>, n, i): <span class="comment"># starting from i rather than 2</span></span><br><span class="line">				primes[j] = <span class="keyword">False</span></span><br><span class="line">	<span class="keyword">return</span> sum(primes)</span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code></p>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">countPrimes</span><span class="params">(self, n: int)</span> -&gt; int:</span></span><br><span class="line">	<span class="keyword">if</span> n &lt; <span class="number">2</span>:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">	primes = [<span class="keyword">True</span>] * n <span class="comment"># remember less than n</span></span><br><span class="line">	primes[<span class="number">0</span>] = primes[<span class="number">1</span>] = <span class="keyword">False</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">2</span>, int(math.sqrt(n)) + <span class="number">1</span>):</span><br><span class="line">		<span class="keyword">if</span> primes[i]:</span><br><span class="line">			<span class="keyword">for</span> j <span class="keyword">in</span> range(i * <span class="number">2</span>, n, i): <span class="comment"># starting from i rather than 2</span></span><br><span class="line">				primes[j] = <span class="keyword">False</span></span><br><span class="line">	<span class="keyword">return</span> sum(primes)</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>  </p>
 
       
     </div>
@@ -271,114 +240,17 @@ To take course 1 you should have finished course 0, and to take course 0 you sho
     <div class="entry">
       
         <p><strong><a href="https://leetcode.com/problems/number-of-1-bits/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<p>&lt;div&gt;</p>
-<p>Write a function that takes an unsigned integer and returns the number of '1' bits it has (also known as the <a href="http://en.wikipedia.org/wiki/Hamming_weight" target="_blank" rel="noopener">Hamming weight</a>).</p>
-<p><strong>Note:</strong></p>
-<ul>
-<li>Note that in some languages, such as Java, there is no unsigned integer type. In this case, the input will be given as a signed integer type. It should not affect your implementation, as the integer's internal binary representation is the same, whether it is signed or unsigned.</li>
-<li>In Java, the compiler represents the signed integers using <a href="https://en.wikipedia.org/wiki/Two%27s_complement" target="_blank" rel="noopener">2's complement notation</a>. Therefore, in <strong>Example 3</strong>, the input represents the signed integer. <code>-3</code>.</li>
-</ul>
-<p><strong>Example 1:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> n = 00000000000000000000000000001011
-<strong>Output:</strong> 3
-<strong>Explanation:</strong> The input binary string <strong>00000000000000000000000000001011</strong> has a total of three '1' bits.
-&lt;/pre&gt;</p>
-<p><strong>Example 2:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> n = 00000000000000000000000010000000
-<strong>Output:</strong> 1
-<strong>Explanation:</strong> The input binary string <strong>00000000000000000000000010000000</strong> has a total of one '1' bit.
-&lt;/pre&gt;</p>
-<p><strong>Example 3:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> n = 11111111111111111111111111111101
-<strong>Output:</strong> 31
-<strong>Explanation:</strong> The input binary string <strong>11111111111111111111111111111101</strong> has a total of thirty one '1' bits.
-&lt;/pre&gt;</p>
-<p><strong>Constraints:</strong></p>
-<ul>
-<li>The input must be a <strong>binary string</strong> of length <code>32</code>.</li>
-</ul>
-<p><strong>Follow up:</strong> If this function is called many times, how would you optimize it?&lt;/div&gt;</p>
-<h3><strong>题目大意：</strong></h3>
-<p>求二进制上1的个数</p>
-<h3><strong>解题思路：</strong></h3>
-<p>用n &amp; n - 1来去掉最左的1</p>
-<h3><strong>解题步骤：</strong></h3>
-<p>N/A</p>
-<h3><strong>注意事项：</strong></h3>
-<ol>
+<div><br><br>Write a function that takes an unsigned integer and returns the number of ‘1’ bits it has (also known as the <a href="http://en.wikipedia.org/wiki/Hamming_weight" target="_blank" rel="noopener">Hamming weight</a>).<br><br><strong>Note:</strong><br><br><em>   Note that in some languages, such as Java, there is no unsigned integer type. In this case, the input will be given as a signed integer type. It should not affect your implementation, as the integer’s internal binary representation is the same, whether it is signed or unsigned.
+</em>   In Java, the compiler represents the signed integers using <a href="https://en.wikipedia.org/wiki/Two%27s_complement" target="_blank" rel="noopener">2’s complement notation</a>. Therefore, in <strong>Example 3</strong>, the input represents the signed integer. <code>-3</code>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> n = 00000000000000000000000000001011<br><strong>Output:</strong> 3<br><strong>Explanation:</strong> The input binary string <strong>00000000000000000000000000001011</strong> has a total of three ‘1’ bits.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> n = 00000000000000000000000010000000<br><strong>Output:</strong> 1<br><strong>Explanation:</strong> The input binary string <strong>00000000000000000000000010000000</strong> has a total of one ‘1’ bit.<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> n = 11111111111111111111111111111101<br><strong>Output:</strong> 31<br><strong>Explanation:</strong> The input binary string <strong>11111111111111111111111111111101</strong> has a total of thirty one ‘1’ bits.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   The input must be a <strong>binary string</strong> of length <code>32</code>.<br><br><em>*Follow up:</em></em> If this function is called many times, how would you optimize it?</div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求二进制上1的个数</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>用n &amp; n - 1来去掉最左的1</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
 <li><strong>用n &amp; n - 1来去掉最左的1</strong></li>
 </ol>
-<h3><strong>Python代码：</strong></h3>
-<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hammingWeight</span><span class="params">(self, n: int)</span> -&gt; int:</span></span><br><span class="line">	count = <span class="number">0</span></span><br><span class="line">	<span class="keyword">while</span> n:</span><br><span class="line">		n = n &amp; (n - <span class="number">1</span>)</span><br><span class="line">		count += <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> count</span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code></p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2022/01/17/leetcode-199-binary-tree-right-side-view/">LeetCode 199 Binary Tree Right Side View</a></h1>
-  
-
-      
-        <time datetime="2022-01-18T02:48:21.953Z">2022-01-17</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/binary-tree-right-side-view/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<p>&lt;div&gt;</p>
-<p>Given the <code>root</code> of a binary tree, imagine yourself standing on the <strong>right side</strong> of it, return <em>the values of the nodes you can see ordered from top to bottom</em>.</p>
-<p><strong>Example 1:</strong></p>
-<p><img src="https://assets.leetcode.com/uploads/2021/02/14/tree.jpg" alt=""></p>
-<p>&lt;pre&gt;<strong>Input:</strong> root = [1,2,3,null,5,null,4]
-<strong>Output:</strong> [1,3,4]
-&lt;/pre&gt;</p>
-<p><strong>Example 2:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> root = [1,null,3]
-<strong>Output:</strong> [1,3]
-&lt;/pre&gt;</p>
-<p><strong>Example 3:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> root = []
-<strong>Output:</strong> []
-&lt;/pre&gt;</p>
-<p><strong>Constraints:</strong></p>
-<ul>
-<li>The number of nodes in the tree is in the range <code>[0, 100]</code>.</li>
-<li><code>-100 &lt;= Node.val &lt;= 100</code></li>
-</ul>
-<p>&lt;/div&gt;</p>
-<h3><strong>题目大意：</strong></h3>
-<p>二叉树从右看的节点列表。</p>
-<h3><strong>解题思路：</strong></h3>
-<p>BFS按层访问的最后一个</p>
-<h3><strong>解题步骤：</strong></h3>
-<p>N/A</p>
-<h3><strong>注意事项：</strong></h3>
-<ol>
-<li>需要知道最后一个，所以引入i，不能用enumerate，只能用len</li>
-<li>deque([root])不是deque(root)</li>
-</ol>
-<h3><strong>Python代码：</strong></h3>
-<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">rightSideView</span><span class="params">(self, root: TreeNode)</span> -&gt; List[int]:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> root:</span><br><span class="line">		<span class="keyword">return</span> []</span><br><span class="line">	res = []</span><br><span class="line">	queue = collections.deque([root])</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		i, len_q = <span class="number">0</span>, len(queue) <span class="comment"># remember</span></span><br><span class="line">		<span class="keyword">for</span> _ <span class="keyword">in</span> range(len_q):</span><br><span class="line">			node = queue.popleft()</span><br><span class="line">			<span class="keyword">if</span> i == len_q - <span class="number">1</span>:</span><br><span class="line">				res.append(node.val)</span><br><span class="line">			<span class="keyword">if</span> node.left:</span><br><span class="line">				queue.append(node.left)</span><br><span class="line">			<span class="keyword">if</span> node.right:</span><br><span class="line">				queue.append(node.right)</span><br><span class="line">			i += <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code></p>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hammingWeight</span><span class="params">(self, n: int)</span> -&gt; int:</span></span><br><span class="line">	count = <span class="number">0</span></span><br><span class="line">	<span class="keyword">while</span> n:</span><br><span class="line">		n = n &amp; (n - <span class="number">1</span>)</span><br><span class="line">		count += <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> count</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
 
       
     </div>
@@ -419,6 +291,10 @@ To take course 1 you should have finished course 0, and to take course 0 you sho
   <ul class="entry">
     
       <li>
+        <a href="/2022/01/30/leetcode-518-coin-change-2/">LeetCode 518 Coin Change 2</a>
+      </li>
+    
+      <li>
         <a href="/2022/01/29/leetcode-259-3sum-smaller/">LeetCode 259 3Sum Smaller</a>
       </li>
     
@@ -434,10 +310,6 @@ To take course 1 you should have finished course 0, and to take course 0 you sho
         <a href="/2022/01/27/leetcode-399-evaluate-division/">LeetCode 399 Evaluate Division</a>
       </li>
     
-      <li>
-        <a href="/2022/01/27/leetcode-384-shuffle-an-array/">LeetCode 384 Shuffle an Array</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -448,7 +320,7 @@ To take course 1 you should have finished course 0, and to take course 0 you sho
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 13.91px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.48px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 16.96px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 13.48px;">Binary Tree</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10.43px;">Bit Manipulation</a> <a href="/tags/Bloomberg/" style="font-size: 10.43px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.83px;">Breadth-first Search</a> <a href="/tags/Citadel/" style="font-size: 10.43px;">Citadel</a> <a href="/tags/Classic/" style="font-size: 19.13px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 14.78px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.3px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.3px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 10.43px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.57px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 19.13px;">Facebook</a> <a href="/tags/Google/" style="font-size: 11.74px;">Google</a> <a href="/tags/Graph/" style="font-size: 12.17px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.17px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.96px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 13.48px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 13.04px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.3px;">Iterator</a> <a href="/tags/Knowledge-Base/" style="font-size: 16.96px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 15.65px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.61px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 18.26px;">Math</a> <a href="/tags/Matrix/" style="font-size: 16.09px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.3px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.87px;">Merge Sort</a> <a href="/tags/Microsoft/" style="font-size: 10px;">Microsoft</a> <a href="/tags/Mtrix/" style="font-size: 10px;">Mtrix</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 16.52px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.87px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.43px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10.87px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.3px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.43px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 17.39px;">Stack</a> <a href="/tags/String/" style="font-size: 18.7px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.3px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 15.22px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.3px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.35px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.43px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.43px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
+    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 13.91px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.48px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 16.96px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 13.48px;">Binary Tree</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10.43px;">Bit Manipulation</a> <a href="/tags/Bloomberg/" style="font-size: 10.43px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.83px;">Breadth-first Search</a> <a href="/tags/Citadel/" style="font-size: 10.87px;">Citadel</a> <a href="/tags/Classic/" style="font-size: 19.13px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 14.78px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.3px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.3px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 10.43px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.57px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 19.13px;">Facebook</a> <a href="/tags/Google/" style="font-size: 11.74px;">Google</a> <a href="/tags/Graph/" style="font-size: 12.17px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.17px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.96px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 13.48px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 13.04px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.3px;">Iterator</a> <a href="/tags/Knowledge-Base/" style="font-size: 16.96px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 15.65px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.61px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 18.26px;">Math</a> <a href="/tags/Matrix/" style="font-size: 16.09px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.3px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.87px;">Merge Sort</a> <a href="/tags/Microsoft/" style="font-size: 10px;">Microsoft</a> <a href="/tags/Mtrix/" style="font-size: 10px;">Mtrix</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 16.52px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.87px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.43px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10.87px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.3px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.43px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 17.39px;">Stack</a> <a href="/tags/String/" style="font-size: 18.7px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.3px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 15.22px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.3px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.35px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.43px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.43px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
   </div>
 </div>
 

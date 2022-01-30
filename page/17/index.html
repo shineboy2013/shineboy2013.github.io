@@ -53,6 +53,55 @@
     <header>
       
   
+    <h1 class="title"><a href="/2022/01/04/lee-074/">LeetCode 074 Search a 2D Matrix</a></h1>
+  
+
+      
+        <time datetime="2022-01-04T09:27:06.283Z">2022-01-04</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/search-a-2d-matrix/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>Write an efficient algorithm that searches for a value in an <code>m x n</code> matrix. This matrix has the following properties:<br><br><em>   Integers in each row are sorted from left to right.
+</em>   The first integer of each row is greater than the last integer of the previous row.<br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2020/10/05/mat.jpg" alt=""><br><br><pre><strong>Input:</strong> matrix = [[1,3,5,7],[10,11,16,20],[23,30,34,60]], target = 3<br><strong>Output:</strong> true<br></pre><br><br><strong>Example 2:</strong><br><br><img src="https://assets.leetcode.com/uploads/2020/10/05/mat2.jpg" alt=""><br><br><pre><strong>Input:</strong> matrix = [[1,3,5,7],[10,11,16,20],[23,30,34,60]], target = 13<br><strong>Output:</strong> false<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>m == matrix.length</code>
+</em>   <code>n == matrix[i].length</code><br><em>   <code>1 &lt;= m, n &lt;= 100</code>
+</em>   <code>-10&lt;sup&gt;4&lt;/sup&gt; &lt;= matrix[i][j], target &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code><br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>矩阵中每一行有序，下一行的首元素大于上一行的尾元素。求target是否在矩阵中</p>
+<h3 id="列-行搜索解题思路："><a href="#列-行搜索解题思路：" class="headerlink" title="列+行搜索解题思路："></a><strong>列+行搜索解题思路：</strong></h3><p>先对列做二分搜索，再对行</p>
+<p>LeetCode 074 Search a 2D Matrix 每一行有序，下一行的首元素大于上一行的尾元素 + 找target<br>LeetCode 240 Search a 2D Matrix II 按行按列有序 + 找target<br>LeetCode 378 Kth Smallest Element in a Sorted Matrix 按行按列有序 + 找第k大<br>矩阵结构方面，第一道每一行都是独立，所以可以独立地按行按列做二分法<br>后两道，矩阵二维连续，所以解法都是类BFS，从某个点开始，然后比较它相邻的两个点。出发点不同，第二道在近似矩阵中点(右上角或左下角)，第三道在左上角出发。</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li><h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">searchMatrix</span><span class="params">(self, matrix: List[List[int]], target: int)</span> -&gt; bool:</span></span><br><span class="line">	col = [matrix[i][<span class="number">0</span>] <span class="keyword">for</span> i <span class="keyword">in</span> range(len(matrix))]</span><br><span class="line">	row_idx = bisect.bisect(col, target) - <span class="number">1</span></span><br><span class="line">	<span class="keyword">if</span> row_idx &lt; <span class="number">0</span> <span class="keyword">or</span> row_idx &gt;= len(matrix):</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">	<span class="keyword">if</span> matrix[row_idx][<span class="number">0</span>] == target:</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line">	col_idx = bisect.bisect(matrix[row_idx], target) - <span class="number">1</span></span><br><span class="line">	<span class="keyword">if</span> col_idx &lt; <span class="number">0</span> <span class="keyword">or</span> col_idx &gt;= len(matrix[<span class="number">0</span>]):</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">True</span> <span class="keyword">if</span> matrix[row_idx][col_idx] == target <span class="keyword">else</span> <span class="keyword">False</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(logn + logm)</code>，空间复杂度<code>O(n)</code>, 可以写一个二分法来做列搜索，这样空间为常量。  </p>
+<hr>
+<h3 id="全矩阵搜索算法II解题思路："><a href="#全矩阵搜索算法II解题思路：" class="headerlink" title="全矩阵搜索算法II解题思路："></a><strong>全矩阵搜索算法II解题思路：</strong></h3><p>对矩阵的左上，右下元素作为start, end得到mid转化成(i, j)找到矩阵位置。</p>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">searchMatrix</span><span class="params">(<span class="keyword">int</span>[][] matrix, <span class="keyword">int</span> target)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (matrix.length==<span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	<span class="keyword">int</span> lo = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> hi = matrix.length*matrix[<span class="number">0</span>].length - <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">while</span> (lo &lt;= hi) &#123;</span><br><span class="line">		<span class="comment">// Key is in a[lo..hi] or not present.</span></span><br><span class="line">		<span class="keyword">int</span> mid = lo + (hi - lo) / <span class="number">2</span>;</span><br><span class="line">		<span class="keyword">int</span> x = mid/matrix[<span class="number">0</span>].length;</span><br><span class="line">		<span class="keyword">int</span> y = mid%matrix[<span class="number">0</span>].length;</span><br><span class="line">		<span class="keyword">if</span> (target &lt; matrix[x][y])</span><br><span class="line">			hi = mid - <span class="number">1</span>;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (target &gt; matrix[x][y])</span><br><span class="line">			lo = mid + <span class="number">1</span>;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(logn + logm)</code>，空间复杂度<code>O(1)</code>。  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2022/01/04/lee-008/">LeetCode 008 String to Integer (atoi)</a></h1>
   
 
@@ -63,85 +112,22 @@
     <div class="entry">
       
         <p><strong><a href="https://leetcode.com/problems/string-to-integer-atoi/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<p>&lt;div&gt;</p>
-<p>Implement the <code>myAtoi(string s)</code> function, which converts a string to a 32-bit signed integer (similar to C/C++'s <code>atoi</code> function).</p>
-<p>The algorithm for <code>myAtoi(string s)</code> is as follows:</p>
-<ol>
-<li>Read in and ignore any leading whitespace.</li>
-<li>Check if the next character (if not already at the end of the string) is <code>'-'</code> or <code>'+'</code>. Read this character in if it is either. This determines if the final result is negative or positive respectively. Assume the result is positive if neither is present.</li>
-<li>Read in next the characters until the next non-digit character or the end of the input is reached. The rest of the string is ignored.</li>
-<li>Convert these digits into an integer (i.e. <code>&quot;123&quot; -&gt; 123</code>, <code>&quot;0032&quot; -&gt; 32</code>). If no digits were read, then the integer is <code>0</code>. Change the sign as necessary (from step 2).</li>
-<li>If the integer is out of the 32-bit signed integer range <code>[-2&lt;sup&gt;31&lt;/sup&gt;, 2&lt;sup&gt;31&lt;/sup&gt; - 1]</code>, then clamp the integer so that it remains in the range. Specifically, integers less than <code>-2&lt;sup&gt;31&lt;/sup&gt;</code> should be clamped to <code>-2&lt;sup&gt;31&lt;/sup&gt;</code>, and integers greater than <code>2&lt;sup&gt;31&lt;/sup&gt; - 1</code> should be clamped to <code>2&lt;sup&gt;31&lt;/sup&gt; - 1</code>.</li>
-<li>Return the integer as the final result.</li>
-</ol>
-<p><strong>Note:</strong></p>
-<ul>
-<li>Only the space character <code>' '</code> is considered a whitespace character.</li>
-<li><strong>Do not ignore</strong> any characters other than the leading whitespace or the rest of the string after the digits.</li>
-</ul>
-<p><strong>Example 1:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> s = &quot;42&quot;
-<strong>Output:</strong> 42
-<strong>Explanation:</strong> The underlined characters are what is read in, the caret is the current reader position.
-Step 1: &quot;42&quot; (no characters read because there is no leading whitespace)
-^
-Step 2: &quot;42&quot; (no characters read because there is neither a '-' nor '+')
-^
-Step 3: &quot;&lt;u&gt;42&lt;/u&gt;&quot; (&quot;42&quot; is read in)
-^
-The parsed integer is 42.
-Since 42 is in the range [-2&lt;sup&gt;31&lt;/sup&gt;, 2&lt;sup&gt;31&lt;/sup&gt; - 1], the final result is 42.
-&lt;/pre&gt;</p>
-<p><strong>Example 2:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> s = &quot;   -42&quot;
-<strong>Output:</strong> -42
-<strong>Explanation:</strong>
-Step 1: &quot;-42&quot; (leading whitespace is read and ignored)
-^
-Step 2: &quot;   &lt;u&gt;-&lt;/u&gt;42&quot; ('-' is read, so the result should be negative)
-^
-Step 3: &quot;   -&lt;u&gt;42&lt;/u&gt;&quot; (&quot;42&quot; is read in)
-^
-The parsed integer is -42.
-Since -42 is in the range [-2&lt;sup&gt;31&lt;/sup&gt;, 2&lt;sup&gt;31&lt;/sup&gt; - 1], the final result is -42.
-&lt;/pre&gt;</p>
-<p><strong>Example 3:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> s = &quot;4193 with words&quot;
-<strong>Output:</strong> 4193
-<strong>Explanation:</strong>
-Step 1: &quot;4193 with words&quot; (no characters read because there is no leading whitespace)
-^
-Step 2: &quot;4193 with words&quot; (no characters read because there is neither a '-' nor '+')
-^
-Step 3: &quot;&lt;u&gt;4193&lt;/u&gt; with words&quot; (&quot;4193&quot; is read in; reading stops because the next character is a non-digit)
-^
-The parsed integer is 4193.
-Since 4193 is in the range [-2&lt;sup&gt;31&lt;/sup&gt;, 2&lt;sup&gt;31&lt;/sup&gt; - 1], the final result is 4193.
-&lt;/pre&gt;</p>
-<p><strong>Constraints:</strong></p>
-<ul>
-<li><code>0 &lt;= s.length &lt;= 200</code></li>
-<li><code>s</code> consists of English letters (lower-case and upper-case), digits (<code>0-9</code>), <code>' '</code>, <code>'+'</code>, <code>'-'</code>, and <code>'.'</code>.</li>
-</ul>
-<p>&lt;/div&gt;</p>
-<h3><strong>题目大意：</strong></h3>
-<p>字符串转整数</p>
-<h3><strong>解题思路：</strong></h3>
-<p>关键是第一位是否符号的判断，之后是ord函数的运用</p>
-<h3><strong>解题步骤：</strong></h3>
-<p>N/A</p>
-<h3><strong>注意事项：</strong></h3>
-<ol>
+<div><br><br>Implement the <code>myAtoi(string s)</code> function, which converts a string to a 32-bit signed integer (similar to C/C++’s <code>atoi</code> function).<br><br>The algorithm for <code>myAtoi(string s)</code> is as follows:<br><br>1.  Read in and ignore any leading whitespace.<br>2.  Check if the next character (if not already at the end of the string) is <code>&#39;-&#39;</code> or <code>&#39;+&#39;</code>. Read this character in if it is either. This determines if the final result is negative or positive respectively. Assume the result is positive if neither is present.<br>3.  Read in next the characters until the next non-digit character or the end of the input is reached. The rest of the string is ignored.<br>4.  Convert these digits into an integer (i.e. <code>&quot;123&quot; -&gt; 123</code>, <code>&quot;0032&quot; -&gt; 32</code>). If no digits were read, then the integer is <code>0</code>. Change the sign as necessary (from step 2).<br>5.  If the integer is out of the 32-bit signed integer range <code>[-2&lt;sup&gt;31&lt;/sup&gt;, 2&lt;sup&gt;31&lt;/sup&gt; - 1]</code>, then clamp the integer so that it remains in the range. Specifically, integers less than <code>-2&lt;sup&gt;31&lt;/sup&gt;</code> should be clamped to <code>-2&lt;sup&gt;31&lt;/sup&gt;</code>, and integers greater than <code>2&lt;sup&gt;31&lt;/sup&gt; - 1</code> should be clamped to <code>2&lt;sup&gt;31&lt;/sup&gt; - 1</code>.<br>6.  Return the integer as the final result.<br><br><strong>Note:</strong><br><br><em>   Only the space character <code>&#39; &#39;</code> is considered a whitespace character.
+</em>   <strong>Do not ignore</strong> any characters other than the leading whitespace or the rest of the string after the digits.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> s = “42”<br><strong>Output:</strong> 42<br><strong>Explanation:</strong> The underlined characters are what is read in, the caret is the current reader position.<br>Step 1: “42” (no characters read because there is no leading whitespace)<br>         ^<br>Step 2: “42” (no characters read because there is neither a ‘-‘ nor ‘+’)<br>         ^<br>Step 3: “<u>42</u>“ (“42” is read in)<br>           ^<br>The parsed integer is 42.<br>Since 42 is in the range [-2<sup>31</sup>, 2<sup>31</sup> - 1], the final result is 42.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> s = “   -42”<br><strong>Output:</strong> -42<br><strong>Explanation:</strong><br>Step 1: “-42” (leading whitespace is read and ignored)<br>            ^<br>Step 2: “   <u>-</u>42” (‘-‘ is read, so the result should be negative)<br>             ^<br>Step 3: “   -<u>42</u>“ (“42” is read in)<br>               ^<br>The parsed integer is -42.<br>Since -42 is in the range [-2<sup>31</sup>, 2<sup>31</sup> - 1], the final result is -42.<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> s = “4193 with words”<br><strong>Output:</strong> 4193<br><strong>Explanation:</strong><br>Step 1: “4193 with words” (no characters read because there is no leading whitespace)<br>         ^<br>Step 2: “4193 with words” (no characters read because there is neither a ‘-‘ nor ‘+’)<br>         ^<br>Step 3: “<u>4193</u> with words” (“4193” is read in; reading stops because the next character is a non-digit)<br>             ^<br>The parsed integer is 4193.<br>Since 4193 is in the range [-2<sup>31</sup>, 2<sup>31</sup> - 1], the final result is 4193.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>0 &lt;= s.length &lt;= 200</code>
+</em>   <code>s</code> consists of English letters (lower-case and upper-case), digits (<code>0-9</code>), <code>&#39; &#39;</code>, <code>&#39;+&#39;</code>, <code>&#39;-&#39;</code>, and <code>&#39;.&#39;</code>.<br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>字符串转整数</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>关键是第一位是否符号的判断，之后是ord函数的运用</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
 <li>空字符或全空格返回0</li>
 <li>[key]<strong>若有符号只能第一位是符号</strong>，连续是符号不合法返回0，如-+12, <strong>将符号处理放在循环外</strong></li>
 <li>除符号外，若第一位为非数字，不合法，返回0</li>
 <li>循环内，若出现非数字，跳出循环</li>
 <li>计算符号，然后检查数字范围</li>
 </ol>
-<h3><strong>Python代码：</strong></h3>
-<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">myAtoi</span><span class="params">(self, s: str)</span> -&gt; int:</span></span><br><span class="line">	s = s.strip()</span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> s:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">	sign = <span class="number">1</span></span><br><span class="line">	<span class="keyword">if</span> s[<span class="number">0</span>] == <span class="string">'-'</span>:</span><br><span class="line">		sign = <span class="number">-1</span></span><br><span class="line">		s = s[<span class="number">1</span>:]</span><br><span class="line">	<span class="keyword">elif</span> s[<span class="number">0</span>] == <span class="string">'+'</span>:</span><br><span class="line">		s = s[<span class="number">1</span>:]</span><br><span class="line">	<span class="keyword">if</span> s <span class="keyword">and</span> <span class="keyword">not</span> s[<span class="number">0</span>].isdigit():</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">	res = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> char <span class="keyword">in</span> s:</span><br><span class="line">		<span class="keyword">if</span> char.isdigit():</span><br><span class="line">			res = res * <span class="number">10</span> + ord(char) - ord(<span class="string">'0'</span>)</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">	res *= sign</span><br><span class="line">	<span class="keyword">if</span> res &lt; -pow(<span class="number">2</span>, <span class="number">31</span>):</span><br><span class="line">		<span class="keyword">return</span> -pow(<span class="number">2</span>, <span class="number">31</span>)</span><br><span class="line">	<span class="keyword">if</span> res &gt; pow(<span class="number">2</span>, <span class="number">31</span>) - <span class="number">1</span>:</span><br><span class="line">		<span class="keyword">return</span> pow(<span class="number">2</span>, <span class="number">31</span>) - <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code></p>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">myAtoi</span><span class="params">(self, s: str)</span> -&gt; int:</span></span><br><span class="line">	s = s.strip()</span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> s:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">	sign = <span class="number">1</span></span><br><span class="line">	<span class="keyword">if</span> s[<span class="number">0</span>] == <span class="string">'-'</span>:</span><br><span class="line">		sign = <span class="number">-1</span></span><br><span class="line">		s = s[<span class="number">1</span>:]</span><br><span class="line">	<span class="keyword">elif</span> s[<span class="number">0</span>] == <span class="string">'+'</span>:</span><br><span class="line">		s = s[<span class="number">1</span>:]</span><br><span class="line">	<span class="keyword">if</span> s <span class="keyword">and</span> <span class="keyword">not</span> s[<span class="number">0</span>].isdigit():</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">	res = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> char <span class="keyword">in</span> s:</span><br><span class="line">		<span class="keyword">if</span> char.isdigit():</span><br><span class="line">			res = res * <span class="number">10</span> + ord(char) - ord(<span class="string">'0'</span>)</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">	res *= sign</span><br><span class="line">	<span class="keyword">if</span> res &lt; -pow(<span class="number">2</span>, <span class="number">31</span>):</span><br><span class="line">		<span class="keyword">return</span> -pow(<span class="number">2</span>, <span class="number">31</span>)</span><br><span class="line">	<span class="keyword">if</span> res &gt; pow(<span class="number">2</span>, <span class="number">31</span>) - <span class="number">1</span>:</span><br><span class="line">		<span class="keyword">return</span> pow(<span class="number">2</span>, <span class="number">31</span>) - <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
 
       
     </div>
@@ -173,40 +159,17 @@ Since 4193 is in the range [-2&lt;sup&gt;31&lt;/sup&gt;, 2&lt;sup&gt;31&lt;/sup&
     <div class="entry">
       
         <p><strong><a href="https://leetcode.com/problems/3sum-closest/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<p>&lt;div&gt;</p>
-<p>Given an integer array <code>nums</code> of length <code>n</code> and an integer <code>target</code>, find three integers in <code>nums</code> such that the sum is closest to <code>target</code>.</p>
-<p>Return <em>the sum of the three integers</em>.</p>
-<p>You may assume that each input would have exactly one solution.</p>
-<p><strong>Example 1:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> nums = [-1,2,1,-4], target = 1
-<strong>Output:</strong> 2
-<strong>Explanation:</strong> The sum that is closest to the target is 2. (-1 + 2 + 1 = 2).
-&lt;/pre&gt;</p>
-<p><strong>Example 2:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> nums = [0,0,0], target = 1
-<strong>Output:</strong> 0
-&lt;/pre&gt;</p>
-<p><strong>Constraints:</strong></p>
-<ul>
-<li><code>3 &lt;= nums.length &lt;= 1000</code></li>
-<li><code>-1000 &lt;= nums[i] &lt;= 1000</code></li>
-<li><code>-10&lt;sup&gt;4&lt;/sup&gt; &lt;= target &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code></li>
-</ul>
-<p>&lt;/div&gt;</p>
-<h3><strong>题目大意：</strong></h3>
-<p>三数和最接近target</p>
-<h3><strong>解题思路：</strong></h3>
-<p>N/A</p>
-<h3><strong>解题步骤：</strong></h3>
-<p>N/A</p>
-<h3><strong>注意事项：</strong></h3>
-<ol>
-<li>此题不需去重，若等于target可直接返回</li>
+<div><br><br>Given an integer array <code>nums</code> of length <code>n</code> and an integer <code>target</code>, find three integers in <code>nums</code> such that the sum is closest to <code>target</code>.<br><br>Return <em>the sum of the three integers</em>.<br><br>You may assume that each input would have exactly one solution.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> nums = [-1,2,1,-4], target = 1<br><strong>Output:</strong> 2<br><strong>Explanation:</strong> The sum that is closest to the target is 2. (-1 + 2 + 1 = 2).<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> nums = [0,0,0], target = 1<br><strong>Output:</strong> 0<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>3 &lt;= nums.length &lt;= 1000</code>
+</em>   <code>-1000 &lt;= nums[i] &lt;= 1000</code><br>*   <code>-10&lt;sup&gt;4&lt;/sup&gt; &lt;= target &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code><br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>三数和最接近target</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>N/A</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>此题不需去重，若等于target可直接返回 </li>
 </ol>
-<h3><strong>Python代码：</strong></h3>
-<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">threeSumClosest</span><span class="params">(self, nums: List[int], target: int)</span> -&gt; int:</span></span><br><span class="line">	nums.sort()</span><br><span class="line">	res = float(<span class="string">'inf'</span>)</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(nums)):</span><br><span class="line">		left, right = i + <span class="number">1</span>, len(nums) - <span class="number">1</span></span><br><span class="line">		<span class="keyword">while</span> left &lt; right:</span><br><span class="line">			temp = nums[i] + nums[left] + nums[right]</span><br><span class="line">			<span class="keyword">if</span> abs(temp - target) &lt; abs(res - target):</span><br><span class="line">				res = temp</span><br><span class="line">			<span class="keyword">if</span> temp &lt; target:</span><br><span class="line">				left += <span class="number">1</span></span><br><span class="line">			<span class="keyword">elif</span> temp &gt; target:</span><br><span class="line">				right -= <span class="number">1</span></span><br><span class="line">			<span class="keyword">else</span>:</span><br><span class="line">				<span class="keyword">return</span> target</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>时间复杂度为&lt;code&gt;O(n&lt;sup&gt;2&lt;/sup&gt;)&lt;/code&gt;，空间复杂度<code>O(1)</code></p>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">threeSumClosest</span><span class="params">(self, nums: List[int], target: int)</span> -&gt; int:</span></span><br><span class="line">	nums.sort()</span><br><span class="line">	res = float(<span class="string">'inf'</span>)</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(nums)):</span><br><span class="line">		left, right = i + <span class="number">1</span>, len(nums) - <span class="number">1</span></span><br><span class="line">		<span class="keyword">while</span> left &lt; right:</span><br><span class="line">			temp = nums[i] + nums[left] + nums[right]</span><br><span class="line">			<span class="keyword">if</span> abs(temp - target) &lt; abs(res - target):</span><br><span class="line">				res = temp</span><br><span class="line">			<span class="keyword">if</span> temp &lt; target:</span><br><span class="line">				left += <span class="number">1</span></span><br><span class="line">			<span class="keyword">elif</span> temp &gt; target:</span><br><span class="line">				right -= <span class="number">1</span></span><br><span class="line">			<span class="keyword">else</span>:</span><br><span class="line">				<span class="keyword">return</span> target</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n<sup>2</sup>)</code>，空间复杂度<code>O(1)</code>  </p>
 
       
     </div>
@@ -238,53 +201,18 @@ Since 4193 is in the range [-2&lt;sup&gt;31&lt;/sup&gt;, 2&lt;sup&gt;31&lt;/sup&
     <div class="entry">
       
         <p><strong><a href="https://leetcode.com/problems/merge-sorted-array/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<p>&lt;div&gt;</p>
-<p>You are given two integer arrays <code>nums1</code> and <code>nums2</code>, sorted in <strong>non-decreasing order</strong>, and two integers <code>m</code> and <code>n</code>, representing the number of elements in <code>nums1</code> and <code>nums2</code> respectively.</p>
-<p><strong>Merge</strong> <code>nums1</code> and <code>nums2</code> into a single array sorted in <strong>non-decreasing order</strong>.</p>
-<p>The final sorted array should not be returned by the function, but instead be <em>stored inside the array</em> <code>nums1</code>. To accommodate this, <code>nums1</code> has a length of <code>m + n</code>, where the first <code>m</code> elements denote the elements that should be merged, and the last <code>n</code> elements are set to <code>0</code> and should be ignored. <code>nums2</code> has a length of <code>n</code>.</p>
-<p><strong>Example 1:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> nums1 = [1,2,3,0,0,0], m = 3, nums2 = [2,5,6], n = 3
-<strong>Output:</strong> [1,2,2,3,5,6]
-<strong>Explanation:</strong> The arrays we are merging are [1,2,3] and [2,5,6].
-The result of the merge is [&lt;u&gt;1&lt;/u&gt;,&lt;u&gt;2&lt;/u&gt;,2,&lt;u&gt;3&lt;/u&gt;,5,6] with the underlined elements coming from nums1.
-&lt;/pre&gt;</p>
-<p><strong>Example 2:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> nums1 = [1], m = 1, nums2 = [], n = 0
-<strong>Output:</strong> [1]
-<strong>Explanation:</strong> The arrays we are merging are [1] and [].
-The result of the merge is [1].
-&lt;/pre&gt;</p>
-<p><strong>Example 3:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> nums1 = [0], m = 0, nums2 = [1], n = 1
-<strong>Output:</strong> [1]
-<strong>Explanation:</strong> The arrays we are merging are [] and [1].
-The result of the merge is [1].
-Note that because m = 0, there are no elements in nums1. The 0 is only there to ensure the merge result can fit in nums1.
-&lt;/pre&gt;</p>
-<p><strong>Constraints:</strong></p>
-<ul>
-<li><code>nums1.length == m + n</code></li>
-<li><code>nums2.length == n</code></li>
-<li><code>0 &lt;= m, n &lt;= 200</code></li>
-<li><code>1 &lt;= m + n &lt;= 200</code></li>
-<li><code>-10&lt;sup&gt;9&lt;/sup&gt; &lt;= nums1[i], nums2[j] &lt;= 10&lt;sup&gt;9&lt;/sup&gt;</code></li>
-</ul>
-<p><strong>Follow up:</strong> Can you come up with an algorithm that runs in <code>O(m + n)</code> time?</p>
-<p>&lt;/div&gt;</p>
-<h3><strong>题目大意：</strong></h3>
-<p>合并两有序数组，最后结果储存在第一个数组</p>
-<h3><strong>解题思路：</strong></h3>
-<p>从后往前合并</p>
-<h3><strong>解题步骤：</strong></h3>
-<p>N/A</p>
-<h3><strong>注意事项：</strong></h3>
-<ol>
+<div><br><br>You are given two integer arrays <code>nums1</code> and <code>nums2</code>, sorted in <strong>non-decreasing order</strong>, and two integers <code>m</code> and <code>n</code>, representing the number of elements in <code>nums1</code> and <code>nums2</code> respectively.<br><br><strong>Merge</strong> <code>nums1</code> and <code>nums2</code> into a single array sorted in <strong>non-decreasing order</strong>.<br><br>The final sorted array should not be returned by the function, but instead be <em>stored inside the array</em> <code>nums1</code>. To accommodate this, <code>nums1</code> has a length of <code>m + n</code>, where the first <code>m</code> elements denote the elements that should be merged, and the last <code>n</code> elements are set to <code>0</code> and should be ignored. <code>nums2</code> has a length of <code>n</code>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> nums1 = [1,2,3,0,0,0], m = 3, nums2 = [2,5,6], n = 3<br><strong>Output:</strong> [1,2,2,3,5,6]<br><strong>Explanation:</strong> The arrays we are merging are [1,2,3] and [2,5,6].<br>The result of the merge is [<u>1</u>,<u>2</u>,2,<u>3</u>,5,6] with the underlined elements coming from nums1.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> nums1 = [1], m = 1, nums2 = [], n = 0<br><strong>Output:</strong> [1]<br><strong>Explanation:</strong> The arrays we are merging are [1] and [].<br>The result of the merge is [1].<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> nums1 = [0], m = 0, nums2 = [1], n = 1<br><strong>Output:</strong> [1]<br><strong>Explanation:</strong> The arrays we are merging are [] and [1].<br>The result of the merge is [1].<br>Note that because m = 0, there are no elements in nums1. The 0 is only there to ensure the merge result can fit in nums1.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>nums1.length == m + n</code>
+</em>   <code>nums2.length == n</code><br><em>   <code>0 &lt;= m, n &lt;= 200</code>
+</em>   <code>1 &lt;= m + n &lt;= 200</code><br><em>   <code>-10&lt;sup&gt;9&lt;/sup&gt; &lt;= nums1[i], nums2[j] &lt;= 10&lt;sup&gt;9&lt;/sup&gt;</code><br><br><em>*Follow up:</em></em> Can you come up with an algorithm that runs in <code>O(m + n)</code> time?<br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>合并两有序数组，最后结果储存在第一个数组</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>从后往前合并</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
 <li>i从m - 1而不是len(nums1) - 1开始，m和n是数组实际长度。</li>
 </ol>
-<h3><strong>Python代码：</strong></h3>
-<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">merge</span><span class="params">(self, nums1: List[int], m: int, nums2: List[int], n: int)</span> -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">	i, j, k = m - <span class="number">1</span>, n - <span class="number">1</span>, len(nums1) - <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> i &gt;= <span class="number">0</span> <span class="keyword">and</span> j &gt;= <span class="number">0</span>:</span><br><span class="line">		<span class="keyword">if</span> nums1[i] &gt; nums2[j]:</span><br><span class="line">			nums1[k] = nums1[i]</span><br><span class="line">			k -= <span class="number">1</span></span><br><span class="line">			i -= <span class="number">1</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			nums1[k] = nums2[j]</span><br><span class="line">			k -= <span class="number">1</span></span><br><span class="line">			j -= <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> i &gt;= <span class="number">0</span>:</span><br><span class="line">		nums1[k] = nums1[i]</span><br><span class="line">		k -= <span class="number">1</span></span><br><span class="line">		i -= <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> j &gt;= <span class="number">0</span>:</span><br><span class="line">		nums1[k] = nums2[j]</span><br><span class="line">		k -= <span class="number">1</span></span><br><span class="line">		j -= <span class="number">1</span></span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>时间复杂度为<code>O(n + m)</code>，空间复杂度<code>O(1)</code></p>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">merge</span><span class="params">(self, nums1: List[int], m: int, nums2: List[int], n: int)</span> -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">	i, j, k = m - <span class="number">1</span>, n - <span class="number">1</span>, len(nums1) - <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> i &gt;= <span class="number">0</span> <span class="keyword">and</span> j &gt;= <span class="number">0</span>:</span><br><span class="line">		<span class="keyword">if</span> nums1[i] &gt; nums2[j]:</span><br><span class="line">			nums1[k] = nums1[i]</span><br><span class="line">			k -= <span class="number">1</span></span><br><span class="line">			i -= <span class="number">1</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			nums1[k] = nums2[j]</span><br><span class="line">			k -= <span class="number">1</span></span><br><span class="line">			j -= <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> i &gt;= <span class="number">0</span>:</span><br><span class="line">		nums1[k] = nums1[i]</span><br><span class="line">		k -= <span class="number">1</span></span><br><span class="line">		i -= <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> j &gt;= <span class="number">0</span>:</span><br><span class="line">		nums1[k] = nums2[j]</span><br><span class="line">		k -= <span class="number">1</span></span><br><span class="line">		j -= <span class="number">1</span></span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n + m)</code>，空间复杂度<code>O(1)</code>  </p>
 
       
     </div>
@@ -316,97 +244,14 @@ Note that because m = 0, there are no elements in nums1. The 0 is only there to 
     <div class="entry">
       
         <p><strong><a href="https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<h3><strong>题目大意：</strong></h3>
-<p>求有序数列中元素等于target的第一个和最后一个下标</p>
-<h3><strong>解题思路：</strong></h3>
-<p>用模板</p>
-<h3><strong>解题步骤：</strong></h3>
-<p>N/A</p>
-<h3><strong>注意事项：</strong></h3>
-<ol>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求有序数列中元素等于target的第一个和最后一个下标</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>用模板</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
 <li>数组为空的情况要返回-1</li>
 </ol>
-<h3><strong>Python代码：</strong></h3>
-<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">searchRange</span><span class="params">(self, nums: List[int], target: int)</span> -&gt; List[int]:</span></span><br><span class="line">	first = self.first_position(nums, target)</span><br><span class="line">	last = self.last_position(nums, target)</span><br><span class="line">	<span class="keyword">return</span> [first, last]</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">last_position</span><span class="params">(self, nums, target)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> nums:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line">	start, end = <span class="number">0</span>, len(nums) - <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> start + <span class="number">1</span> &lt; end:</span><br><span class="line">		mid = start + (end - start) // <span class="number">2</span></span><br><span class="line">		<span class="keyword">if</span> target &lt; nums[mid]:</span><br><span class="line">			end = mid</span><br><span class="line">		<span class="keyword">elif</span> target &gt; nums[mid]:</span><br><span class="line">			start = mid</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			start = mid</span><br><span class="line">	<span class="keyword">if</span> nums[end] == target:</span><br><span class="line">		<span class="keyword">return</span> end</span><br><span class="line">	<span class="keyword">if</span> nums[start] == target:</span><br><span class="line">		<span class="keyword">return</span> start</span><br><span class="line">	<span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">first_position</span><span class="params">(self, nums, target)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> nums:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line">	start, end = <span class="number">0</span>, len(nums) - <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> start + <span class="number">1</span> &lt; end:</span><br><span class="line">		mid = start+ (end - start) // <span class="number">2</span></span><br><span class="line">		<span class="keyword">if</span> target &lt; nums[mid]:</span><br><span class="line">			end = mid</span><br><span class="line">		<span class="keyword">elif</span> target &gt; nums[mid]:</span><br><span class="line">			start = mid</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			end = mid</span><br><span class="line">	<span class="keyword">if</span> nums[start] == target:</span><br><span class="line">		<span class="keyword">return</span> start</span><br><span class="line">	<span class="keyword">if</span> nums[end] == target:</span><br><span class="line">		<span class="keyword">return</span> end</span><br><span class="line">	<span class="keyword">return</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>时间复杂度为<code>O(logn)</code>，空间复杂度<code>O(1)</code></p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2022/01/03/lee-787/">LeetCode 787 Cheapest Flights Within K Stops</a></h1>
-  
-
-      
-        <time datetime="2022-01-04T05:15:53.988Z">2022-01-03</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/cheapest-flights-within-k-stops" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<p>&lt;div&gt;</p>
-<p>There are <code>n</code> cities connected by some number of flights. You are given an array <code>flights</code> where <code>flights[i] = [from&lt;sub&gt;i&lt;/sub&gt;, to&lt;sub&gt;i&lt;/sub&gt;, price&lt;sub&gt;i&lt;/sub&gt;]</code> indicates that there is a flight from city <code>from&lt;sub&gt;i&lt;/sub&gt;</code> to city <code>to&lt;sub&gt;i&lt;/sub&gt;</code> with cost <code>price&lt;sub&gt;i&lt;/sub&gt;</code>.</p>
-<p>You are also given three integers <code>src</code>, <code>dst</code>, and <code>k</code>, return <em><strong>the cheapest price</strong> from</em> <code>src</code> <em>to</em> <code>dst</code> <em>with at most</em> <code>k</code> <em>stops.</em> If there is no such route, return<code>-1</code>.</p>
-<p><strong>Example 1:</strong></p>
-<p><img src="https://s3-lc-upload.s3.amazonaws.com/uploads/2018/02/16/995.png" alt=""></p>
-<p>&lt;pre&gt;<strong>Input:</strong> n = 3, flights = [[0,1,100],[1,2,100],[0,2,500]], src = 0, dst = 2, k = 1
-<strong>Output:</strong> 200
-<strong>Explanation:</strong> The graph is shown.
-The cheapest price from city <code>0</code> to city <code>2</code> with at most 1 stop costs 200, as marked red in the picture.
-&lt;/pre&gt;</p>
-<p><strong>Example 2:</strong></p>
-<p><img src="https://s3-lc-upload.s3.amazonaws.com/uploads/2018/02/16/995.png" alt=""></p>
-<p>&lt;pre&gt;<strong>Input:</strong> n = 3, flights = [[0,1,100],[1,2,100],[0,2,500]], src = 0, dst = 2, k = 0
-<strong>Output:</strong> 500
-<strong>Explanation:</strong> The graph is shown.
-The cheapest price from city <code>0</code> to city <code>2</code> with at most 0 stop costs 500, as marked blue in the picture.
-&lt;/pre&gt;</p>
-<p><strong>Constraints:</strong></p>
-<ul>
-<li><code>1 &lt;= n &lt;= 100</code></li>
-<li><code>0 &lt;= flights.length &lt;= (n * (n - 1) / 2)</code></li>
-<li><code>flights[i].length == 3</code></li>
-<li><code>0 &lt;= from&lt;sub&gt;i&lt;/sub&gt;, to&lt;sub&gt;i&lt;/sub&gt; &lt; n</code></li>
-<li><code>from&lt;sub&gt;i&lt;/sub&gt; != to&lt;sub&gt;i&lt;/sub&gt;</code></li>
-<li><code>1 &lt;= price&lt;sub&gt;i&lt;/sub&gt; &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code></li>
-<li>There will not be any multiple flights between two cities.</li>
-<li><code>0 &lt;= src, dst, k &lt; n</code></li>
-<li><code>src != dst</code></li>
-</ul>
-<p>&lt;/div&gt;</p>
-<h3><strong>题目大意：</strong></h3>
-<p>求只允许停k个站情况下，最便宜机票价格</p>
-<h3><strong>解题思路：</strong></h3>
-<p>BFS + Heap<br>
-这是单源最短路径的典型应用。可以用Dijkstra，机票价格相当于单源最短路径问题中的路径大小。一开始我用BFS，但得到TLE，因为存在循环，导致节点被重复访问(同一路径)。但一个节点的确可以被用不同路径访问。所以引入visited[node] = dis</p>
-<h3><strong>解题步骤：</strong></h3>
-<p>N/A</p>
-<h3><strong>注意事项：</strong></h3>
-<ol>
-<li>node需要被多次访问，所以跟模板不同，visited的检测要放在neighbor循环之外且用node且初始化为空。visited不再是set，它需要记录node离src的距离。一方面用于循环检测，因为如果存在循环，会出现dist &gt;= visited[node]。若该节点的当前距离小于之前的最小距离，此时也要加入到heap，因为贪婪法，虽然此路径费用较高，但它距离更近，当k限制比较小时，此路径可能满足要求。这就是为什么一个节点会被多次访问的原因。</li>
-<li><strong>若路径不存在返回-1</strong></li>
-</ol>
-<h3><strong>Python代码：</strong></h3>
-<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">findCheapestPrice</span><span class="params">(self, n: int, flights: List[List[int]], src: int, dst: int, k: int)</span> -&gt; int:</span></span><br><span class="line">	graph = collections.defaultdict(list)</span><br><span class="line">	<span class="keyword">for</span> pair <span class="keyword">in</span> flights:</span><br><span class="line">		graph[pair[<span class="number">0</span>]].append((pair[<span class="number">1</span>], pair[<span class="number">2</span>]))</span><br><span class="line">	heap = ([(<span class="number">0</span>, src, <span class="number">0</span>)])</span><br><span class="line">	visited = &#123;&#125;</span><br><span class="line">	<span class="keyword">while</span> heap:</span><br><span class="line">		p, node, dist = heapq.heappop(heap)</span><br><span class="line">		<span class="keyword">if</span> node == dst <span class="keyword">and</span> dist &lt;= k + <span class="number">1</span>:</span><br><span class="line">			<span class="keyword">return</span> p</span><br><span class="line">		<span class="keyword">if</span> node <span class="keyword">in</span> visited <span class="keyword">and</span> dist &gt;= visited[node]:</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		visited[node] = dist</span><br><span class="line">		<span class="keyword">for</span> neighbor, _price <span class="keyword">in</span> graph[node]:</span><br><span class="line">			heapq.heappush(heap, (p + _price, neighbor, dist + <span class="number">1</span>))</span><br><span class="line">	<span class="keyword">return</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>时间复杂度为<code>O(VlogV)</code>，空间复杂度<code>O(V)</code></p>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">searchRange</span><span class="params">(self, nums: List[int], target: int)</span> -&gt; List[int]:</span></span><br><span class="line">	first = self.first_position(nums, target)</span><br><span class="line">	last = self.last_position(nums, target)</span><br><span class="line">	<span class="keyword">return</span> [first, last]</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">last_position</span><span class="params">(self, nums, target)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> nums:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line">	start, end = <span class="number">0</span>, len(nums) - <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> start + <span class="number">1</span> &lt; end:</span><br><span class="line">		mid = start + (end - start) // <span class="number">2</span></span><br><span class="line">		<span class="keyword">if</span> target &lt; nums[mid]:</span><br><span class="line">			end = mid</span><br><span class="line">		<span class="keyword">elif</span> target &gt; nums[mid]:</span><br><span class="line">			start = mid</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			start = mid</span><br><span class="line">	<span class="keyword">if</span> nums[end] == target:</span><br><span class="line">		<span class="keyword">return</span> end</span><br><span class="line">	<span class="keyword">if</span> nums[start] == target:</span><br><span class="line">		<span class="keyword">return</span> start</span><br><span class="line">	<span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">first_position</span><span class="params">(self, nums, target)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> nums:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line">	start, end = <span class="number">0</span>, len(nums) - <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> start + <span class="number">1</span> &lt; end:</span><br><span class="line">		mid = start+ (end - start) // <span class="number">2</span></span><br><span class="line">		<span class="keyword">if</span> target &lt; nums[mid]:</span><br><span class="line">			end = mid</span><br><span class="line">		<span class="keyword">elif</span> target &gt; nums[mid]:</span><br><span class="line">			start = mid</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			end = mid</span><br><span class="line">	<span class="keyword">if</span> nums[start] == target:</span><br><span class="line">		<span class="keyword">return</span> start</span><br><span class="line">	<span class="keyword">if</span> nums[end] == target:</span><br><span class="line">		<span class="keyword">return</span> end</span><br><span class="line">	<span class="keyword">return</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(logn)</code>，空间复杂度<code>O(1)</code>  </p>
 
       
     </div>
@@ -447,6 +292,10 @@ The cheapest price from city <code>0</code> to city <code>2</code> with at most 
   <ul class="entry">
     
       <li>
+        <a href="/2022/01/30/leetcode-518-coin-change-2/">LeetCode 518 Coin Change 2</a>
+      </li>
+    
+      <li>
         <a href="/2022/01/29/leetcode-259-3sum-smaller/">LeetCode 259 3Sum Smaller</a>
       </li>
     
@@ -462,10 +311,6 @@ The cheapest price from city <code>0</code> to city <code>2</code> with at most 
         <a href="/2022/01/27/leetcode-399-evaluate-division/">LeetCode 399 Evaluate Division</a>
       </li>
     
-      <li>
-        <a href="/2022/01/27/leetcode-384-shuffle-an-array/">LeetCode 384 Shuffle an Array</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -476,7 +321,7 @@ The cheapest price from city <code>0</code> to city <code>2</code> with at most 
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 13.91px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.48px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 16.96px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 13.48px;">Binary Tree</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10.43px;">Bit Manipulation</a> <a href="/tags/Bloomberg/" style="font-size: 10.43px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.83px;">Breadth-first Search</a> <a href="/tags/Citadel/" style="font-size: 10.43px;">Citadel</a> <a href="/tags/Classic/" style="font-size: 19.13px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 14.78px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.3px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.3px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 10.43px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.57px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 19.13px;">Facebook</a> <a href="/tags/Google/" style="font-size: 11.74px;">Google</a> <a href="/tags/Graph/" style="font-size: 12.17px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.17px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.96px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 13.48px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 13.04px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.3px;">Iterator</a> <a href="/tags/Knowledge-Base/" style="font-size: 16.96px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 15.65px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.61px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 18.26px;">Math</a> <a href="/tags/Matrix/" style="font-size: 16.09px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.3px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.87px;">Merge Sort</a> <a href="/tags/Microsoft/" style="font-size: 10px;">Microsoft</a> <a href="/tags/Mtrix/" style="font-size: 10px;">Mtrix</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 16.52px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.87px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.43px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10.87px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.3px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.43px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 17.39px;">Stack</a> <a href="/tags/String/" style="font-size: 18.7px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.3px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 15.22px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.3px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.35px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.43px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.43px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
+    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 13.91px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.48px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 16.96px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 13.48px;">Binary Tree</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10.43px;">Bit Manipulation</a> <a href="/tags/Bloomberg/" style="font-size: 10.43px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.83px;">Breadth-first Search</a> <a href="/tags/Citadel/" style="font-size: 10.87px;">Citadel</a> <a href="/tags/Classic/" style="font-size: 19.13px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 14.78px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.3px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.3px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 10.43px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.57px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 19.13px;">Facebook</a> <a href="/tags/Google/" style="font-size: 11.74px;">Google</a> <a href="/tags/Graph/" style="font-size: 12.17px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.17px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.96px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 13.48px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 13.04px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.3px;">Iterator</a> <a href="/tags/Knowledge-Base/" style="font-size: 16.96px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 15.65px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.61px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 18.26px;">Math</a> <a href="/tags/Matrix/" style="font-size: 16.09px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.3px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.87px;">Merge Sort</a> <a href="/tags/Microsoft/" style="font-size: 10px;">Microsoft</a> <a href="/tags/Mtrix/" style="font-size: 10px;">Mtrix</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 16.52px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.87px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.43px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10.87px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.3px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.43px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 17.39px;">Stack</a> <a href="/tags/String/" style="font-size: 18.7px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.3px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 15.22px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.3px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.35px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.43px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.43px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
   </div>
 </div>
 

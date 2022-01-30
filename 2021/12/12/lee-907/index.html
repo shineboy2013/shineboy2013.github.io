@@ -7,7 +7,7 @@
   <meta name="author" content="KK Shum">
   
   <meta name="description" content="LeetCode
-&amp;lt;div&amp;gt;&amp;lt;p&amp;gt;Given an array of integers arr, find the sum of &amp;lt;code&amp;gt;min(b)&amp;lt;/code&amp;gt;, where &amp;lt;code&amp;gt;b&amp;lt;/code&amp;gt; ranges ">
+Given an array of integers arr, find the sum of min(b), where b ranges over every (contiguous) subarray of arr. Since the answer may be large">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -65,45 +65,15 @@
     <div class="entry">
       
         <p><strong><a href="https://leetcode.com/problems/sum-of-subarray-minimums/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<p>&lt;div&gt;&lt;p&gt;Given an array of integers arr, find the sum of &lt;code&gt;min(b)&lt;/code&gt;, where &lt;code&gt;b&lt;/code&gt; ranges over every (contiguous) subarray of &lt;code&gt;arr&lt;/code&gt;. Since the answer may be large, return the answer &lt;strong&gt;modulo&lt;/strong&gt; &lt;code&gt;10&lt;sup&gt;9&lt;/sup&gt; + 7&lt;/code&gt;.&lt;/p&gt;</p>
-<p>&lt;p&gt; &lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Example 1:&lt;/strong&gt;&lt;/p&gt;</p>
-<p>&lt;pre&gt;&lt;strong&gt;Input:&lt;/strong&gt; arr = [3,1,2,4]
-&lt;strong&gt;Output:&lt;/strong&gt; 17
-&lt;strong&gt;Explanation:&lt;/strong&gt;
-Subarrays are [3], [1], [2], [4], [3,1], [1,2], [2,4], [3,1,2], [1,2,4], [3,1,2,4].
-Minimums are 3, 1, 2, 4, 1, 1, 2, 1, 1, 1.
-Sum is 17.
-&lt;/pre&gt;</p>
-<p>&lt;p&gt;&lt;strong&gt;Example 2:&lt;/strong&gt;&lt;/p&gt;</p>
-<p>&lt;pre&gt;&lt;strong&gt;Input:&lt;/strong&gt; arr = [11,81,94,43,3]
-&lt;strong&gt;Output:&lt;/strong&gt; 444
-&lt;/pre&gt;</p>
-<p>&lt;p&gt; &lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Constraints:&lt;/strong&gt;&lt;/p&gt;</p>
-<p>&lt;ul&gt;
-	&lt;li&gt;&lt;code&gt;1 &lt;= arr.length &lt;= 3 * 10&lt;sup&gt;4&lt;/sup&gt;&lt;/code&gt;&lt;/li&gt;
-	&lt;li&gt;&lt;code&gt;1 &lt;= arr[i] &lt;= 3 * 10&lt;sup&gt;4&lt;/sup&gt;&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;</p>
-<h3><strong>题目大意：</strong></h3>
-<p>求所有子数组的最小值的和</p>
-<h3><strong>算法思路：</strong></h3>
-<p>求区间最值用Stack，因为是最小值，所以用<strong>递增栈</strong><br>
-一开始考虑用类似DP，因为若知道[3, 2, 6]栈为[2, 6], 8入栈，8与每一个栈内元素计算最小值，优化是用栈内的累计和，如2和6对应的累计和而不用每个元素计算。<br>
-参考了网上算法，<strong>栈内每个元素向左向右区间内（包括自己）均是最小值</strong>，所以出栈时候进行计算即可。<br>
-如[3, 2, 8, 7, 6, 9, 10, 4]栈是[2, 6, 9, 10]对应的下标，现在4入栈，9和10出栈后，6准备出栈。<br>
-prev_idx为6的下标4， i是7，6是[8, 7, 6], [7, 6], [6]三个区间的最小值prev_idx - stack[-1] = 3个区间，<br>
-而这些区间的最小值的和还要再乘以后面的大于它的数，如[7, 6]这个区间可以和这些区间合并[7, 6], [7, 6, 9], [7, 6, 9, 10], 所以(i - prev_idx) = 3<br>
-这就是arr[prev_idx] * (prev_idx - stack[-1]) * (i - prev_idx)的精髓</p>
-<h3><strong>注意事项：</strong></h3>
-<ol>
-<li>头尾加入最小值，加入头部因为公式需要栈内的前元素，这样可以处理只有一个元素出栈的情况。尾部加入最小值因为确保所有元素都出栈。</li>
+<div><p>Given an array of integers arr, find the sum of <code>min(b)</code>, where <code>b</code> ranges over every (contiguous) subarray of <code>arr</code>. Since the answer may be large, return the answer <strong>modulo</strong> <code>10<sup>9</sup> + 7</code>.</p><br><br><p>&nbsp;</p><br><p><strong>Example 1:</strong></p><br><br><pre><strong>Input:</strong> arr = [3,1,2,4]<br><strong>Output:</strong> 17<br><strong>Explanation:</strong><br>Subarrays are [3], [1], [2], [4], [3,1], [1,2], [2,4], [3,1,2], [1,2,4], [3,1,2,4].<br>Minimums are 3, 1, 2, 4, 1, 1, 2, 1, 1, 1.<br>Sum is 17.<br></pre><br><br><p><strong>Example 2:</strong></p><br><br><pre><strong>Input:</strong> arr = [11,81,94,43,3]<br><strong>Output:</strong> 444<br></pre><br><br><p>&nbsp;</p><br><p><strong>Constraints:</strong></p><br><br><ul><br>    <li><code>1 &lt;= arr.length &lt;= 3 <em> 10<sup>4</sup></em></code></li><br>    <li><code>1 &lt;= arr[i] &lt;= 3  10<sup>4</sup></code></li><br></ul><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求所有子数组的最小值的和</p>
+<h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>求区间最值用Stack，因为是最小值，所以用<strong>递增栈</strong><br>一开始考虑用类似DP，因为若知道[3, 2, 6]栈为[2, 6], 8入栈，8与每一个栈内元素计算最小值，优化是用栈内的累计和，如2和6对应的累计和而不用每个元素计算。<br>参考了网上算法，<strong>栈内每个元素向左向右区间内（包括自己）均是最小值</strong>，所以出栈时候进行计算即可。<br>如[3, 2, 8, 7, 6, 9, 10, 4]栈是[2, 6, 9, 10]对应的下标，现在4入栈，9和10出栈后，6准备出栈。<br>prev_idx为6的下标4， i是7，6是[8, 7, 6], [7, 6], [6]三个区间的最小值prev_idx - stack[-1] = 3个区间，<br>而这些区间的最小值的和还要再乘以后面的大于它的数，如[7, 6]这个区间可以和这些区间合并[7, 6], [7, 6, 9], [7, 6, 9, 10], 所以(i - prev_idx) = 3<br>这就是arr[prev_idx] * (prev_idx - stack[-1]) * (i - prev_idx)的精髓  </p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>头尾加入最小值，加入头部因为公式需要栈内的前元素，这样可以处理只有一个元素出栈的情况。尾部加入最小值因为确保所有元素都出栈。     </li>
 </ol>
-<h3><strong>Python代码：</strong></h3>
-<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sumSubarrayMins</span><span class="params">(self, arr: List[int])</span> -&gt; int:</span></span><br><span class="line">	arr.insert(<span class="number">0</span>, -sys.maxsize)</span><br><span class="line">	arr.append(-sys.maxsize)</span><br><span class="line">	stack, res = [], <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(arr)):</span><br><span class="line">		<span class="keyword">while</span> stack <span class="keyword">and</span> arr[i] &lt; arr[stack[<span class="number">-1</span>]]:</span><br><span class="line">			prev_idx = stack.pop()</span><br><span class="line">			res += arr[prev_idx] * (prev_idx - stack[<span class="number">-1</span>]) * (i - prev_idx)</span><br><span class="line">			res = res % (pow(<span class="number">10</span>, <span class="number">9</span>) + <span class="number">7</span>)</span><br><span class="line">		stack.append(i)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code></p>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sumSubarrayMins</span><span class="params">(self, arr: List[int])</span> -&gt; int:</span></span><br><span class="line">	arr.insert(<span class="number">0</span>, -sys.maxsize)</span><br><span class="line">	arr.append(-sys.maxsize)</span><br><span class="line">	stack, res = [], <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(arr)):</span><br><span class="line">		<span class="keyword">while</span> stack <span class="keyword">and</span> arr[i] &lt; arr[stack[<span class="number">-1</span>]]:</span><br><span class="line">			prev_idx = stack.pop()</span><br><span class="line">			res += arr[prev_idx] * (prev_idx - stack[<span class="number">-1</span>]) * (i - prev_idx)</span><br><span class="line">			res = res % (pow(<span class="number">10</span>, <span class="number">9</span>) + <span class="number">7</span>)</span><br><span class="line">		stack.append(i)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>  </p>
 
       
     </div>
@@ -161,6 +131,10 @@ prev_idx为6的下标4， i是7，6是[8, 7, 6], [7, 6], [6]三个区间的最�
   <ul class="entry">
     
       <li>
+        <a href="/2022/01/30/leetcode-518-coin-change-2/">LeetCode 518 Coin Change 2</a>
+      </li>
+    
+      <li>
         <a href="/2022/01/29/leetcode-259-3sum-smaller/">LeetCode 259 3Sum Smaller</a>
       </li>
     
@@ -176,10 +150,6 @@ prev_idx为6的下标4， i是7，6是[8, 7, 6], [7, 6], [6]三个区间的最�
         <a href="/2022/01/27/leetcode-399-evaluate-division/">LeetCode 399 Evaluate Division</a>
       </li>
     
-      <li>
-        <a href="/2022/01/27/leetcode-384-shuffle-an-array/">LeetCode 384 Shuffle an Array</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -190,7 +160,7 @@ prev_idx为6的下标4， i是7，6是[8, 7, 6], [7, 6], [6]三个区间的最�
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 13.91px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.48px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 16.96px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 13.48px;">Binary Tree</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10.43px;">Bit Manipulation</a> <a href="/tags/Bloomberg/" style="font-size: 10.43px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.83px;">Breadth-first Search</a> <a href="/tags/Citadel/" style="font-size: 10.43px;">Citadel</a> <a href="/tags/Classic/" style="font-size: 19.13px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 14.78px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.3px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.3px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 10.43px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.57px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 19.13px;">Facebook</a> <a href="/tags/Google/" style="font-size: 11.74px;">Google</a> <a href="/tags/Graph/" style="font-size: 12.17px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.17px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.96px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 13.48px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 13.04px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.3px;">Iterator</a> <a href="/tags/Knowledge-Base/" style="font-size: 16.96px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 15.65px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.61px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 18.26px;">Math</a> <a href="/tags/Matrix/" style="font-size: 16.09px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.3px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.87px;">Merge Sort</a> <a href="/tags/Microsoft/" style="font-size: 10px;">Microsoft</a> <a href="/tags/Mtrix/" style="font-size: 10px;">Mtrix</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 16.52px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.87px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.43px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10.87px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.3px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.43px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 17.39px;">Stack</a> <a href="/tags/String/" style="font-size: 18.7px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.3px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 15.22px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.3px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.35px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.43px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.43px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
+    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 13.91px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.48px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 16.96px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 13.48px;">Binary Tree</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10.43px;">Bit Manipulation</a> <a href="/tags/Bloomberg/" style="font-size: 10.43px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.83px;">Breadth-first Search</a> <a href="/tags/Citadel/" style="font-size: 10.87px;">Citadel</a> <a href="/tags/Classic/" style="font-size: 19.13px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 14.78px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.3px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.3px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 10.43px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.57px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 19.13px;">Facebook</a> <a href="/tags/Google/" style="font-size: 11.74px;">Google</a> <a href="/tags/Graph/" style="font-size: 12.17px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.17px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.96px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 13.48px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 13.04px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.3px;">Iterator</a> <a href="/tags/Knowledge-Base/" style="font-size: 16.96px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 15.65px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.61px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 18.26px;">Math</a> <a href="/tags/Matrix/" style="font-size: 16.09px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.3px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.87px;">Merge Sort</a> <a href="/tags/Microsoft/" style="font-size: 10px;">Microsoft</a> <a href="/tags/Mtrix/" style="font-size: 10px;">Mtrix</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 16.52px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.87px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.43px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10.87px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.3px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.43px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 17.39px;">Stack</a> <a href="/tags/String/" style="font-size: 18.7px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.3px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 15.22px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.3px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.35px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.43px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.43px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
   </div>
 </div>
 
