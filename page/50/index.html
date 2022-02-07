@@ -53,6 +53,1091 @@
     <header>
       
   
+    <h1 class="title"><a href="/2021/07/27/lee-138/">LeetCode 138 Copy List with Random Pointer</a></h1>
+  
+
+      
+        <time datetime="2021-07-27T09:14:55.918Z">2021-07-27</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/copy-list-with-random-pointer/" target="_blank" rel="noopener">LeetCode 138 Copy List with Random Pointer</a></strong></p>
+<p>A linked list of length <code>n</code> is given such that each node contains an additional random pointer, which could point to any node in the list, or <code>null</code>.</p>
+<p>Construct a <a href="https://en.wikipedia.org/wiki/Object_copying#Deep_copy" target="_blank" rel="noopener"><strong>deep copy</strong></a> of the list. The deep copy should consist of exactly <code>n</code> <strong>brand new</strong> nodes, where each new node has its value set to the value of its corresponding original node. Both the <code>next</code> and <code>random</code> pointer of the new nodes should point to new nodes in the copied list such that the pointers in the original list and copied list represent the same list state. <strong>None of the pointers in the new list should point to nodes in the original list</strong>.</p>
+<p>For example, if there are two nodes <code>X</code> and <code>Y</code> in the original list, where <code>X.random --&gt; Y</code>, then for the corresponding two nodes <code>x</code> and <code>y</code> in the copied list, <code>x.random --&gt; y</code>.</p>
+<p>Return <em>the head of the copied linked list</em>.</p>
+<p>The linked list is represented in the input/output as a list of <code>n</code> nodes. Each node is represented as a pair of <code>[val, random_index]</code> where:</p>
+<ul>
+<li><code>val</code>: an integer representing <code>Node.val</code></li>
+<li><code>random_index</code>: the index of the node (range from <code>0</code> to <code>n-1</code>) that the <code>random</code> pointer points to, or <code>null</code> if it does not point to any node.</li>
+</ul>
+<p>Your code will <strong>only</strong> be given the <code>head</code> of the original linked list.</p>
+<p><strong>Example 1:</strong></p>
+<p><img src="https://assets.leetcode.com/uploads/2019/12/18/e1.png" alt=""></p>
+<pre>**Input:** head = [[7,null],[13,0],[11,4],[10,2],[1,0]]
+**Output:** [[7,null],[13,0],[11,4],[10,2],[1,0]]
+</pre>
+
+<p><strong>Example 2:</strong></p>
+<p><img src="https://assets.leetcode.com/uploads/2019/12/18/e2.png" alt=""></p>
+<pre>**Input:** head = [[1,1],[2,1]]
+**Output:** [[1,1],[2,1]]
+</pre>
+
+<p><strong>Example 3:</strong></p>
+<p><strong><img src="https://assets.leetcode.com/uploads/2019/12/18/e3.png" alt=""></strong></p>
+<pre>**Input:** head = [[3,null],[3,0],[3,null]]
+**Output:** [[3,null],[3,0],[3,null]]
+</pre>
+
+<p><strong>Example 4:</strong></p>
+<pre>**Input:** head = []
+**Output:** []
+**Explanation:** The given linked list is empty (null pointer), so return null.
+</pre>
+
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>0 &lt;= n &lt;= 1000</code></li>
+<li><code>-10000 &lt;= Node.val &lt;= 10000</code></li>
+<li><code>Node.random</code> is <code>null</code> or is pointing to some node in the linked list.</li>
+</ul>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>复制含next和random的链表。</p>
+<h3 id="解题思路（推荐）："><a href="#解题思路（推荐）：" class="headerlink" title="解题思路（推荐）："></a><strong>解题思路（推荐）：</strong></h3><p>此法较容易实现。先复制next指针，然后利用HashMap存储旧新节点，来复制random指针。  </p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>复制next指针和Map中。<strong>clone题均用此法。</strong>  </li>
+<li>Random指针不空才copy</li>
+<li>加it = it.next，否则死循环</li>
+<li>如果创建新Node用while it.next表示用它的父节点，否则某个field赋值如random用while it</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">copyRandomList</span><span class="params">(self, head: <span class="string">'Node'</span>)</span> -&gt; 'Node':</span></span><br><span class="line">	node_map = &#123;&#125;</span><br><span class="line">	fake_head, fake_head_copy = Node(<span class="number">0</span>), Node(<span class="number">0</span>)</span><br><span class="line">	fake_head.next = head</span><br><span class="line">	it, it_copy = fake_head, fake_head_copy</span><br><span class="line">	<span class="keyword">while</span> it.next:</span><br><span class="line">		it_copy.next = Node(it.next.val)</span><br><span class="line">		node_map[it.next] = it_copy.next</span><br><span class="line">		it, it_copy = it.next, it_copy.next</span><br><span class="line"></span><br><span class="line">	it, it_copy = fake_head.next, fake_head_copy.next</span><br><span class="line">	<span class="keyword">while</span> it:</span><br><span class="line">		<span class="keyword">if</span> it.random:</span><br><span class="line">			node_map[it].random = node_map[it.random]</span><br><span class="line">		it, it_copy = it.next, it_copy.next</span><br><span class="line">	<span class="keyword">return</span> fake_head_copy.next</span><br></pre></td></tr></table></figure>
+<h3 id="梅花间竹解题思路："><a href="#梅花间竹解题思路：" class="headerlink" title="梅花间竹解题思路："></a><strong>梅花间竹解题思路：</strong></h3><p>第二种方法，梅花间竹，分3部走。  </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">copyRandomList</span><span class="params">(self, head: <span class="string">'Node'</span>)</span> -&gt; 'Node':</span></span><br><span class="line">	fake_head, fake_head_copy = Node(<span class="number">0</span>), Node(<span class="number">0</span>)</span><br><span class="line">	fake_head.next = head</span><br><span class="line"></span><br><span class="line">	<span class="comment"># insert</span></span><br><span class="line">	it = fake_head.next</span><br><span class="line">	<span class="keyword">while</span> it:</span><br><span class="line">		temp = it.next</span><br><span class="line">		it.next = Node(it.val)</span><br><span class="line">		it.next.next = temp</span><br><span class="line">		it = it.next.next</span><br><span class="line"></span><br><span class="line">	<span class="comment"># copy random</span></span><br><span class="line">	it = fake_head.next</span><br><span class="line">	<span class="keyword">while</span> it:</span><br><span class="line">		<span class="keyword">if</span> it.random <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>:</span><br><span class="line">			it.next.random = it.random.next</span><br><span class="line">		it = it.next.next</span><br><span class="line"></span><br><span class="line">	<span class="comment"># delete</span></span><br><span class="line">	it, it_copy = fake_head.next, fake_head_copy</span><br><span class="line">	<span class="keyword">while</span> it:</span><br><span class="line">		temp = it.next</span><br><span class="line">		it.next = it.next.next</span><br><span class="line">		it_copy.next = temp</span><br><span class="line">		temp.next = <span class="keyword">None</span></span><br><span class="line">		it, it_copy = it.next, it_copy.next</span><br><span class="line">	<span class="keyword">return</span> fake_head_copy.next</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><ol>
+<li>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>。</li>
+<li>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>。</li>
+</ol>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2021/06/07/kb-Python/">Python知识点</a></h1>
+  
+
+      
+        <time datetime="2021-06-08T04:47:48.429Z">2021-06-07</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong>常用知识点</strong></p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th style="text-align:left">函数名</th>
+<th style="text-align:left">作用</th>
+<th style="text-align:left">输入参数</th>
+<th style="text-align:left">返回值</th>
+<th style="text-align:left">例子</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>for</td>
+<td style="text-align:left">range</td>
+<td style="text-align:left">和len结合使用相当于取某范围List下标,第三个参数为步长</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left"><strong>for i in range(len(nums))</strong>前闭后开,用逗号</td>
+</tr>
+<tr>
+<td>for</td>
+<td style="text-align:left">in</td>
+<td style="text-align:left">枚举列表的每个数</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">for n in nums</td>
+</tr>
+<tr>
+<td>for</td>
+<td style="text-align:left">range</td>
+<td style="text-align:left">逆序遍历</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">for i in range(len(nums) - 1, -1, -1)前闭后开, 或用<strong>reversed(range(len(nums)))</strong></td>
+</tr>
+<tr>
+<td>for</td>
+<td style="text-align:left">enumerate</td>
+<td style="text-align:left">枚举List的下标和数值，与range不同的是它不能指定范围和步长</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">for i, n in enumerate(nums)</td>
+</tr>
+<tr>
+<td>Math</td>
+<td style="text-align:left">max/min</td>
+<td style="text-align:left">取最大值</td>
+<td style="text-align:left">Num</td>
+<td style="text-align:left">Num</td>
+<td style="text-align:left">max_len = max(2, 3) 或min(1, 2, 3)</td>
+</tr>
+<tr>
+<td>Math</td>
+<td style="text-align:left">pow</td>
+<td style="text-align:left">求幂值</td>
+<td style="text-align:left">Num</td>
+<td style="text-align:left">Num</td>
+<td style="text-align:left">val = pow(2, 3)</td>
+</tr>
+<tr>
+<td>Math</td>
+<td style="text-align:left">int</td>
+<td style="text-align:left">str转int或将float变成int</td>
+<td style="text-align:left">String</td>
+<td style="text-align:left">Num</td>
+<td style="text-align:left">val = int(‘123’), val = int(2.6) -&gt; 2</td>
+</tr>
+<tr>
+<td>Math</td>
+<td style="text-align:left">math.ceil/floor</td>
+<td style="text-align:left">求向上或下取整</td>
+<td style="text-align:left">Num</td>
+<td style="text-align:left">Num</td>
+<td style="text-align:left">import math, val = math.ceil(5/2), math.floor(5/2)</td>
+</tr>
+<tr>
+<td>Math</td>
+<td style="text-align:left">float(‘inf’)</td>
+<td style="text-align:left">无穷大值</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">Num</td>
+<td style="text-align:left">val = <strong>float(‘inf’)</strong> or float(‘-inf’)</td>
+</tr>
+<tr>
+<td>Math</td>
+<td style="text-align:left">min</td>
+<td style="text-align:left"><strong>求数组中的正数的最小值</strong></td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">Num</td>
+<td style="text-align:left">min(n for n in nums if n &gt; 0)</td>
+</tr>
+<tr>
+<td>Math</td>
+<td style="text-align:left">len</td>
+<td style="text-align:left"><strong>求数组中的正数的个数</strong></td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">Num</td>
+<td style="text-align:left">len([n for n in nums if n &gt; 0])</td>
+</tr>
+<tr>
+<td>Math</td>
+<td style="text-align:left">sum</td>
+<td style="text-align:left">求数组和</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">Num</td>
+<td style="text-align:left">sum(nums)</td>
+</tr>
+<tr>
+<td>Math</td>
+<td style="text-align:left">abs</td>
+<td style="text-align:left">求绝对值</td>
+<td style="text-align:left">Num</td>
+<td style="text-align:left">Num</td>
+<td style="text-align:left">abs(-1)</td>
+</tr>
+<tr>
+<td>Math</td>
+<td style="text-align:left">//与int</td>
+<td style="text-align:left">求整数值</td>
+<td style="text-align:left">Num</td>
+<td style="text-align:left">Num</td>
+<td style="text-align:left">//是比它小的整数如-2.8就是-3，只在负数是有区别。写程序用的更多是<strong>int(num / a)</strong>结果是-2，这和Java一致</td>
+</tr>
+<tr>
+<td>String</td>
+<td style="text-align:left">str</td>
+<td style="text-align:left">任意类型变成字符串</td>
+<td style="text-align:left">Any</td>
+<td style="text-align:left">String</td>
+<td style="text-align:left">str(2)</td>
+</tr>
+<tr>
+<td>String</td>
+<td style="text-align:left">replace</td>
+<td style="text-align:left">替换</td>
+<td style="text-align:left">String</td>
+<td style="text-align:left">String</td>
+<td style="text-align:left">‘abc’.replace(‘c’, ‘d’)</td>
+</tr>
+<tr>
+<td>String</td>
+<td style="text-align:left">format</td>
+<td style="text-align:left">格式化字符串</td>
+<td style="text-align:left">Any</td>
+<td style="text-align:left">String</td>
+<td style="text-align:left">‘{} of {}’.format(a, b)</td>
+</tr>
+<tr>
+<td>String</td>
+<td style="text-align:left">[]</td>
+<td style="text-align:left">得到某一个字符</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">Char</td>
+<td style="text-align:left">s[2]</td>
+</tr>
+<tr>
+<td>String</td>
+<td style="text-align:left">[]</td>
+<td style="text-align:left">得到子串(前闭后开)</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">string</td>
+<td style="text-align:left">s = ‘abc’, s[:2] -&gt; ‘ab’, s[2:] -&gt; ‘c’</td>
+</tr>
+<tr>
+<td>String</td>
+<td style="text-align:left">len</td>
+<td style="text-align:left">得到字符串长度</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">int</td>
+<td style="text-align:left">num = len(s)</td>
+</tr>
+<tr>
+<td>String</td>
+<td style="text-align:left">[::-1]</td>
+<td style="text-align:left">反转字符串</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">String</td>
+<td style="text-align:left">new_str = s[::-1]</td>
+</tr>
+<tr>
+<td>String</td>
+<td style="text-align:left">[:-1]</td>
+<td style="text-align:left">(DFS中)去掉最后一个字符</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">String</td>
+<td style="text-align:left">path = path[:-1]</td>
+</tr>
+<tr>
+<td>String</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">两个字符串叉乘</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">List</td>
+<td style="text-align:left">a_list = [s + c for s in s1 for c in s2]</td>
+</tr>
+<tr>
+<td>String</td>
+<td style="text-align:left">&gt;</td>
+<td style="text-align:left">比较两个字符串</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">boolean</td>
+<td style="text-align:left">‘111’ &gt; ‘21’ -&gt; False, ‘21’ == ‘21’ -&gt; True</td>
+</tr>
+<tr>
+<td>String</td>
+<td style="text-align:left"><strong>find</strong></td>
+<td style="text-align:left">查找返回下标</td>
+<td style="text-align:left">str</td>
+<td style="text-align:left">str</td>
+<td style="text-align:left">‘word’.find(‘w’) 若找不到返回-1</td>
+</tr>
+<tr>
+<td>String</td>
+<td style="text-align:left">upper</td>
+<td style="text-align:left">变成全部大写</td>
+<td style="text-align:left">str</td>
+<td style="text-align:left">str</td>
+<td style="text-align:left">‘word’.upper()</td>
+</tr>
+<tr>
+<td>String</td>
+<td style="text-align:left">lower</td>
+<td style="text-align:left">变成全部大写</td>
+<td style="text-align:left">str</td>
+<td style="text-align:left">str</td>
+<td style="text-align:left">‘WORD’.lower()</td>
+</tr>
+<tr>
+<td>String</td>
+<td style="text-align:left">startswith</td>
+<td style="text-align:left">是否以某个字母开头</td>
+<td style="text-align:left">str</td>
+<td style="text-align:left">Boolean</td>
+<td style="text-align:left">‘word’.startswith(‘w’)</td>
+</tr>
+<tr>
+<td>String</td>
+<td style="text-align:left">endswith</td>
+<td style="text-align:left">是否以某个字母结尾</td>
+<td style="text-align:left">str</td>
+<td style="text-align:left">Boolean</td>
+<td style="text-align:left">‘word’.endswith(‘d’)</td>
+</tr>
+<tr>
+<td>String</td>
+<td style="text-align:left">strip, lstrip, rstrip</td>
+<td style="text-align:left">去掉空格</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">str</td>
+<td style="text-align:left">‘word ‘.strip(), ‘word ‘.lstrip(), ‘word ‘.rstrip()</td>
+</tr>
+<tr>
+<td>String</td>
+<td style="text-align:left">split</td>
+<td style="text-align:left">用分隔符变成List</td>
+<td style="text-align:left">str</td>
+<td style="text-align:left">List</td>
+<td style="text-align:left">‘a,b’.split(‘,’)</td>
+</tr>
+<tr>
+<td>String</td>
+<td style="text-align:left">+</td>
+<td style="text-align:left">一个个字符加到字符串末</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">res += ‘g’  </td>
+</tr>
+<tr>
+<td>String</td>
+<td style="text-align:left">in</td>
+<td style="text-align:left">查看某个字符是否属于一个字符集合里</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">bool</td>
+<td style="text-align:left">if char in ‘([{‘ 可以避免用list</td>
+</tr>
+<tr>
+<td>String</td>
+<td style="text-align:left">isalpha</td>
+<td style="text-align:left">是否字母</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">bool</td>
+<td style="text-align:left">‘ab’.isalpha()</td>
+</tr>
+<tr>
+<td>String</td>
+<td style="text-align:left">isdigit</td>
+<td style="text-align:left">是否数字</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">bool</td>
+<td style="text-align:left">‘23’.isdigit()</td>
+</tr>
+<tr>
+<td>String</td>
+<td style="text-align:left">ascii_lowercase</td>
+<td style="text-align:left">a-z的所有字母</td>
+<td style="text-align:left">str</td>
+<td style="text-align:left">str</td>
+<td style="text-align:left">import string, string.ascii_lowercase</td>
+</tr>
+<tr>
+<td>String</td>
+<td style="text-align:left">ord</td>
+<td style="text-align:left">一个字母的ASCII</td>
+<td style="text-align:left">str</td>
+<td style="text-align:left">str</td>
+<td style="text-align:left">ord(‘A’) = 65</td>
+</tr>
+<tr>
+<td>String</td>
+<td style="text-align:left">eval</td>
+<td style="text-align:left">计算字符串的数值，变量，函数运算结果，返回数字</td>
+<td style="text-align:left">str</td>
+<td style="text-align:left">Num</td>
+<td style="text-align:left">eval(‘5+ 6’) = 11, num = 1, eval(num + 1) = 2, eval(‘f(2)’)</td>
+</tr>
+<tr>
+<td>List</td>
+<td style="text-align:left">[]</td>
+<td style="text-align:left">初始化列表</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">li = []，这是空列表，不能通过索引取值  </td>
+</tr>
+<tr>
+<td>List</td>
+<td style="text-align:left">[]</td>
+<td style="text-align:left">初始化固定大小的列表</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">li = [0] * 10, [None] * 10 -&gt; 创建一个list, * 是复制只能用于标量，若矢量是复制ref如[[]] * 10, 要用<strong>[[] for _ in range(10)]</strong></td>
+</tr>
+<tr>
+<td>List</td>
+<td style="text-align:left">len</td>
+<td style="text-align:left">大小</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">int</td>
+<td style="text-align:left">num = len(li)</td>
+</tr>
+<tr>
+<td>List</td>
+<td style="text-align:left">append</td>
+<td style="text-align:left">尾部加入</td>
+<td style="text-align:left">Any</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">li.append(‘apple’)</td>
+</tr>
+<tr>
+<td>List</td>
+<td style="text-align:left">insert</td>
+<td style="text-align:left">头部加入</td>
+<td style="text-align:left">Any</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">li.insert(0, ‘apple’)</td>
+</tr>
+<tr>
+<td>List</td>
+<td style="text-align:left">pop</td>
+<td style="text-align:left">头部/某位置删除</td>
+<td style="text-align:left">Any</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">li.pop(0), li.pop(2)</td>
+</tr>
+<tr>
+<td>List</td>
+<td style="text-align:left">remove</td>
+<td style="text-align:left">按值删除</td>
+<td style="text-align:left">Any</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">li.remove(3)</td>
+</tr>
+<tr>
+<td>List</td>
+<td style="text-align:left">+</td>
+<td style="text-align:left">两个list合并</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">list1 + list2</td>
+</tr>
+<tr>
+<td>List</td>
+<td style="text-align:left">extend</td>
+<td style="text-align:left">两个list合并到第一个</td>
+<td style="text-align:left">Any</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">li.extend([‘apple’, ‘banana’])</td>
+</tr>
+<tr>
+<td>List</td>
+<td style="text-align:left">join</td>
+<td style="text-align:left">加入分隔符</td>
+<td style="text-align:left">List</td>
+<td style="text-align:left">String</td>
+<td style="text-align:left">‘,’.join(li), <strong>将字符列表变成字符串’’.join(char_list)</strong>  </td>
+</tr>
+<tr>
+<td>List</td>
+<td style="text-align:left">sort</td>
+<td style="text-align:left">原地排序，如果List的元素是tuple，按第一个元素排序</td>
+<td style="text-align:left">List</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">li.sort(), 如果不改变原数组用list(li)先复制</td>
+</tr>
+<tr>
+<td>List</td>
+<td style="text-align:left">sort</td>
+<td style="text-align:left">按字符串长度降序排列</td>
+<td style="text-align:left">List</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">words.sort(key=len, reverse=True), intervals.sort(key=lambda x: x[0]), 按两个key来排序li.sort(key=lambda x: (x[0], x[1]))先顺序再逆序li.sort(key=lambda x: (x[0], -x[1]))  </td>
+</tr>
+<tr>
+<td>List</td>
+<td style="text-align:left">sorted</td>
+<td style="text-align:left">非原地排序</td>
+<td style="text-align:left">List</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">nums[idx+1:] = sorted(nums[idx+1:])  </td>
+</tr>
+<tr>
+<td>List</td>
+<td style="text-align:left">list</td>
+<td style="text-align:left">复制list</td>
+<td style="text-align:left">List</td>
+<td style="text-align:left">List</td>
+<td style="text-align:left">new_list = list(old_list)</td>
+</tr>
+<tr>
+<td>List</td>
+<td style="text-align:left">list</td>
+<td style="text-align:left">扩展一倍一样的list</td>
+<td style="text-align:left">List</td>
+<td style="text-align:left">List</td>
+<td style="text-align:left">new_list = nums * 2</td>
+</tr>
+<tr>
+<td>List</td>
+<td style="text-align:left">[]</td>
+<td style="text-align:left">反转list</td>
+<td style="text-align:left">List</td>
+<td style="text-align:left">List</td>
+<td style="text-align:left">new_list = li[::-1]跟反转string一样，<strong>反转子列表nums[idx+1:] = nums[len(nums)-1:idx:-1]</strong></td>
+</tr>
+<tr>
+<td>List</td>
+<td style="text-align:left">[-1]</td>
+<td style="text-align:left">返回list中最后一个元素</td>
+<td style="text-align:left">T</td>
+<td style="text-align:left">int</td>
+<td style="text-align:left"><strong>li[-1]</strong>，而不是dp[len(li)-1]广泛用于DP题</td>
+</tr>
+<tr>
+<td>List</td>
+<td style="text-align:left"><strong>index</strong></td>
+<td style="text-align:left">list中找某个元素</td>
+<td style="text-align:left">T</td>
+<td style="text-align:left">int</td>
+<td style="text-align:left">li.index(2), 找不到的话抛出异常，先要检查if 9 in li2 else -1. 字符串用find</td>
+</tr>
+<tr>
+<td>List</td>
+<td style="text-align:left">count</td>
+<td style="text-align:left">list中计算某个元素值的个数</td>
+<td style="text-align:left">T</td>
+<td style="text-align:left">int</td>
+<td style="text-align:left">li.count(‘a’)</td>
+</tr>
+<tr>
+<td>List</td>
+<td style="text-align:left">[:]</td>
+<td style="text-align:left">批量替换成list中某些元素</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">nums[start:end + 1] = res</td>
+</tr>
+<tr>
+<td>List</td>
+<td style="text-align:left">[::-1]</td>
+<td style="text-align:left">reverse sublist</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">nums[:k] = nums[:k][::-1]先取sublist再倒转</td>
+</tr>
+<tr>
+<td>deque</td>
+<td style="text-align:left">deque</td>
+<td style="text-align:left">初始化队列</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">from collections import deque, queue = deque(), queue = <strong>deque([node])</strong></td>
+</tr>
+<tr>
+<td>deque</td>
+<td style="text-align:left">append</td>
+<td style="text-align:left">入列</td>
+<td style="text-align:left">T</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">queue.append(node)</td>
+</tr>
+<tr>
+<td>deque</td>
+<td style="text-align:left">popleft</td>
+<td style="text-align:left">出列</td>
+<td style="text-align:left">Num</td>
+<td style="text-align:left">T</td>
+<td style="text-align:left">s = <strong>queue.popleft()</strong> </td>
+</tr>
+<tr>
+<td>deque</td>
+<td style="text-align:left">appendleft</td>
+<td style="text-align:left">队首入列</td>
+<td style="text-align:left">Num</td>
+<td style="text-align:left">T</td>
+<td style="text-align:left">s = queue.appendleft()较少用</td>
+</tr>
+<tr>
+<td>deque</td>
+<td style="text-align:left">[0]</td>
+<td style="text-align:left">看列首元素</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">T</td>
+<td style="text-align:left">queue = [], s = queue[0] </td>
+</tr>
+<tr>
+<td>List(Heap)</td>
+<td style="text-align:left">heapify</td>
+<td style="text-align:left">对list最小堆排序</td>
+<td style="text-align:left">List</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">from heapq import heapify, pq = [2, 3], heapify(pq) 若最大堆，则将所有值取负加入堆</td>
+</tr>
+<tr>
+<td>List(Heap)</td>
+<td style="text-align:left">heappush</td>
+<td style="text-align:left">入堆</td>
+<td style="text-align:left">List, T</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">from heapq import heappush, heappush(pq, 4) </td>
+</tr>
+<tr>
+<td>List(Heap)</td>
+<td style="text-align:left">heappop</td>
+<td style="text-align:left">出堆</td>
+<td style="text-align:left">List</td>
+<td style="text-align:left">T</td>
+<td style="text-align:left">from heapq import heappop, heappop(pq)</td>
+</tr>
+<tr>
+<td>List(Heap)</td>
+<td style="text-align:left">heapreplace</td>
+<td style="text-align:left">置换堆</td>
+<td style="text-align:left">T</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">heapq.heapreplace(pq, 4)= heappush(pq, 4) + heappop(pq)</td>
+</tr>
+<tr>
+<td>List(Heap)</td>
+<td style="text-align:left">[0]</td>
+<td style="text-align:left">看堆顶元素</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">T</td>
+<td style="text-align:left">pq[0]  </td>
+</tr>
+<tr>
+<td>List(Stack)</td>
+<td style="text-align:left">append</td>
+<td style="text-align:left">入栈</td>
+<td style="text-align:left">T</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">stack = [], stack.append(node)</td>
+</tr>
+<tr>
+<td>List(Stack)</td>
+<td style="text-align:left">pop</td>
+<td style="text-align:left">出栈</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">T</td>
+<td style="text-align:left">stack = [], s = stack.pop() </td>
+</tr>
+<tr>
+<td>List(Stack)</td>
+<td style="text-align:left">[]</td>
+<td style="text-align:left">看栈顶元素</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">T</td>
+<td style="text-align:left">stack = [], s = stack[-1] </td>
+</tr>
+<tr>
+<td>Dictionary</td>
+<td style="text-align:left">{}</td>
+<td style="text-align:left">初始化字典</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">di = {}, di = {1: ‘a’, 2: ‘b’}</td>
+</tr>
+<tr>
+<td>Dictionary</td>
+<td style="text-align:left">{}</td>
+<td style="text-align:left">初始化字典带初始key</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">di = collections.defaultdict(int), <strong>defaultdict(list)</strong>避免第一次赋值时需要写if语句，一定用。只有用下标di[2]才会产生key和value,其他2 in di, di.keys()都不会产生key. collections.defaultdict(lambda: [0, 0])用于value是pair, 默认返回1： collections.defaultdict(lambda: 1)       </td>
+</tr>
+<tr>
+<td>Dictionary</td>
+<td style="text-align:left">[]</td>
+<td style="text-align:left">获得字典的值</td>
+<td style="text-align:left">T</td>
+<td style="text-align:left">T</td>
+<td style="text-align:left">di[key]</td>
+</tr>
+<tr>
+<td>Dictionary</td>
+<td style="text-align:left">[]</td>
+<td style="text-align:left">插入到字典</td>
+<td style="text-align:left">T</td>
+<td style="text-align:left">T</td>
+<td style="text-align:left">di[key] = 2</td>
+</tr>
+<tr>
+<td>Dictionary</td>
+<td style="text-align:left">items</td>
+<td style="text-align:left">Dict的所有pairs</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">K,V</td>
+<td style="text-align:left">for k, v in <strong>di.items()</strong></td>
+</tr>
+<tr>
+<td>Dictionary</td>
+<td style="text-align:left">items</td>
+<td style="text-align:left">Dict的所有keys</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">List</td>
+<td style="text-align:left">for k in di.keys(), 类型不是List，若要，则list(di.keys())</td>
+</tr>
+<tr>
+<td>Dictionary</td>
+<td style="text-align:left">in</td>
+<td style="text-align:left">是否含有某个key</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">boolean</td>
+<td style="text-align:left">if key in di</td>
+</tr>
+<tr>
+<td>Dictionary</td>
+<td style="text-align:left">pop</td>
+<td style="text-align:left">删除某个key</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">di.pop(key)</td>
+</tr>
+<tr>
+<td>Set</td>
+<td style="text-align:left">{}</td>
+<td style="text-align:left">产生一个Set</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">Set</td>
+<td style="text-align:left">b = set(), b = <strong>set([‘a’, ‘b’])</strong></td>
+</tr>
+<tr>
+<td>Set</td>
+<td style="text-align:left">add</td>
+<td style="text-align:left">set增加一个元素</td>
+<td style="text-align:left">T</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">b.add(‘c’)</td>
+</tr>
+<tr>
+<td>Set</td>
+<td style="text-align:left">remove</td>
+<td style="text-align:left">set删除一个元素</td>
+<td style="text-align:left">T</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">b.remove(‘c’)</td>
+</tr>
+<tr>
+<td>Set</td>
+<td style="text-align:left">set</td>
+<td style="text-align:left">List转换成Set或反之</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">s = set(l), l = list(s)</td>
+</tr>
+<tr>
+<td>bisect</td>
+<td style="text-align:left">bisect</td>
+<td style="text-align:left">二分法查找下标插入位置</td>
+<td style="text-align:left">Num</td>
+<td style="text-align:left">Num</td>
+<td style="text-align:left">跟greater_position一样, from bisect import bisect, bisect([], 3) -&gt; 0, bisect([2], 3) -&gt; 1, bisect([3], 3) -&gt; 1, bisect([4], 3) -&gt; 0。还可以用于<strong>统计小于等于target的个数</strong>，如bisect([0, 1], 1) -&gt; 2</td>
+</tr>
+<tr>
+<td>bisect</td>
+<td style="text-align:left">bisect_left</td>
+<td style="text-align:left">二分法查找下标插入位置</td>
+<td style="text-align:left">Num</td>
+<td style="text-align:left">Num</td>
+<td style="text-align:left">似于greater_or_equal_position但若equal时，取第一个，但greater_or_equal_position是取最后一个. <strong>用于LIS</strong></td>
+</tr>
+<tr>
+<td>bisect</td>
+<td style="text-align:left">insort</td>
+<td style="text-align:left">二分法查找下标插入位置且插入</td>
+<td style="text-align:left">Num</td>
+<td style="text-align:left">Num</td>
+<td style="text-align:left">似于greater_position，插入复杂度为O(n)</td>
+</tr>
+<tr>
+<td>Lambda</td>
+<td style="text-align:left">func/expr…for…in</td>
+<td style="text-align:left">整型数组变字符串数组</td>
+<td style="text-align:left">List</td>
+<td style="text-align:left">List</td>
+<td style="text-align:left">[str(x) for x in list]</td>
+</tr>
+<tr>
+<td>Others</td>
+<td style="text-align:left">return</td>
+<td style="text-align:left">返回tuple值</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">return a, b 不要括号</td>
+</tr>
+<tr>
+<td>Others</td>
+<td style="text-align:left">isinstance</td>
+<td style="text-align:left">判断输入是什么类型</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">bool</td>
+<td style="text-align:left">isinstance(stack[2], list)</td>
+</tr>
+<tr>
+<td>Others</td>
+<td style="text-align:left">Counter</td>
+<td style="text-align:left">计算List和字符串频率</td>
+<td style="text-align:left">List</td>
+<td style="text-align:left">dict</td>
+<td style="text-align:left">from collections import Counter, di = Counter(nums), di = Counter(‘apple’), graph = Counter({c: [] for word in words for c in word})</td>
+</tr>
+<tr>
+<td>Others</td>
+<td style="text-align:left">[]</td>
+<td style="text-align:left">初始化NxM矩阵为0</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">a = <del>[[1] * M] * N</del>不能复制矢量。[[0 for _ in range(M)] for _ in range(N)] <strong>先col再row</strong></td>
+</tr>
+<tr>
+<td>Others</td>
+<td style="text-align:left">randint</td>
+<td style="text-align:left">求[start, end]之间随机值</td>
+<td style="text-align:left">Num</td>
+<td style="text-align:left">Num</td>
+<td style="text-align:left">import random, random.randint(0, 1) -&gt; 0/1</td>
+</tr>
+<tr>
+<td>Others</td>
+<td style="text-align:left">map, max</td>
+<td style="text-align:left">求矩阵最大值</td>
+<td style="text-align:left">[][]</td>
+<td style="text-align:left">T</td>
+<td style="text-align:left">max(map(max, matrix))</td>
+</tr>
+<tr>
+<td>OrderedDict</td>
+<td style="text-align:left">OrderedDict</td>
+<td style="text-align:left">类似于LinkedHashMap，dict的key的插入顺序排序</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left">di = collections.OrderedDict(), di[‘a’] = 2</td>
+</tr>
+<tr>
+<td>re</td>
+<td style="text-align:left">search</td>
+<td style="text-align:left">search只match一次</td>
+<td style="text-align:left">str</td>
+<td style="text-align:left">str</td>
+<td style="text-align:left">re.search(r’(\+&#124;\-)?\d+’, ‘-23.1e2’).group() -&gt; -23</td>
+</tr>
+<tr>
+<td>re</td>
+<td style="text-align:left">sub</td>
+<td style="text-align:left">全部用regex替代类似Java中的replaceAll</td>
+<td style="text-align:left">str</td>
+<td style="text-align:left">str</td>
+<td style="text-align:left">re.sub(r’\s+’, ‘’, ‘a 6 7’) -&gt; a67</td>
+</tr>
+</tbody>
+</table>
+<p>总结：<br>除了deque, Stack, List的实现都是List<br>插入append, insert<br>删除pop, popleft(deque)  </p>
+<p>初始化列表：<br>创建一个list： li = [0] * 10, [False] * 10 而不是[False * 10], [0 * 10]这是乘法<br>创建一个list of list不用乘号： [[0 for _ in range(M)] for _ in range(N)], [[] for _ in range(10)]</p>
+<p>if left_val可能为整数或None，要写成<strong>if left_val is not None</strong>，否则若left_val = 0, 会False<br>i += 1没有i++<br>if 0 &lt; i &lt; len(nums) 不像Java一样，Python可以连续比较范围<br>所有int都是long<br>22//5 = 4<br>22/5 = 4.4 </p>
+<p>def myFunc(e):<br>  return e[‘year’]<br>cars.sort(reverse=True, key=myFunc)  </p>
+<p>由于Python的数字类型都是Numeric（自动识别为Integer, Float, Complex Numbers）,所以自动变成小数，不像Java是int<br><a href="https://www.geeksforgeeks.org/python-data-types/" target="_blank" rel="noopener">数据类型</a></p>
+<p>True/False<br>and/or/not<br>pass什么都不做 if a: pass</p>
+<p>&amp;, ^异或, ~取反(~3), |, &lt;&lt;, &gt;&gt;</p>
+<p>lo = hi = 0<br>swap: a, b = b, a<br>elif<br>return -res if is_negative else res<br>if root / if not root<br><strong>if not nums</strong> 包含(None以及len(nums) == 0<br>Node(0)没有new<br>zip是将两个list的元素同步合成tuple，以短的为终结点。例如[i + j for i, j in zip(li, li2)] -&gt; [5, 7], li = [1, 2], li2 = [4, 5, 6]<br>函数中更改输入list如f(list) -&gt; list = [‘’]，不会改变原list，必须更改任意元素： list[:] = [‘’]<br>匿名函数和重载： ListNode.__lt__ = lambda x, y: (x.val &lt; y.val)<br>Python中自定义obj可以任意定义属性，所以若要给某属性赋值如node.value，一定要match类定义里边的，不是node.val = 5。  </p>
+<p>补集：<br>list(set(li) - set(li2))<br>[n for n in self.all if n not in set(li)]<br>并集：<br>list(set(li) | set(li2))<br>list(set(li + li2))<br>交集：<br>list(set(li) &amp; set(li2))<br>[n for n in li if n in set(li2)]</p>
+<p>10的6次方，不能用10^6，这是异或，用1e6或pow(10, 6)<br>self.maxDepth  </p>
+<p>用_i来表示内部使用，dict_表示与关键字不重复</p>
+<p>三个引号就是多行comment，#是一行comment<br>换行用 \ </p>
+<p><a href="https://www.runoob.com/python3/python3-basic-syntax.html" target="_blank" rel="noopener">Python基础</a><br><a href="https://visualgit.readthedocs.io/en/latest/pages/naming_convention.html" target="_blank" rel="noopener">Python命名规则</a><br><a href="https://zhuanlan.zhihu.com/p/36173202" target="_blank" rel="noopener">Python下划线</a></p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2020/05/10/lee-368/">LeetCode 368 Largest Divisible Subset</a></h1>
+  
+
+      
+        <time datetime="2020-05-10T23:21:41.197Z">2020-05-10</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/largest-divisible-subset/" target="_blank" rel="noopener">LeetCode 368 Largest Divisible Subset</a></strong></p>
+<p>Given a set of <strong>distinct</strong> positive integers, find the largest subset such that every pair (S<sub>i</sub>, S<sub>j</sub>) of elements in this subset satisfies:</p>
+<p>S<sub>i</sub> % S<sub>j</sub> = 0 or S<sub>j</sub> % S<sub>i</sub> = 0.</p>
+<p>If there are multiple solutions, return any subset is fine.</p>
+<p><strong>Example 1:</strong></p>
+<div>
+
+<pre>**Input:** <span id="example-input-1-1">[1,2,3]</span>
+**Output:** <span id="example-output-1">[1,2]</span> (of course, [1,3] will also be ok)
+</pre>
+
+<div>
+
+<p><strong>Example 2:</strong></p>
+<pre>**Input:** <span id="example-input-2-1">[1,2,4,8]</span>
+**Output:** <span id="example-output-2">[1,2,4,8]</span>
+</pre>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>一个数组，让我们求这样一个子集合，集合中的任意两个数相互取余均为0。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>由于知道子问题有助于求解考虑用DP。它就是LIS的翻版。这道题还需要打印DP路径。    </p>
+<ol>
+<li>定义dp[i]为num[i-1]这个数对应的最大可整除子集合个数。  </li>
+<li>递归式为dp[i] = max{dp[j-1] + 1}, 0&lt;j&lt;i, 若num[i-1]可被num[j-1]整除     </li>
+<li>方向为从左到右。初始值为dp = 1。  </li>
+<li>path数组记录解的下标+1，每求得一个解dp[i] = dp[j] + 1就记录对应上一层解的下标，也就是到此解的路径。</li>
+</ol>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>初始值dp = 1。  </li>
+</ol>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;Integer&gt; <span class="title">largestDivisibleSubset</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">	List&lt;Integer&gt; res = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">	<span class="keyword">if</span>(nums == <span class="keyword">null</span> || nums.length == <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> res;</span><br><span class="line">	<span class="keyword">if</span>(nums.length == <span class="number">1</span>)</span><br><span class="line">		<span class="keyword">return</span> Arrays.asList(nums[<span class="number">0</span>]);</span><br><span class="line">	Arrays.sort(nums);</span><br><span class="line">	<span class="keyword">int</span> max = Integer.MIN_VALUE;</span><br><span class="line">	<span class="keyword">int</span> maxPos = -<span class="number">1</span>;</span><br><span class="line">	<span class="keyword">int</span>[] dp = <span class="keyword">new</span> <span class="keyword">int</span>[nums.length + <span class="number">1</span>];</span><br><span class="line">	<span class="keyword">int</span>[] path = <span class="keyword">new</span> <span class="keyword">int</span>[nums.length + <span class="number">1</span>];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; dp.length; i++) <span class="comment">// remember to init to 1</span></span><br><span class="line">		dp[i] = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; dp.length; i++) &#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span>; j &lt; i; j++) &#123;</span><br><span class="line">			<span class="keyword">if</span>(nums[i-<span class="number">1</span>] % nums[j-<span class="number">1</span>] == <span class="number">0</span> &amp;&amp; dp[j] + <span class="number">1</span> &gt; dp[i]) &#123;</span><br><span class="line">				dp[i] = dp[j] + <span class="number">1</span>;</span><br><span class="line">				path[i] = j;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(dp[i] &gt; max) &#123; <span class="comment">// the biggest value might not be the last one, keep track of the start pos for the path</span></span><br><span class="line">			max = dp[i];</span><br><span class="line">			maxPos = i;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">int</span> pos = maxPos;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; dp[maxPos]; i++) &#123;</span><br><span class="line">		res.add(nums[pos-<span class="number">1</span>]);</span><br><span class="line">		pos = path[pos];</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	Collections.sort(res);</span><br><span class="line">	<span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n<sup>2</sup>)</code>，空间复杂度<code>O(n<sup>2</sup>)</code>。</p>
+</div></div>
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2020/05/10/lee-010/">LeetCode 010 Regular Expression Matching</a></h1>
+  
+
+      
+        <time datetime="2020-05-10T16:48:10.451Z">2020-05-10</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/regular-expression-matching/" target="_blank" rel="noopener">LeetCode 010 Regular Expression Matching</a></strong></p>
+<p>Given an input string (<code>s</code>) and a pattern (<code>p</code>), implement regular expression matching with support for <code>&#39;.&#39;</code> and <code>&#39;*&#39;</code>.</p>
+<pre>'.' Matches any single character.
+'*' Matches zero or more of the preceding element.
+</pre>
+
+<p>The matching should cover the <strong>entire</strong> input string (not partial).</p>
+<p><strong>Note:</strong></p>
+<ul>
+<li><code>s</code> could be empty and contains only lowercase letters <code>a-z</code>.</li>
+<li><code>p</code> could be empty and contains only lowercase letters <code>a-z</code>, and characters like <code>.</code> or <code>*</code>.</li>
+</ul>
+<p><strong>Example 1:</strong></p>
+<pre>**Input:**
+s = "aa"
+p = "a"
+**Output:** false
+**Explanation:** "a" does not match the entire string "aa".
+</pre>
+
+<p><strong>Example 2:</strong></p>
+<pre>**Input:**
+s = "aa"
+p = "a*"
+**Output:** true
+**Explanation:** '*' means zero or more of the preceding element, 'a'. Therefore, by repeating 'a' once, it becomes "aa".
+</pre>
+
+<p><strong>Example 3:</strong></p>
+<pre>**Input:**
+s = "ab"
+p = ".*"
+**Output:** true
+**Explanation:** ".*" means "zero or more (*) of any character (.)".
+</pre>
+
+<p><strong>Example 4:</strong></p>
+<pre>**Input:**
+s = "aab"
+p = "c*a*b"
+**Output:** true
+**Explanation:** c can be repeated 0 times, a can be repeated 1 time. Therefore, it matches "aab".
+</pre>
+
+<p><strong>Example 5:</strong></p>
+<pre>**Input:**
+s = "mississippi"
+p = "mis*is*p*."
+**Output:** false
+</pre>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>这道求正则表达式匹配的题和那道Leetocde 044 Wildcard Matching很类似，不同点在于*的意义不同，在之前那道题中，<br>*表示可以代替任意个数的不同字符，而这道题中的*表示之前一个字符（同样字符）可以有0-N个匹配。此题更难一些。    </p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是经典题。两字符串匹配题基本就是DP而且知道子问题答案可以推导下一个。    </p>
+<ol>
+<li>定义dp[i][j]为字符串s[i-1]和p[j-1]是否能匹配。  </li>
+<li>递归式为dp[i][j] = dp[i-1][j-1] &amp;&amp; (p[j-1] == <strong>.</strong> || s[i-1] == p[j-1])<br>OR ((dp[i-1][j] &amp;&amp; <strong>(s[i-1] == p[j-2] || p[j-2] == .)</strong>) || dp[i][<strong>j-2</strong>]) &amp;&amp; p[j-1] == *<br>第一种情况为非*，通配一样字符或.<br>第二种情况为*，如果通配<strong>（有条件：与p的前一个字符相等或p为.）</strong>就是只移动s，dp[i-1][j]。若不通配就只移动p<strong>及其前一个字符</strong>。  </li>
+<li>方向为从左到右，从上到下。初始值为dp[0][0] = true。以及若s为空，p为多个*时候，dp[0][j]=true。</li>
+</ol>
+<p>与Wildcard Matching不同之处用黑体标注了：  </p>
+<ol>
+<li>用.代替?  </li>
+<li>*情况，不匹配p移动两位而不是一位。  </li>
+<li>*情况，匹配带条件而不是无条件。  </li>
+<li>初始化用dp[0][j-2]而不是j-1。  </li>
+</ol>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>递归式含*不匹配情况dp[i][j-2]。  </li>
+<li>初始化s为空，p为多个*。此情况其实与递归式符合，因为i=1开始，所以i=0的时候，dp[i-1][j]为负值省去，<br>只取dp[i][j-2]。</li>
+<li>循环中j按理应该从2开始，因为递归式含p[j-2], 这样要初始化第1列(第0列已经初始化为False)。由于题目条件保证星号前一定有其他字符，所以<strong>p的第0位不能是星号，所以j可以从1开始</strong>   </li>
+<li>Python中任何矩阵初始化都只能用两重for循环而不能用乘号</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">isMatch</span><span class="params">(self, s: str, p: str)</span> -&gt; bool:</span></span><br><span class="line">	dp = [[<span class="keyword">False</span> <span class="keyword">for</span> _ <span class="keyword">in</span> range((len(p) + <span class="number">1</span>))] <span class="keyword">for</span> _ <span class="keyword">in</span> range(len(s) + <span class="number">1</span>)]</span><br><span class="line">	dp[<span class="number">0</span>][<span class="number">0</span>] = <span class="keyword">True</span></span><br><span class="line">	<span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">2</span>, len(dp[<span class="number">0</span>])):</span><br><span class="line">		dp[<span class="number">0</span>][j] = dp[<span class="number">0</span>][j - <span class="number">2</span>] <span class="keyword">and</span> p[j - <span class="number">1</span>] == <span class="string">'*'</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, len(dp)):</span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">1</span>, len(dp[<span class="number">0</span>])):</span><br><span class="line">			<span class="keyword">if</span> p[j - <span class="number">1</span>] != <span class="string">'*'</span>:</span><br><span class="line">				dp[i][j] = dp[i - <span class="number">1</span>][j - <span class="number">1</span>] <span class="keyword">and</span> (s[i - <span class="number">1</span>] == p[j - <span class="number">1</span>] <span class="keyword">or</span> p[j - <span class="number">1</span>] == <span class="string">'.'</span>)</span><br><span class="line">			<span class="keyword">else</span>:</span><br><span class="line">				dp[i][j] = (dp[i - <span class="number">1</span>][j] <span class="keyword">and</span> (s[i - <span class="number">1</span>] == p[j - <span class="number">2</span>] <span class="keyword">or</span> p[j - <span class="number">2</span>] == <span class="string">'.'</span>)) <span class="keyword">or</span> (dp[i][j - <span class="number">2</span>])</span><br><span class="line">	<span class="keyword">return</span> dp[<span class="number">-1</span>][<span class="number">-1</span>]</span><br></pre></td></tr></table></figure>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isMatch</span><span class="params">(String s, String p)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">boolean</span>[][] dp = <span class="keyword">new</span> <span class="keyword">boolean</span>[s.length() + <span class="number">1</span>][p.length() + <span class="number">1</span>];</span><br><span class="line">	dp[<span class="number">0</span>][<span class="number">0</span>] = <span class="keyword">true</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">2</span>; j &lt; dp[<span class="number">0</span>].length; j++)</span><br><span class="line">		<span class="keyword">if</span>(p.charAt(j-<span class="number">1</span>) == <span class="string">'*'</span>) <span class="comment">// remember s="", p="a*"</span></span><br><span class="line">			dp[<span class="number">0</span>][j] = dp[<span class="number">0</span>][j-<span class="number">2</span>];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; dp.length; i++)</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span>; j &lt; dp[<span class="number">0</span>].length; j++) &#123;</span><br><span class="line">			<span class="keyword">if</span>(p.charAt(j-<span class="number">1</span>) == <span class="string">'*'</span>)</span><br><span class="line">				dp[i][j] = (dp[i][j-<span class="number">2</span>] || ((s.charAt(i-<span class="number">1</span>) == p.charAt(j-<span class="number">2</span>) </span><br><span class="line">				|| p.charAt(j-<span class="number">2</span>) == <span class="string">'.'</span>) &amp;&amp; dp[i-<span class="number">1</span>][j]));</span><br><span class="line">			<span class="keyword">else</span></span><br><span class="line">				dp[i][j] = dp[i-<span class="number">1</span>][j-<span class="number">1</span>] &amp;&amp; (s.charAt(i-<span class="number">1</span>) == p.charAt(j-<span class="number">1</span>) </span><br><span class="line">				|| p.charAt(j-<span class="number">1</span>) == <span class="string">'.'</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	<span class="keyword">return</span> dp[dp.length -<span class="number">1</span>][dp[<span class="number">0</span>].length - <span class="number">1</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n*m)</code>，空间复杂度为<code>O(n*m)</code>。</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2020/05/10/lee-044/">LeetCode 044 Wildcard Matching</a></h1>
   
 
@@ -107,234 +1192,6 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2020/05/09/memoization/">记忆性搜索</a></h1>
-  
-
-      
-        <time datetime="2020-05-09T23:28:48.775Z">2020-05-09</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>DFS将子问题的解存于结果中。cache[st] = result. st是子问题边界。  </p>
-<h3 id="应用："><a href="#应用：" class="headerlink" title="应用："></a><strong>应用：</strong></h3><p>用于求所有可能性，且这些可能性有重复，记忆性搜索可以用于剪枝。  </p>
-<ol>
-<li>Leetcode 139</li>
-<li>Leetcode 140</li>
-</ol>
-<p>与DP的界线：  </p>
-<ol>
-<li>状态转移特别麻烦如有循环依赖, 不是顺序性。如棋盘，上下左右四个方向如1197 Minimum Knight Moves和word ladder  </li>
-<li>初始化状态不是特别容易找到</li>
-</ol>
-<h3 id="算法步骤："><a href="#算法步骤：" class="headerlink" title="算法步骤："></a><strong>算法步骤：</strong></h3><ol>
-<li>key为子问题索引st，value为子问题的解。不含path和res因为类似于Catalan，用子问题返回结果来组成此轮结果。f(input, st, endIndex, cache) -&gt; List    </li>
-<li>紧跟终结条件，若在cache中，返回子问题的解。  </li>
-<li>循环结束，将子问题的结果存于cache。  </li>
-</ol>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>cache是一个解的集合，所以<strong>终止条件返回也需要是一个list</strong></li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dfs</span><span class="params">(self, input, cache)</span> -&gt; List[int]:</span></span><br><span class="line">	<span class="keyword">if</span> &lt;终止条件&gt;:</span><br><span class="line">		<span class="keyword">return</span> [] <span class="comment"># remember to use list</span></span><br><span class="line">	<span class="keyword">if</span> input <span class="keyword">in</span> cache:</span><br><span class="line">		<span class="keyword">return</span> cache[input]</span><br><span class="line">	res = []</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(input)):</span><br><span class="line">		anwser = self.dfs(input[:i], cache)</span><br><span class="line">		res.append(anwser)</span><br><span class="line">	cache[input] = res</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(解大小)</code>，空间复杂度<code>O(解大小)</code>.</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2020/05/09/lee-140/">LeetCode 140 Word Break II</a></h1>
-  
-
-      
-        <time datetime="2020-05-09T23:22:25.398Z">2020-05-09</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/word-break-ii/" target="_blank" rel="noopener">LeetCode 140 Word Break II</a></strong></p>
-<div><br><br>Given a <strong>non-empty</strong> string <em>s</em> and a dictionary <em>wordDict</em> containing a list of <strong>non-empty</strong> words, add spaces in <em>s</em> to construct a sentence where each word is a valid dictionary word. Return all such possible sentences.<br><br><strong>Note:</strong><br><br><em>   The same word in the dictionary may be reused multiple times in the segmentation.
-</em>   You may assume the dictionary does not contain duplicate words.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> s = “<code>catsanddog</code>“<br>wordDict = <code>[&quot;cat&quot;, &quot;cats&quot;, &quot;and&quot;, &quot;sand&quot;, &quot;dog&quot;]</code><br><strong>Output:</strong> <code>[
-  &quot;cats and dog&quot;,
-  &quot;cat sand dog&quot;
-]</code><br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> s = “pineapplepenapple”<br>wordDict = [“apple”, “pen”, “applepen”, “pine”, “pineapple”]<br><strong>Output:</strong> [<br>  “pine apple pen apple”,<br>  “pineapple pen apple”,<br>  “pine applepen apple”<br>]<br><strong>Explanation:</strong> Note that you are allowed to reuse a dictionary word.<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> s = “catsandog”<br>wordDict = [“cats”, “dog”, “sand”, “and”, “cat”]<br><strong>Output:</strong> []</pre><br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>一个字符串s，求被“字典集合”（wordDict）中的单词拼接的所有方案。  </p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是经典题。求所有可能性想到DFS，前面Lintcode 683提到可能会有重复解。所以用Cache。    </p>
-<p><strong>Cache模板：</strong>  </p>
-<ol>
-<li>key为子问题索引st，value为子问题的解。不含path和res因为类似于Catalan，用子问题返回结果来组成此轮结果。f(input, st, endIndex, cache)  </li>
-<li>紧跟终结条件，若在cache中，返回子问题的解。  </li>
-<li>循环结束，将子问题的结果存于cache。  </li>
-</ol>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>终止条件返回[‘’]而不是[]，正如L017，空字符串作为初始结果。返回到上层要strip()    </li>
-<li>子问题用f=word + f并不是f=f + word, 这样最后结果避免反转。</li>
-<li>s[:i + 1]判断是否在字典中，而不是s[:i]，单词包括整个字符串。  </li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">wordBreak</span><span class="params">(self, s: str, wordDict: List[str])</span> -&gt; List[str]:</span></span><br><span class="line">	wordSet = set()</span><br><span class="line">	<span class="keyword">for</span> word <span class="keyword">in</span> wordDict:</span><br><span class="line">		wordSet.add(word)</span><br><span class="line">	cache = &#123;&#125;</span><br><span class="line">	res = self.dfs(s, wordSet, cache)</span><br><span class="line">	<span class="keyword">return</span> [] <span class="keyword">if</span> len(res) == <span class="number">1</span> <span class="keyword">and</span> <span class="keyword">not</span> res[<span class="number">0</span>] <span class="keyword">else</span> res</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dfs</span><span class="params">(self, s, wordSet, cache)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> s:</span><br><span class="line">		<span class="keyword">return</span> [<span class="string">''</span>]</span><br><span class="line">	<span class="keyword">if</span> s <span class="keyword">in</span> cache:</span><br><span class="line">		<span class="keyword">return</span> cache[s]</span><br><span class="line">	res = []</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(s)):</span><br><span class="line">		<span class="keyword">if</span> s[:i + <span class="number">1</span>] <span class="keyword">not</span> <span class="keyword">in</span> wordSet:</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		li = self.dfs(s[i + <span class="number">1</span>:], wordSet, cache)</span><br><span class="line">		<span class="keyword">for</span> ss <span class="keyword">in</span> li:</span><br><span class="line">			res.append((s[:i + <span class="number">1</span>] + <span class="string">' '</span> + ss).strip())</span><br><span class="line"></span><br><span class="line">	cache[s] = res</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>将两个输入都转换成小写。  </li>
-<li>复制子问题的解，不能直接在解List<string>上编辑。</string></li>
-</ol>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;String&gt; <span class="title">wordBreak</span><span class="params">(String s, List&lt;String&gt; wordDict)</span> </span>&#123;</span><br><span class="line">	List&lt;String&gt; res = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">	<span class="keyword">if</span>(s == <span class="keyword">null</span> || s.isEmpty())</span><br><span class="line">		<span class="keyword">return</span> res;</span><br><span class="line">	Set&lt;String&gt; wordDictLower = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">	<span class="keyword">for</span>(String c : wordDict)</span><br><span class="line">		wordDictLower.add(c.toLowerCase());</span><br><span class="line">	s = s.toLowerCase();</span><br><span class="line">	Map&lt;Integer, List&lt;String&gt;&gt; cache = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">	<span class="keyword">return</span> dfs(s, wordDictLower, s.length(), cache);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">List&lt;String&gt; <span class="title">dfs</span><span class="params">(String s, Set&lt;String&gt; wordDict, <span class="keyword">int</span> st, Map&lt;Integer, List&lt;String&gt;&gt; cache)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(st == <span class="number">0</span>) </span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">new</span> ArrayList&lt;&gt;(Arrays.asList(<span class="string">""</span>));</span><br><span class="line">	<span class="keyword">if</span>(cache.containsKey(st))</span><br><span class="line">		<span class="keyword">return</span> cache.get(st);</span><br><span class="line">	List&lt;String&gt; result = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; st; i++) &#123;</span><br><span class="line">		String word = s.substring(i, st);</span><br><span class="line">		<span class="keyword">if</span>(!wordDict.contains(word))</span><br><span class="line">			<span class="keyword">continue</span>;</span><br><span class="line"></span><br><span class="line">		List&lt;String&gt; sub = dfs(s, wordDict, i, cache); </span><br><span class="line">		<span class="comment">// copy solution for subproblem, don't edit on sub</span></span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; sub.size(); j++)</span><br><span class="line">			result.add((sub.get(j) + <span class="string">" "</span> + word).trim());</span><br><span class="line">	&#125;</span><br><span class="line">	cache.put(st, result);</span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(解大小)</code>，空间复杂度为<code>O(解大小)</code>。</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2020/05/09/lin-683/">LintCode 683 Word Break III</a></h1>
-  
-
-      
-        <time datetime="2020-05-09T20:05:20.549Z">2020-05-09</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://www.lintcode.com/problem/word-break-iii/" target="_blank" rel="noopener">LintCode 683 Word Break III</a></strong></p>
-<div><br><br>Give a dictionary of words and a sentence with all whitespace removed, return the number of sentences you can form by inserting whitespaces to the sentence so that each word can be found in the dictionary.<br><br><strong>Example 1:</strong><br><br><pre><br>Input:<br>“CatMat”<br>[“Cat”, “Mat”, “Ca”, “tM”, “at”, “C”, “Dog”, “og”, “Do”]<br>Output: 3<br>Explanation:<br>we can form 3 sentences, as follows:<br>“CatMat” = “Cat” + “Mat”<br>“CatMat” = “Ca” + “tM” + “at”<br>“CatMat” = “C” + “at” + “Mat”<br></pre><br><br><strong>Example 2:</strong><br><br><pre><br>Input:<br>“a”<br>[]<br>Output: 0<br></pre><br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>一个字符串s，被“字典集合”（wordDict）中的单词拼接而成的可能性种数。  </p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是经典题。如果知道s[0:n-1)很容易知道s[0:n)是否有解，既然和子问题有关，就用DP。  </p>
-<ol>
-<li>定义dp[i]为字符串s[0,i)是合法分解种数。</li>
-<li>判断一个字符串是否可以合法分解，方案是尝试在每一位进行分解，若其中一个可分解，即有解，加入到dp[i]中。<br>递归式为dp[i] += dp[k] * isWord(s[k:i)), 0 &lt;= k &lt; i. </li>
-<li>方向为从左到右i=0..n, 初始值为dp[0] = 1. </li>
-</ol>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>将两个输入都转换成小写。 </li>
-<li>dp[n+1]而不是dp[n]，而for循环从1开始。  </li>
-<li>递归中dp[i]用+操作符。  </li>
-</ol>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">wordBreak3</span><span class="params">(String s, Set&lt;String&gt; dict)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(s == <span class="keyword">null</span> || <span class="string">""</span>.equals(s))</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	</span><br><span class="line">	Set&lt;String&gt; lowerDict = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">	<span class="keyword">for</span>(String c : dict)</span><br><span class="line">		lowerDict.add(c.toLowerCase());</span><br><span class="line">	dict = lowerDict;</span><br><span class="line">	s = s.toLowerCase();</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">int</span>[] dp = <span class="keyword">new</span> <span class="keyword">int</span>[s.length() + <span class="number">1</span>];</span><br><span class="line">	dp[<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// dp[i][j] = sum(dp[i][k] * isWord(s[k,j])), i=0..n-1, j=i..n-1</span></span><br><span class="line">	<span class="comment">// dp[0][n-1] = sum(dp[0][k] * isWord(s[k,n-1]))</span></span><br><span class="line">	<span class="comment">// dp[n] = sum(dp[k] * isWord(s[k,n]))</span></span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= s.length(); i++) &#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; i; k++) &#123;</span><br><span class="line">			dp[i] += dp[k] * (dict.contains(s.substring(k, i)) ? <span class="number">1</span> : <span class="number">0</span>); </span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> dp[s.length()];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n<sup>2</sup>)</code>，空间复杂度为<code>O(n)</code>。  </p>
-<p>这道题一开始走过一些弯路，首先我觉得类似于Catalan算法，左右半部都是子问题，但其实这属于单边问题。所以写了以下算法：  </p>
-<h3 id="Java代码：-1"><a href="#Java代码：-1" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">wordBreak3_wrong</span><span class="params">(String s, Set&lt;String&gt; dict)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(s == <span class="keyword">null</span> || <span class="string">""</span>.equals(s))</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// dp[i][j] = sum(dp[i][k] * dp[k][j])</span></span><br><span class="line">	<span class="keyword">int</span>[][] dp = <span class="keyword">new</span> <span class="keyword">int</span>[s.length() + <span class="number">1</span>][s.length() + <span class="number">1</span>];</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// use "ab" as an example</span></span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> len = <span class="number">1</span>; len &lt;= s.length(); len++) &#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; s.length() - len + <span class="number">1</span>; i++) &#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt; i + len; j++) &#123;</span><br><span class="line">				<span class="comment">//"a","b"</span></span><br><span class="line">				dp[i][i+len] += dp[i][j] * dp[j][i+len];    		</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="comment">//"ab"</span></span><br><span class="line">			<span class="keyword">if</span>(dict.contains(s.substring(i, i+len)))</span><br><span class="line">				dp[i][i+len]++;</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> dp[<span class="number">0</span>][s.length()];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>但这个方法会有重复解，比如<br>“abc”, “a”,”b”,”c”<br>-&gt; <code>dp[&quot;ab&quot;] * dp[&quot;c&quot;] = 1</code><br>-&gt; <code>dp[&quot;a&quot;] * dp[&quot;bc&quot;] = 1</code><br>所以解重复，因为这问题是单边子问题而不是Catalan问题。<br>更改版本为单边子问题，一开始用dp[n]导致初始化稍复杂，其实初始化可以并入到递归式，只要用dp[n+1]即可。  </p>
-<h3 id="Java代码：-2"><a href="#Java代码：-2" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">wordBreak32</span><span class="params">(String s, Set&lt;String&gt; dict)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(s == <span class="keyword">null</span> || <span class="string">""</span>.equals(s))</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">int</span>[] dp = <span class="keyword">new</span> <span class="keyword">int</span>[s.length()];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; s.length(); i++)</span><br><span class="line">		dp[i] = dict.contains(s.substring(<span class="number">0</span>, i + <span class="number">1</span>)) ? <span class="number">1</span> : <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; s.length(); i++) &#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; i; k++) &#123;</span><br><span class="line">			dp[i] += dp[k] * (dict.contains(s.substring(k + <span class="number">1</span>, i + <span class="number">1</span>)) ? <span class="number">1</span> : <span class="number">0</span>); </span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> dp[s.length() - <span class="number">1</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2020/05/09/lee-139/">LeetCode 139 Word Break</a></h1>
-  
-
-      
-        <time datetime="2020-05-09T18:13:14.876Z">2020-05-09</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/word-break/" target="_blank" rel="noopener">LeetCode 139 Word Break</a></strong></p>
-<div><br><br>Given a <strong>non-empty</strong> string <em>s</em> and a dictionary <em>wordDict</em> containing a list of <strong>non-empty</strong> words, determine if <em>s</em> can be segmented into a space-separated sequence of one or more dictionary words.<br><br><strong>Note:</strong><br><br><em>   The same word in the dictionary may be reused multiple times in the segmentation.
-</em>   You may assume the dictionary does not contain duplicate words.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> s = “leetcode”, wordDict = [“leet”, “code”]<br><strong>Output:</strong> true<br><strong>Explanation:</strong> Return true because <code>&quot;leetcode&quot;</code> can be segmented as <code>&quot;leet code&quot;</code>.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> s = “applepenapple”, wordDict = [“apple”, “pen”]<br><strong>Output:</strong> true<br><strong>Explanation:</strong> Return true because <code>&quot;</code>applepenapple<code>&quot;</code> can be segmented as <code>&quot;</code>apple pen apple<code>&quot;</code>.<br>             Note that you are allowed to reuse a dictionary word.<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> s = “catsandog”, wordDict = [“cats”, “dog”, “sand”, “and”, “cat”]<br><strong>Output:</strong> false<br></pre><br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>一个字符串s，是否能够被“字典集合”（wordDict）中的单词拼接而成。  </p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是经典题。如果知道s[0:n-1)很容易知道s[0:n)是否有解，既然和子问题有关，就用DP。  </p>
-<ol>
-<li>定义dp[i]为字符串s[0,i)是否可以合法分解。</li>
-<li>判断一个字符串是否可以合法分解，方案是尝试在每一位进行分解，若其中一个可分解，即有解。<br>递归式为dp[i] |= dp[k] &amp;&amp; isWord(s[k:i)), 0 &lt;= k &lt; i. </li>
-<li>方向为从左到右i=0..n, 初始值为dp[0] = true. </li>
-</ol>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>初始值dp[0] = True。  </li>
-<li>递归中dp[i]用或操作符。</li>
-<li>s[j:i] in word_set不要忘记上限为i</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">wordBreak</span><span class="params">(self, s: str, wordDict: List[str])</span> -&gt; bool:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> s:</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">	word_set = set(wordDict)</span><br><span class="line">	dp = [<span class="keyword">False</span>] * (len(s) + <span class="number">1</span>)</span><br><span class="line">	dp[<span class="number">0</span>] = <span class="keyword">True</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, len(dp)):</span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">0</span>, i):</span><br><span class="line">			dp[i] |= dp[j] <span class="keyword">and</span> s[j:i] <span class="keyword">in</span> word_set</span><br><span class="line">	<span class="keyword">return</span> dp[len(dp) - <span class="number">1</span>]</span><br></pre></td></tr></table></figure>
-<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>将两个输入都转换成小写。  </li>
-<li>递归中dp[i]用或操作符。</li>
-</ol>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">wordBreak</span><span class="params">(String s, List&lt;String&gt; wordDict)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(s == <span class="keyword">null</span> || s.isEmpty() || wordDict == <span class="keyword">null</span> || wordDict.size() == <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	Set&lt;String&gt; wordDictLower = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">	<span class="keyword">for</span>(String c : wordDict)</span><br><span class="line">		wordDictLower.add(c.toLowerCase());</span><br><span class="line">	s = s.toLowerCase();</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">boolean</span>[] dp = <span class="keyword">new</span> <span class="keyword">boolean</span>[s.length() + <span class="number">1</span>];</span><br><span class="line">	dp[<span class="number">0</span>] = <span class="keyword">true</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; dp.length; i++)</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; i; k++) &#123;<span class="comment">//"a"</span></span><br><span class="line">			dp[i] |= dp[k] &amp;&amp; wordDictLower.contains(s.substring(k, i));</span><br><span class="line">		&#125;</span><br><span class="line">	<span class="keyword">return</span> dp[dp.length - <span class="number">1</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n<sup>2</sup>)</code>，空间复杂度为<code>O(n)</code>。</p>
-<hr>
-<h3 id="算法II解题思路："><a href="#算法II解题思路：" class="headerlink" title="算法II解题思路："></a><strong>算法II解题思路：</strong></h3><p>这题也可以额用DFS来解。如果可以用DP就尽量用DP，只有求所有可能性才只能用DFS而不能用DP。<br>这道题递归子问题dfs[:n]为子串[0:n)是否可合法拆解。对于子问题而言，需要对其范围内i=[0:st)的每个可能位置分解<br>dfs[:i) + word[i:st)从而求出dfs(st)的解，只有任一分解成功，dfs(st)=true，否则false。 </p>
-<p>Cache的应用场景： 如果子问题重复就要用Cache。<br>例如dfs(10)=dfs(9)+s[9:9] = (dfs(8) + s[8:8]) + s[9:9]<br>           =dfs(8)+s[8:9]<br>dfs(8)由第一层递归第二个循环s[8:9]和第二层递归s[9:9]达到，这是重复的子问题dfs(8)。如果不cache，dfs(8)的求解<br>是重复的。  </p>
-<p><strong>Cache模板：</strong>  </p>
-<ol>
-<li>key为子问题索引st，value为子问题的解。  </li>
-<li>紧跟终结条件，若在cache中，返回子问题的解。  </li>
-<li>循环结束，将子问题的结果存于cache。  </li>
-</ol>
-<h3 id="注意事项：-2"><a href="#注意事项：-2" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>将两个输入都转换成小写。</li>
-<li>递归中先查询词是否在字典中再递归。如果顺序调转就会LTE，因为这些子问题是白费的。  </li>
-<li>递归终结条件为st==0而不是st==s.length()因为子问题递归从右到左。  </li>
-</ol>
-<h3 id="Java代码：-1"><a href="#Java代码：-1" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">wordBreakDFS</span><span class="params">(String s, List&lt;String&gt; wordDict)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(s == <span class="keyword">null</span> || s.isEmpty() || wordDict == <span class="keyword">null</span> || wordDict.size() == <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	Set&lt;String&gt; wordDictLower = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">	<span class="keyword">for</span>(String c : wordDict)</span><br><span class="line">		wordDictLower.add(c.toLowerCase());</span><br><span class="line">	s = s.toLowerCase();</span><br><span class="line">	Map&lt;Integer, Boolean&gt; cache = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">	<span class="keyword">return</span> dfs(s, wordDictLower, s.length(), cache);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// subproblem's answer dfs[:st)</span></span><br><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">dfs</span><span class="params">(String s, Set&lt;String&gt; wordDict, <span class="keyword">int</span> st, Map&lt;Integer, Boolean&gt; cache)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(st == <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">	<span class="keyword">if</span>(cache.containsKey(st))</span><br><span class="line">		<span class="keyword">return</span> cache.get(st);</span><br><span class="line">	<span class="keyword">boolean</span> re = <span class="keyword">false</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; st; i++) &#123;</span><br><span class="line">		<span class="keyword">if</span>(wordDict.contains(s.substring(i, st)) &amp;&amp; dfs(s, wordDict, i, cache))</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	cache.put(st, re);</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n<sup>2</sup>)</code>，空间复杂度为<code>O(n)</code>。</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -359,23 +1216,23 @@
   <ul class="entry">
     
       <li>
+        <a href="/2022/02/06/leetcode-549-binary-tree-longest-consecutive-sequence-ii/">LeetCode 549 Binary Tree Longest Consecutive Sequence II</a>
+      </li>
+    
+      <li>
+        <a href="/2022/02/06/leetcode-298-binary-tree-longest-consecutive-sequence/">LeetCode 298 Binary Tree Longest Consecutive Sequence</a>
+      </li>
+    
+      <li>
+        <a href="/2022/02/06/leetcode-785-is-graph-bipartite/">LeetCode 785 Is Graph Bipartite?</a>
+      </li>
+    
+      <li>
+        <a href="/2022/02/06/leetcode-770-basic-calculator-iv/">LeetCode 770. Basic Calculator IV</a>
+      </li>
+    
+      <li>
         <a href="/2022/01/30/karat-002/">Karat 002 Longest Common Continuous Subarray</a>
-      </li>
-    
-      <li>
-        <a href="/2022/01/30/leetcode-518-coin-change-2/">LeetCode 518 Coin Change 2</a>
-      </li>
-    
-      <li>
-        <a href="/2022/01/29/leetcode-259-3sum-smaller/">LeetCode 259 3Sum Smaller</a>
-      </li>
-    
-      <li>
-        <a href="/2022/01/29/leetcode-628-maximum-product-of-three-numbers/">LeetCode 628 Maximum Product of Three Numbers</a>
-      </li>
-    
-      <li>
-        <a href="/2022/01/29/leetcode-1143-longest-common-subsequence/">LeetCode 1143 Longest Common Subsequence</a>
       </li>
     
   </ul>
@@ -388,7 +1245,7 @@
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 13.91px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.48px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 16.96px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 13.48px;">Binary Tree</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10.43px;">Bit Manipulation</a> <a href="/tags/Bloomberg/" style="font-size: 10.43px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.83px;">Breadth-first Search</a> <a href="/tags/Citadel/" style="font-size: 10.87px;">Citadel</a> <a href="/tags/Classic/" style="font-size: 19.13px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 14.78px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.3px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.3px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 10.43px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.57px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 19.13px;">Facebook</a> <a href="/tags/Google/" style="font-size: 11.74px;">Google</a> <a href="/tags/Graph/" style="font-size: 12.17px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.17px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.96px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 13.48px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 13.04px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.3px;">Iterator</a> <a href="/tags/Karat/" style="font-size: 10.43px;">Karat</a> <a href="/tags/Knowledge-Base/" style="font-size: 16.96px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 15.65px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.61px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 18.26px;">Math</a> <a href="/tags/Matrix/" style="font-size: 16.09px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.3px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.87px;">Merge Sort</a> <a href="/tags/Microsoft/" style="font-size: 10px;">Microsoft</a> <a href="/tags/Mtrix/" style="font-size: 10px;">Mtrix</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 16.52px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.87px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.43px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10.87px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.3px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.43px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 17.39px;">Stack</a> <a href="/tags/String/" style="font-size: 18.7px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.3px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 15.22px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.3px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.35px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.43px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.43px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
+    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 14.09px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.64px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 16.82px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 13.64px;">Binary Tree</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10.45px;">Bit Manipulation</a> <a href="/tags/Bloomberg/" style="font-size: 10.45px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.73px;">Breadth-first Search</a> <a href="/tags/Citadel/" style="font-size: 10.91px;">Citadel</a> <a href="/tags/Classic/" style="font-size: 19.09px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.36px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.36px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 10.45px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.55px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 19.09px;">Facebook</a> <a href="/tags/Google/" style="font-size: 11.82px;">Google</a> <a href="/tags/Graph/" style="font-size: 12.73px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.27px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.82px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 13.64px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 13.18px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.36px;">Iterator</a> <a href="/tags/Karat/" style="font-size: 10.91px;">Karat</a> <a href="/tags/Knowledge-Base/" style="font-size: 16.82px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 15.45px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.73px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 18.18px;">Math</a> <a href="/tags/Matrix/" style="font-size: 15.91px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.36px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.91px;">Merge Sort</a> <a href="/tags/Microsoft/" style="font-size: 10px;">Microsoft</a> <a href="/tags/Mtrix/" style="font-size: 10px;">Mtrix</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 16.36px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.91px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.45px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10.91px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.36px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.45px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 17.27px;">Stack</a> <a href="/tags/String/" style="font-size: 18.64px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.36px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 15.91px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.36px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.55px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.45px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.45px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
   </div>
 </div>
 
