@@ -53,6 +53,55 @@
     <header>
       
   
+    <h1 class="title"><a href="/2022/01/21/leetcode-304-range-sum-query-2d-immutable/">LeetCode 304 Range Sum Query 2D - Immutable</a></h1>
+  
+
+      
+        <time datetime="2022-01-21T10:03:16.136Z">2022-01-21</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/range-sum-query-2d-immutable/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>Given a 2D matrix <code>matrix</code>, handle multiple queries of the following type:<br><br><em>   Calculate the <strong>sum</strong> of the elements of <code>matrix</code> inside the rectangle defined by its <strong>upper left corner</strong> <code>(row1, col1)</code> and <strong>lower right corner</strong> <code>(row2, col2)</code>.<br><br>Implement the NumMatrix class:
+
+</em>   <code>NumMatrix(int[][] matrix)</code> Initializes the object with the integer matrix <code>matrix</code>.<br><em>   <code>int sumRegion(int row1, int col1, int row2, int col2)</code> Returns the <strong>sum</strong> of the elements of <code>matrix</code> inside the rectangle defined by its <strong>upper left corner</strong> <code>(row1, col1)</code> and <strong>lower right corner</strong> <code>(row2, col2)</code>.<br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/03/14/sum-grid.jpg" alt=""><br><br><pre><strong>Input</strong><br>[“NumMatrix”, “sumRegion”, “sumRegion”, “sumRegion”]<br>[[[[3, 0, 1, 4, 2], [5, 6, 3, 2, 1], [1, 2, 0, 1, 5], [4, 1, 0, 1, 7], [1, 0, 3, 0, 5]]], [2, 1, 4, 3], [1, 1, 2, 2], [1, 2, 2, 4]]<br><strong>Output</strong><br>[null, 8, 11, 12]<br><br><strong>Explanation</strong><br>NumMatrix numMatrix = new NumMatrix([[3, 0, 1, 4, 2], [5, 6, 3, 2, 1], [1, 2, 0, 1, 5], [4, 1, 0, 1, 7], [1, 0, 3, 0, 5]]);<br>numMatrix.sumRegion(2, 1, 4, 3); // return 8 (i.e sum of the red rectangle)<br>numMatrix.sumRegion(1, 1, 2, 2); // return 11 (i.e sum of the green rectangle)<br>numMatrix.sumRegion(1, 2, 2, 4); // return 12 (i.e sum of the blue rectangle)<br></pre><br><br><strong>Constraints:</strong>
+
+</em>   <code>m == matrix.length</code><br><em>   <code>n == matrix[i].length</code>
+</em>   <code>1 &lt;= m, n &lt;= 200</code><br><em>   <code>-10&lt;sup&gt;5&lt;/sup&gt; &lt;= matrix[i][j] &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code>
+</em>   <code>0 &lt;= row1 &lt;= row2 &lt; m</code><br><em>   <code>0 &lt;= col1 &lt;= col2 &lt; n</code>
+</em>   At most <code>10&lt;sup&gt;4&lt;/sup&gt;</code> calls will be made to <code>sumRegion</code>.<br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求子矩阵和</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>计算presum公式:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dp[i][j] = matrix[i-1][j-1] + dp[i-1][j] + dp[i][j] - dp[i-1][j-1]</span><br></pre></td></tr></table></figure></p>
+<p>计算子矩阵公式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">res = presum[x][y] - left - top + diag</span><br></pre></td></tr></table></figure></p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>dp有左上边界，计算子矩阵注意dp和输入差1</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">NumMatrix</span><span class="params">(TestCases)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, matrix: List[List[int]])</span>:</span></span><br><span class="line">        self.dp = [[<span class="number">0</span> <span class="keyword">for</span> _ <span class="keyword">in</span> range(len(matrix[<span class="number">0</span>]) + <span class="number">1</span>)] <span class="keyword">for</span> _ <span class="keyword">in</span> range(len(matrix) + <span class="number">1</span>)]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, len(self.dp)):</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">1</span>, len(self.dp[<span class="number">0</span>])):</span><br><span class="line">                self.dp[i][j] = matrix[i - <span class="number">1</span>][j - <span class="number">1</span>] + self.dp[i - <span class="number">1</span>][j] + self.dp[i][j - <span class="number">1</span>] - self.dp[i - <span class="number">1</span>][j - <span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">sumRegion</span><span class="params">(self, row1: int, col1: int, row2: int, col2: int)</span> -&gt; int:</span></span><br><span class="line">        <span class="keyword">return</span> self.dp[row2 + <span class="number">1</span>][col2 + <span class="number">1</span>] - self.dp[row2 + <span class="number">1</span>][col1] - self.dp[row1][col2 + <span class="number">1</span>] + self.dp[row1][col1]</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(1)</code>，空间复杂度<code>O(nm)</code>  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2022/01/20/leetcode-721-accounts-mergesolution/">LeetCode 721 Accounts Merge</a></h1>
   
 
@@ -235,58 +284,6 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2022/01/19/leetcode-282-expression-add-operators/">LeetCode 282 Expression Add Operators</a></h1>
-  
-
-      
-        <time datetime="2022-01-20T07:00:41.425Z">2022-01-19</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/expression-add-operators" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>Given a string <code>num</code> that contains only digits and an integer <code>target</code>, return <em><strong>all possibilities</strong> to insert the binary operators</em> <code>&#39;+&#39;</code><em>,</em> <code>&#39;-&#39;</code><em>, and/or</em> <code>&#39;*&#39;</code> <em>between the digits of</em> <code>num</code> <em>so that the resultant expression evaluates to the</em> <code>target</code> <em>value</em>.<br><br>Note that operands in the returned expressions <strong>should not</strong> contain leading zeros.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> num = “123”, target = 6<br><strong>Output:</strong> [“1<em>2</em>3”,”1+2+3”]<br><strong>Explanation:</strong> Both “1<em>2</em>3” and “1+2+3” evaluate to 6.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> num = “232”, target = 8<br><strong>Output:</strong> [“2<em>3+2”,”2+3</em>2”]<br><strong>Explanation:</strong> Both “2<em>3+2” and “2+3</em>2” evaluate to 8.<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> num = “3456237490”, target = 9191<br><strong>Output:</strong> []<br><strong>Explanation:</strong> There are no expressions that can be created from “3456237490” to evaluate to 9191.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= num.length &lt;= 10</code>
-</em>   <code>num</code> consists of only digits.<br>*   <code>-2&lt;sup&gt;31&lt;/sup&gt; &lt;= target &lt;= 2&lt;sup&gt;31&lt;/sup&gt; - 1</code><br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求一串数字加入加减乘能得到target的所有可能性</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>求所有可能用DFS。属于分割型DFS，在数位之间加符号，数位可以是1个到多个。<br>一轮递归分割出符号 + 数字<br>另一种选择是数字 + 符号，但需要额外变量sign，因为不能立刻计算到结果。也不符合正常逻辑。所以选择前者。</p>
-<p>由于运算都是二元，也就是用上述分割法，第一个数要特别处理。所以DFS中要特别处理第一个数。这样可以开始写加减。引入prev_res作为DFS参数，这样只要prev_res 加减 该轮数字即可得到该轮结果。用DFS模板5个标准参数外加prev_res：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">def dfs(self, num, st, target, prev_res, path, res):</span><br></pre></td></tr></table></figure></p>
-<p>这样只处理加减的DFS比较容易实现  </p>
-<p>最大难点在于乘法，参考LeetCode 227 Basic Calculator II，加减和乘除属于两层计算需要分别处理，所以引入<strong>新参数prev_multi_res，用于保存乘法结果，而刚才的命名为prev_add_res保存加减乘的全部结果</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">def dfs(self, num, st, target, prev_add_res, prev_multi_res, path, res):</span><br></pre></td></tr></table></figure></p>
-<p>举例2+3*4，按照原来的逻辑会计算到2+3=5，但此时如果遇到乘号，就要重新计算加法结果，先减去乘法结果，退回到2，再计算3*4=12这是乘法结果，再加回2得到新加法结果。进一步理解prev_multi_res，如果该轮是加减法，仍要将该轮的数作为prev_multi_res传到下轮DFS，因为如果下一轮是乘法，它就是第一个乘法的数。</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><ol>
-<li>先实现加减法</li>
-<li>再实现乘法</li>
-</ol>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>分割型DFS，选择每轮递归分割符号 + 数字。由于运算都是二元，<strong>特别处理第一个数</strong></li>
-<li>引入参数prev_add_res, prev_multi_res. <strong>prev_multi_res若是加减，用(+/-)cur_num, 否则用乘法结果prev_multi_res * cur_num</strong>。注意若是减法cur_num用负号</li>
-<li>分割时数字不能有前缀0</li>
-<li>prev_res不用恢复状态因为是标量</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">addOperators</span><span class="params">(self, num: str, target: int)</span> -&gt; List[str]:</span></span><br><span class="line">	res = []</span><br><span class="line">	self.dfs(num, <span class="number">0</span>, target, <span class="number">0</span>, <span class="number">0</span>, <span class="string">''</span>, res)</span><br><span class="line">	<span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dfs</span><span class="params">(self, num, st, target, prev_add_res, prev_multi_res, path, res)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> st == len(num):</span><br><span class="line">		<span class="keyword">if</span> target == prev_add_res:</span><br><span class="line">			res.append(path)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(st, len(num)):</span><br><span class="line">		<span class="keyword">if</span> i &gt; st <span class="keyword">and</span> num[st] == <span class="string">'0'</span>: <span class="comment"># remember</span></span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		cur_num = int(num[st:i + <span class="number">1</span>])</span><br><span class="line">		<span class="keyword">if</span> <span class="keyword">not</span> path: <span class="comment"># remember</span></span><br><span class="line">		    <span class="comment"># first number, same as + case</span></span><br><span class="line">			self.dfs(num, i + <span class="number">1</span>, target, prev_add_res + cur_num, cur_num, str(cur_num), res)</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			self.dfs(num, i + <span class="number">1</span>, target, prev_add_res + cur_num, cur_num, path + <span class="string">'+'</span> + str(cur_num), res) <span class="comment"># use cur_num rather than cur</span></span><br><span class="line">			self.dfs(num, i + <span class="number">1</span>, target, prev_add_res - cur_num, -cur_num, path + <span class="string">'-'</span> + str(cur_num), res) <span class="comment"># -cur_num rather than cur_num</span></span><br><span class="line">			self.dfs(num, i + <span class="number">1</span>, target, (prev_add_res - prev_multi_res) + prev_multi_res * cur_num, prev_multi_res * cur_num, path + <span class="string">'*'</span> + str(cur_num), res) <span class="comment"># prev_multi_res * cur_num not cur_num</span></span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(4<sup>n</sup>)</code>，空间复杂度<code>O(n)</code>, 因为每个字符之间都有不加操作符，加3个操作符，所以是4，有n-1个间隔  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -311,6 +308,10 @@
   <ul class="entry">
     
       <li>
+        <a href="/2022/02/12/leetcode-498-diagonal-traverse/">LeetCode 498 Diagonal Traverse</a>
+      </li>
+    
+      <li>
         <a href="/2022/02/08/leetcode-1779-find-nearest-point-that-has-the-same-x-or-y-coordinate/">LeetCode 1779 Find Nearest Point That Has the Same X or Y Coordinate</a>
       </li>
     
@@ -324,10 +325,6 @@
     
       <li>
         <a href="/2022/02/07/leetcode-1448-count-good-nodes-in-binary-tree/">LeetCode 1448 Count Good Nodes in Binary Tree</a>
-      </li>
-    
-      <li>
-        <a href="/2022/02/07/leetcode-1304-find-n-unique-integers-sum-up-to-zero/">LeetCode 1304 Find N Unique Integers Sum up to Zero</a>
       </li>
     
   </ul>
