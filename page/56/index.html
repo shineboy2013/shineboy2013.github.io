@@ -53,6 +53,216 @@
     <header>
       
   
+    <h1 class="title"><a href="/2020/04/26/lee-272/">LeetCode 272 Closest Binary Search Tree Value II</a></h1>
+  
+
+      
+        <time datetime="2020-04-26T18:31:21.211Z">2020-04-26</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/closest-binary-search-tree-value-ii/" target="_blank" rel="noopener">LeetCode 272 Closest Binary Search Tree Value II</a></strong></p>
+<p>Given a non-empty binary search tree and a target value, find <em>k</em> values in the BST that are closest to the target.</p>
+<p>Note:</p>
+<ul>
+<li>Given target value is a floating point.</li>
+<li>You may assume <em>k</em> is always valid, that is: <em>k</em>≤ total nodes.</li>
+<li>You are guaranteed to have only one unique set of <em>k</em> values in the BST that are closest to the target.</li>
+</ul>
+<p>Example:</p>
+<pre>Input: root = [4,2,5,1,3], target = 3.714286, and _k_ = 2
+
+    4
+   / \
+  2   5
+ / \
+1   3
+
+Output: [4,3]</pre>
+
+<p>Follow up:<br>Assume that the BST is balanced, could you solve it in less than <em>O</em>(<em>n</em>) runtime (where <em>n</em> = total nodes)?</p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>找BST中给定目标的最接近的k个值。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>首先观察得到最接近的节点一定在二叉树的搜索路径上的节点的其中一个。这样可以分成两组<br>前驱节点和后驱节点（比target大），加入到两个stack中，由BST的iterator可以知道这两个<br>stack的越靠近栈首就越接近target，所以出栈的一定是最接近target的。只要比较两栈首元素<br>即可。如果某个节点出栈要找其儿子节点填充。找前驱节点和后驱节点的方法是相反的。这里可<br>参照KB的BST非递归中序遍历。    </p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>找最接近target的节点，<strong>不用判断左右儿子是否为空</strong>，因为若为空，表示root更接近。大于target的放入successors，否则是predecessors</li>
+<li>然后判断两栈首谁大，谁大的就获得相应的比它远离target的节点入栈。如predecessors是左节点的所有右儿子。</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">closestKValues</span><span class="params">(self, root: TreeNode, target: float, k: int)</span> -&gt; List[int]:</span></span><br><span class="line">	predecessors, successors = [], []</span><br><span class="line">	it = root</span><br><span class="line">	<span class="keyword">while</span> it:</span><br><span class="line">		<span class="keyword">if</span> target &lt; it.val:</span><br><span class="line">			successors.append(it)</span><br><span class="line">			it = it.left</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			predecessors.append(it)</span><br><span class="line">			it = it.right</span><br><span class="line">	res = []</span><br><span class="line">	<span class="keyword">while</span> k &gt; <span class="number">0</span>:</span><br><span class="line">		<span class="keyword">if</span> predecessors <span class="keyword">and</span> (<span class="keyword">not</span> successors <span class="keyword">or</span> target - predecessors[<span class="number">-1</span>].val &lt; successors[<span class="number">-1</span>].val - target):</span><br><span class="line">			node = predecessors.pop()</span><br><span class="line">			<span class="keyword">if</span> node.left:</span><br><span class="line">				n = node.left</span><br><span class="line">				<span class="keyword">while</span> n:</span><br><span class="line">					predecessors.append(n)</span><br><span class="line">					n = n.right</span><br><span class="line">			res.append(node.val)</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			node = successors.pop()</span><br><span class="line">			<span class="keyword">if</span> node.right:</span><br><span class="line">				n = node.right</span><br><span class="line">				<span class="keyword">while</span> n:</span><br><span class="line">					successors.append(n)</span><br><span class="line">					n = n.left</span><br><span class="line">			res.append(node.val)</span><br><span class="line">		k -= <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>target - preOrder.peek().val &lt; postOrder.peek().val - target的条件前<br>记得加上!preOrder.isEmpty()</li>
+</ol>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line">public List&lt;Integer&gt; closestKValues(TreeNode root, double target, int k) &#123;</span><br><span class="line">	List&lt;Integer&gt; res = new ArrayList&lt;&gt;();</span><br><span class="line">	if(root == null)</span><br><span class="line">		return res;</span><br><span class="line">	Stack&lt;TreeNode&gt; preOrder = new Stack&lt;&gt;();</span><br><span class="line">	Stack&lt;TreeNode&gt; postOrder = new Stack&lt;&gt;();</span><br><span class="line">	findTargetAndPopulateStacks(preOrder, postOrder, root, target);</span><br><span class="line">	</span><br><span class="line">	while(k-- &gt; 0) &#123;</span><br><span class="line">		if(postOrder.isEmpty() || (!preOrder.isEmpty() &amp;&amp; </span><br><span class="line">				target - preOrder.peek().val &lt; postOrder.peek().val - target))</span><br><span class="line">			getPredecessor(preOrder, res);</span><br><span class="line">		else </span><br><span class="line">			getSuccessor(postOrder, res);</span><br><span class="line">	&#125;</span><br><span class="line">	return res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void findTargetAndPopulateStacks(Stack&lt;TreeNode&gt; preOrder, Stack&lt;TreeNode&gt; postOrder, </span><br><span class="line">		TreeNode root, double target) &#123;</span><br><span class="line">	TreeNode node = root;</span><br><span class="line">	while(node != null) &#123;</span><br><span class="line">		if(node.val &lt; target) &#123; </span><br><span class="line">			preOrder.push(node);</span><br><span class="line">			node = node.right;</span><br><span class="line">		&#125;</span><br><span class="line">		else &#123;</span><br><span class="line">			postOrder.push(node);</span><br><span class="line">			node = node.left;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void getSuccessor(Stack&lt;TreeNode&gt; postOrder, List&lt;Integer&gt; res) &#123;</span><br><span class="line">	TreeNode node = postOrder.pop();</span><br><span class="line">	res.add(node.val);</span><br><span class="line">	if(node.right != null) &#123;</span><br><span class="line">		TreeNode n = node.right;</span><br><span class="line">		while(n != null) &#123;</span><br><span class="line">			postOrder.push(n);</span><br><span class="line">			n = n.left;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void getPredecessor(Stack&lt;TreeNode&gt; preOrder, List&lt;Integer&gt; res) &#123;</span><br><span class="line">	TreeNode node = preOrder.pop();</span><br><span class="line">	res.add(node.val);</span><br><span class="line">	if(node.left != null) &#123;</span><br><span class="line">		TreeNode n = node.left;</span><br><span class="line">		while(n != null) &#123;</span><br><span class="line">			preOrder.push(n);</span><br><span class="line">			n = n.right;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为O(k + logn)，空间复杂度O(logn)。  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2020/04/26/lee-173/">LeetCode 173 Binary Search Tree Iterator</a></h1>
+  
+
+      
+        <time datetime="2020-04-26T07:02:25.769Z">2020-04-26</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/binary-search-tree-iterator/" target="_blank" rel="noopener">LeetCode 173 Binary Search Tree Iterator</a></strong></p>
+<div><br><br>Implement an iterator over a binary search tree (BST). Your iterator will be initialized with the root node of a BST.<br><br>Calling <code>next()</code> will return the next smallest number in the BST.<br><br><strong>Example:</strong><br><br><strong><img src="https://assets.leetcode.com/uploads/2018/12/25/bst-tree.png" alt=""></strong><br><br><pre>BSTIterator iterator = new BSTIterator(root);<br>iterator.next();    // return 3<br>iterator.next();    // return 7<br>iterator.hasNext(); // return true<br>iterator.next();    // return 9<br>iterator.hasNext(); // return true<br>iterator.next();    // return 15<br>iterator.hasNext(); // return true<br>iterator.next();    // return 20<br>iterator.hasNext(); // return false<br></pre><br><br><strong>Note:</strong><br><br><em>   <code>next()</code> and <code>hasNext()</code> should run in average O(1) time and uses O(<em>h</em>) memory, where <em>h</em> is the height of the tree.
+</em>   You may assume that <code>next()</code> call will always be valid, that is, there will be at least a next smallest number in the BST when <code>next()</code> is called.<br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>实现BST的Iterator</p>
+<h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>参照KB中BST的非递归中序遍历。将其分拆为初始化以及去掉stack不为空的循环分别为所求。 </p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>初始化，将root所有左节点加入到stack。先写next，出栈栈顶节点，将它的右儿子的所有左节点入栈。</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BSTIterator</span><span class="params">(TestCases)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, root: TreeNode)</span>:</span></span><br><span class="line">        self.stack = []</span><br><span class="line">        it = root</span><br><span class="line">        <span class="keyword">while</span> it:</span><br><span class="line">            self.stack.append(it)</span><br><span class="line">            it = it.left</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">next</span><span class="params">(self)</span> -&gt; int:</span></span><br><span class="line">        node = self.stack.pop()</span><br><span class="line">        <span class="keyword">if</span> node.right:</span><br><span class="line">            n = node.right</span><br><span class="line">            <span class="keyword">while</span> n:</span><br><span class="line">                self.stack.append(n)</span><br><span class="line">                n = n.left</span><br><span class="line">        <span class="keyword">return</span> node.val</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">hasNext</span><span class="params">(self)</span> -&gt; bool:</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">True</span> <span class="keyword">if</span> self.stack <span class="keyword">else</span> <span class="keyword">False</span></span><br></pre></td></tr></table></figure>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">Stack&lt;TreeNode&gt; s = <span class="keyword">new</span> Stack&lt;&gt;();</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">L173BinarySearchTreeIterator</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">	TreeNode head = root;</span><br><span class="line">	<span class="keyword">while</span>(head != <span class="keyword">null</span>) &#123;</span><br><span class="line">		s.push(head);</span><br><span class="line">		head = head.left;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Recommended</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">next2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	TreeNode node = s.pop(); </span><br><span class="line">	<span class="keyword">if</span>(node.right != <span class="keyword">null</span>) &#123;<span class="comment">// left node has been visited</span></span><br><span class="line">		TreeNode n = node.right; </span><br><span class="line">		<span class="keyword">while</span>(n != <span class="keyword">null</span>) &#123;</span><br><span class="line">			s.push(n);</span><br><span class="line">			n = n.left;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> node.val;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/** <span class="doctag">@return</span> whether we have a next smallest number */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">hasNext</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> !s.isEmpty();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>next的平均时间复杂度(amortized complexity)为<code>O(1)</code>，n为字符串长度，空间复杂度<code>O(logn)</code>。</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2020/04/21/binary-search/">Binary Search</a></h1>
+  
+
+      
+        <time datetime="2020-04-22T00:28:02.383Z">2020-04-21</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><ol>
+<li>循环条件start + 1 &lt; end。 当跳出循环时，start和end的关系只能是相等或相邻。<br>相等是若数组只有一个元素，没有进入循环时出现。当进入过循环，一定是相邻。</li>
+<li>跳出循环后比较start和end的关系从而判断答案。  </li>
+</ol>
+<p>这可以满足二分法找first position或者last position, peak element的题目。<br>first position中若等于target，end = mid，因为要在左半部分找，相反last<br>position在右半部分找，所以start = mid。</p>
+<h3 id="应用："><a href="#应用：" class="headerlink" title="应用："></a><strong>应用：</strong></h3><ol>
+<li>有序数组找目标</li>
+<li>没给定目标情况下，找峰值， 缺失数(元素间关系)</li>
+<li>没给定目标情况下，求第k小的数，如求根号（数值关系）</li>
+</ol>
+<h2 id="找目标"><a href="#找目标" class="headerlink" title="找目标"></a>找目标</h2><h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>判断数组是否为空。    </li>
+<li>如果只有唯一的target的话，target==nums[mid]可以并入任何一种。end和target的顺序也没关系。其他注意循环后要根据题目条件(如小于或者大于或者等于tgt)，<br>再比较一次start和end上的元素，详见下表  </li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th style="text-align:left">if target = nums[mid]</th>
+<th style="text-align:left">循环之后</th>
+<th style="text-align:left">备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>binary_search</td>
+<td style="text-align:left">任意</td>
+<td style="text-align:left">任意</td>
+<td style="text-align:left">N/A</td>
+</tr>
+<tr>
+<td>last_position</td>
+<td style="text-align:left">向右start = mid</td>
+<td style="text-align:left">先end且是否等于tgt</td>
+<td style="text-align:left">贪婪法，找最后一个target，所以尽量靠后，先end</td>
+</tr>
+<tr>
+<td>first_position</td>
+<td style="text-align:left">向左end = mid</td>
+<td style="text-align:left">先start是否等于tgt</td>
+<td style="text-align:left">贪婪法，找第一个target，所以尽量靠前，先start</td>
+</tr>
+<tr>
+<td>smaller(_or_equal)_position</td>
+<td style="text-align:left">向左end = mid</td>
+<td style="text-align:left">先end是否小于tgt</td>
+<td style="text-align:left">贪婪法，找最后一个小于target的数，所以尽量靠近target，先end</td>
+</tr>
+<tr>
+<td>greater(_or_equal)_position</td>
+<td style="text-align:left">向右start = mid</td>
+<td style="text-align:left">先start是否大于tgt</td>
+<td style="text-align:left">贪婪法，找第一个大于target的数，所以尽量靠近target，先start</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">binary_search</span><span class="params">(self, nums: List[int], target: int)</span> -&gt; int:</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> nums:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line">	start, end = <span class="number">0</span>, len(nums) - <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> start + <span class="number">1</span> &lt; end:</span><br><span class="line">		mid = start + (end - start) // <span class="number">2</span></span><br><span class="line">		<span class="keyword">if</span> target &lt; nums[mid]:</span><br><span class="line">			end = mid</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			start = mid</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> nums[end] == target:</span><br><span class="line">		<span class="keyword">return</span> end</span><br><span class="line">	<span class="keyword">elif</span> nums[start] == target:</span><br><span class="line">		<span class="keyword">return</span> start</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure>
+<h3 id="Python代码：-1"><a href="#Python代码：-1" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">last_position</span><span class="params">(self, nums: List[int], target: int)</span> -&gt; int:</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> nums:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line">	start, end = <span class="number">0</span>, len(nums) - <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> start + <span class="number">1</span> &lt; end:</span><br><span class="line">		mid = start + (end - start) // <span class="number">2</span></span><br><span class="line">		<span class="keyword">if</span> target &lt; nums[mid]:</span><br><span class="line">			end = mid</span><br><span class="line">		<span class="keyword">elif</span> target &gt; nums[mid]:</span><br><span class="line">			start = mid</span><br><span class="line">		<span class="keyword">else</span>:  <span class="comment"># Depends on the target on the right side or left side. For fist pos, use end = mid</span></span><br><span class="line">			start = mid</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> nums[end] == target:</span><br><span class="line">		<span class="keyword">return</span> end</span><br><span class="line">	<span class="keyword">elif</span> nums[start] == target:</span><br><span class="line">		<span class="keyword">return</span> start</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure>
+<h3 id="Python代码：-2"><a href="#Python代码：-2" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">first_position</span><span class="params">(self, nums: List[int], target: int)</span> -&gt; int:</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> nums:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line">	start, end = <span class="number">0</span>, len(nums) - <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> start + <span class="number">1</span> &lt; end:</span><br><span class="line">		mid = start + (end - start) // <span class="number">2</span></span><br><span class="line">		<span class="keyword">if</span> target &lt; nums[mid]:</span><br><span class="line">			end = mid</span><br><span class="line">		<span class="keyword">elif</span> target &gt; nums[mid]:</span><br><span class="line">			start = mid</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			end = mid</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> nums[start] == target:</span><br><span class="line">		<span class="keyword">return</span> start</span><br><span class="line">	<span class="keyword">elif</span> nums[end] == target:</span><br><span class="line">		<span class="keyword">return</span> end</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure>
+<h3 id="Python代码：-3"><a href="#Python代码：-3" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><p>如果是smaller_or_equal_position，Line 13和15取等号<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">smaller_position</span><span class="params">(self, nums: List[int], target: int)</span> -&gt; int:</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> nums:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line">	start, end = <span class="number">0</span>, len(nums) - <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> start + <span class="number">1</span> &lt; end:</span><br><span class="line">		mid = start + (end - start) // <span class="number">2</span></span><br><span class="line">		<span class="keyword">if</span> target &gt; nums[mid]:</span><br><span class="line">			start = mid</span><br><span class="line">		<span class="keyword">elif</span> target &lt; nums[mid]:</span><br><span class="line">			end = mid</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			end = mid</span><br><span class="line">	<span class="keyword">if</span> nums[end] &lt; target:  <span class="comment"># nums[end] &lt;= target for smaller_or_equal_position</span></span><br><span class="line">		<span class="keyword">return</span> end</span><br><span class="line">	<span class="keyword">if</span> nums[start] &lt; target:  <span class="comment"># nums[start] &lt; target for smaller_or_equal_position</span></span><br><span class="line">		<span class="keyword">return</span> start</span><br><span class="line">	<span class="keyword">return</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="Python代码：-4"><a href="#Python代码：-4" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><p>如果是greater_or_equal_position，Line 13和15取等号<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">greater_position</span><span class="params">(self, nums: List[int], target: int)</span> -&gt; int:</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> nums:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line">	start, end = <span class="number">0</span>, len(nums) - <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> start + <span class="number">1</span> &lt; end:</span><br><span class="line">		mid = start + (end - start) // <span class="number">2</span></span><br><span class="line">		<span class="keyword">if</span> target &gt; nums[mid]:</span><br><span class="line">			start = mid</span><br><span class="line">		<span class="keyword">elif</span> target &lt; nums[mid]:</span><br><span class="line">			end = mid</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			start = mid</span><br><span class="line">	<span class="keyword">if</span> nums[start] &gt; target:  <span class="comment"># nums[start] &gt;= target for greater_or_equal_position</span></span><br><span class="line">		<span class="keyword">return</span> start</span><br><span class="line">	<span class="keyword">if</span> nums[end] &gt; target:  <span class="comment"># nums[end] &gt;= target for greater_or_equal_position</span></span><br><span class="line">		<span class="keyword">return</span> end</span><br><span class="line">	<span class="keyword">return</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="找峰值"><a href="#找峰值" class="headerlink" title="找峰值"></a>找峰值</h2><h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>判断mid+1的元素不越界  </li>
+<li>最后返回start和end之中较大者    </li>
+</ol>
+<h3 id="Python代码：-5"><a href="#Python代码：-5" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">find_peak</span><span class="params">(self, nums: List[int])</span> -&gt; int:</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> nums:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line">	start, end = <span class="number">0</span>, len(nums) - <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> start + <span class="number">1</span> &lt; end:</span><br><span class="line">		mid = start + (end - start) // <span class="number">2</span></span><br><span class="line">		<span class="keyword">if</span> mid + <span class="number">1</span> &lt;= end <span class="keyword">and</span> nums[mid] &lt; nums[mid + <span class="number">1</span>]:</span><br><span class="line">			start = mid</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			end = mid</span><br><span class="line">	<span class="keyword">return</span> start <span class="keyword">if</span> nums[start] &gt; nums[end] <span class="keyword">else</span> end</span><br></pre></td></tr></table></figure>
+<h2 id="找第k小的数"><a href="#找第k小的数" class="headerlink" title="找第k小的数"></a>找第k小的数</h2><h3 id="注意事项：-2"><a href="#注意事项：-2" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>数值比较，所以mid是除2获得不是//2。start，end，mid都是数值而不是索引    </li>
+<li>k是从0开始，count==k的时候，k在mid的右边，如数组1-10, k=3, mid=3.5, count=3，k是前4个数，所以在mid右边。nums[i] &lt;= mid这个等号有没有也没关系，因为mid是小数，不会相等的。   </li>
+<li>最后start，end区间内是一个整数正是所求，所以返回end向下取整</li>
+</ol>
+<h3 id="Python代码：-6"><a href="#Python代码：-6" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> math</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">binary_select</span><span class="params">(self, nums: List[int], k: int)</span> -&gt; int:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> nums:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line">	start, end, epsilon = min(nums), max(nums), <span class="number">0.5</span></span><br><span class="line">	<span class="keyword">while</span> end - start &gt; epsilon:</span><br><span class="line">		mid = start + (end - start) / <span class="number">2</span></span><br><span class="line">		count = len([n <span class="keyword">for</span> n <span class="keyword">in</span> nums <span class="keyword">if</span> n &lt;= mid])</span><br><span class="line">		<span class="keyword">if</span> k &lt; count:</span><br><span class="line">			end = mid</span><br><span class="line">		<span class="keyword">elif</span> k &gt; count:</span><br><span class="line">			start = mid</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			start =  mid</span><br><span class="line">	<span class="keyword">return</span> int(end)</span><br></pre></td></tr></table></figure>
+<p>若nums有序，<strong>count的统计可以用bisect(nums, mid)完成</strong>，记得不需要用+1，而且空数组也无问题<br>上面line 8可以改成<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">count = bisect.bisect(matrix[i], mid)</span><br></pre></td></tr></table></figure></p>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nlog(|hi-lo|/delta))</code>，如果数据比较平均也就是差值相当的情况下(比如1,2,3)，复杂度为O(nlogn). 空间复杂度<code>O(1)</code>。<br>若不需要搜索全数组，前面的n会变成logn  </p>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">lastPosition</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(nums == <span class="keyword">null</span> || nums.length == <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">int</span> start = <span class="number">0</span>, end = nums.length - <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">while</span>(start + <span class="number">1</span> &lt; end) &#123;</span><br><span class="line">		<span class="keyword">int</span> mid = start + (end - start) / <span class="number">2</span>;</span><br><span class="line">		<span class="keyword">if</span>(nums[mid] &lt; target)</span><br><span class="line">			start = mid;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(nums[mid] == target) </span><br><span class="line">		<span class="comment">// Depends on the target on the right side or left side. For fist pos, use end = mid</span></span><br><span class="line">			start = mid; </span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			end = mid;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(nums[end] == target)</span><br><span class="line">		<span class="keyword">return</span> end;</span><br><span class="line">	<span class="keyword">if</span>(nums[start] == target)</span><br><span class="line">		<span class="keyword">return</span> start;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(logn)</code>，空间复杂度<code>O(1)</code>。</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2020/04/20/lee-1197/">LeetCode 1197 Minimum Knight Moves</a></h1>
   
 
@@ -190,252 +400,6 @@ Explanation: [0, 0] → [2, 1] → [4, 2] → [3, 4] → [5, 5]
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2020/04/20/lee-297/">LeetCode 297 Serialize and Deserialize Binary Tree</a></h1>
-  
-
-      
-        <time datetime="2020-04-20T18:36:09.608Z">2020-04-20</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/serialize-and-deserialize-binary-tree/" target="_blank" rel="noopener">LeetCode 297 Serialize and Deserialize Binary Tree</a></strong></p>
-<p>Serialization is the process of converting a data structure or object into a sequence of bits so that it can be stored in a file or memory buffer, or transmitted across a network connection link to be reconstructed later in the same or another computer environment.</p>
-<p>Design an algorithm to serialize and deserialize a binary tree. There is no restriction on how your serialization/deserialization algorithm should work. You just need to ensure that a binary tree can be serialized to a string and this string can be deserialized to the original tree structure.</p>
-<p><strong>Example: </strong></p>
-<pre>You may serialize the following tree:
-
-    1
-   / \
-  2   3
-     / \
-    4   5
-
-as `"[1,2,3,null,null,4,5]"`
-</pre>
-
-<p><strong>Clarification:</strong> The above format is the same as <a href="/faq/#binary-tree">how LeetCode serializes a binary tree</a>. You do not necessarily need to follow this format, so please be creative and come up with different approaches yourself.</p>
-<p><strong>Note: </strong>Do not use class member/global/static variables to store states. Your serialize and deserialize algorithms should be stateless.</p>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>序列化和反序列化二叉树。</p>
-<h2 id="Python解法"><a href="#Python解法" class="headerlink" title="Python解法"></a><strong>Python解法</strong></h2><h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>BFS解码，空节点也要入列，因为要转成#，且不让代码往下执行</li>
-<li>难点是用#补充空节点，令每个非空节点必有左右儿子，这样解码就可以固定地每轮扫描两个。出列一个父节点，<strong>p扫描两个儿子且生成节点</strong>，若为#即空节点不入列，这和编码不同。主要因为编码的长度比节点数多，所以生成节点时，不需要再处理空节点。<br>Line 25 - 32有重复，这里放在一起方便理解，也可以封装成函数  </li>
-<li><strong>类型转换int和str, Python用popleft不是pop</strong>  </li>
-<li>Line 11非空节点值要记得加入  </li>
-<li>空节点或空字符单独处理</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">serialize</span><span class="params">(self, root)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> root:</span><br><span class="line">		<span class="keyword">return</span> <span class="string">''</span></span><br><span class="line">	queue = collections.deque([root])</span><br><span class="line">	res = []</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.popleft()</span><br><span class="line">		<span class="keyword">if</span> node:</span><br><span class="line">			res.append(str(node.val))</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			res.append(<span class="string">'#'</span>)</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line"></span><br><span class="line">		queue.append(node.left)</span><br><span class="line">		queue.append(node.right)</span><br><span class="line">	<span class="keyword">return</span> <span class="string">','</span>.join(res)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">deserialize</span><span class="params">(self, data)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> data:</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">None</span></span><br><span class="line">	vals = data.split(<span class="string">','</span>)</span><br><span class="line">	p = <span class="number">0</span></span><br><span class="line">	root = TreeNode(int(vals[<span class="number">0</span>]))</span><br><span class="line">	queue = collections.deque([root])</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.popleft()</span><br><span class="line"></span><br><span class="line">		p += <span class="number">1</span></span><br><span class="line">		<span class="keyword">if</span> vals[p] != <span class="string">'#'</span>:</span><br><span class="line">			node.left = TreeNode(int(vals[p]))</span><br><span class="line">			queue.append(node.left)</span><br><span class="line">		p += <span class="number">1</span></span><br><span class="line">		<span class="keyword">if</span> vals[p] != <span class="string">'#'</span>:</span><br><span class="line">			node.right = TreeNode(int(vals[p]))</span><br><span class="line">			queue.append(node.right)</span><br><span class="line">	<span class="keyword">return</span> root</span><br></pre></td></tr></table></figure>
-<hr>
-<h2 id="Java解法"><a href="#Java解法" class="headerlink" title="Java解法"></a><strong>Java解法</strong></h2><h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>BFS可以涉及三重循环</p>
-<ol>
-<li>q不为空  </li>
-<li>是否按层遍历  </li>
-<li>是否为图  </li>
-</ol>
-<p>这题不需要按层遍历，所以不用第二重。而且只是二叉树，不用第三重循环。</p>
-<p>编码方式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">	      1</span><br><span class="line">	    /   \</span><br><span class="line">	   #     3</span><br><span class="line">	        /  \</span><br><span class="line">	       2   #</span><br><span class="line">	      / \</span><br><span class="line">	     #   #</span><br><span class="line">=&gt; 1,#,3,2,#,#,#</span><br></pre></td></tr></table></figure></p>
-<h3 id="BFS解题步骤："><a href="#BFS解题步骤：" class="headerlink" title="BFS解题步骤："></a><strong>BFS解题步骤：</strong></h3><p>serialize:  </p>
-<ol>
-<li>建queue，然后首节点入列</li>
-<li>进入q的非空循环，队首出列，分别加入左右子树。由于空子树也会被遍历，所以左右子树可能为空，队首为空时continue<br>且val加入到结果字符串</li>
-<li>用#代替null且删去末尾的#和，  </li>
-</ol>
-<p>deserialize:<br>这方法难实现点。用两个指针来代表遍历上一层和该层节点们。q出列的节点是上一层节点head，而idx指向的是<br>该层节点。这样head.left = Node(tokens[idx])就建立了它们的关系。两指针分别向后一位。每轮循环父指针<br>向后一位，而idx向后两位，因为有左右儿子。</p>
-<ol>
-<li>建queue，然后首节点入列</li>
-<li>进入q的非空循环，队首出列，分别生成非空左右子树，且建立父子关系。idx走两步，非空儿子加入q。  </li>
-</ol>
-<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>#也要入栈，因为结果需要  </li>
-<li>解码需要一个字符串扫描指针（类全局指针），左右儿子无条件扫两位。这点DFS也是一样的。  </li>
-<li>deserialize中循环条件要加入idx &lt; tokens.length因为serialize末尾#已经删除。  </li>
-<li>字符串相等判断用equals，不用==。  </li>
-</ol>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">serialize2</span><span class="params">(TreeNode root)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(root == <span class="keyword">null</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"&#123;&#125;"</span>;</span><br><span class="line"></span><br><span class="line">	StringBuilder sb = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">	Queue&lt;TreeNode&gt; q = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">	q.add(root);</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty()) &#123;		</span><br><span class="line">		TreeNode n = q.poll();</span><br><span class="line">		sb.append(n == <span class="keyword">null</span> ? <span class="string">"null"</span> : n.val);</span><br><span class="line">		sb.append(<span class="string">","</span>);</span><br><span class="line">		<span class="keyword">if</span>(n == <span class="keyword">null</span>)</span><br><span class="line">			<span class="keyword">continue</span>;</span><br><span class="line">		q.add(n.left);</span><br><span class="line">		q.add(n.right);</span><br><span class="line">	&#125;</span><br><span class="line">	String res = sb.toString().replaceAll(<span class="string">"null"</span>, <span class="string">"#"</span>);</span><br><span class="line">	<span class="keyword">int</span> endIdx = res.length() - <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">while</span>(res.charAt(endIdx) == <span class="string">','</span> || res.charAt(endIdx) == <span class="string">'#'</span>)</span><br><span class="line">		endIdx--;</span><br><span class="line">	<span class="keyword">return</span> <span class="string">"&#123;"</span> + res.substring(<span class="number">0</span>, endIdx + <span class="number">1</span>) + <span class="string">"&#125;"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> TreeNode <span class="title">deserialize2</span><span class="params">(String data)</span> </span>&#123;</span><br><span class="line">	String str = data.substring(<span class="number">1</span>, data.length() - <span class="number">1</span>);</span><br><span class="line">	<span class="keyword">if</span>(<span class="string">""</span>.equals(str))</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">	</span><br><span class="line">	String[] tokens = str.split(<span class="string">","</span>);</span><br><span class="line">	<span class="keyword">int</span> idx = <span class="number">1</span>;</span><br><span class="line">	Queue&lt;TreeNode&gt; q = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">	TreeNode root = <span class="keyword">new</span> TreeNode(Integer.parseInt(tokens[<span class="number">0</span>]));</span><br><span class="line">	q.offer(root);</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty() &amp;&amp; idx &lt; tokens.length) &#123;</span><br><span class="line">		TreeNode head = q.poll();</span><br><span class="line">		<span class="keyword">if</span>(head == <span class="keyword">null</span>)</span><br><span class="line">			<span class="keyword">continue</span>;</span><br><span class="line">		head.left = generateChildNode(idx++, tokens, q);</span><br><span class="line">		head.right = generateChildNode(idx++, tokens, q);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">TreeNode <span class="title">generateChildNode</span><span class="params">(<span class="keyword">int</span> idx, String[] tokens, Queue&lt;TreeNode&gt; q)</span> </span>&#123;</span><br><span class="line">	TreeNode root = <span class="keyword">null</span>;</span><br><span class="line">	<span class="keyword">if</span>(idx &lt; tokens.length &amp;&amp; !<span class="string">"#"</span>.equals(tokens[idx])) &#123;</span><br><span class="line">		root = <span class="keyword">new</span> TreeNode(Integer.parseInt(tokens[idx]));</span><br><span class="line">		q.offer(root);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<hr>
-<h3 id="DFS算法II解题思路："><a href="#DFS算法II解题思路：" class="headerlink" title="DFS算法II解题思路："></a><strong>DFS算法II解题思路：</strong></h3><p>DFS的serialize很简单，但deserialize比较难。有点类似于前序遍历的递归版。因为编码时候就是前序遍历，解码时候也是先root再左右。<br>需要维护一个指针p来记录已处理的字符串。  </p>
-<p>编码方式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">    1</span><br><span class="line">  2   3</span><br><span class="line">5  6</span><br><span class="line">=&gt; 1,2,5,#,#,6,#,#,3,#,#</span><br></pre></td></tr></table></figure></p>
-<h3 id="Java代码：-1"><a href="#Java代码：-1" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">serialize</span><span class="params">(TreeNode root)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(root==<span class="keyword">null</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"#"</span>;</span><br><span class="line">	String rootStr = root.val+<span class="string">""</span>;</span><br><span class="line">	String lStr = serialize(root.left);</span><br><span class="line">	String rStr = serialize(root.right);</span><br><span class="line">	<span class="keyword">return</span> rootStr+<span class="string">","</span>+lStr+<span class="string">","</span>+rStr;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> p=<span class="number">0</span>;</span><br><span class="line">String[] items = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> TreeNode <span class="title">deserialize</span><span class="params">(String data)</span></span>&#123;</span><br><span class="line">	p = <span class="number">0</span>;</span><br><span class="line">	items = <span class="keyword">null</span>;</span><br><span class="line">	<span class="keyword">return</span> deserializeR(data);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> TreeNode <span class="title">deserializeR</span><span class="params">(String data)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(data==<span class="keyword">null</span>||data.length()==<span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">	<span class="keyword">if</span>(p&gt;=data.length())</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">	String curVal = getNext(data);</span><br><span class="line">	<span class="keyword">if</span>(curVal.equals(<span class="string">"#"</span>))</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">	</span><br><span class="line">	TreeNode newRoot = <span class="keyword">new</span> TreeNode(Integer.parseInt(curVal));</span><br><span class="line">	newRoot.left = deserializeR(data);</span><br><span class="line">	newRoot.right = deserializeR(data);</span><br><span class="line">	<span class="keyword">return</span> newRoot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">getNext</span><span class="params">(String s)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(items==<span class="keyword">null</span>)</span><br><span class="line">		items = s.split(<span class="string">","</span>);</span><br><span class="line">	<span class="keyword">return</span> items[p++];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2020/04/19/lee-133/">LeetCode 133 Clone Graph</a></h1>
-  
-
-      
-        <time datetime="2020-04-20T06:41:45.806Z">2020-04-19</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/clone-graph/" target="_blank" rel="noopener">LeetCode 133 Clone Graph</a></strong></p>
-<p>Given a reference of a node in a <strong><a href="https://en.wikipedia.org/wiki/Connectivity_(graph_theory" target="_blank" rel="noopener">connected</a>#Connected_graph)</strong> undirected graph.</p>
-<p>Return a <a href="https://en.wikipedia.org/wiki/Object_copying#Deep_copy" target="_blank" rel="noopener"><strong>deep copy</strong></a> (clone) of the graph.</p>
-<p>Each node in the graph contains a val (<code>int</code>) and a list (<code>List[Node]</code>) of its neighbors.</p>
-<pre>class Node {
-    public int val;
-    public List<node> neighbors;
-}
-</node></pre>
-
-<p><strong>Test case format:</strong></p>
-<p>For simplicity sake, each node’s value is the same as the node’s index (1-indexed). For example, the first node with <code>val = 1</code>, the second node with <code>val = 2</code>, and so on. The graph is represented in the test case using an adjacency list.</p>
-<p><strong>Adjacency list</strong> is a collection of unordered <strong>lists</strong> used to represent a finite graph. Each list describes the set of neighbors of a node in the graph.</p>
-<p>The given node will always be the first node with <code>val = 1</code>. You must return the <strong>copy of the given node</strong> as a reference to the cloned graph.</p>
-<p><strong>Example 1:</strong></p>
-<p><img src="https://assets.leetcode.com/uploads/2019/11/04/133_clone_graph_question.png" alt=""></p>
-<pre>**Input:** adjList = [[2,4],[1,3],[2,4],[1,3]]
-**Output:** [[2,4],[1,3],[2,4],[1,3]]
-**Explanation:** There are 4 nodes in the graph.
-1st node (val = 1)'s neighbors are 2nd node (val = 2) and 4th node (val = 4).
-2nd node (val = 2)'s neighbors are 1st node (val = 1) and 3rd node (val = 3).
-3rd node (val = 3)'s neighbors are 2nd node (val = 2) and 4th node (val = 4).
-4th node (val = 4)'s neighbors are 1st node (val = 1) and 3rd node (val = 3).
-</pre>
-
-<p><strong>Example 2:</strong></p>
-<p><img src="https://assets.leetcode.com/uploads/2020/01/07/graph.png" alt=""></p>
-<pre>**Input:** adjList = [[]]
-**Output:** [[]]
-**Explanation:** Note that the input contains one empty list. The graph consists of only one node with val = 1 and it does not have any neighbors.
-</pre>
-
-<p><strong>Example 3:</strong></p>
-<pre>**Input:** adjList = []
-**Output:** []
-**Explanation:** This an empty graph, it does not have any nodes.
-</pre>
-
-<p><strong>Example 4:</strong></p>
-<p><img src="https://assets.leetcode.com/uploads/2020/01/07/graph-1.png" alt=""></p>
-<pre>**Input:** adjList = [[2],[1]]
-**Output:** [[2],[1]]
-</pre>
-
-<p><strong>Constraints:</strong></p>
-<ul>
-<li><code>1 &lt;= Node.val &lt;= 100</code></li>
-<li><code>Node.val</code> is unique for each node.</li>
-<li>Number of Nodes will not exceed 100.</li>
-<li>There is no repeated edges and no self-loops in the graph.</li>
-<li>The Graph is connected and all nodes can be visited starting from the given node.</li>
-</ul>
-<p></p>
-<p></p>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>深度复制图。注意要复制所有邻接节点。 </p>
-<h3 id="算法I解题思路-推荐-："><a href="#算法I解题思路-推荐-：" class="headerlink" title="算法I解题思路(推荐)："></a><strong>算法I解题思路(推荐)：</strong></h3><p>三步走。分开写逻辑会显得清晰点。</p>
-<ol>
-<li>BFS搜索所有节点，变成<del>邻接表</del>节点列表。</li>
-<li>复制节点。旧新节点映射存在dict中</li>
-<li>根据node.neighbors复制边。 </li>
-</ol>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li><strong>空节点判断Line 2-3</strong>  </li>
-<li>BFS访问是收集节点列表，并不是变成邻接表。如果是含循环的图，由于用了visited，所以邻接表只能复制一半的边，不能用邻接表   </li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">cloneGraph</span><span class="params">(self, node: <span class="string">'Node'</span>)</span> -&gt; 'Node':</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> node:</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">None</span></span><br><span class="line">	di = &#123;&#125;</span><br><span class="line">	node_list = self.bfs(node)</span><br><span class="line">	<span class="keyword">for</span> n <span class="keyword">in</span> node_list:</span><br><span class="line">		di[n] = Node(n.val)</span><br><span class="line">	<span class="keyword">for</span> n <span class="keyword">in</span> node_list:</span><br><span class="line">		<span class="keyword">for</span> n2 <span class="keyword">in</span> n.neighbors:</span><br><span class="line">			di[n].neighbors.append(di[n2])</span><br><span class="line">	<span class="keyword">return</span> di[node]</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">bfs</span><span class="params">(self, input)</span>:</span></span><br><span class="line">	queue = deque([input])</span><br><span class="line">	visited = &#123;input&#125;</span><br><span class="line">	<span class="comment"># graph = collections.defaultdict(list)</span></span><br><span class="line">	res = []</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.popleft()</span><br><span class="line">		<span class="comment"># graph[node] = []</span></span><br><span class="line">		res.append(node)</span><br><span class="line">		<span class="keyword">for</span> neighbor <span class="keyword">in</span> node.neighbors:</span><br><span class="line">			<span class="keyword">if</span> neighbor <span class="keyword">in</span> visited:</span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			queue.append(neighbor)</span><br><span class="line">			visited.add(neighbor)</span><br><span class="line">			<span class="comment"># graph[node].append(neighbor)</span></span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// another bfs3 method uses 3 steps, convert graph to adjacent list by bfs (flatten the graph), </span></span><br><span class="line"><span class="comment">//clone vertices, clone edges</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">bfs3</span><span class="params">(UndirectedGraphNode node, HashMap&lt;UndirectedGraphNode, UndirectedGraphNode&gt; map)</span> </span>&#123;</span><br><span class="line">	ArrayList&lt;UndirectedGraphNode&gt; nodes = getNodes(node);</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// Copy vertices</span></span><br><span class="line">	<span class="keyword">for</span>(UndirectedGraphNode old : nodes) &#123;</span><br><span class="line">		UndirectedGraphNode newNode = <span class="keyword">new</span> UndirectedGraphNode(old.label);</span><br><span class="line">		map.put(old, newNode);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// Copy edges</span></span><br><span class="line">	<span class="keyword">for</span>(UndirectedGraphNode old : nodes) &#123;</span><br><span class="line">		<span class="keyword">for</span>(UndirectedGraphNode neighbor : old.neighbors) &#123;</span><br><span class="line">			map.get(old).neighbors.add(map.get(neighbor));</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> ArrayList&lt;UndirectedGraphNode&gt; <span class="title">getNodes</span><span class="params">(UndirectedGraphNode node)</span> </span>&#123;</span><br><span class="line">	Queue&lt;UndirectedGraphNode&gt; q = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">	Set&lt;UndirectedGraphNode&gt; result = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">	q.offer(node);</span><br><span class="line">	result.add(node); <span class="comment">// Use result set so we can save the visited set</span></span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty()) &#123;</span><br><span class="line">		UndirectedGraphNode n = q.poll();</span><br><span class="line">		<span class="keyword">for</span>(UndirectedGraphNode neighbor : n.neighbors) &#123;</span><br><span class="line">			<span class="keyword">if</span>(result.contains(neighbor))</span><br><span class="line">				<span class="keyword">continue</span>;</span><br><span class="line">			q.offer(neighbor);</span><br><span class="line">			result.add(neighbor);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	ArrayList&lt;UndirectedGraphNode&gt; reList = <span class="keyword">new</span> ArrayList&lt;UndirectedGraphNode&gt;();</span><br><span class="line">	reList.addAll(result);</span><br><span class="line">	<span class="keyword">return</span> reList;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<hr>
-<h3 id="算法II解题思路："><a href="#算法II解题思路：" class="headerlink" title="算法II解题思路："></a><strong>算法II解题思路：</strong></h3><p>不分开三步写</p>
-<h3 id="Java代码：-1"><a href="#Java代码：-1" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> UndirectedGraphNode <span class="title">cloneGraph2</span><span class="params">(UndirectedGraphNode node)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(node == <span class="keyword">null</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">	</span><br><span class="line">	HashMap&lt;UndirectedGraphNode, UndirectedGraphNode&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">	bfs(node, map);</span><br><span class="line">	<span class="keyword">return</span> map.get(node);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">bfs</span><span class="params">(UndirectedGraphNode node, HashMap&lt;UndirectedGraphNode, UndirectedGraphNode&gt; map)</span> </span>&#123;</span><br><span class="line">	Queue&lt;UndirectedGraphNode&gt; q = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">	q.offer(node);</span><br><span class="line">	map.put(node, <span class="keyword">new</span> UndirectedGraphNode(node.label));</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty()) &#123;</span><br><span class="line">		UndirectedGraphNode head = q.poll();</span><br><span class="line">		<span class="keyword">for</span>(UndirectedGraphNode neighbor : head.neighbors) &#123;</span><br><span class="line">			<span class="keyword">if</span>(!map.containsKey(neighbor)) &#123;</span><br><span class="line">				q.offer(neighbor);</span><br><span class="line">				<span class="comment">// Clone children's vertex</span></span><br><span class="line">				map.put(neighbor, <span class="keyword">new</span> UndirectedGraphNode(neighbor.label));</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="comment">// Clone edge</span></span><br><span class="line">			map.get(head).neighbors.add(map.get(neighbor));</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<hr>
-<h3 id="算法II解题思路：-1"><a href="#算法II解题思路：-1" class="headerlink" title="算法II解题思路："></a><strong>算法II解题思路：</strong></h3><p>DFS。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">public UndirectedGraphNode cloneGraph(UndirectedGraphNode node) &#123;</span><br><span class="line">	HashMap&lt;Integer, UndirectedGraphNode&gt; map = new HashMap&lt;Integer, UndirectedGraphNode&gt;();</span><br><span class="line">	return cloneGraphR(node, map);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public UndirectedGraphNode cloneGraphR(UndirectedGraphNode node,</span><br><span class="line">		HashMap&lt;Integer, UndirectedGraphNode&gt; map) &#123;</span><br><span class="line">	if (node == null)</span><br><span class="line">		return node;</span><br><span class="line">	if (map.containsKey(node.label))</span><br><span class="line">		return map.get(node.label);</span><br><span class="line"></span><br><span class="line">	UndirectedGraphNode result = new UndirectedGraphNode(node.label);</span><br><span class="line">	map.put(node.label, result);</span><br><span class="line">	for (UndirectedGraphNode child : node.neighbors) &#123;</span><br><span class="line">		result.neighbors.add(cloneGraphR(child, map));</span><br><span class="line">	&#125;</span><br><span class="line">	return result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(# of results)</code>，空间复杂度<code>O(lengh(high))</code>。  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2020/03/08/lee-248/">LeetCode 248 Strobogrammatic Number III</a></h1>
-  
-
-      
-        <time datetime="2020-03-09T01:39:06.644Z">2020-03-08</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/strobogrammatic-number-iii/" target="_blank" rel="noopener">LeetCode 248 Strobogrammatic Number III</a></strong></p>
-<p>A strobogrammatic number is a number that looks the same when rotated 180 degrees (looked at upside down).<br>Write a function to count the total strobogrammatic numbers that exist in the range of low &lt;= num &lt;= high.</p>
-<p><strong>Example:</strong> </p>
-<pre>**Input: low = "50", high = "100"
-
-**Output:** 3 
-
-Explanation: 69, 88, and 96 are three strobogrammatic numbers.
-</pre>
-
-<p><strong>Note:</strong> Because the range might be a large number, the lowand high numbers are represented as string.</p>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求某范围的旋转数的个数。旋转数是这个数旋转180度还是一样，如0, 1, 8， 还含两位的如69， 96. </p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>低频题。这是M公司的题目。这题不能用乘法原理，因为情况多变，要实实在在地找出每一个可能性。<br>类似于L351安卓解码种数，数字间有关系，求[m, n]范围间种数。用DFS将每一位填上合法位，此题区别是<br>需要它有对称性，所以DFS从中间向两边。API为f(res, low, high, map), res为当前结果字符串，map为旋转数的映射关系，<br>终止条件为res超过high，若在范围内，结果+1，也就是先将自己加入到结果中，然后两边加入旋转字符，进入下一轮递归，<br>累加到结果中。  </p>
-<p>注意: 与上题一样，和最左位不能为0除了0自己本身。</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>带限制条件的填位法DFS。</li>
-<li>奇偶位。对称中心既可以是奇数位也可以是偶数位。所以DFS有空字符，单个字符0, 1, 8等4种。  </li>
-<li>此题难点在验证： <strong>三种情况</strong>，需要比较字符串，所以要比较长度<br>1) 当前结果长度大于high, 长度等于high但大于high，返回0. <strong>只有这种情况是终止条件</strong><br>2) 当前结果长度大于low, 长度等于low但大于等于low，res = 1<br>3) 最左位为0，不合法如0880，但0本身除外， res = 0  </li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">strobogrammaticInRange</span><span class="params">(self, low: str, high: str)</span> -&gt; int:</span></span><br><span class="line">	stro_dict = &#123;<span class="string">'0'</span>: <span class="string">'0'</span>, <span class="string">'1'</span>: <span class="string">'1'</span>, <span class="string">'8'</span>: <span class="string">'8'</span>, <span class="string">'6'</span>: <span class="string">'9'</span>, <span class="string">'9'</span>: <span class="string">'6'</span>&#125;</span><br><span class="line">	res = <span class="number">0</span></span><br><span class="line">	res += self.dfs(<span class="string">''</span>, low, high, stro_dict)</span><br><span class="line">	res += self.dfs(<span class="string">'0'</span>, low, high, stro_dict)</span><br><span class="line">	res += self.dfs(<span class="string">'1'</span>, low, high, stro_dict)</span><br><span class="line">	res += self.dfs(<span class="string">'8'</span>, low, high, stro_dict)</span><br><span class="line">	<span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dfs</span><span class="params">(self, s, low, high, stro_dict)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> len(s) &gt; len(high) <span class="keyword">or</span> (len(s) == len(high) <span class="keyword">and</span> s &gt; high):</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">	res = <span class="number">0</span></span><br><span class="line">	<span class="keyword">if</span> len(s) &gt; len(low) <span class="keyword">or</span> (len(s) == len(low) <span class="keyword">and</span> s &gt;= low):</span><br><span class="line">		res = <span class="number">1</span></span><br><span class="line">	<span class="keyword">if</span> len(s) &gt; <span class="number">1</span> <span class="keyword">and</span> s[<span class="number">0</span>] == <span class="string">'0'</span>: <span class="comment"># i.e. 08</span></span><br><span class="line">		res = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> key, val <span class="keyword">in</span> stro_dict.items():</span><br><span class="line">		res += self.dfs(key + s + val, low, high, stro_dict)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>奇偶位。对称中心既可以是奇数位也可以是偶数位。  </li>
-<li>最左位为0，不合法如0880，但0本身除外。  </li>
-</ol>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">strobogrammaticInRange</span><span class="params">(String low, String high)</span> </span>&#123;</span><br><span class="line">	Map&lt;String, String&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">	map.put(<span class="string">"6"</span>, <span class="string">"9"</span>);</span><br><span class="line">	map.put(<span class="string">"9"</span>, <span class="string">"6"</span>);</span><br><span class="line">	map.put(<span class="string">"1"</span>, <span class="string">"1"</span>);</span><br><span class="line">	map.put(<span class="string">"8"</span>, <span class="string">"8"</span>);</span><br><span class="line">	map.put(<span class="string">"0"</span>, <span class="string">"0"</span>);</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">int</span> result = <span class="number">0</span>;</span><br><span class="line">	result += dfs(<span class="string">""</span>, low, high, map);</span><br><span class="line">	result += dfs(<span class="string">"1"</span>, low, high, map);</span><br><span class="line">	result += dfs(<span class="string">"0"</span>, low, high, map);</span><br><span class="line">	result += dfs(<span class="string">"8"</span>, low, high, map);</span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line">	</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">dfs</span><span class="params">(String res, String low, String high, Map&lt;String, String&gt; map)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(res.length() &gt; high.length() || (res.length() == high.length() &amp;&amp; res.compareTo(high) &gt; <span class="number">0</span>)) </span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> result = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">if</span>((res.length() == low.length() &amp;&amp; res.compareTo(low) &gt;= <span class="number">0</span>)  || res.length() &gt; low.length()) </span><br><span class="line">		result = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">if</span>(res.length() &gt; <span class="number">1</span> &amp;&amp; res.charAt(<span class="number">0</span>) == <span class="string">'0'</span>)</span><br><span class="line">		result = <span class="number">0</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">for</span> (Map.Entry&lt;String, String&gt; entry : map.entrySet()) &#123;</span><br><span class="line">		result += dfs(entry.getKey() + res + entry.getValue(), low, high, map);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(# of results)</code>，空间复杂度<code>O(lengh(high))</code>。  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -460,23 +424,23 @@ Explanation: 69, 88, and 96 are three strobogrammatic numbers.
   <ul class="entry">
     
       <li>
+        <a href="/2022/02/13/leetcode-158-read-n-characters-given-read4/">LeetCode 157 Read N Characters Given Read4</a>
+      </li>
+    
+      <li>
+        <a href="/2022/02/13/leetcode-157-read-n-characters-given-read4/">LeetCode 157 Read N Characters Given Read4</a>
+      </li>
+    
+      <li>
+        <a href="/2022/02/12/karat-004/">Karat 004 Ads Conversion</a>
+      </li>
+    
+      <li>
         <a href="/2022/02/12/leetcode-498-diagonal-traverse/">LeetCode 498 Diagonal Traverse</a>
       </li>
     
       <li>
         <a href="/2022/02/08/leetcode-1779-find-nearest-point-that-has-the-same-x-or-y-coordinate/">LeetCode 1779 Find Nearest Point That Has the Same X or Y Coordinate</a>
-      </li>
-    
-      <li>
-        <a href="/2022/02/08/leetcode-1761-minimum-degree-of-a-connected-trio-in-a-graph/">LeetCode 1761 Minimum Degree of a Connected Trio in a Graph</a>
-      </li>
-    
-      <li>
-        <a href="/2022/02/08/leetcode-979-distribute-coins-in-binary-tree/">LeetCode 979 Distribute Coins in Binary Tree</a>
-      </li>
-    
-      <li>
-        <a href="/2022/02/07/leetcode-1448-count-good-nodes-in-binary-tree/">LeetCode 1448 Count Good Nodes in Binary Tree</a>
       </li>
     
   </ul>
@@ -489,7 +453,7 @@ Explanation: 69, 88, and 96 are three strobogrammatic numbers.
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 14.17px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.75px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 17.08px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 13.75px;">Binary Tree</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10.42px;">Bit Manipulation</a> <a href="/tags/Bloomberg/" style="font-size: 10.42px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.92px;">Breadth-first Search</a> <a href="/tags/Citadel/" style="font-size: 10.83px;">Citadel</a> <a href="/tags/Classic/" style="font-size: 18.75px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.25px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.25px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 11.25px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.58px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 19.17px;">Facebook</a> <a href="/tags/Google/" style="font-size: 11.67px;">Google</a> <a href="/tags/Graph/" style="font-size: 12.92px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.92px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 17.08px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 14.17px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 13.33px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.25px;">Iterator</a> <a href="/tags/Karat/" style="font-size: 11.25px;">Karat</a> <a href="/tags/Knowledge-Base/" style="font-size: 17.08px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 15.42px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.5px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 18.33px;">Math</a> <a href="/tags/Matrix/" style="font-size: 15.83px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.25px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.83px;">Merge Sort</a> <a href="/tags/Microsoft/" style="font-size: 12.08px;">Microsoft</a> <a href="/tags/Mtrix/" style="font-size: 10px;">Mtrix</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 16.25px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.83px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.42px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10.83px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.25px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.42px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 17.5px;">Stack</a> <a href="/tags/String/" style="font-size: 18.75px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.25px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 16.67px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.25px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.58px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.42px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.42px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
+    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 14.17px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.75px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 17.08px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 13.75px;">Binary Tree</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10.42px;">Bit Manipulation</a> <a href="/tags/Bloomberg/" style="font-size: 10.42px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.92px;">Breadth-first Search</a> <a href="/tags/Citadel/" style="font-size: 10.83px;">Citadel</a> <a href="/tags/Classic/" style="font-size: 18.75px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.25px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.25px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 11.25px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.58px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 19.17px;">Facebook</a> <a href="/tags/Google/" style="font-size: 11.67px;">Google</a> <a href="/tags/Graph/" style="font-size: 12.92px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.92px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 17.08px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 14.17px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 13.33px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.25px;">Iterator</a> <a href="/tags/Karat/" style="font-size: 12.5px;">Karat</a> <a href="/tags/Knowledge-Base/" style="font-size: 17.08px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 15.42px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.5px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 18.33px;">Math</a> <a href="/tags/Matrix/" style="font-size: 15.83px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.25px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.83px;">Merge Sort</a> <a href="/tags/Microsoft/" style="font-size: 12.08px;">Microsoft</a> <a href="/tags/Mtrix/" style="font-size: 10px;">Mtrix</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 16.25px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.83px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.42px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10.83px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.25px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.42px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 17.5px;">Stack</a> <a href="/tags/String/" style="font-size: 18.75px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.25px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 16.67px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.25px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.58px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.42px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.42px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
   </div>
 </div>
 

@@ -53,6 +53,137 @@
     <header>
       
   
+    <h1 class="title"><a href="/2022/01/15/lee-076/">LeetCode 076 Minimum Window Substring</a></h1>
+  
+
+      
+        <time datetime="2022-01-15T22:12:18.658Z">2022-01-15</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/minimum-window-substring/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>Given two strings <code>s</code> and <code>t</code> of lengths <code>m</code> and <code>n</code> respectively, return <em>the <strong>minimum window substring</strong> of</em> <code>s</code> <em>such that every character in</em> <code>t</code> <em>(<strong>including duplicates</strong>) is included in the window. If there is no such substring__, return the empty string</em> <code>&quot;&quot;</code><em>.</em><br><br>The testcases will be generated such that the answer is <strong>unique</strong>.<br><br>A <strong>substring</strong> is a contiguous sequence of characters within the string.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> s = “ADOBECODEBANC”, t = “ABC”<br><strong>Output:</strong> “BANC”<br><strong>Explanation:</strong> The minimum window substring “BANC” includes ‘A’, ‘B’, and ‘C’ from string t.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> s = “a”, t = “a”<br><strong>Output:</strong> “a”<br><strong>Explanation:</strong> The entire string s is the minimum window.<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> s = “a”, t = “aa”<br><strong>Output:</strong> “”<br><strong>Explanation:</strong> Both ‘a’s from t must be included in the window.<br>Since the largest window of s only has one ‘a’, return empty string.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>m == s.length</code>
+</em>   <code>n == t.length</code><br><em>   <code>1 &lt;= m, n &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code>
+</em>   <code>s</code> and <code>t</code> consist of uppercase and lowercase English letters.<br><br><strong>Follow up:</strong> Could you find an algorithm that runs in <code>O(m + n)</code> time?</div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>最短摘要：给定s和t两个字符串，求在s中包含所有t的字符的最短子串。这个结果可以包含不在t的字符，某个字符数量也可以多于t中的字符但不能少于。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>提到window substring就用滑动窗口或者同向双指针。</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>用同向双指针模板。<strong>用map来统计t的字符频率，用unique_count统计满足条件唯一字符个数。while的条件为unique_count达到了map的大小</strong>。 </li>
+<li>while里面的统计与while外面的统计本质一样，但相反。若s中某字符多于s中的，map为负值，left指针右移时，负值会变回正值。</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">minWindow</span><span class="params">(self, s: str, t: str)</span> -&gt; str:</span></span><br><span class="line">	t_char_to_count = collections.Counter(t)</span><br><span class="line">	left, unique_count, min_len, res = <span class="number">0</span>, <span class="number">0</span>, float(<span class="string">'inf'</span>), <span class="string">''</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(s)):</span><br><span class="line">		<span class="keyword">if</span> s[i] <span class="keyword">in</span> t_char_to_count:</span><br><span class="line">			t_char_to_count[s[i]] -= <span class="number">1</span></span><br><span class="line">			<span class="keyword">if</span> t_char_to_count[s[i]] == <span class="number">0</span>:</span><br><span class="line">				unique_count += <span class="number">1</span></span><br><span class="line">		<span class="keyword">while</span> unique_count == len(t_char_to_count):</span><br><span class="line">			<span class="keyword">if</span> i - left + <span class="number">1</span> &lt; min_len:</span><br><span class="line">				min_len = i - left + <span class="number">1</span></span><br><span class="line">				res = s[left:i + <span class="number">1</span>]</span><br><span class="line">			<span class="keyword">if</span> s[left] <span class="keyword">in</span> t_char_to_count:</span><br><span class="line">				t_char_to_count[s[left]] += <span class="number">1</span></span><br><span class="line">				<span class="keyword">if</span> t_char_to_count[s[left]] &gt; <span class="number">0</span>:</span><br><span class="line">					unique_count -= <span class="number">1</span></span><br><span class="line">			left += <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(m)</code>, n和m分别为s和t的长度  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2022/01/15/lee-073/">LeetCode 073 Set Matrix Zeroes</a></h1>
+  
+
+      
+        <time datetime="2022-01-15T08:40:58.386Z">2022-01-15</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/set-matrix-zeroes/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>Given an <code>m x n</code> integer matrix <code>matrix</code>, if an element is <code>0</code>, set its entire row and column to <code>0</code>‘s, and return <em>the matrix</em>.<br><br>You must do it <a href="https://en.wikipedia.org/wiki/In-place_algorithm" target="_blank" rel="noopener">in place</a>.<br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2020/08/17/mat1.jpg" alt=""><br><br><pre><strong>Input:</strong> matrix = [[1,1,1],[1,0,1],[1,1,1]]<br><strong>Output:</strong> [[1,0,1],[0,0,0],[1,0,1]]<br></pre><br><br><strong>Example 2:</strong><br><br><img src="https://assets.leetcode.com/uploads/2020/08/17/mat2.jpg" alt=""><br><br><pre><strong>Input:</strong> matrix = [[0,1,2,0],[3,4,5,2],[1,3,1,5]]<br><strong>Output:</strong> [[0,0,0,0],[0,4,5,0],[0,3,1,0]]<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>m == matrix.length</code>
+</em>   <code>n == matrix[0].length</code><br><em>   <code>1 &lt;= m, n &lt;= 200</code>
+</em>   <code>-2&lt;sup&gt;31&lt;/sup&gt; &lt;= matrix[i][j] &lt;= 2&lt;sup&gt;31&lt;/sup&gt; - 1</code><br><br><strong>Follow up:</strong><br><br><em>   A straightforward solution using <code>O(mn)</code> space is probably a bad idea.
+</em>   A simple improvement uses <code>O(m + n)</code> space, but still not the best solution.<br>*   Could you devise a constant space solution?<br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>若矩阵某元素为0，设置它所在的行和列所有元素均为0，不能用额外区间</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>用第0行和第0列作为统计。由于第0行和第0列会被覆盖，所以先查看他们有无0</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>用第0行和第0列作为统计。由于第0行和第0列会被覆盖，所以先查看他们有无0。两大步骤：先统计，再根据结果设置0</li>
+<li>第二步中，<strong>根据第0和和第0列的结果回设，均从1开始</strong>，不含左上cell，因为统计结果不保存在它上。它仅在统计第一行和第一列是否有0时用到。</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">setZeroes</span><span class="params">(self, matrix: List[List[int]])</span> -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">	<span class="comment"># calculate</span></span><br><span class="line">	is_zero_row_zero = <span class="keyword">True</span> <span class="keyword">if</span> len([<span class="number">0</span> <span class="keyword">for</span> n <span class="keyword">in</span> matrix[<span class="number">0</span>] <span class="keyword">if</span> n == <span class="number">0</span>]) &gt; <span class="number">0</span> <span class="keyword">else</span> <span class="keyword">False</span></span><br><span class="line">	is_zero_col_zero = <span class="keyword">True</span> <span class="keyword">if</span> len([<span class="number">0</span> <span class="keyword">for</span> i <span class="keyword">in</span> range(len(matrix)) <span class="keyword">if</span> matrix[i][<span class="number">0</span>] == <span class="number">0</span>]) &gt; <span class="number">0</span> <span class="keyword">else</span> <span class="keyword">False</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, len(matrix)):</span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">1</span>, len(matrix[<span class="number">0</span>])):</span><br><span class="line">			<span class="keyword">if</span> matrix[i][j] == <span class="number">0</span>:</span><br><span class="line">				matrix[i][<span class="number">0</span>], matrix[<span class="number">0</span>][j] = <span class="number">0</span>, <span class="number">0</span></span><br><span class="line">	<span class="comment"># Set			</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, len(matrix)): <span class="comment"># remember to start with 1</span></span><br><span class="line">		<span class="keyword">if</span> matrix[i][<span class="number">0</span>] == <span class="number">0</span>:</span><br><span class="line">			<span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">1</span>, len(matrix[<span class="number">0</span>])):</span><br><span class="line">				matrix[i][j] = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">1</span>, len(matrix[<span class="number">0</span>])): <span class="comment"># remember to start with 1</span></span><br><span class="line">		<span class="keyword">if</span> matrix[<span class="number">0</span>][j] == <span class="number">0</span>:</span><br><span class="line">			<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, len(matrix)):</span><br><span class="line">				matrix[i][j] = <span class="number">0</span></span><br><span class="line">	<span class="keyword">if</span> is_zero_row_zero:</span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> range(len(matrix[<span class="number">0</span>])):</span><br><span class="line">			matrix[<span class="number">0</span>][j] = <span class="number">0</span></span><br><span class="line">	<span class="keyword">if</span> is_zero_col_zero:</span><br><span class="line">		<span class="keyword">for</span> i <span class="keyword">in</span> range(len(matrix)):</span><br><span class="line">			matrix[i][<span class="number">0</span>] = <span class="number">0</span></span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n<sup>2</sup>)</code>，空间复杂度<code>O(1)</code>  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2022/01/14/lee-078/">LeetCode 078 Subsets</a></h1>
+  
+
+      
+        <time datetime="2022-01-15T07:51:55.350Z">2022-01-14</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/subsets/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>Given an integer array <code>nums</code> of <strong>unique</strong> elements, return <em>all possible subsets (the power set)</em>.<br><br>The solution set <strong>must not</strong> contain duplicate subsets. Return the solution in <strong>any order</strong>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> nums = [1,2,3]<br><strong>Output:</strong> [[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> nums = [0]<br><strong>Output:</strong> [[],[0]]<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= nums.length &lt;= 10</code>
+</em>   <code>-10 &lt;= nums[i] &lt;= 10</code><br><em>   All the numbers of <code>nums</code> are <em>*unique</em></em>.<br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求所有子集</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>组合知识点</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>题目要求结果含空集</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">subsets</span><span class="params">(self, nums: List[int])</span> -&gt; List[List[int]]:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> nums:</span><br><span class="line">		<span class="keyword">return</span> []</span><br><span class="line">	res = [[]]</span><br><span class="line">	self.dfs(nums, <span class="number">0</span>, [], res)</span><br><span class="line">	<span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dfs</span><span class="params">(self, nums, st, path, res)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> st == len(nums):</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(st, len(nums)):</span><br><span class="line">		path.append(nums[i])</span><br><span class="line">		res.append(list(path))</span><br><span class="line">		self.dfs(nums, i + <span class="number">1</span>, path, res)</span><br><span class="line">		path.pop()</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nx2<sup>n</sup>)</code>，空间复杂度<code>O(n)</code>   </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2022/01/13/lee-065/">LeetCode 065 Valid Number</a></h1>
   
 
@@ -145,145 +276,6 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2022/01/05/lee-062/">LeetCode 062 Unique Paths</a></h1>
-  
-
-      
-        <time datetime="2022-01-05T11:14:56.806Z">2022-01-05</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/unique-paths/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>There is a robot on an <code>m x n</code> grid. The robot is initially located at the <strong>top-left corner</strong> (i.e., <code>grid[0][0]</code>). The robot tries to move to the <strong>bottom-right corner</strong> (i.e., <code>grid[m - 1][n - 1]</code>). The robot can only move either down or right at any point in time.<br><br>Given the two integers <code>m</code> and <code>n</code>, return <em>the number of possible unique paths that the robot can take to reach the bottom-right corner</em>.<br><br>The test cases are generated so that the answer will be less than or equal to <code>2 * 10&lt;sup&gt;9&lt;/sup&gt;</code>.<br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2018/10/22/robot_maze.png" alt=""><br><br><pre><strong>Input:</strong> m = 3, n = 7<br><strong>Output:</strong> 28<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> m = 3, n = 2<br><strong>Output:</strong> 3<br><strong>Explanation:</strong> From the top-left corner, there are a total of 3 ways to reach the bottom-right corner:<br>1. Right -&gt; Down -&gt; Down<br>2. Down -&gt; Down -&gt; Right<br>3. Down -&gt; Right -&gt; Down<br></pre><br><br><strong>Constraints:</strong><br><br>*   <code>1 &lt;= m, n &lt;= 100</code><br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求矩阵路径总数</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>求个数用DP，递归式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dp[i][j] = dp[i-1][j] + dp[i][j-1]</span><br></pre></td></tr></table></figure></p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>初始值dp[1] = 1而不是dp[0] = 1因为第二行的第一格不能加左边的虚拟格=1</li>
-<li>range(m)不是range(len(m))</li>
-<li>优化空间用一维</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">uniquePaths</span><span class="params">(self, m: int, n: int)</span> -&gt; int:</span></span><br><span class="line">	dp = [<span class="number">0</span>] * (n + <span class="number">1</span>)</span><br><span class="line">	dp[<span class="number">1</span>] = <span class="number">1</span> <span class="comment"># remember not dp[0] = 1</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(m): <span class="comment"># remember no len(m)</span></span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">1</span>, len(dp)):</span><br><span class="line">			dp[j] += dp[j - <span class="number">1</span>]</span><br><span class="line">	<span class="keyword">return</span> dp[<span class="number">-1</span>]</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n<sup>2</sup>)</code>，空间复杂度<code>O(n<sup>2</sup>)</code> </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2022/01/05/lee-064/">LeetCode 064 Minimum Path Sum</a></h1>
-  
-
-      
-        <time datetime="2022-01-05T11:03:23.931Z">2022-01-05</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/minimum-path-sum/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>Given a <code>m x n</code> <code>grid</code> filled with non-negative numbers, find a path from top left to bottom right, which minimizes the sum of all numbers along its path.<br><br><strong>Note:</strong> You can only move either down or right at any point in time.<br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2020/11/05/minpath.jpg" alt=""><br><br><pre><strong>Input:</strong> grid = [[1,3,1],[1,5,1],[4,2,1]]<br><strong>Output:</strong> 7<br><strong>Explanation:</strong> Because the path 1 → 3 → 1 → 1 → 1 minimizes the sum.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> grid = [[1,2,3],[4,5,6]]<br><strong>Output:</strong> 12<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>m == grid.length</code>
-</em>   <code>n == grid[i].length</code><br><em>   <code>1 &lt;= m, n &lt;= 200</code>
-</em>   <code>0 &lt;= grid[i][j] &lt;= 100</code><br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求矩阵最短路径和。只能向下向右走。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>递归式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dp[i][j] = min&#123;dp[i-1][j], dp[i][j-1]&#125; + grid[i - 1][j - 1]</span><br></pre></td></tr></table></figure></p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>初始值为最大值，dp[0][1] = dp[1][0] = 0确保左上格正确。</li>
-<li>模板四点注意事项  </li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># dp[i][j] = min&#123;dp[i-1][j], dp[i][j-1]&#125; + grid[i - 1][j - 1]</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">minPathSum</span><span class="params">(self, grid: List[List[int]])</span> -&gt; int:</span></span><br><span class="line">	dp = [[float(<span class="string">'inf'</span>) <span class="keyword">for</span> _ <span class="keyword">in</span> range(len(grid[<span class="number">0</span>]) + <span class="number">1</span>)] <span class="keyword">for</span> _ <span class="keyword">in</span> range(len(grid) + <span class="number">1</span>)]</span><br><span class="line">	dp[<span class="number">0</span>][<span class="number">1</span>] = dp[<span class="number">1</span>][<span class="number">0</span>] = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, len(dp)):</span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">1</span>, len(dp[<span class="number">0</span>])):</span><br><span class="line">			dp[i][j] = min(dp[i - <span class="number">1</span>][j], dp[i][j - <span class="number">1</span>]) + grid[i - <span class="number">1</span>][j - <span class="number">1</span>]</span><br><span class="line">	<span class="keyword">return</span> dp[<span class="number">-1</span>][<span class="number">-1</span>]</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n<sup>2</sup>)</code>，空间复杂度<code>O(n<sup>2</sup>)</code>  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2022/01/04/lee-427/">LeetCode 427 Construct Quad Tree</a></h1>
-  
-
-      
-        <time datetime="2022-01-05T04:03:21.417Z">2022-01-04</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/construct-quad-tree/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>Given a <code>n * n</code> matrix <code>grid</code> of <code>0&#39;s</code> and <code>1&#39;s</code> only. We want to represent the <code>grid</code> with a Quad-Tree.<br><br>Return <em>the root of the Quad-Tree</em> representing the <code>grid</code>.<br><br>Notice that you can assign the value of a node to <strong>True</strong> or <strong>False</strong> when <code>isLeaf</code> is <strong>False</strong>, and both are <strong>accepted</strong> in the answer.<br><br>A Quad-Tree is a tree data structure in which each internal node has exactly four children. Besides, each node has two attributes:<br><br><em>   <code>val</code>: True if the node represents a grid of 1’s or False if the node represents a grid of 0’s.
-</em>   <code>isLeaf</code>: True if the node is leaf node on the tree or False if the node has the four children.<br><br><pre>class Node {<br>    public boolean val;<br>    public boolean isLeaf;<br>    public Node topLeft;<br>    public Node topRight;<br>    public Node bottomLeft;<br>    public Node bottomRight;<br>}</pre><br><br>We can construct a Quad-Tree from a two-dimensional area using the following steps:<br><br>1.  If the current grid has the same value (i.e all <code>1&#39;s</code> or all <code>0&#39;s</code>) set <code>isLeaf</code> True and set <code>val</code> to the value of the grid and set the four children to Null and stop.<br>2.  If the current grid has different values, set <code>isLeaf</code> to False and set <code>val</code> to any value and divide the current grid into four sub-grids as shown in the photo.<br>3.  Recurse for each of the children with the proper sub-grid.<br><br><img src="https://assets.leetcode.com/uploads/2020/02/11/new_top.png" alt=""><br><br>If you want to know more about the Quad-Tree, you can refer to the <a href="https://en.wikipedia.org/wiki/Quadtree" target="_blank" rel="noopener">wiki</a>.<br><br><strong>Quad-Tree format:</strong><br><br>The output represents the serialized format of a Quad-Tree using level order traversal, where <code>null</code> signifies a path terminator where no node exists below.<br><br>It is very similar to the serialization of the binary tree. The only difference is that the node is represented as a list <code>[isLeaf, val]</code>.<br><br>If the value of <code>isLeaf</code> or <code>val</code> is True we represent it as <strong>1</strong> in the list <code>[isLeaf, val]</code> and if the value of <code>isLeaf</code> or <code>val</code> is False we represent it as <strong>0</strong>.<br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2020/02/11/grid1.png" alt=""><br><br><pre><strong>Input:</strong> grid = [[0,1],[1,0]]<br><strong>Output:</strong> [[0,1],[1,0],[1,1],[1,1],[1,0]]<br><strong>Explanation:</strong> The explanation of this example is shown below:<br>Notice that 0 represnts False and 1 represents True in the photo representing the Quad-Tree.<br><img src="https://assets.leetcode.com/uploads/2020/02/12/e1tree.png" alt=""><br></pre><br><br><strong>Example 2:</strong><br><br><img src="https://assets.leetcode.com/uploads/2020/02/12/e2mat.png" alt=""><br><br><pre><strong>Input:</strong> grid = [[1,1,1,1,0,0,0,0],[1,1,1,1,0,0,0,0],[1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1],[1,1,1,1,0,0,0,0],[1,1,1,1,0,0,0,0],[1,1,1,1,0,0,0,0],[1,1,1,1,0,0,0,0]]<br><strong>Output:</strong> [[0,1],[1,1],[0,1],[1,1],[1,0],null,null,null,null,[1,0],[1,0],[1,1],[1,1]]<br><strong>Explanation:</strong> All values in the grid are not the same. We divide the grid into four sub-grids.<br>The topLeft, bottomLeft and bottomRight each has the same value.<br>The topRight have different values so we divide it into 4 sub-grids where each has the same value.<br>Explanation is shown in the photo below:<br><img src="https://assets.leetcode.com/uploads/2020/02/12/e2tree.png" alt=""><br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>n == grid.length == grid[i].length</code>
-</em>   <code>n == 2&lt;sup&gt;x&lt;/sup&gt;</code> where <code>0 &lt;= x &lt;= 6</code><br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>由矩阵建四叉树。矩阵有0和1组成。按以下步骤：若子矩阵(变成为2的幂)只含1或0，生成一个叶子节点，值为该值；子矩阵含0和1混合，值为0或1(均为答案)，非叶子节点，递归四个同样大小的矩阵生成相应节点。<br>矩阵大小为2的幂，最小长度为1.  </p>
-<h3 id="单格DFS算法II解题思路-推荐-："><a href="#单格DFS算法II解题思路-推荐-：" class="headerlink" title="单格DFS算法II解题思路(推荐)："></a><strong>单格DFS算法II解题思路(推荐)：</strong></h3><p>也是DFS，但递归终止条件为长度1，也就是每个cell都是叶子节点，先递归然后再归纳，若四个儿子节点都是叶子节点且值都相等，合并为一个叶子节点。否则为非叶子节点。<br>此算法实现更简单，但比较难想出。上述方法思想是按照题意。</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>size = 1作为终止条件</li>
-<li>两个条件该轮递归的节点为叶子节点，第一值相等，第二<strong>儿子节点都是叶子节点</strong></li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">construct</span><span class="params">(self, grid: List[List[int]])</span> -&gt; 'Node':</span></span><br><span class="line">	<span class="keyword">return</span> self.dfs(grid, <span class="number">0</span>, <span class="number">0</span>, len(grid))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dfs</span><span class="params">(self, grid, start_x, start_y, n)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> n == <span class="number">1</span>:</span><br><span class="line">		<span class="keyword">return</span> Node(grid[start_x][start_y], <span class="keyword">True</span>, <span class="keyword">None</span>, <span class="keyword">None</span>, <span class="keyword">None</span>, <span class="keyword">None</span>)</span><br><span class="line">	top_left = self.dfs(grid, start_x, start_y, n // <span class="number">2</span>)</span><br><span class="line">	top_right = self.dfs(grid, start_x, start_y + n // <span class="number">2</span>, n // <span class="number">2</span>)</span><br><span class="line">	bottom_left = self.dfs(grid, start_x + n // <span class="number">2</span>, start_y, n // <span class="number">2</span>)</span><br><span class="line">	bottom_right = self.dfs(grid, start_x + n // <span class="number">2</span>, start_y + n // <span class="number">2</span>, n // <span class="number">2</span>)</span><br><span class="line">	<span class="keyword">if</span> top_left.val == top_right.val == bottom_left.val == bottom_right.val <span class="keyword">and</span> \</span><br><span class="line">			top_left.isLeaf <span class="keyword">and</span> top_right.isLeaf <span class="keyword">and</span> bottom_left.isLeaf <span class="keyword">and</span> bottom_right.isLeaf: <span class="comment"># remmember</span></span><br><span class="line">		<span class="keyword">return</span> Node(top_left.val, <span class="keyword">True</span>, <span class="keyword">None</span>, <span class="keyword">None</span>, <span class="keyword">None</span>, <span class="keyword">None</span>)</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		<span class="keyword">return</span> Node(<span class="number">1</span>, <span class="keyword">False</span>, top_left, top_right, bottom_left, bottom_right)</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n<sup>2</sup>)</code><code>，空间复杂度</code>O(1)`   </p>
-<hr>
-<h3 id="presum解题思路-不推荐-："><a href="#presum解题思路-不推荐-：" class="headerlink" title="presum解题思路(不推荐)："></a><strong>presum解题思路(不推荐)：</strong></h3><p>这是我的方法，按照定义求解，定义是递归的，所以用DFS。而统计子矩阵和用presum提高效率。但实现比较复杂</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>子矩阵presum用模板</li>
-<li>终止条件为子矩阵sum是0或n平方</li>
-</ol>
-<h3 id="Python代码：-1"><a href="#Python代码：-1" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">construct</span><span class="params">(self, grid: List[List[int]])</span> -&gt; 'Node':</span></span><br><span class="line">	presum = self.get_presum(grid)</span><br><span class="line">	<span class="keyword">return</span> self.dfs(grid, (<span class="number">0</span>, <span class="number">0</span>), (len(grid) - <span class="number">1</span>, len(grid[<span class="number">0</span>]) - <span class="number">1</span>), presum)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dfs</span><span class="params">(self, grid, top_left, bottom_right, presum)</span>:</span></span><br><span class="line">	grim_sum = self.get_grid_sum(top_left, bottom_right, presum)</span><br><span class="line">	<span class="keyword">if</span> grim_sum == <span class="number">0</span>:</span><br><span class="line">		<span class="keyword">return</span> Node(<span class="number">0</span>, <span class="keyword">True</span>, <span class="keyword">None</span>, <span class="keyword">None</span>, <span class="keyword">None</span>, <span class="keyword">None</span>)</span><br><span class="line">	<span class="keyword">if</span> grim_sum == (bottom_right[<span class="number">0</span>] - top_left[<span class="number">0</span>] + <span class="number">1</span>) * (bottom_right[<span class="number">0</span>] - top_left[<span class="number">0</span>] + <span class="number">1</span>):</span><br><span class="line">		<span class="keyword">return</span> Node(<span class="number">1</span>, <span class="keyword">True</span>, <span class="keyword">None</span>, <span class="keyword">None</span>, <span class="keyword">None</span>, <span class="keyword">None</span>)</span><br><span class="line"></span><br><span class="line">	node = Node(<span class="number">1</span>, <span class="keyword">False</span>, <span class="keyword">None</span>, <span class="keyword">None</span>, <span class="keyword">None</span>, <span class="keyword">None</span>)</span><br><span class="line">	row_mid = top_left[<span class="number">0</span>] + (bottom_right[<span class="number">0</span>] - top_left[<span class="number">0</span>]) // <span class="number">2</span></span><br><span class="line">	col_mid = top_left[<span class="number">1</span>] + (bottom_right[<span class="number">1</span>] - top_left[<span class="number">1</span>]) // <span class="number">2</span></span><br><span class="line">	node.topLeft = self.dfs(grid, top_left, (row_mid, col_mid), presum)</span><br><span class="line">	node.topRight = self.dfs(grid, (top_left[<span class="number">0</span>], col_mid + <span class="number">1</span>), (row_mid, bottom_right[<span class="number">1</span>]), presum)</span><br><span class="line">	node.bottomLeft = self.dfs(grid, (row_mid + <span class="number">1</span>, top_left[<span class="number">1</span>]), (bottom_right[<span class="number">0</span>], col_mid), presum)</span><br><span class="line">	node.bottomRight = self.dfs(grid, (row_mid + <span class="number">1</span>, col_mid + <span class="number">1</span>), bottom_right, presum)</span><br><span class="line">	<span class="keyword">return</span> node</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_grid_sum</span><span class="params">(self, top_left, bottom_right, presum)</span>:</span></span><br><span class="line">	left = <span class="number">0</span> <span class="keyword">if</span> top_left[<span class="number">1</span>] &lt; <span class="number">1</span> <span class="keyword">else</span> presum[bottom_right[<span class="number">0</span>]][top_left[<span class="number">1</span>] - <span class="number">1</span>]</span><br><span class="line">	top = <span class="number">0</span> <span class="keyword">if</span> top_left[<span class="number">0</span>] &lt; <span class="number">1</span> <span class="keyword">else</span> presum[top_left[<span class="number">0</span>] - <span class="number">1</span>][bottom_right[<span class="number">1</span>]]</span><br><span class="line">	diag = <span class="number">0</span> <span class="keyword">if</span> top_left[<span class="number">0</span>] &lt; <span class="number">1</span> <span class="keyword">or</span> top_left[<span class="number">1</span>] &lt; <span class="number">1</span> <span class="keyword">else</span> presum[top_left[<span class="number">0</span>] - <span class="number">1</span>][top_left[<span class="number">1</span>] - <span class="number">1</span>]</span><br><span class="line">	<span class="keyword">return</span> presum[bottom_right[<span class="number">0</span>]][bottom_right[<span class="number">1</span>]] - left - top + diag</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_presum</span><span class="params">(self, grid)</span>:</span></span><br><span class="line">	presum = [[<span class="number">0</span> <span class="keyword">for</span> _ <span class="keyword">in</span> range(len(grid[<span class="number">0</span>]))] <span class="keyword">for</span> _ <span class="keyword">in</span> range(len(grid))]</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(grid)):</span><br><span class="line">		row_sum = <span class="number">0</span></span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> range(len(grid[<span class="number">0</span>])):</span><br><span class="line">			row_sum += grid[i][j]</span><br><span class="line">			presum[i][j] = row_sum + (presum[i - <span class="number">1</span>][j] <span class="keyword">if</span> i &gt; <span class="number">0</span> <span class="keyword">else</span> <span class="number">0</span>)</span><br><span class="line">	<span class="keyword">return</span> presum</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n<sup>2</sup>)</code>`，空间复杂度<code>O(n<sup>2</sup>)</code>  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -308,23 +300,23 @@
   <ul class="entry">
     
       <li>
+        <a href="/2022/02/13/leetcode-158-read-n-characters-given-read4/">LeetCode 157 Read N Characters Given Read4</a>
+      </li>
+    
+      <li>
+        <a href="/2022/02/13/leetcode-157-read-n-characters-given-read4/">LeetCode 157 Read N Characters Given Read4</a>
+      </li>
+    
+      <li>
+        <a href="/2022/02/12/karat-004/">Karat 004 Ads Conversion</a>
+      </li>
+    
+      <li>
         <a href="/2022/02/12/leetcode-498-diagonal-traverse/">LeetCode 498 Diagonal Traverse</a>
       </li>
     
       <li>
         <a href="/2022/02/08/leetcode-1779-find-nearest-point-that-has-the-same-x-or-y-coordinate/">LeetCode 1779 Find Nearest Point That Has the Same X or Y Coordinate</a>
-      </li>
-    
-      <li>
-        <a href="/2022/02/08/leetcode-1761-minimum-degree-of-a-connected-trio-in-a-graph/">LeetCode 1761 Minimum Degree of a Connected Trio in a Graph</a>
-      </li>
-    
-      <li>
-        <a href="/2022/02/08/leetcode-979-distribute-coins-in-binary-tree/">LeetCode 979 Distribute Coins in Binary Tree</a>
-      </li>
-    
-      <li>
-        <a href="/2022/02/07/leetcode-1448-count-good-nodes-in-binary-tree/">LeetCode 1448 Count Good Nodes in Binary Tree</a>
       </li>
     
   </ul>
@@ -337,7 +329,7 @@
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 14.17px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.75px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 17.08px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 13.75px;">Binary Tree</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10.42px;">Bit Manipulation</a> <a href="/tags/Bloomberg/" style="font-size: 10.42px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.92px;">Breadth-first Search</a> <a href="/tags/Citadel/" style="font-size: 10.83px;">Citadel</a> <a href="/tags/Classic/" style="font-size: 18.75px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.25px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.25px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 11.25px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.58px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 19.17px;">Facebook</a> <a href="/tags/Google/" style="font-size: 11.67px;">Google</a> <a href="/tags/Graph/" style="font-size: 12.92px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.92px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 17.08px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 14.17px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 13.33px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.25px;">Iterator</a> <a href="/tags/Karat/" style="font-size: 11.25px;">Karat</a> <a href="/tags/Knowledge-Base/" style="font-size: 17.08px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 15.42px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.5px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 18.33px;">Math</a> <a href="/tags/Matrix/" style="font-size: 15.83px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.25px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.83px;">Merge Sort</a> <a href="/tags/Microsoft/" style="font-size: 12.08px;">Microsoft</a> <a href="/tags/Mtrix/" style="font-size: 10px;">Mtrix</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 16.25px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.83px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.42px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10.83px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.25px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.42px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 17.5px;">Stack</a> <a href="/tags/String/" style="font-size: 18.75px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.25px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 16.67px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.25px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.58px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.42px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.42px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
+    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 14.17px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.75px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 17.08px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 13.75px;">Binary Tree</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10.42px;">Bit Manipulation</a> <a href="/tags/Bloomberg/" style="font-size: 10.42px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.92px;">Breadth-first Search</a> <a href="/tags/Citadel/" style="font-size: 10.83px;">Citadel</a> <a href="/tags/Classic/" style="font-size: 18.75px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.25px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.25px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 11.25px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.58px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 19.17px;">Facebook</a> <a href="/tags/Google/" style="font-size: 11.67px;">Google</a> <a href="/tags/Graph/" style="font-size: 12.92px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.92px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 17.08px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 14.17px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 13.33px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.25px;">Iterator</a> <a href="/tags/Karat/" style="font-size: 12.5px;">Karat</a> <a href="/tags/Knowledge-Base/" style="font-size: 17.08px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 15.42px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.5px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 18.33px;">Math</a> <a href="/tags/Matrix/" style="font-size: 15.83px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.25px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.83px;">Merge Sort</a> <a href="/tags/Microsoft/" style="font-size: 12.08px;">Microsoft</a> <a href="/tags/Mtrix/" style="font-size: 10px;">Mtrix</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 16.25px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.83px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.42px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10.83px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.25px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.42px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 17.5px;">Stack</a> <a href="/tags/String/" style="font-size: 18.75px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.25px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 16.67px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.25px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.58px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.42px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.42px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
   </div>
 </div>
 
