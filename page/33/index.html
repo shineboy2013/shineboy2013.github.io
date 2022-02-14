@@ -53,6 +53,57 @@
     <header>
       
   
+    <h1 class="title"><a href="/2021/12/22/lee-174/">LeetCode 174 Dungeon Game</a></h1>
+  
+
+      
+        <time datetime="2021-12-22T08:17:51.841Z">2021-12-22</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/dungeon-game/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>The demons had captured the princess and imprisoned her in <strong>the bottom-right corner</strong> of a <code>dungeon</code>. The <code>dungeon</code> consists of <code>m x n</code> rooms laid out in a 2D grid. Our valiant knight was initially positioned in <strong>the top-left room</strong> and must fight his way through <code>dungeon</code> to rescue the princess.<br><br>The knight has an initial health point represented by a positive integer. If at any point his health point drops to <code>0</code> or below, he dies immediately.<br><br>Some of the rooms are guarded by demons (represented by negative integers), so the knight loses health upon entering these rooms; other rooms are either empty (represented as 0) or contain magic orbs that increase the knight’s health (represented by positive integers).<br><br>To reach the princess as quickly as possible, the knight decides to move only <strong>rightward</strong> or <strong>downward</strong> in each step.<br><br>Return <em>the knight’s minimum initial health so that he can rescue the princess</em>.<br><br><strong>Note</strong> that any room can contain threats or power-ups, even the first room the knight enters and the bottom-right room where the princess is imprisoned.<br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/03/13/dungeon-grid-1.jpg" alt=""><br><br><pre><strong>Input:</strong> dungeon = [[-2,-3,3],[-5,-10,1],[10,30,-5]]<br><strong>Output:</strong> 7<br><strong>Explanation:</strong> The initial health of the knight must be at least 7 if he follows the optimal path: RIGHT-&gt; RIGHT -&gt; DOWN -&gt; DOWN.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> dungeon = [[0]]<br><strong>Output:</strong> 1<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>m == dungeon.length</code>
+</em>   <code>n == dungeon[i].length</code><br><em>   <code>1 &lt;= m, n &lt;= 200</code>
+</em>   <code>-1000 &lt;= dungeon[i][j] &lt;= 1000</code><br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>保持正数健康值从左上走到右下  </p>
+<h3 id="DP解题思路-推荐-："><a href="#DP解题思路-推荐-：" class="headerlink" title="DP解题思路(推荐)："></a><strong>DP解题思路(推荐)：</strong></h3><p>坐标型DP。<br>dp[n][m]为通过<strong>这一格前</strong>的最小健康值，也就是题目所求，这意味着需要保证通过最后一个后的健康值为1，所以引入它相邻的两个cell为1<br>递归式为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dp[n][m] = -dungeon[n][m] + min(dp[n+1][m], dp[n][m+1]) if dungeon[n][m] &lt; 0</span><br><span class="line">         = max&#123;1, min(dp[n+1][m], dp[n][m+1]) - dungeon[n][m]&#125; if dungeon[n][m] &gt; 0</span><br></pre></td></tr></table></figure></p>
+<p>由于-dungeon[n][m] + min(dp[n+1][m]一定为正数，所以可以归并两种情况：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dp[n][m] = max&#123;1, min(dp[n+1][m], dp[n][m+1]) - dungeon[n][m]&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>从右下走回左上倒推初始值。每一格的最小健康值在为1，而初始健康值也最小为1.  </li>
+<li>递归式：一开始的递归式跟下和右格的极小值有关，所以DP数组(比原数组多出的)最右和最下边界初始值为正无穷；但根据公式，右下格会出现正无穷，所以需要特别处理，<strong>将右下格的相邻下右两格初始为1</strong>，可以这样理解，从右下格走出健康值必须是1    </li>
+<li>递归式：一开始写若该格dungeon值为负数，1 - dungeon[n][m] + min(dp[n+1][m], dp[n][m+1])这个1的确保证了最小健康值为1，但其实它只要加一次，而上述右下边界已经处理，所以<strong>递归式不需要+1</strong>，如[[-2, -3]], dp[0][1]=4, 而dp[0][0]为6即可  </li>
+<li>递归式：当dungeon为正数时，可以抵消它相邻格所要求的最低健康值，当然要保证健康值大于1，如[5, 4, -2], dp[0][0] = 1</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># dp[n][m] = 1 - dungeon[n][m] + min(dp[n+1][m], dp[n][m+1]) if dungeon[n][m] &lt; 0</span></span><br><span class="line"><span class="comment">#          = 1 + min(dp[n+1][m], dp[n][m+1]) if dungeon[n][m] &gt; 0</span></span><br><span class="line"><span class="comment"># dp[n][m] = -dungeon[n][m] + min(dp[n+1][m], dp[n][m+1]) if dungeon[n][m] &lt; 0</span></span><br><span class="line"><span class="comment">#          = min(dp[n+1][m], dp[n][m+1]) if dungeon[n][m] &gt; 0</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">calculateMinimumHP</span><span class="params">(self, dungeon: List[List[int]])</span> -&gt; int:</span></span><br><span class="line">	dp = [[float(<span class="string">'inf'</span>) <span class="keyword">for</span> _ <span class="keyword">in</span> range(len(dungeon[<span class="number">0</span>]) + <span class="number">1</span>)] <span class="keyword">for</span> _ <span class="keyword">in</span> range(len(dungeon) + <span class="number">1</span>)]</span><br><span class="line">	dp[<span class="number">-1</span>][<span class="number">-2</span>] = dp[<span class="number">-2</span>][<span class="number">-1</span>] = <span class="number">1</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> reversed(range(len(dungeon))):</span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> reversed(range(len(dungeon[<span class="number">0</span>]))):</span><br><span class="line">			<span class="string">'''</span></span><br><span class="line"><span class="string">			min_neighbor = float('inf')</span></span><br><span class="line"><span class="string">			if i + 1 &lt; len(dungeon):</span></span><br><span class="line"><span class="string">				min_neighbor = min(min_neighbor, dp[i + 1][j])</span></span><br><span class="line"><span class="string">			if j + 1 &lt; len(dungeon[0]):</span></span><br><span class="line"><span class="string">				min_neighbor = min(min_neighbor, dp[i][j + 1])</span></span><br><span class="line"><span class="string">			if min_neighbor == float('inf'):</span></span><br><span class="line"><span class="string">				min_neighbor = 0</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">			if dungeon[i][j] &lt; 0:</span></span><br><span class="line"><span class="string">				dp[i][j] = min(dp[i + 1][j], dp[i][j + 1]) - dungeon[i][j]</span></span><br><span class="line"><span class="string">			else:</span></span><br><span class="line"><span class="string">				dp[i][j] = max(1, min(dp[i + 1][j], dp[i][j + 1]) - dungeon[i][j])</span></span><br><span class="line"><span class="string">			'''</span></span><br><span class="line">			dp[i][j] = max(<span class="number">1</span>, min(dp[i + <span class="number">1</span>][j], dp[i][j + <span class="number">1</span>]) - dungeon[i][j])</span><br><span class="line">	<span class="keyword">return</span> dp[<span class="number">0</span>][<span class="number">0</span>]</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n<sup>2</sup>)</code>，空间复杂度<code>O(n<sup>2</sup>)</code>  </p>
+<hr>
+<h3 id="Binary-select算法II解题思路："><a href="#Binary-select算法II解题思路：" class="headerlink" title="Binary select算法II解题思路："></a><strong>Binary select算法II解题思路：</strong></h3><p>Binary select + DP<br>暴力法，假设某个初始健康值，然后用从左到右从上到下计算<strong>这一格后的健康值</strong>，dp[m][n] = max{dp[m-1][n], dp[m][n-1]} + dungeon[r][c], 可以看出dp定义和递归式max都是跟上述方法相反。求最后一个是否正数<br>暴力法是O(n^2), 而用binary select试0, 1000 * (m + n) + 1，1000是cell的最大值，m+n是路径长度，1是最小健康值，二分法试每个数值  </p>
+<p>参考<a href="https://leetcode.com/problems/dungeon-game/discuss/1498367" target="_blank" rel="noopener">https://leetcode.com/problems/dungeon-game/discuss/1498367</a>  </p>
+<h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n<sup>2</sup>)logn</code>，空间复杂度<code>O(n<sup>2</sup>)</code>  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2021/12/21/lee-013/">LeetCode 013 Roman to Integer</a></h1>
   
 
@@ -228,48 +279,6 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2021/12/20/lee-011/">LeetCode 011 Container With Most Water</a></h1>
-  
-
-      
-        <time datetime="2021-12-21T03:41:35.494Z">2021-12-20</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/container-with-most-water/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>You are given an integer array <code>height</code> of length <code>n</code>. There are <code>n</code> vertical lines drawn such that the two endpoints of the <code>i&lt;sup&gt;th&lt;/sup&gt;</code> line are <code>(i, 0)</code> and <code>(i, height[i])</code>.<br><br>Find two lines that together with the x-axis form a container, such that the container contains the most water.<br><br>Return <em>the maximum amount of water a container can store</em>.<br><br><strong>Notice</strong> that you may not slant the container.<br><br><strong>Example 1:</strong><br><br><img src="https://s3-lc-upload.s3.amazonaws.com/uploads/2018/07/17/question_11.jpg" alt=""><br><br><pre><strong>Input:</strong> height = [1,8,6,2,5,4,8,3,7]<br><strong>Output:</strong> 49<br><strong>Explanation:</strong> The above vertical lines are represented by array [1,8,6,2,5,4,8,3,7]. In this case, the max area of water (blue section) the container can contain is 49.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> height = [1,1]<br><strong>Output:</strong> 1<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>n == height.length</code>
-</em>   <code>2 &lt;= n &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code><br>*   <code>0 &lt;= height[i] &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code><br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求两板之间的最大水量</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>贪婪法，求面积，然后移动矮的那条边</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>贪婪法，求面积，然后移动矮的那条边    </li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">maxArea</span><span class="params">(self, height: List[int])</span> -&gt; int:</span></span><br><span class="line">	res = <span class="number">0</span></span><br><span class="line">	i, j = <span class="number">0</span>, len(height) - <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> i &lt; j:</span><br><span class="line">		res = max(res, min(height[i], height[j]) * (j - i))</span><br><span class="line">		<span class="keyword">if</span> height[i] &lt; height[j]:</span><br><span class="line">			i += <span class="number">1</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			j -= <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -294,6 +303,10 @@
   <ul class="entry">
     
       <li>
+        <a href="/2022/02/13/leetcode-351-android-unlock-patterns/">LeetCode 351 Android Unlock Patterns</a>
+      </li>
+    
+      <li>
         <a href="/2022/02/13/leetcode-158-read-n-characters-given-read4/">LeetCode 158 Read N Characters Given read4 II - Call Multiple Times</a>
       </li>
     
@@ -309,10 +322,6 @@
         <a href="/2022/02/12/leetcode-498-diagonal-traverse/">LeetCode 498 Diagonal Traverse</a>
       </li>
     
-      <li>
-        <a href="/2022/02/08/leetcode-1779-find-nearest-point-that-has-the-same-x-or-y-coordinate/">LeetCode 1779 Find Nearest Point That Has the Same X or Y Coordinate</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -323,7 +332,7 @@
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 14.17px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.75px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 17.08px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 13.75px;">Binary Tree</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10.42px;">Bit Manipulation</a> <a href="/tags/Bloomberg/" style="font-size: 10.42px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.92px;">Breadth-first Search</a> <a href="/tags/Citadel/" style="font-size: 10.83px;">Citadel</a> <a href="/tags/Classic/" style="font-size: 18.75px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.25px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.25px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 11.25px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.58px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 19.17px;">Facebook</a> <a href="/tags/Google/" style="font-size: 11.67px;">Google</a> <a href="/tags/Graph/" style="font-size: 12.92px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.92px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 17.08px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 14.17px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 13.33px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.25px;">Iterator</a> <a href="/tags/Karat/" style="font-size: 12.5px;">Karat</a> <a href="/tags/Knowledge-Base/" style="font-size: 17.08px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 15.42px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.5px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 18.33px;">Math</a> <a href="/tags/Matrix/" style="font-size: 15.83px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.25px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.83px;">Merge Sort</a> <a href="/tags/Microsoft/" style="font-size: 12.08px;">Microsoft</a> <a href="/tags/Mtrix/" style="font-size: 10px;">Mtrix</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 16.25px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.83px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.42px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10.83px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.25px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.42px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 17.5px;">Stack</a> <a href="/tags/String/" style="font-size: 18.75px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.25px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 16.67px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.25px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.58px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.42px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.42px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
+    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 14.17px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 14.17px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 17.08px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 13.75px;">Binary Tree</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10.42px;">Bit Manipulation</a> <a href="/tags/Bloomberg/" style="font-size: 10.42px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.92px;">Breadth-first Search</a> <a href="/tags/Citadel/" style="font-size: 10.83px;">Citadel</a> <a href="/tags/Classic/" style="font-size: 18.75px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.25px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.25px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 11.25px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.58px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 19.17px;">Facebook</a> <a href="/tags/Google/" style="font-size: 11.67px;">Google</a> <a href="/tags/Graph/" style="font-size: 12.92px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.92px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 17.08px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 14.17px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 13.33px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.25px;">Iterator</a> <a href="/tags/Karat/" style="font-size: 12.5px;">Karat</a> <a href="/tags/Knowledge-Base/" style="font-size: 17.08px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 15.42px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.5px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 18.33px;">Math</a> <a href="/tags/Matrix/" style="font-size: 15.83px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.25px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.83px;">Merge Sort</a> <a href="/tags/Microsoft/" style="font-size: 12.08px;">Microsoft</a> <a href="/tags/Mtrix/" style="font-size: 10px;">Mtrix</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 16.25px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.83px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.42px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10.83px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.25px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.42px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 17.5px;">Stack</a> <a href="/tags/String/" style="font-size: 18.75px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.25px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 16.67px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.25px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.58px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.42px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.42px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
   </div>
 </div>
 

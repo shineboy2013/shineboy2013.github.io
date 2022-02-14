@@ -53,6 +53,50 @@
     <header>
       
   
+    <h1 class="title"><a href="/2022/01/16/leetcode-142-linked-list-cycle-ii/">LeetCode 142 Linked List Cycle II</a></h1>
+  
+
+      
+        <time datetime="2022-01-17T07:37:27.907Z">2022-01-16</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/linked-list-cycle-ii/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>Given the <code>head</code> of a linked list, return <em>the node where the cycle begins. If there is no cycle, return</em> <code>null</code>.<br><br>There is a cycle in a linked list if there is some node in the list that can be reached again by continuously following the <code>next</code> pointer. Internally, <code>pos</code> is used to denote the index of the node that tail’s <code>next</code> pointer is connected to (<strong>0-indexed</strong>). It is <code>-1</code> if there is no cycle. <strong>Note that</strong> <code>pos</code> <strong>is not passed as a parameter</strong>.<br><br><strong>Do not modify</strong> the linked list.<br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2018/12/07/circularlinkedlist.png" alt=""><br><br><pre><strong>Input:</strong> head = [3,2,0,-4], pos = 1<br><strong>Output:</strong> tail connects to node index 1<br><strong>Explanation:</strong> There is a cycle in the linked list, where tail connects to the second node.<br></pre><br><br><strong>Example 2:</strong><br><br><img src="https://assets.leetcode.com/uploads/2018/12/07/circularlinkedlist_test2.png" alt=""><br><br><pre><strong>Input:</strong> head = [1,2], pos = 0<br><strong>Output:</strong> tail connects to node index 0<br><strong>Explanation:</strong> There is a cycle in the linked list, where tail connects to the first node.<br></pre><br><br><strong>Example 3:</strong><br><br><img src="https://assets.leetcode.com/uploads/2018/12/07/circularlinkedlist_test3.png" alt=""><br><br><pre><strong>Input:</strong> head = [1], pos = -1<br><strong>Output:</strong> no cycle<br><strong>Explanation:</strong> There is no cycle in the linked list.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   The number of the nodes in the list is in the range <code>[0, 10&lt;sup&gt;4&lt;/sup&gt;]</code>.
+</em>   <code>-10&lt;sup&gt;5&lt;/sup&gt; &lt;= Node.val &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code><br><em>   <code>pos</code> is <code>-1</code> or a <strong>valid index</strong> in the linked-list.<br><br><em>*Follow up:</em></em> Can you solve it using <code>O(1)</code> (i.e. constant) memory?<br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求LL是否存在循环，若存在返回循环起点</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>先用快慢指针找到相遇点，然后将slow指针移回fake_head起点，同速度移动直到相遇即为所求</p>
+<p>证明：<br><img src="/images/L142.png" alt=""><br>A为起点，B为快慢指针相遇点，假设长度分别为z, y, x<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">fast在相遇时走过的距离为: z + x + y + y, 比slow多走一圈  </span><br><span class="line">slow在相遇时走过的距离为: z + y  </span><br><span class="line">由于fast速度是slow的两倍，所以相遇时，同一时间内，走过的距离也是两倍。</span><br><span class="line">z + x + y + y = 2 * (z + y)</span><br><span class="line">x = z得证</span><br></pre></td></tr></table></figure></p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li><strong>不涉及删除，所以不需要哟用到fake_node</strong>，但循环中先走再判断。</li>
+<li>循环可能不存在，此时返回None</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">detectCycle</span><span class="params">(self, head: ListNode)</span> -&gt; ListNode:</span></span><br><span class="line">	fast, slow= head, head</span><br><span class="line">	<span class="keyword">while</span> fast <span class="keyword">and</span> fast.next:</span><br><span class="line">		fast, slow = fast.next.next, slow.next</span><br><span class="line">		<span class="keyword">if</span> fast == slow: <span class="comment"># meets again</span></span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> fast <span class="keyword">or</span> <span class="keyword">not</span> fast.next:</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">None</span> <span class="comment"># remember</span></span><br><span class="line">	slow = head</span><br><span class="line">	<span class="keyword">while</span> fast != slow:</span><br><span class="line">		fast, slow = fast.next, slow.next</span><br><span class="line">	<span class="keyword">return</span> fast</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2022/01/16/leetcode-141-linked-list-cycle/">LeetCode 141 Linked List Cycle</a></h1>
   
 
@@ -232,47 +276,6 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2022/01/16/lee-118-pascals-triangle/">LeetCode 118 Pascal&#39;s Triangle</a></h1>
-  
-
-      
-        <time datetime="2022-01-17T00:37:47.840Z">2022-01-16</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/pascals-triangle" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>Given an integer <code>numRows</code>, return the first numRows of <strong>Pascal’s triangle</strong>.<br><br>In <strong>Pascal’s triangle</strong>, each number is the sum of the two numbers directly above it as shown:<br><br><img src="https://upload.wikimedia.org/wikipedia/commons/0/0d/PascalTriangleAnimated2.gif" alt=""><br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> numRows = 5<br><strong>Output:</strong> [[1],[1,1],[1,2,1],[1,3,3,1],[1,4,6,4,1]]<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> numRows = 1<br><strong>Output:</strong> [[1]]<br></pre><br><br><strong>Constraints:</strong><br><br>*   <code>1 &lt;= numRows &lt;= 30</code><br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定n行，产生n行的杨辉三角</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>用DP按照定义生成，其实类似于Fibonacci数列，不过是二维的，而不是一维。</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>初始值为[1]</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">generate</span><span class="params">(self, numRows: int)</span> -&gt; List[List[int]]:</span></span><br><span class="line">	path, res = [<span class="number">1</span>], []</span><br><span class="line">	res.append(path)</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, numRows):</span><br><span class="line">		next_level = []</span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">1</span>, len(path)):</span><br><span class="line">			next_level.append(path[j - <span class="number">1</span>] + path[j])</span><br><span class="line">		next_level.insert(<span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">		next_level.append(<span class="number">1</span>)</span><br><span class="line">		path = next_level</span><br><span class="line">		res.append(list(path))</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(numRows<sup>2</sup>)</code>，空间复杂度<code>O(1)</code>  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -297,6 +300,10 @@
   <ul class="entry">
     
       <li>
+        <a href="/2022/02/13/leetcode-351-android-unlock-patterns/">LeetCode 351 Android Unlock Patterns</a>
+      </li>
+    
+      <li>
         <a href="/2022/02/13/leetcode-158-read-n-characters-given-read4/">LeetCode 158 Read N Characters Given read4 II - Call Multiple Times</a>
       </li>
     
@@ -312,10 +319,6 @@
         <a href="/2022/02/12/leetcode-498-diagonal-traverse/">LeetCode 498 Diagonal Traverse</a>
       </li>
     
-      <li>
-        <a href="/2022/02/08/leetcode-1779-find-nearest-point-that-has-the-same-x-or-y-coordinate/">LeetCode 1779 Find Nearest Point That Has the Same X or Y Coordinate</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -326,7 +329,7 @@
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 14.17px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 13.75px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 17.08px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 13.75px;">Binary Tree</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10.42px;">Bit Manipulation</a> <a href="/tags/Bloomberg/" style="font-size: 10.42px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.92px;">Breadth-first Search</a> <a href="/tags/Citadel/" style="font-size: 10.83px;">Citadel</a> <a href="/tags/Classic/" style="font-size: 18.75px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.25px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.25px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 11.25px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.58px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 19.17px;">Facebook</a> <a href="/tags/Google/" style="font-size: 11.67px;">Google</a> <a href="/tags/Graph/" style="font-size: 12.92px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.92px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 17.08px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 14.17px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 13.33px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.25px;">Iterator</a> <a href="/tags/Karat/" style="font-size: 12.5px;">Karat</a> <a href="/tags/Knowledge-Base/" style="font-size: 17.08px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 15.42px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.5px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 18.33px;">Math</a> <a href="/tags/Matrix/" style="font-size: 15.83px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.25px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.83px;">Merge Sort</a> <a href="/tags/Microsoft/" style="font-size: 12.08px;">Microsoft</a> <a href="/tags/Mtrix/" style="font-size: 10px;">Mtrix</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 16.25px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.83px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.42px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10.83px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.25px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.42px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 17.5px;">Stack</a> <a href="/tags/String/" style="font-size: 18.75px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.25px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 16.67px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.25px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.58px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.42px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.42px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
+    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 14.17px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 14.17px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 17.08px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 13.75px;">Binary Tree</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10.42px;">Bit Manipulation</a> <a href="/tags/Bloomberg/" style="font-size: 10.42px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.92px;">Breadth-first Search</a> <a href="/tags/Citadel/" style="font-size: 10.83px;">Citadel</a> <a href="/tags/Classic/" style="font-size: 18.75px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.25px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.25px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 11.25px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.58px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 19.17px;">Facebook</a> <a href="/tags/Google/" style="font-size: 11.67px;">Google</a> <a href="/tags/Graph/" style="font-size: 12.92px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.92px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 17.08px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 14.17px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 13.33px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.25px;">Iterator</a> <a href="/tags/Karat/" style="font-size: 12.5px;">Karat</a> <a href="/tags/Knowledge-Base/" style="font-size: 17.08px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 15.42px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.5px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 18.33px;">Math</a> <a href="/tags/Matrix/" style="font-size: 15.83px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.25px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.83px;">Merge Sort</a> <a href="/tags/Microsoft/" style="font-size: 12.08px;">Microsoft</a> <a href="/tags/Mtrix/" style="font-size: 10px;">Mtrix</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 16.25px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.83px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.42px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10.83px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.25px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.42px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 17.5px;">Stack</a> <a href="/tags/String/" style="font-size: 18.75px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.25px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 16.67px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.25px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.58px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.42px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.42px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
   </div>
 </div>
 
