@@ -53,6 +53,50 @@
     <header>
       
   
+    <h1 class="title"><a href="/2021/12/20/lee-443/">LeetCode 443 String Compression</a></h1>
+  
+
+      
+        <time datetime="2021-12-21T07:37:40.086Z">2021-12-20</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/string-compression/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>Given an array of characters <code>chars</code>, compress it using the following algorithm:<br><br>Begin with an empty string <code>s</code>. For each group of <strong>consecutive repeating characters</strong> in <code>chars</code>:<br><br><em>   If the group’s length is <code>1</code>, append the character to <code>s</code>.
+</em>   Otherwise, append the character followed by the group’s length.<br><br>The compressed string <code>s</code> <strong>should not be returned separately</strong>, but instead, be stored <strong>in the input character array <code>chars</code></strong>. Note that group lengths that are <code>10</code> or longer will be split into multiple characters in <code>chars</code>.<br><br>After you are done <strong>modifying the input array</strong>, return <em>the new length of the array</em>.<br><br>You must write an algorithm that uses only constant extra space.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> chars = [“a”,”a”,”b”,”b”,”c”,”c”,”c”]<br><strong>Output:</strong> Return 6, and the first 6 characters of the input array should be: [“a”,”2”,”b”,”2”,”c”,”3”]<br><strong>Explanation:</strong> The groups are “aa”, “bb”, and “ccc”. This compresses to “a2b2c3”.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> chars = [“a”]<br><strong>Output:</strong> Return 1, and the first character of the input array should be: [“a”]<br><strong>Explanation:</strong> The only group is “a”, which remains uncompressed since it’s a single character.<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> chars = [“a”,”b”,”b”,”b”,”b”,”b”,”b”,”b”,”b”,”b”,”b”,”b”,”b”]<br><strong>Output:</strong> Return 4, and the first 4 characters of the input array should be: [“a”,”b”,”1”,”2”].<br><strong>Explanation:</strong> The groups are “a” and “bbbbbbbbbbbb”. This compresses to “ab12”.</pre><br><br><strong>Example 4:</strong><br><br><pre><strong>Input:</strong> chars = [“a”,”a”,”a”,”b”,”b”,”a”,”a”]<br><strong>Output:</strong> Return 6, and the first 6 characters of the input array should be: [“a”,”3”,”b”,”2”,”a”,”2”].<br><strong>Explanation:</strong> The groups are “aaa”, “bb”, and “aa”. This compresses to “a3b2a2”. Note that each group is independent even if two groups have the same character.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= chars.length &lt;= 2000</code>
+</em>   <code>chars[i]</code> is a lowercase English letter, uppercase English letter, digit, or symbol.<br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>相邻相同字母用数字压缩</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>N/A</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>题目要求，如果是超过10，也要将这个数按多个字符populate到原数组，见populate_count的实现，用字符串处理  </li>
+<li>在循环外处理最后一部分    </li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">compress</span><span class="params">(self, chars: List[str])</span> -&gt; int:</span></span><br><span class="line">	res, count = <span class="number">1</span>, <span class="number">1</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, len(chars)):</span><br><span class="line">		<span class="keyword">if</span> chars[i - <span class="number">1</span>] == chars[i]:</span><br><span class="line">			count += <span class="number">1</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			<span class="keyword">if</span> count &gt; <span class="number">1</span>:</span><br><span class="line">				res = self.populate_count(chars, res, count)</span><br><span class="line">			count = <span class="number">1</span></span><br><span class="line">			chars[res] = chars[i]</span><br><span class="line">			res += <span class="number">1</span></span><br><span class="line">	<span class="keyword">if</span> count &gt; <span class="number">1</span>:</span><br><span class="line">		res = self.populate_count(chars, res, count)</span><br><span class="line">	<span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">populate_count</span><span class="params">(self, chars, res, count)</span>:</span></span><br><span class="line">	num_str = str(count)</span><br><span class="line">	chars[res:res + len(num_str)] = [c <span class="keyword">for</span> c <span class="keyword">in</span> num_str]</span><br><span class="line">	res += len(num_str)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2021/12/20/lee-011/">LeetCode 011 Container With Most Water</a></h1>
   
 
@@ -235,57 +279,6 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2021/12/19/lee-815/">LeetCode 815 Bus Routes</a></h1>
-  
-
-      
-        <time datetime="2021-12-19T19:00:18.183Z">2021-12-19</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/bus-routes/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>You are given an array <code>routes</code> representing bus routes where <code>routes[i]</code> is a bus route that the <code>i&lt;sup&gt;th&lt;/sup&gt;</code> bus repeats forever.<br><br><em>   For example, if <code>routes[0] = [1, 5, 7]</code>, this means that the <code>0&lt;sup&gt;th&lt;/sup&gt;</code> bus travels in the sequence <code>1 -&gt; 5 -&gt; 7 -&gt; 1 -&gt; 5 -&gt; 7 -&gt; 1 -&gt; ...</code> forever.<br><br>You will start at the bus stop <code>source</code> (You are not on any bus initially), and you want to go to the bus stop <code>target</code>. You can travel between bus stops by buses only.<br><br>Return <em>the least number of buses you must take to travel from</em> <code>source</code> <em>to</em> <code>target</code>. Return <code>-1</code> if it is not possible.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> routes = [[1,2,7],[3,6,7]], source = 1, target = 6<br><strong>Output:</strong> 2<br><strong>Explanation:</strong> The best strategy is take the first bus to the bus stop 7, then take the second bus to the bus stop 6.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> routes = [[7,12],[4,5,15],[6],[15,19],[9,12,13]], source = 15, target = 12<br><strong>Output:</strong> -1<br></pre><br><br><strong>Constraints:</strong>
-
-</em>   <code>1 &lt;= routes.length &lt;= 500</code>.<br><em>   <code>1 &lt;= routes[i].length &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code>
-</em>   All the values of <code>routes[i]</code> are <strong>unique</strong>.<br><em>   <code>sum(routes[i].length) &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code>
-</em>   <code>0 &lt;= routes[i][j] &lt; 10&lt;sup&gt;6&lt;/sup&gt;</code><br>*   <code>0 &lt;= source, target &lt; 10&lt;sup&gt;6&lt;/sup&gt;</code><br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求公交路线中最小换站次数</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>最值题且涉及到图，容易想到BFS。但此题难点在于不能将每个站作为一个节点，这样代码复杂且TLE。优化的做法是将路线作为节点，因为同一路线换站次数是一样的。属于<strong>一组节点作为一层的BFS</strong>。</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li><strong>将整条路线作为图的节点</strong>。这些节点都位于同一层，换乘不同路线才会换到下一层，路径+1    </li>
-<li>source和target所在的路线可能是多个，所以要将target所在的所有路线放在set中  </li>
-<li><strong>邻接表计算是用两条路线是否有交集</strong>，有交集才能换乘，才能进入下一层访问，Python用set(a) &amp; set(b)  </li>
-<li>如果target和source相等，返回0 (<strong>相等test case</strong>)  </li>
-<li>站点不存在或者不存在任何路线，就返回-1</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">numBusesToDestination</span><span class="params">(self, routes: List[List[int]], source: int, target: int)</span> -&gt; int:</span></span><br><span class="line">	<span class="keyword">if</span> target == source: <span class="comment"># remember</span></span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">	graph = collections.defaultdict(list) <span class="comment"># both set or list are fine</span></span><br><span class="line">	queue, targets, visited, distance = collections.deque(), set(), set(), collections.defaultdict(int)</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(routes)):</span><br><span class="line">		<span class="keyword">if</span> source <span class="keyword">in</span> set(routes[i]):</span><br><span class="line">			queue.append(i)</span><br><span class="line">			visited.add(i)</span><br><span class="line">			distance[i] = <span class="number">1</span></span><br><span class="line">		<span class="keyword">if</span> target <span class="keyword">in</span> set(routes[i]):</span><br><span class="line">			targets.add(i)</span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> range(i + <span class="number">1</span>, len(routes)):</span><br><span class="line">			<span class="keyword">if</span> set(routes[i]) &amp; set(routes[j]):</span><br><span class="line">				graph[i].append(j)</span><br><span class="line">				graph[j].append(i)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.popleft()</span><br><span class="line">		<span class="keyword">if</span> node <span class="keyword">in</span> targets:</span><br><span class="line">			<span class="keyword">return</span> distance[node]</span><br><span class="line">		<span class="keyword">for</span> neighbor <span class="keyword">in</span> graph[node]:</span><br><span class="line">			<span class="keyword">if</span> neighbor <span class="keyword">in</span> visited:</span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			queue.append(neighbor)</span><br><span class="line">			visited.add(neighbor)</span><br><span class="line">			distance[neighbor] = distance[node] + <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">-1</span> <span class="comment"># remember</span></span><br></pre></td></tr></table></figure>
-<p>TLE版本用station作为节点  </p>
-<h3 id="Python代码：-1"><a href="#Python代码：-1" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">numBusesToDestination2</span><span class="params">(self, routes: List[List[int]], source: int, target: int)</span> -&gt; int:</span></span><br><span class="line">	<span class="keyword">if</span> target == source: <span class="comment"># remember</span></span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">	graph, station_to_route = collections.defaultdict(list), collections.defaultdict(set)</span><br><span class="line">	<span class="keyword">for</span> j <span class="keyword">in</span> range(len(routes)):</span><br><span class="line">		r = routes[j] + [routes[j][<span class="number">0</span>]]</span><br><span class="line">		<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, len(r)):</span><br><span class="line">			<span class="comment"># graph[r[i - 1]].append(r[i])</span></span><br><span class="line">			station_to_route[r[i]].add(j)</span><br><span class="line"></span><br><span class="line">	queue = collections.deque()</span><br><span class="line">	visited = set()</span><br><span class="line">	bus_num = collections.defaultdict(int)  <span class="comment"># remember collections.defaultdict(lambda: 1)</span></span><br><span class="line">	<span class="keyword">for</span> j <span class="keyword">in</span> station_to_route[source]:</span><br><span class="line">		<span class="keyword">for</span> i <span class="keyword">in</span> routes[j]:</span><br><span class="line">			<span class="keyword">if</span> i <span class="keyword">in</span> visited:</span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			queue.append(i)</span><br><span class="line">			visited.add(i)</span><br><span class="line">			bus_num[i] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.popleft()</span><br><span class="line">		<span class="keyword">if</span> node == target:</span><br><span class="line">			<span class="keyword">return</span> bus_num[node]</span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> station_to_route[node]:</span><br><span class="line">			<span class="keyword">for</span> i <span class="keyword">in</span> routes[j]:</span><br><span class="line">				<span class="keyword">if</span> i <span class="keyword">in</span> visited:</span><br><span class="line">					<span class="keyword">continue</span></span><br><span class="line">				queue.append(i)</span><br><span class="line">				visited.add(i)</span><br><span class="line">				bus_num[i] = bus_num[node] + <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">-1</span> <span class="comment"># remember</span></span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n<sup>2</sup>)</code>，空间复杂度<code>O(n<sup>2</sup>)</code>, n = num of routes </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -310,6 +303,10 @@
   <ul class="entry">
     
       <li>
+        <a href="/2022/02/15/mock-001/">Mock 001 Count changes for two N-trees</a>
+      </li>
+    
+      <li>
         <a href="/2022/02/15/leetcode-1166-design-file-system/">LeetCode 1166 Design File System</a>
       </li>
     
@@ -325,10 +322,6 @@
         <a href="/2022/02/15/leetcode-854-k-similar-strings/">LeetCode 854 K-Similar Strings</a>
       </li>
     
-      <li>
-        <a href="/2022/02/15/leetcode-859-buddy-strings/">LeetCode Buddy Strings</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -339,7 +332,7 @@
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 14px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 14px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 16.8px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 13.6px;">Binary Tree</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10.4px;">Bit Manipulation</a> <a href="/tags/Bloomberg/" style="font-size: 10.4px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.6px;">Breadth-first Search</a> <a href="/tags/Citadel/" style="font-size: 10.8px;">Citadel</a> <a href="/tags/Classic/" style="font-size: 18.4px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 14.8px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.2px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.2px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 13.6px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.6px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 19.2px;">Facebook</a> <a href="/tags/Google/" style="font-size: 11.6px;">Google</a> <a href="/tags/Graph/" style="font-size: 12.8px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.8px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.8px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 14px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 13.2px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.2px;">Iterator</a> <a href="/tags/Karat/" style="font-size: 12.4px;">Karat</a> <a href="/tags/Knowledge-Base/" style="font-size: 16.8px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 15.2px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.4px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 18px;">Math</a> <a href="/tags/Matrix/" style="font-size: 15.6px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.2px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.8px;">Merge Sort</a> <a href="/tags/Microsoft/" style="font-size: 12px;">Microsoft</a> <a href="/tags/Mtrix/" style="font-size: 10px;">Mtrix</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 16px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.8px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.4px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10.8px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.2px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.4px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 17.2px;">Stack</a> <a href="/tags/String/" style="font-size: 18.8px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.2px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 16.4px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.6px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.4px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.4px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.4px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
+    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 14px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 14px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 16.8px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 13.6px;">Binary Tree</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10.4px;">Bit Manipulation</a> <a href="/tags/Bloomberg/" style="font-size: 10.4px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.6px;">Breadth-first Search</a> <a href="/tags/Citadel/" style="font-size: 10.8px;">Citadel</a> <a href="/tags/Classic/" style="font-size: 18.4px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 14.8px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.2px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.2px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 14px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.6px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 19.2px;">Facebook</a> <a href="/tags/Google/" style="font-size: 11.6px;">Google</a> <a href="/tags/Graph/" style="font-size: 12.8px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.8px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.8px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 14px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 13.2px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.2px;">Iterator</a> <a href="/tags/Karat/" style="font-size: 12.4px;">Karat</a> <a href="/tags/Knowledge-Base/" style="font-size: 16.8px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 15.2px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.4px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 18px;">Math</a> <a href="/tags/Matrix/" style="font-size: 15.6px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.2px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.8px;">Merge Sort</a> <a href="/tags/Microsoft/" style="font-size: 12px;">Microsoft</a> <a href="/tags/Mtrix/" style="font-size: 10px;">Mtrix</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 16px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.8px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.4px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10.8px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.2px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.4px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 17.2px;">Stack</a> <a href="/tags/String/" style="font-size: 18.8px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.2px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 16.4px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.6px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.4px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.4px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.4px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
   </div>
 </div>
 

@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://shineboy2013.github.com/"/>
-  <updated>2022-02-15T18:21:19.212Z</updated>
+  <updated>2022-02-15T21:15:38.880Z</updated>
   <id>https://shineboy2013.github.com/</id>
   
   <author>
@@ -15,6 +15,34 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Mock 001 Count changes for two N-trees</title>
+    <link href="https://shineboy2013.github.com/2022/02/15/mock-001/"/>
+    <id>https://shineboy2013.github.com/2022/02/15/mock-001/</id>
+    <published>2022-02-15T21:10:39.391Z</published>
+    <updated>2022-02-15T21:15:38.880Z</updated>
+    
+    <content type="html"><![CDATA[<p>A change for two N-children tree contains:</p><ol><li>key is different</li><li>value is different</li><li>delete a node</li><li>add a node</li></ol><p>Problem: how many changes to convert tree A to tree B</p><h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>DD的面经题，多少个改动可以使得existingTree变成newTree</p><h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>DFS, 比较children，三种情况。若其中一方没有节点，就是计算节点数</p><h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p><h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol><li>比较children，三种情况。若其中一方没有节点，就是计算节点数</li></ol><h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">changeNodes</span><span class="params">(self, existingTree, newTree)</span> -&gt; int:</span></span><br><span class="line"><span class="keyword">if</span> <span class="keyword">not</span> existingTree <span class="keyword">and</span> <span class="keyword">not</span> newTree:</span><br><span class="line"><span class="keyword">return</span> <span class="number">0</span></span><br><span class="line"><span class="keyword">if</span> <span class="keyword">not</span> existingTree <span class="keyword">or</span> <span class="keyword">not</span> newTree:</span><br><span class="line"><span class="keyword">return</span> self.count(existingTree) + self.count(newTree)</span><br><span class="line">res = <span class="number">0</span> <span class="keyword">if</span> existingTree.key == newTree.key <span class="keyword">and</span> existingTree.val == newTree.val <span class="keyword">else</span> <span class="number">1</span></span><br><span class="line">existing_children_dict = self.get_children_dict(existingTree.children)</span><br><span class="line">new_tree_children_dict = self.get_children_dict(newTree.children)</span><br><span class="line"><span class="keyword">for</span> key <span class="keyword">in</span> existing_children_dict.keys() &amp; new_tree_children_dict.keys(): <span class="comment"># in both</span></span><br><span class="line">res += self.changeNodes(existing_children_dict[key], new_tree_children_dict[key])</span><br><span class="line"><span class="keyword">for</span> key <span class="keyword">in</span> existing_children_dict.keys() - new_tree_children_dict.keys(): <span class="comment"># in existing tree not in new tree</span></span><br><span class="line">res += self.count(existing_children_dict[key])</span><br><span class="line"><span class="keyword">for</span> key <span class="keyword">in</span> new_tree_children_dict.keys() - existing_children_dict.keys():  <span class="comment"># in new tree not in existing tree</span></span><br><span class="line">res += self.count(new_tree_children_dict[key])</span><br><span class="line"><span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">count</span><span class="params">(self, root)</span>:</span></span><br><span class="line"><span class="keyword">if</span> <span class="keyword">not</span> root:</span><br><span class="line"><span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">res = <span class="number">0</span></span><br><span class="line"><span class="keyword">for</span> child <span class="keyword">in</span> root.children:</span><br><span class="line">res += self.count(child)</span><br><span class="line"><span class="keyword">return</span> <span class="number">1</span> + res</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_children_dict</span><span class="params">(self, children)</span>:</span></span><br><span class="line">key_to_node = &#123;&#125;</span><br><span class="line"><span class="keyword">for</span> child <span class="keyword">in</span> children:</span><br><span class="line">key_to_node[child.key] = child</span><br><span class="line"><span class="keyword">return</span> key_to_node</span><br></pre></td></tr></table></figure><h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;A change for two N-children tree contains:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;key is different&lt;/li&gt;
+&lt;li&gt;value is different&lt;/li&gt;
+&lt;li&gt;delete a node&lt;/li&gt;
+&lt;li&gt;add 
+      
+    
+    </summary>
+    
+    
+      <category term="DoorDash" scheme="https://shineboy2013.github.com/tags/DoorDash/"/>
+    
+  </entry>
   
   <entry>
     <title>LeetCode 1166 Design File System</title>
@@ -487,30 +515,6 @@
     
     
       <category term="Karat" scheme="https://shineboy2013.github.com/tags/Karat/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>LeetCode 1522 Diameter of N-Ary Tree</title>
-    <link href="https://shineboy2013.github.com/2022/02/07/leetcode-1522-diameter-of-n-ary-tree/"/>
-    <id>https://shineboy2013.github.com/2022/02/07/leetcode-1522-diameter-of-n-ary-tree/</id>
-    <published>2022-02-07T09:33:44.019Z</published>
-    <updated>2022-02-07T09:38:33.536Z</updated>
-    
-    <content type="html"><![CDATA[<p><strong><a href="https://leetcode.com/problems/diameter-of-n-ary-tree/" target="_blank" rel="noopener">LeetCode</a></strong></p><div><br><br>Given a <code>root</code> of an <a href="https://leetcode.com/articles/introduction-to-n-ary-trees/" target="_blank" rel="noopener">N-ary tree</a>, you need to compute the length of the diameter of the tree.<br><br>The diameter of an N-ary tree is the length of the <strong>longest</strong> path between any two nodes in the tree. This path may or may not pass through the root.<br><br>(<em>Nary-Tree input serialization is represented in their level order traversal, each group of children is separated by the null value.)</em><br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2020/07/19/sample_2_1897.png" alt=""><br><br><pre><strong>Input:</strong> root = [1,null,3,2,4,null,5,6]<br><strong>Output:</strong> 3<br><strong>Explanation:</strong> Diameter is shown in red color.</pre><br><br><strong>Example 2:</strong><br><br><strong><img src="https://assets.leetcode.com/uploads/2020/07/19/sample_1_1897.png" alt=""></strong><br><br><pre><strong>Input:</strong> root = [1,null,2,null,3,4,null,5,null,6]<br><strong>Output:</strong> 4<br></pre><br><br><strong>Example 3:</strong><br><br><img src="https://assets.leetcode.com/uploads/2020/07/19/sample_3_1897.png" alt=""><br><br><pre><strong>Input:</strong> root = [1,null,2,3,4,5,null,null,6,7,null,8,null,9,10,null,null,11,null,12,null,13,null,null,14]<br><strong>Output:</strong> 7<br></pre><br><br><strong>Constraints:</strong><br><br><em>   The depth of the n-ary tree is less than or equal to <code>1000</code>.</em>   The total number of nodes is between <code>[1, 10&lt;sup&gt;4&lt;/sup&gt;]</code>.<br><br></div><h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求树的直径：任何两个节点的最大距离</p><h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>类似于LeetCode 543 Diameter of Binary Tree，但此题为N叉树</p><h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>DFS</p><h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol><li>求数组中最大的两数和，用去掉最大值的方法得到次大值。还要注意初始值加入[1, 1]，避免没有儿子节点或只有一个的情况</li></ol><h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">diameter</span><span class="params">(self, root: <span class="string">'Node'</span>)</span> -&gt; int:</span></span><br><span class="line">max_len = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dfs</span><span class="params">(root)</span>:</span></span><br><span class="line"><span class="keyword">if</span> <span class="keyword">not</span> root:</span><br><span class="line"><span class="keyword">return</span> <span class="number">0</span></span><br><span class="line"><span class="keyword">nonlocal</span> max_len</span><br><span class="line">path_len = [<span class="number">1</span>, <span class="number">1</span>]</span><br><span class="line"><span class="keyword">for</span> child <span class="keyword">in</span> root.children:</span><br><span class="line">path_len.append(dfs(child) + <span class="number">1</span>)</span><br><span class="line">largest = max(path_len)</span><br><span class="line">path_len.remove(largest)</span><br><span class="line">second_largest = max(path_len)</span><br><span class="line">total = largest + second_largest - <span class="number">1</span></span><br><span class="line">max_len = max(total, max_len)</span><br><span class="line"><span class="keyword">return</span> largest</span><br><span class="line"></span><br><span class="line">dfs(root)</span><br><span class="line"><span class="keyword">return</span> max_len - <span class="number">1</span></span><br></pre></td></tr></table></figure><h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>  </p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;&lt;strong&gt;&lt;a href=&quot;https://leetcode.com/problems/diameter-of-n-ary-tree/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;LeetCode&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
-&lt;div&gt;&lt;br
-      
-    
-    </summary>
-    
-    
-      <category term="Tree" scheme="https://shineboy2013.github.com/tags/Tree/"/>
     
   </entry>
   

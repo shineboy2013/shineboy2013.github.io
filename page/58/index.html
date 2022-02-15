@@ -53,6 +53,80 @@
     <header>
       
   
+    <h1 class="title"><a href="/2020/04/20/lee-1197/">LeetCode 1197 Minimum Knight Moves</a></h1>
+  
+
+      
+        <time datetime="2020-04-21T02:01:15.387Z">2020-04-20</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/minimum-knight-moves/" target="_blank" rel="noopener">LeetCode 1197 Minimum Knight Moves</a></strong></p>
+<p>In an infinite chess board with coordinates from <code>-infinity</code> to <code>+infinity</code>, you have a knight at square <code>[0, 0]</code>.</p>
+<p>A knight has 8 possible moves it can make, as illustrated below. Each move is two squares in a cardinal direction, then one square in an orthogonal direction.</p>
+<p><img src="https://assets.leetcode.com/uploads/2018/10/12/knight.png" alt=""></p>
+<p>Return the minimum number of steps needed to move the knight to the square <code>[x, y]</code>.  It is guaranteed the answer exists.</p>
+<p>Example 1:</p>
+<pre>Input: x = 2, y = 1
+Output: 1
+Explanation: [0, 0] → [2, 1]
+</pre>
+
+<p>Example 2:</p>
+<pre>Input: x = 5, y = 5
+Output: 4
+Explanation: [0, 0] → [2, 1] → [4, 2] → [3, 4] → [5, 5]
+</pre>
+
+<p>Constraints:</p>
+<ul>
+<li><code>|x| + |y| &lt;= 300</code></li>
+</ul>
+<p>Because x and y are constrained to be in range[-300, 300], we can use BFS to find the minimum steps needed to reach target(x, y). Furthermore, we can only consider the case that x &gt;=0 &amp;&amp; y &gt;=0 since the chess board is symmetric.  The bfs implementation is pretty straightforward. There are two important points you need to be careful with.</p>
+<ol>
+<li>Pruning. We can limit the search dimension within 310 * 310. Any moves that lead to a position that is outside this box will not yield an optimal result.</li>
+</ol>
+<p>2. Initially, you used a Set of type int[] to track visited positions. This caused TLE because you didn’t overwrite the hashCode and equals methods for int[]. As a result, Set uses the default hashCode and equals method when checking if an element is already in the set. For equals(), The default implementation provided by the JDK is based on memory location — two objects are equal if and only if they are stored in the same memory address. For a comprehensive reading, refer to <a href="https://dzone.com/articles/working-with-hashcode-and-equals-in-java" target="_blank" rel="noopener">https://dzone.com/articles/working-with-hashcode-and-equals-in-java</a></p>
+<p>O(x * y) runtime and space</p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>象棋一样，走日字到达目标点的最小次数。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这题是最短路径题，第一时间想到BFS。</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>这题是最短路径题，第一时间想到BFS。这是一条典型的单源最短路径问题。用Distance BFS模板</p>
+<ol>
+<li>建距离map。  </li>
+<li>BFS访问。  </li>
+</ol>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>有边界限制</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">minKnightMoves</span><span class="params">(self, x: int, y: int)</span> -&gt; int:</span></span><br><span class="line">	<span class="keyword">return</span> self.bfs(<span class="number">0</span>, <span class="number">0</span>, x, y)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">bfs</span><span class="params">(self, start_x, start_y, target_x, target_y)</span>:</span></span><br><span class="line">	directions = &#123;(<span class="number">2</span>, <span class="number">1</span>), (<span class="number">1</span>, <span class="number">2</span>), (<span class="number">-1</span>, <span class="number">2</span>), (<span class="number">-2</span>, <span class="number">1</span>), (<span class="number">-2</span>, <span class="number">-1</span>), (<span class="number">-1</span>, <span class="number">-2</span>), (<span class="number">1</span>, <span class="number">-2</span>), (<span class="number">2</span>, <span class="number">-1</span>)&#125;</span><br><span class="line">	queue = deque([(start_x, start_y)])</span><br><span class="line">	visited = &#123;(start_x, start_y)&#125;</span><br><span class="line">	distance = &#123;(start_x, start_y): <span class="number">0</span>&#125;</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.popleft()</span><br><span class="line">		<span class="keyword">if</span> node == (target_x, target_y):</span><br><span class="line">			<span class="keyword">return</span> distance[node]</span><br><span class="line"></span><br><span class="line">		<span class="keyword">for</span> direction <span class="keyword">in</span> directions:</span><br><span class="line">			neighbor = (node[<span class="number">0</span>] + direction[<span class="number">0</span>], node[<span class="number">1</span>] + direction[<span class="number">1</span>])</span><br><span class="line">			<span class="keyword">if</span> neighbor <span class="keyword">in</span> visited:</span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			queue.append(neighbor)</span><br><span class="line">			visited.add(neighbor)</span><br><span class="line">			distance[neighbor] = distance[node] + <span class="number">1</span></span><br></pre></td></tr></table></figure>
+<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li><strong>用map记录距离一定要将首节点加入到map中，否则求距离时候会NPE。</strong>  </li>
+<li>visited我一开始实现用HashSet但因为没有实现equals导致LTE，改成矩阵即可。  </li>
+</ol>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span>[] directX = <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;<span class="number">1</span>, <span class="number">1</span>,-<span class="number">1</span>,-<span class="number">1</span>,<span class="number">2</span>,<span class="number">2</span>,-<span class="number">2</span>,-<span class="number">2</span>&#125;;</span><br><span class="line"><span class="keyword">int</span>[] directY = <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;<span class="number">2</span>,-<span class="number">2</span>,<span class="number">2</span>,-<span class="number">2</span>,<span class="number">1</span>,-<span class="number">1</span>,<span class="number">1</span>,-<span class="number">1</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">shortestPath</span><span class="params">(<span class="keyword">boolean</span>[][] grid, Point source, Point destination)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(grid == <span class="keyword">null</span> || grid.length == <span class="number">0</span> || grid[<span class="number">0</span>].length == <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	Queue&lt;Point&gt; q = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">	Map&lt;Point, Integer&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">	map.put(source, <span class="number">0</span>); <span class="comment">// remember</span></span><br><span class="line">	<span class="keyword">boolean</span>[][] visited = <span class="keyword">new</span> <span class="keyword">boolean</span>[grid.length][grid[<span class="number">0</span>].length];</span><br><span class="line">	q.offer(source);</span><br><span class="line">	visited[source.x][source.y] = <span class="keyword">true</span>; <span class="comment">// use hashSet is wrong.</span></span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty()) &#123;</span><br><span class="line">		Point p = q.poll();</span><br><span class="line">		<span class="keyword">if</span>(p.x == destination.x &amp;&amp; p.y == destination.y)</span><br><span class="line">			<span class="keyword">return</span> map.get(p);</span><br><span class="line">		<span class="keyword">for</span>(Point neighbor : getNeighbors(p)) &#123;</span><br><span class="line">			<span class="keyword">if</span>(!isValid(grid, neighbor) || visited[neighbor.x][neighbor.y])</span><br><span class="line">				<span class="keyword">continue</span>;</span><br><span class="line">			q.offer(neighbor);</span><br><span class="line">			visited[neighbor.x][neighbor.y] = <span class="keyword">true</span>;</span><br><span class="line">			map.put(neighbor, map.get(p) + <span class="number">1</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">List&lt;Point&gt; <span class="title">getNeighbors</span><span class="params">(Point point)</span> </span>&#123;</span><br><span class="line">	List&lt;Point&gt; result = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">8</span>; i++) &#123;</span><br><span class="line">		result.add(<span class="keyword">new</span> Point(point.x + directX[i], point.y + directY[i]));</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">isValid</span><span class="params">(<span class="keyword">boolean</span>[][] grid, Point point)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(point.x &gt;= <span class="number">0</span> &amp;&amp; point.x &lt; grid.length &amp;&amp; point.y &gt;= <span class="number">0</span> &amp;&amp; point.y &lt; grid[<span class="number">0</span>].length </span><br><span class="line">			&amp;&amp; !grid[point.x][point.y])</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为棋盘大小<code>O(n*m)</code>，空间复杂度<code>O(n)</code>。  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2020/04/20/lee-127/">LeetCode 127 Word Ladder</a></h1>
   
 
@@ -362,63 +436,6 @@ Explanation: 69, 88, and 96 are three strobogrammatic numbers.
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2019/02/26/lee-540/">LeetCode 540 Single Element in a Sorted Array</a></h1>
-  
-
-      
-        <time datetime="2019-02-26T08:35:31.937Z">2019-02-26</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/single-element-in-a-sorted-array" target="_blank" rel="noopener">LeetCode 540 Single Element in a Sorted Array</a></strong></p>
-<p>Given a sorted array consisting of only integers where every element appears twice except for one element which appears once. Find this single element that appears only once.</p>
-<p><strong>Example 1:</strong>  </p>
-<pre>**Input:** [1,1,2,3,3,4,4,8,8]
-**Output:** 2
-</pre>
-
-<p><strong>Example 2:</strong>  </p>
-<pre>**Input:** [3,3,7,7,10,11,11]
-**Output:** 10
-</pre>
-
-<p><strong>Note:</strong> Your solution should run in O(log n) time and O(1) space.</p>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>一个有序数组中，每个数字都出现了两次，只有一个数字出现了一次，求出现一次的数字。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是A公司Problem solving的题目。类似于L136。此题数组有序且要求O(logn)时间，所以考虑用二分法。由于没有输入tgt，有点似<br>算法文档中用二分法求峰值，就是比较相邻两个数做二分法。考虑一个结论，若数组为偶数个数，就一定不存在只出现一次的元素。<br>所以必须考虑奇偶位，若下标mid为偶数，其后一位与其相等，就一定在右半边搜索left=mid+2(不会是mid和mid+1)，如第二个<br>例子，因为mid左边个数为偶数，利用结论可知不会在左边。同理与后一位不等，搜左边right=mid(可能为mid)。注意边界。<br>若mid为奇数，mid前面有奇数个，mid包括自己的后面有偶数个，所以mid和mid+1上的数相等，就应在左半搜，所以与偶数位的<br>情况正好相反，但是边界不同，产生了4个if语句。<br>法二：改进一下，若mid为奇数位，就mid–归结为偶数位的情况，这样if变成两个。  </p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>类似于Leetcode 033，四种情况，前两种中的第二种全包第一种。  </li>
-<li>for循环后，答案一定在start和end其中一个。end前面有偶数个与start不同就肯定在start上。</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">singleNonDuplicate</span><span class="params">(self, nums: List[int])</span> -&gt; int:</span></span><br><span class="line">	start, end = <span class="number">0</span>, len(nums) - <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> start + <span class="number">1</span> &lt; end:</span><br><span class="line">		mid = start + (end - start) //<span class="number">2</span></span><br><span class="line">		<span class="keyword">if</span> mid % <span class="number">2</span> == <span class="number">1</span> <span class="keyword">and</span> mid &gt;= <span class="number">1</span> <span class="keyword">and</span> nums[mid - <span class="number">1</span>] == nums[mid]:</span><br><span class="line">			start = mid</span><br><span class="line">		<span class="keyword">elif</span> mid % <span class="number">2</span> == <span class="number">1</span>:</span><br><span class="line">			end = mid</span><br><span class="line">		<span class="keyword">elif</span> mid % <span class="number">2</span> == <span class="number">0</span> <span class="keyword">and</span> mid &gt;= <span class="number">1</span> <span class="keyword">and</span> nums[mid - <span class="number">1</span>] != nums[mid]:</span><br><span class="line">			start = mid</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			end = mid</span><br><span class="line">	<span class="keyword">if</span> end % <span class="number">2</span> == <span class="number">1</span> <span class="keyword">and</span> nums[start] != nums[end]:</span><br><span class="line">		<span class="keyword">return</span> nums[start] <span class="comment"># remember</span></span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		<span class="keyword">return</span> nums[end]</span><br></pre></td></tr></table></figure>
-<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>边界也就是mid的赋值，写出例子来理解。  </li>
-</ol>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">singleNonDuplicate</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> N = nums.length;</span><br><span class="line">	<span class="keyword">int</span> left = <span class="number">0</span>, right = N - <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">while</span> (left &lt; right) &#123;</span><br><span class="line">		<span class="keyword">int</span> mid = (right - left) / <span class="number">2</span> + left;</span><br><span class="line">		<span class="keyword">boolean</span> isEven = <span class="keyword">true</span>;</span><br><span class="line">		<span class="keyword">if</span> (mid % <span class="number">2</span> == <span class="number">1</span>) isEven = <span class="keyword">false</span>;</span><br><span class="line">		<span class="keyword">if</span> ((isEven &amp;&amp; nums[mid] != nums[mid + <span class="number">1</span>]) )</span><br><span class="line">			right = mid;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (isEven &amp;&amp; nums[mid] == nums[mid + <span class="number">1</span>])</span><br><span class="line">			left = mid + <span class="number">2</span>;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (!isEven &amp;&amp; nums[mid] == nums[mid + <span class="number">1</span>])</span><br><span class="line">			right = mid-<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			left = mid + <span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> nums[left];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">singleNonDuplicate2</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">	  <span class="keyword">int</span> N = nums.length;</span><br><span class="line">	  <span class="keyword">int</span> left = <span class="number">0</span>, right = N - <span class="number">1</span>;</span><br><span class="line">	  <span class="keyword">while</span> (left &lt; right) &#123;</span><br><span class="line">		  <span class="keyword">int</span> mid = (right - left) / <span class="number">2</span> + left;</span><br><span class="line">		  <span class="keyword">if</span> (mid % <span class="number">2</span> == <span class="number">1</span>) mid--;</span><br><span class="line">		  <span class="keyword">if</span> (nums[mid] != nums[mid + <span class="number">1</span>])</span><br><span class="line">			  right = mid;</span><br><span class="line">		  <span class="keyword">else</span></span><br><span class="line">			  left = mid + <span class="number">2</span>;</span><br><span class="line">	  &#125;</span><br><span class="line">	  <span class="keyword">return</span> nums[left];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(logn)</code>，空间复杂度<code>O(1)</code>。  </p>
-<h3 id="Follow-up"><a href="#Follow-up" class="headerlink" title="Follow-up:"></a><strong>Follow-up:</strong></h3><p>首先问L316 Given a non-empty array of integers, every element appears twice except for one. Find that single one.<br>XOR解法，不用实现。<br>Follow up问题是L260 Given an array of numbers nums, in which exactly two elements appear only once and all the other elements appear exactly twice. Find the two elements that appear only once.<br>分三步。若只有一个数出现1次，只要把所有数异或^即可(相同数异或=0)。如果有两个此数，异或结果是这两数不同的位。只要选为1且最低位(或任意为1的位)lowBit=a-(a&amp;(a-1))。再扫所有数，根据它们在lowBit上=0和=1分组异或num1, num2，最后分组异或后它们为所求</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -443,6 +460,10 @@ Explanation: 69, 88, and 96 are three strobogrammatic numbers.
   <ul class="entry">
     
       <li>
+        <a href="/2022/02/15/mock-001/">Mock 001 Count changes for two N-trees</a>
+      </li>
+    
+      <li>
         <a href="/2022/02/15/leetcode-1166-design-file-system/">LeetCode 1166 Design File System</a>
       </li>
     
@@ -458,10 +479,6 @@ Explanation: 69, 88, and 96 are three strobogrammatic numbers.
         <a href="/2022/02/15/leetcode-854-k-similar-strings/">LeetCode 854 K-Similar Strings</a>
       </li>
     
-      <li>
-        <a href="/2022/02/15/leetcode-859-buddy-strings/">LeetCode Buddy Strings</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -472,7 +489,7 @@ Explanation: 69, 88, and 96 are three strobogrammatic numbers.
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 14px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 14px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 16.8px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 13.6px;">Binary Tree</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10.4px;">Bit Manipulation</a> <a href="/tags/Bloomberg/" style="font-size: 10.4px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.6px;">Breadth-first Search</a> <a href="/tags/Citadel/" style="font-size: 10.8px;">Citadel</a> <a href="/tags/Classic/" style="font-size: 18.4px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 14.8px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.2px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.2px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 13.6px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.6px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 19.2px;">Facebook</a> <a href="/tags/Google/" style="font-size: 11.6px;">Google</a> <a href="/tags/Graph/" style="font-size: 12.8px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.8px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.8px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 14px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 13.2px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.2px;">Iterator</a> <a href="/tags/Karat/" style="font-size: 12.4px;">Karat</a> <a href="/tags/Knowledge-Base/" style="font-size: 16.8px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 15.2px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.4px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 18px;">Math</a> <a href="/tags/Matrix/" style="font-size: 15.6px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.2px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.8px;">Merge Sort</a> <a href="/tags/Microsoft/" style="font-size: 12px;">Microsoft</a> <a href="/tags/Mtrix/" style="font-size: 10px;">Mtrix</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 16px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.8px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.4px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10.8px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.2px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.4px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 17.2px;">Stack</a> <a href="/tags/String/" style="font-size: 18.8px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.2px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 16.4px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.6px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.4px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.4px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.4px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
+    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 14px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 14px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 16.8px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 13.6px;">Binary Tree</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10.4px;">Bit Manipulation</a> <a href="/tags/Bloomberg/" style="font-size: 10.4px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.6px;">Breadth-first Search</a> <a href="/tags/Citadel/" style="font-size: 10.8px;">Citadel</a> <a href="/tags/Classic/" style="font-size: 18.4px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 14.8px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.2px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.2px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 14px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.6px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 19.2px;">Facebook</a> <a href="/tags/Google/" style="font-size: 11.6px;">Google</a> <a href="/tags/Graph/" style="font-size: 12.8px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.8px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.8px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 14px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 13.2px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.2px;">Iterator</a> <a href="/tags/Karat/" style="font-size: 12.4px;">Karat</a> <a href="/tags/Knowledge-Base/" style="font-size: 16.8px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 15.2px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.4px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 18px;">Math</a> <a href="/tags/Matrix/" style="font-size: 15.6px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.2px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.8px;">Merge Sort</a> <a href="/tags/Microsoft/" style="font-size: 12px;">Microsoft</a> <a href="/tags/Mtrix/" style="font-size: 10px;">Mtrix</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 16px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.8px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.4px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10.8px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.2px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.4px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 17.2px;">Stack</a> <a href="/tags/String/" style="font-size: 18.8px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.2px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 16.4px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.6px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.4px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.4px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.4px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
   </div>
 </div>
 
