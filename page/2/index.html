@@ -53,6 +53,134 @@
     <header>
       
   
+    <h1 class="title"><a href="/2022/02/15/leetcode-839-similar-string-groups/">LeetCode 839 Similar String Groups</a></h1>
+  
+
+      
+        <time datetime="2022-02-15T17:23:01.070Z">2022-02-15</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/similar-string-groups/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>Two strings <code>X</code> and <code>Y</code> are similar if we can swap two letters (in different positions) of <code>X</code>, so that it equals <code>Y</code>. Also two strings <code>X</code> and <code>Y</code> are similar if they are equal.<br><br>For example, <code>&quot;tars&quot;</code> and <code>&quot;rats&quot;</code> are similar (swapping at positions <code>0</code> and <code>2</code>), and <code>&quot;rats&quot;</code> and <code>&quot;arts&quot;</code> are similar, but <code>&quot;star&quot;</code> is not similar to <code>&quot;tars&quot;</code>, <code>&quot;rats&quot;</code>, or <code>&quot;arts&quot;</code>.<br><br>Together, these form two connected groups by similarity: <code>{&quot;tars&quot;, &quot;rats&quot;, &quot;arts&quot;}</code> and <code>{&quot;star&quot;}</code>.  Notice that <code>&quot;tars&quot;</code> and <code>&quot;arts&quot;</code> are in the same group even though they are not similar.  Formally, each group is such that a word is in the group if and only if it is similar to at least one other word in the group.<br><br>We are given a list <code>strs</code> of strings where every string in <code>strs</code> is an anagram of every other string in <code>strs</code>. How many groups are there?<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> strs = [“tars”,”rats”,”arts”,”star”]<br><strong>Output:</strong> 2<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> strs = [“omv”,”ovm”]<br><strong>Output:</strong> 1<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= strs.length &lt;= 300</code>
+</em>   <code>1 &lt;= strs[i].length &lt;= 300</code><br><em>   <code>strs[i]</code> consists of lowercase letters only.
+</em>   All words in <code>strs</code> have the same length and are anagrams of each other.<br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>单词列表中，可以分成多少组，每组里面的单词互相之间至少有一对可以通过交换一个位置变成另一个单词</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>典型求连通集个数，类似于Num of island，用BFS。难点在于怎么找到neighbor，用遍历每一个单词的方式</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>难点在于怎么找到neighbor，用遍历每一个单词的方式，判断是否buddyStrings Leetcode 0859</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">numSimilarGroups</span><span class="params">(self, strs: List[str])</span> -&gt; int:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> strs:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">	visited, groups, word_set = set(), <span class="number">0</span>, set(strs)</span><br><span class="line">	<span class="keyword">for</span> s <span class="keyword">in</span> strs:</span><br><span class="line">		<span class="keyword">if</span> s <span class="keyword">in</span> visited:</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		self.bfs(word_set, s, visited)</span><br><span class="line">		groups += <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> groups</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">bfs</span><span class="params">(self, word_set, start, visited)</span>:</span></span><br><span class="line">	queue = collections.deque([start])</span><br><span class="line">	visited.add(start)</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.popleft()</span><br><span class="line">		<span class="keyword">for</span> s <span class="keyword">in</span> word_set:</span><br><span class="line">			<span class="keyword">if</span> s <span class="keyword">in</span> visited:</span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			<span class="keyword">if</span> node == s <span class="keyword">or</span> <span class="keyword">not</span> self.buddyStrings(node, s):</span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			queue.append(s)</span><br><span class="line">			visited.add(s)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">buddyStrings</span><span class="params">(self, s: str, goal: str)</span> -&gt; bool:</span></span><br><span class="line">	<span class="keyword">if</span> len(s) != len(goal):</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">	<span class="keyword">if</span> s == goal <span class="keyword">and</span> len(set(s)) &lt; len(goal):  <span class="comment"># any dups</span></span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line">	diff = [(a, b) <span class="keyword">for</span> a, b <span class="keyword">in</span> zip(s, goal) <span class="keyword">if</span> a != b]</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">True</span> <span class="keyword">if</span> len(diff) == <span class="number">2</span> <span class="keyword">and</span> diff[<span class="number">0</span>] == diff[<span class="number">1</span>][::<span class="number">-1</span>] <span class="keyword">else</span> <span class="keyword">False</span></span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nL)</code>，空间复杂度<code>O(n)</code>  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2022/02/15/leetcode-1347-minimum-number-of-steps-to-make-two-strings-anagram/">LeetCode 1347 Minimum Number of Steps to Make Two Strings Anagram</a></h1>
+  
+
+      
+        <time datetime="2022-02-15T16:48:02.381Z">2022-02-15</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/minimum-number-of-steps-to-make-two-strings-anagram/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>You are given two strings of the same length <code>s</code> and <code>t</code>. In one step you can choose <strong>any character</strong> of <code>t</code> and replace it with <strong>another character</strong>.<br><br>Return <em>the minimum number of steps</em> to make <code>t</code> an anagram of <code>s</code>.<br><br>An <strong>Anagram</strong> of a string is a string that contains the same characters with a different (or the same) ordering.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> s = “bab”, t = “aba”<br><strong>Output:</strong> 1<br><strong>Explanation:</strong> Replace the first ‘a’ in t with b, t = “bba” which is anagram of s.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> s = “leetcode”, t = “practice”<br><strong>Output:</strong> 5<br><strong>Explanation:</strong> Replace ‘p’, ‘r’, ‘a’, ‘i’ and ‘c’ from t with proper characters to make t anagram of s.<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> s = “anagram”, t = “mangaar”<br><strong>Output:</strong> 0<br><strong>Explanation:</strong> “anagram” and “mangaar” are anagrams.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   `1 &lt;= s.length &lt;= 5 </em> 10<sup>4</sup><code>*</code>s.length == t.length<code>*</code>s<code>and</code>t` consist of lowercase English letters only.<br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>通过替换字母使得两字符为同位词Anagram</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>统计某一个词的词频，遍历另一个单词，减去词频，若不够减(小于0)，就加步数</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li><h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">minSteps</span><span class="params">(self, s: str, t: str)</span> -&gt; int:</span></span><br><span class="line">	char_to_count_t = collections.Counter(t)</span><br><span class="line">	steps = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> char <span class="keyword">in</span> s:</span><br><span class="line">		<span class="keyword">if</span> char <span class="keyword">in</span> char_to_count_t <span class="keyword">and</span> char_to_count_t[char] &gt; <span class="number">0</span>:</span><br><span class="line">			char_to_count_t[char] -= <span class="number">1</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			steps += <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> steps</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2022/02/15/leetcode-854-k-similar-strings/">LeetCode 854 K-Similar Strings</a></h1>
+  
+
+      
+        <time datetime="2022-02-15T10:00:31.027Z">2022-02-15</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/k-similar-strings/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>Strings <code>s1</code> and <code>s2</code> are <code>k</code><strong>-similar</strong> (for some non-negative integer <code>k</code>) if we can swap the positions of two letters in <code>s1</code> exactly <code>k</code> times so that the resulting string equals <code>s2</code>.<br><br>Given two anagrams <code>s1</code> and <code>s2</code>, return the smallest <code>k</code> for which <code>s1</code> and <code>s2</code> are <code>k</code><strong>-similar</strong>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> s1 = “ab”, s2 = “ba”<br><strong>Output:</strong> 1<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> s1 = “abc”, s2 = “bca”<br><strong>Output:</strong> 2<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= s1.length &lt;= 20</code>
+</em>   <code>s2.length == s1.length</code><br><em>   <code>s1</code> and <code>s2</code> contain only lowercase letters from the set <code>{&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;d&#39;, &#39;e&#39;, &#39;f&#39;}</code>.
+</em>   <code>s2</code> is an anagram of <code>s1</code>.<br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>两字符，交换两个位置，使得他们相等，求最小交换次数</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>最值考虑用BFS，难点在于生成neighbor，见注意事项</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>用例子写程序node = abc s2 = cba, 先找到第一个不同位i，然后找下一个不同位j，这个不同位node[j]需要与目标s2[i]相同，贪心法</li>
+<li>倒数第二行要break，否则TLE，因为只要找到一位可以交换这一层的BFS算是结束</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">kSimilarity</span><span class="params">(self, s1: str, s2: str)</span> -&gt; int:</span></span><br><span class="line">	queue = collections.deque([s1])</span><br><span class="line">	visited = set([s1])</span><br><span class="line">	distance = &#123;s1: <span class="number">0</span>&#125;</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.popleft()</span><br><span class="line">		<span class="keyword">if</span> node == s2:</span><br><span class="line">			<span class="keyword">return</span> distance[node]</span><br><span class="line">		<span class="keyword">for</span> i <span class="keyword">in</span> range(len(node)): <span class="comment"># abc, cba</span></span><br><span class="line">			<span class="keyword">if</span> node[i] == s2[i]:</span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			<span class="keyword">for</span> j <span class="keyword">in</span> range(i + <span class="number">1</span>, len(node)):</span><br><span class="line">				<span class="keyword">if</span> node[j] == s2[j]:</span><br><span class="line">					<span class="keyword">continue</span></span><br><span class="line">				<span class="keyword">if</span> node[j] == s2[i]:</span><br><span class="line">					ss = node[:i] + node[j] + node[i + <span class="number">1</span>:j] + node[i] + node[j + <span class="number">1</span>:]</span><br><span class="line">					<span class="keyword">if</span> ss <span class="keyword">in</span> visited:</span><br><span class="line">						<span class="keyword">continue</span></span><br><span class="line">					queue.append(ss)</span><br><span class="line">					visited.add(ss)</span><br><span class="line">					distance[ss] = distance[node] + <span class="number">1</span></span><br><span class="line">			<span class="keyword">break</span> <span class="comment"># remember</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(解大小)</code>，空间复杂度<code>O(解大小)</code>  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2022/02/15/leetcode-859-buddy-strings/">LeetCode Buddy Strings</a></h1>
   
 
@@ -136,162 +264,6 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2022/02/13/leetcode-158-read-n-characters-given-read4/">LeetCode 158 Read N Characters Given read4 II - Call Multiple Times</a></h1>
-  
-
-      
-        <time datetime="2022-02-13T10:32:10.048Z">2022-02-13</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/read-n-characters-given-read4-ii-call-multiple-times/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>Given a <code>file</code> and assume that you can only read the file using a given method <code>read4</code>, implement a method <code>read</code> to read <code>n</code> characters. Your method <code>read</code> may be <strong>called multiple times</strong>.<br><br><strong>Method read4:</strong><br><br>The API <code>read4</code> reads <strong>four consecutive characters</strong> from <code>file</code>, then writes those characters into the buffer array <code>buf4</code>.<br><br>The return value is the number of actual characters read.<br><br>Note that <code>read4()</code> has its own file pointer, much like <code>FILE *fp</code> in C.<br><br><strong>Definition of read4:</strong><br><br><pre>    Parameter:  char[] buf4<br>    Returns:    int<br><br>buf4[] is a destination, not a source. The results from read4 will be copied to buf4[].<br></pre><br><br>Below is a high-level example of how <code>read4</code> works:<br><br><img src="https://assets.leetcode.com/uploads/2020/07/01/157_example.png" alt=""><br><br><pre>File file(“abcde<code>&quot;); // File is &quot;</code>abcde<code>&quot;, initially file pointer (fp) points to &#39;a&#39;
-char[] buf4 = new char[4]; // Create buffer with enough space to store characters
-read4(buf4); // read4 returns 4\. Now buf4 = &quot;abcd&quot;, fp points to &#39;e&#39;
-read4(buf4); // read4 returns 1\. Now buf4 = &quot;e&quot;, fp points to end of file
-read4(buf4); // read4 returns 0\. Now buf4 = &quot;&quot;, fp points to end of file</code><br></pre><br><br><strong>Method read:</strong><br><br>By using the <code>read4</code> method, implement the method read that reads <code>n</code> characters from <code>file</code> and store it in the buffer array <code>buf</code>. Consider that you cannot manipulate <code>file</code> directly.<br><br>The return value is the number of actual characters read.<br><br><strong>Definition of read:</strong><br><br><pre>    Parameters:    char[] buf, int n<br>    Returns:    int<br><br>buf[] is a destination, not a source. You will need to write the results to buf[].<br></pre><br><br><strong>Note:</strong><br><br><em>   Consider that you cannot manipulate the file directly. The file is only accessible for <code>read4</code> but not for <code>read</code>.
-</em>   The read function may be <strong>called multiple times</strong>.<br><em>   Please remember to <strong>RESET</strong> your class variables declared in Solution, as static/class variables are persisted across multiple test cases. Please see <a href="https://leetcode.com/faq/" target="_blank" rel="noopener">here</a> for more details.
-</em>   You may assume the destination buffer array, <code>buf</code>, is guaranteed to have enough space for storing <code>n</code> characters.<br><em>   It is guaranteed that in a given test case the same buffer <code>buf</code> is called by <code>read</code>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> file = “abc”, queries = [1,2,1]<br><strong>Output:</strong> [1,2,0]<br><strong>Explanation:</strong> The test case represents the following scenario:<br>File file(“abc”);<br>Solution sol;<br>sol.read(buf, 1); // After calling your read method, buf should contain “a”. We read a total of 1 character from the file, so return 1.<br>sol.read(buf, 2); // Now buf should contain “bc”. We read a total of 2 characters from the file, so return 2.<br>sol.read(buf, 1); // We have reached the end of file, no more characters can be read. So return 0.<br>Assume buf is allocated and guaranteed to have enough space for storing all characters from the file.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> file = “abc”, queries = [4,1]<br><strong>Output:</strong> [3,0]<br><strong>Explanation:</strong> The test case represents the following scenario:<br>File file(“abc”);<br>Solution sol;<br>sol.read(buf, 4); // After calling your read method, buf should contain “abc”. We read a total of 3 characters from the file, so return 3.<br>sol.read(buf, 1); // We have reached the end of file, no more characters can be read. So return 0.<br></pre><br><br><strong>Constraints:</strong>
-
-</em>   <code>1 &lt;= file.length &lt;= 500</code><br><em>   <code>file</code> consist of English letters and digits.
-</em>   <code>1 &lt;= queries.length &lt;= 10</code><br>*   <code>1 &lt;= queries[i] &lt;= 500</code><br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>题意类似于LeetCode 157 Read N Characters Given Read4，但此题唯一的区别是这个新的API: def read(self, buf, n)会被调用多次</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>因为read调用多次，所以调用read4多读了几个字符在n以外的，需要保留下来让下一次read返回到结果中，所以用queue来保存中间结果</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>先将read4的结果保存在self.queue中，然后再填充到buf中，这里用到了quicksort里面partition的方法，while中只有当填充buf时i才移动，而read4时候不移动</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">	self.queue = collections.deque()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">read</span><span class="params">(self, buf: List[str], n: int)</span> -&gt; int:</span></span><br><span class="line">	i = <span class="number">0</span></span><br><span class="line">	<span class="keyword">while</span> i &lt; n:</span><br><span class="line">		<span class="keyword">if</span> self.queue:</span><br><span class="line">			buf[i] = self.queue.popleft()</span><br><span class="line">			i += <span class="number">1</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			buf4 = [<span class="string">' '</span>] * <span class="number">4</span></span><br><span class="line">			count = read4(buf4)</span><br><span class="line">			<span class="keyword">if</span> <span class="keyword">not</span> count: <span class="comment"># avoid dead loop</span></span><br><span class="line">				<span class="keyword">break</span></span><br><span class="line">			self.queue.extend(buf4[:count])</span><br><span class="line">	<span class="keyword">return</span> i</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2022/02/13/leetcode-157-read-n-characters-given-read4/">LeetCode 157 Read N Characters Given Read4</a></h1>
-  
-
-      
-        <time datetime="2022-02-13T09:46:16.876Z">2022-02-13</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/read-n-characters-given-read4/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>Given a <code>file</code> and assume that you can only read the file using a given method <code>read4</code>, implement a method to read <code>n</code> characters.<br><br><strong>Method read4:</strong><br><br>The API <code>read4</code> reads <strong>four consecutive characters</strong> from <code>file</code>, then writes those characters into the buffer array <code>buf4</code>.<br><br>The return value is the number of actual characters read.<br><br>Note that <code>read4()</code> has its own file pointer, much like <code>FILE *fp</code> in C.<br><br><strong>Definition of read4:</strong><br><br><pre>    Parameter:  char[] buf4<br>    Returns:    int<br><br>buf4[] is a destination, not a source. The results from read4 will be copied to buf4[].<br></pre><br><br>Below is a high-level example of how <code>read4</code> works:<br><br><img src="https://assets.leetcode.com/uploads/2020/07/01/157_example.png" alt=""><br><br><pre>File file(“abcde<code>&quot;); // File is &quot;</code>abcde<code>&quot;, initially file pointer (fp) points to &#39;a&#39;
-char[] buf4 = new char[4]; // Create buffer with enough space to store characters
-read4(buf4); // read4 returns 4\. Now buf4 = &quot;abcd&quot;, fp points to &#39;e&#39;
-read4(buf4); // read4 returns 1\. Now buf4 = &quot;e&quot;, fp points to end of file
-read4(buf4); // read4 returns 0\. Now buf4 = &quot;&quot;, fp points to end of file</code><br></pre><br><br><strong>Method read:</strong><br><br>By using the <code>read4</code> method, implement the method read that reads <code>n</code> characters from <code>file</code> and store it in the buffer array <code>buf</code>. Consider that you cannot manipulate <code>file</code> directly.<br><br>The return value is the number of actual characters read.<br><br><strong>Definition of read:</strong><br><br><pre>    Parameters:    char[] buf, int n<br>    Returns:    int<br><br>buf[] is a destination, not a source. You will need to write the results to buf[].<br></pre><br><br><strong>Note:</strong><br><br><em>   Consider that you cannot manipulate the file directly. The file is only accessible for <code>read4</code> but not for <code>read</code>.
-</em>   The <code>read</code> function will only be called once for each test case.<br><em>   You may assume the destination buffer array, <code>buf</code>, is guaranteed to have enough space for storing <code>n</code> characters.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> file = “abc”, n = 4<br><strong>Output:</strong> 3<br><strong>Explanation:</strong> After calling your read method, buf should contain “abc”. We read a total of 3 characters from the file, so return 3.<br>Note that “abc” is the file’s content, not buf. buf is the destination buffer that you will have to write the results to.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> file = “abcde”, n = 5<br><strong>Output:</strong> 5<br><strong>Explanation:</strong> After calling your read method, buf should contain “abcde”. We read a total of 5 characters from the file, so return 5.<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> file = “abcdABCD1234”, n = 12<br><strong>Output:</strong> 12<br><strong>Explanation:</strong> After calling your read method, buf should contain “abcdABCD1234”. We read a total of 12 characters from the file, so return 12.<br></pre><br><br><strong>Constraints:</strong>
-
-</em>   <code>1 &lt;= file.length &lt;= 500</code><br><em>   <code>file</code> consist of English letters and digits.
-</em>   <code>1 &lt;= n &lt;= 1000</code><br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>Karat题，有一个函数read4,如此调用</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">buf4 = [&apos; &apos;] * 4</span><br><span class="line">count = read4(buf4)</span><br></pre></td></tr></table></figure>
-<p>buf4是填充后的结果，是一个大小为4的char list<br>count是buf4的有数据的实际大小(4或更小，取决于是否文件最后一段是否不够4)</p>
-<p>现在要实现这个函数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">def read(self, buf, n)</span><br></pre></td></tr></table></figure></p>
-<p>buf是字符列表，n是想要读取文件的大小，返回值为n或者更小，取决于是否文件大小是否小于n</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>N/A</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>若count为0，跳出循环</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">read</span><span class="params">(self, buf, n)</span>:</span></span><br><span class="line">	i = <span class="number">0</span></span><br><span class="line">	<span class="keyword">while</span> i &lt; n:</span><br><span class="line">		buf4 = [<span class="string">' '</span>] * <span class="number">4</span></span><br><span class="line">		count = read4(buf4)</span><br><span class="line">		<span class="keyword">if</span> <span class="keyword">not</span> count: <span class="comment"># avoid dead loop</span></span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		count = min(count, n - i)</span><br><span class="line">		buf[i:] = buf4</span><br><span class="line">		i += count</span><br><span class="line">	<span class="keyword">return</span> i</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2022/02/12/karat-004/">Karat 004 Ads Conversion</a></h1>
-  
-
-      
-        <time datetime="2022-02-13T03:47:43.099Z">2022-02-12</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p>A list of user ids + IPs, a list of user ids who have made purchases, a list of advertisement<br>clicks with user IPs.<br>Each user id has at most 1 IP.</p>
-<p>Output: for each ad, output the number of clicks and the number of purchases.</p>
-<pre>
-completed_purchase_user_ids = ["123"]
-
-ad_clicks = [
-    #"IP_Address,Time,Ad_Text",
-    "127.0.0.1,2011-01-03 09:21:22,black pen"]
-
-all_user_ips = [
-    #"User_ID,IP_Address",
-        "123,127.0.0.1"]
-</pre>
-
-<p>输出:<br>black pen, 1 click, 1 purchase</p>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定购买记录，click记录，ip地址。求每个产品点击数和购买次数</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>此题比较直观，点击数直接可以从click记录中获得，购买次数就是将三个表格join一起获得</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li><h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n + m + p)</code>，空间复杂度<code>O(n + m + p)</code>, n, m, p分别每个表的大小  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -316,23 +288,23 @@ all_user_ips = [
   <ul class="entry">
     
       <li>
+        <a href="/2022/02/15/leetcode-670-maximum-swap/">LeetCode 670 Maximum Swap</a>
+      </li>
+    
+      <li>
+        <a href="/2022/02/15/leetcode-567-permutation-in-string/">LeetCode 567 Permutation in String</a>
+      </li>
+    
+      <li>
+        <a href="/2022/02/15/leetcode-438-find-all-anagrams-in-a-string/">LeetCode 438 Find All Anagrams in a String</a>
+      </li>
+    
+      <li>
         <a href="/2022/02/15/mock-001/">Mock 001 Count changes for two N-trees</a>
       </li>
     
       <li>
         <a href="/2022/02/15/leetcode-1166-design-file-system/">LeetCode 1166 Design File System</a>
-      </li>
-    
-      <li>
-        <a href="/2022/02/15/leetcode-839-similar-string-groups/">LeetCode 839 Similar String Groups</a>
-      </li>
-    
-      <li>
-        <a href="/2022/02/15/leetcode-1347-minimum-number-of-steps-to-make-two-strings-anagram/">LeetCode 1347 Minimum Number of Steps to Make Two Strings Anagram</a>
-      </li>
-    
-      <li>
-        <a href="/2022/02/15/leetcode-854-k-similar-strings/">LeetCode 854 K-Similar Strings</a>
       </li>
     
   </ul>
@@ -345,7 +317,7 @@ all_user_ips = [
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 14px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 14px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 16.8px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 13.6px;">Binary Tree</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10.4px;">Bit Manipulation</a> <a href="/tags/Bloomberg/" style="font-size: 10.4px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.6px;">Breadth-first Search</a> <a href="/tags/Citadel/" style="font-size: 10.8px;">Citadel</a> <a href="/tags/Classic/" style="font-size: 18.4px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 14.8px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.2px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.2px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 14px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.6px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 19.2px;">Facebook</a> <a href="/tags/Google/" style="font-size: 11.6px;">Google</a> <a href="/tags/Graph/" style="font-size: 12.8px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.8px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.8px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 14px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 13.2px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.2px;">Iterator</a> <a href="/tags/Karat/" style="font-size: 12.4px;">Karat</a> <a href="/tags/Knowledge-Base/" style="font-size: 16.8px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 15.2px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.4px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 18px;">Math</a> <a href="/tags/Matrix/" style="font-size: 15.6px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.2px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.8px;">Merge Sort</a> <a href="/tags/Microsoft/" style="font-size: 12px;">Microsoft</a> <a href="/tags/Mtrix/" style="font-size: 10px;">Mtrix</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 16px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.8px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.4px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10.8px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.2px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.4px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 17.2px;">Stack</a> <a href="/tags/String/" style="font-size: 18.8px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.2px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 16.4px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.6px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.4px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.4px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.4px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
+    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 14px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 14px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 16.8px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 13.6px;">Binary Tree</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10.4px;">Bit Manipulation</a> <a href="/tags/Bloomberg/" style="font-size: 10.4px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.6px;">Breadth-first Search</a> <a href="/tags/Citadel/" style="font-size: 10.8px;">Citadel</a> <a href="/tags/Classic/" style="font-size: 18.4px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 14.8px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.2px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.2px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 14px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.6px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 19.2px;">Facebook</a> <a href="/tags/Google/" style="font-size: 11.6px;">Google</a> <a href="/tags/Graph/" style="font-size: 12.8px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.8px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.8px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 14px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 13.2px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.2px;">Iterator</a> <a href="/tags/Karat/" style="font-size: 12.4px;">Karat</a> <a href="/tags/Knowledge-Base/" style="font-size: 16.8px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 15.2px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.4px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 18px;">Math</a> <a href="/tags/Matrix/" style="font-size: 15.6px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.2px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.8px;">Merge Sort</a> <a href="/tags/Microsoft/" style="font-size: 12px;">Microsoft</a> <a href="/tags/Mtrix/" style="font-size: 10px;">Mtrix</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 16px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.8px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.4px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 11.6px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.2px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.4px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 17.2px;">Stack</a> <a href="/tags/String/" style="font-size: 18.8px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.2px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 16.4px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.6px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.4px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.4px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.4px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
   </div>
 </div>
 

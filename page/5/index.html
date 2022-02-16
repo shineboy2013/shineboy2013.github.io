@@ -53,6 +53,135 @@
     <header>
       
   
+    <h1 class="title"><a href="/2022/02/07/leetcode-1405-longest-happy-string/">LeetCode 1405 Longest Happy String</a></h1>
+  
+
+      
+        <time datetime="2022-02-08T06:20:09.075Z">2022-02-07</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/longest-happy-string/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>A string <code>s</code> is called <strong>happy</strong> if it satisfies the following conditions:<br><br><em>   <code>s</code> only contains the letters <code>&#39;a&#39;</code>, <code>&#39;b&#39;</code>, and <code>&#39;c&#39;</code>.
+</em>   <code>s</code> does not contain any of <code>&quot;aaa&quot;</code>, <code>&quot;bbb&quot;</code>, or <code>&quot;ccc&quot;</code> as a substring.<br><em>   <code>s</code> contains <strong>at most</strong> <code>a</code> occurrences of the letter <code>&#39;a&#39;</code>.
+</em>   <code>s</code> contains <strong>at most</strong> <code>b</code> occurrences of the letter <code>&#39;b&#39;</code>.<br><em>   <code>s</code> contains <strong>at most</strong> <code>c</code> occurrences of the letter <code>&#39;c&#39;</code>.<br><br>Given three integers <code>a</code>, <code>b</code>, and <code>c</code>, return <em>the <strong>longest possible happy</strong> string</em>. If there are multiple longest happy strings, return <em>any of them</em>. If there is no such string, return <em>the empty string</em> <code>&quot;&quot;</code>.<br><br>A <strong>substring</strong> is a contiguous sequence of characters within a string.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> a = 1, b = 1, c = 7<br><strong>Output:</strong> “ccaccbcc”<br><strong>Explanation:</strong> “ccbccacc” would also be a correct answer.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> a = 7, b = 1, c = 0<br><strong>Output:</strong> “aabaa”<br><strong>Explanation:</strong> It is the only correct answer in this case.<br></pre><br><br><strong>Constraints:</strong>
+
+</em>   <code>0 &lt;= a, b, c &lt;= 100</code><br>*   <code>a + b + c &gt; 0</code><br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定三个整数代表abc的个数，生成一个字符串，字符串abc频数不能超过这3个数，不能有连续的aaa, bbb, ccc, 求此种字符串的最大长度</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>由第一个例子看出，先尽量用频数最多的字符，直到连续3个为止，然后再用次多的，如此反复做。这里用到最多和次多，所以考虑用Heap</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>每次选频数最高的字符，但若此字符已连续3次，选次高的，用heap。 </li>
+<li>大于0的频数才加入到heap Line 4和Line 17</li>
+<li>heapreplace等于heappop次高的和heappush最高的。<strong>既然要有次高，heap就不能为空</strong></li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">longestDiverseString</span><span class="params">(self, a: int, b: int, c: int)</span> -&gt; str:</span></span><br><span class="line">	res = <span class="string">''</span></span><br><span class="line">	heap = []</span><br><span class="line">	<span class="keyword">if</span> a &gt; <span class="number">0</span>: <span class="comment"># remember</span></span><br><span class="line">		heapq.heappush(heap, (-a, <span class="string">'a'</span>))</span><br><span class="line">	<span class="keyword">if</span> b &gt; <span class="number">0</span>:</span><br><span class="line">		heapq.heappush(heap, (-b, <span class="string">'b'</span>))</span><br><span class="line">	<span class="keyword">if</span> c &gt; <span class="number">0</span>:</span><br><span class="line">		heapq.heappush(heap, (-c, <span class="string">'c'</span>))</span><br><span class="line">	<span class="keyword">while</span> heap:</span><br><span class="line">		count, char = heapq.heappop(heap)</span><br><span class="line">		<span class="keyword">if</span> len(res) &gt; <span class="number">1</span> <span class="keyword">and</span> res[<span class="number">-2</span>] == res[<span class="number">-1</span>] == char:</span><br><span class="line">			<span class="keyword">if</span> <span class="keyword">not</span> heap:</span><br><span class="line">				<span class="keyword">break</span></span><br><span class="line">			count, char = heapq.heapreplace(heap, (count, char))</span><br><span class="line">		res += char</span><br><span class="line">		<span class="keyword">if</span> count + <span class="number">1</span>:</span><br><span class="line">			heapq.heappush(heap, (count + <span class="number">1</span>, char))</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2022/02/07/leetcode-1647-minimum-deletions-to-make-character-frequencies-unique/">LeetCode 1647 Minimum Deletions to Make Character Frequencies Unique</a></h1>
+  
+
+      
+        <time datetime="2022-02-08T02:42:06.875Z">2022-02-07</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/minimum-deletions-to-make-character-frequencies-unique/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>A string <code>s</code> is called <strong>good</strong> if there are no two different characters in <code>s</code> that have the same <strong>frequency</strong>.<br><br>Given a string <code>s</code>, return <em>the <strong>minimum</strong> number of characters you need to delete to make</em> <code>s</code> <em><strong>good</strong>.</em><br><br>The <strong>frequency</strong> of a character in a string is the number of times it appears in the string. For example, in the string <code>&quot;aab&quot;</code>, the <strong>frequency</strong> of <code>&#39;a&#39;</code> is <code>2</code>, while the <strong>frequency</strong> of <code>&#39;b&#39;</code> is <code>1</code>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> s = “aab”<br><strong>Output:</strong> 0<br><strong>Explanation:</strong> <code>s</code> is already good.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> s = “aaabbbcc”<br><strong>Output:</strong> 2<br><strong>Explanation:</strong> You can delete two ‘b’s resulting in the good string “aaabcc”.<br>Another way it to delete one ‘b’ and one ‘c’ resulting in the good string “aaabbc”.</pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> s = “ceabaacb”<br><strong>Output:</strong> 2<br><strong>Explanation:</strong> You can delete both ‘c’s resulting in the good string “eabaab”.<br>Note that we only care about characters that are still in the string at the end (i.e. frequency of 0 is ignored).<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= s.length &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code>
+</em>   <code>s</code> contains only lowercase English letters.<br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个字符串，求最小删除次数使得字符串的每一种字符频率不同</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>按题意求解，若遇到频率相同的字符，就将其减一，也就是删除一个字符，使得它不再与其他字符频率相同直到0. 关键在用一个unique_count的set来记录频数</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>用一个unique_count的set来记录频数</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">minDeletions</span><span class="params">(self, s: str)</span> -&gt; int:</span></span><br><span class="line">	char_to_count = collections.Counter(s)</span><br><span class="line">	unique_count = set()</span><br><span class="line">	res = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> char, count <span class="keyword">in</span> char_to_count.items():</span><br><span class="line">		cur_count = count</span><br><span class="line">		<span class="keyword">while</span> cur_count <span class="keyword">in</span> unique_count:</span><br><span class="line">			cur_count -= <span class="number">1</span></span><br><span class="line">			res += <span class="number">1</span></span><br><span class="line">		<span class="keyword">if</span> cur_count &gt; <span class="number">0</span>:</span><br><span class="line">			unique_count.add(cur_count)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2022/02/07/karat-003/">Karat 003 Nonogram</a></h1>
+  
+
+      
+        <time datetime="2022-02-07T10:16:22.375Z">2022-02-07</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p>A nonogram is a logic puzzle, similar to a crossword, in which the player is given<br>a blank grid and has to color it according to some instructions. Specifically,<br>each cell can be either black or white, which we will represent as 0 for black and<br>1 for white.<br>+————+<br>| 1 1 1 1 |<br>| 0 1 1 1 |<br>| 0 1 0 0 |<br>| 1 1 0 1 |<br>| 0 0 1 1 |<br>+————+<br>For each row and column, the instructions give the lengths of contiguous runs of<br>black (0) cells. For example, the instructions for one row of [ 2, 1 ] indicate<br>that there must be a run of two black cells, followed later by another run of one<br>black cell, and the rest of the row filled with white cells.<br>These are valid solutions: [ 1, 0, 0, 1, 0 ] and [ 0, 0, 1, 1, 0 ] and also [ 0,<br>0, 1, 0, 1 ]<br>This is not valid: [ 1, 0, 1, 0, 0 ] since the runs are not in the correct order.<br>This is not valid: [ 1, 0, 0, 0, 1 ] since the two runs of 0s are not separated by<br>1s.<br>Your job is to write a function to validate a possible solution against a set of<br>instructions. Given a 2D matrix representing a player’s solution; and instructions<br>for each row along with additional instructions for each column; return True or<br>False according to whether both sets of instructions match.</p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>Nonogram日本游戏，0表示黑子，[2, 1]表示黑子的连续数目，如棋盘状态[ 1, 0, 0, 1, 0 ]，表示连续黑子数为[2, 1]<br>[ 1, 0, 0, 0, 1 ]连续黑子数为[3]. 验证棋盘的每一行和每一列是否满足rows和cols所指定的连续黑子数</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>按题意求解</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>递归只有一种情况</li>
+<li>答案需求全局</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">valid_nonogram</span><span class="params">(self, matrix, rows, cols)</span>:</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(matrix)):</span><br><span class="line">		<span class="keyword">if</span> self.get_consecutive_zeros(matrix[i]) != rows[i]:</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">	<span class="keyword">for</span> j <span class="keyword">in</span> range(len(matrix[<span class="number">0</span>])):</span><br><span class="line">		col_vals = []</span><br><span class="line">		<span class="keyword">for</span> i <span class="keyword">in</span> range(len(matrix)):</span><br><span class="line">			col_vals.append(matrix[i][j])</span><br><span class="line">		<span class="keyword">if</span> self.get_consecutive_zeros(col_vals) != cols[j]:</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># [ 1, 0, 0, 1, 0 ] -&gt; [2, 1], # of 0s</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_consecutive_zeros</span><span class="params">(self, matrix_row)</span>:</span></span><br><span class="line">	count, res = <span class="number">0</span>, []</span><br><span class="line">	<span class="keyword">for</span> n <span class="keyword">in</span> matrix_row:</span><br><span class="line">		<span class="keyword">if</span> n == <span class="number">0</span>:</span><br><span class="line">			count += <span class="number">1</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			<span class="keyword">if</span> count &gt; <span class="number">0</span>:</span><br><span class="line">				res.append(count)</span><br><span class="line">			count = <span class="number">0</span></span><br><span class="line">	<span class="keyword">if</span> count &gt; <span class="number">0</span>:</span><br><span class="line">		res.append(count)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nm)</code>，空间复杂度<code>O(n)</code>  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2022/02/07/leetcode-1522-diameter-of-n-ary-tree/">LeetCode 1522 Diameter of N-Ary Tree</a></h1>
   
 
@@ -133,145 +262,6 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2022/02/06/leetcode-549-binary-tree-longest-consecutive-sequence-ii/">LeetCode 549 Binary Tree Longest Consecutive Sequence II</a></h1>
-  
-
-      
-        <time datetime="2022-02-07T07:51:56.353Z">2022-02-06</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/binary-tree-longest-consecutive-sequence-ii/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>Given the <code>root</code> of a binary tree, return <em>the length of the longest consecutive path in the tree</em>.<br><br>A consecutive path is a path where the values of the consecutive nodes in the path differ by one. This path can be either increasing or decreasing.<br><br><em>   For example, <code>[1,2,3,4]</code> and <code>[4,3,2,1]</code> are both considered valid, but the path <code>[1,2,4,3]</code> is not valid.<br><br>On the other hand, the path can be in the child-Parent-child order, where not necessarily be parent-child order.<br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/03/14/consec2-1-tree.jpg" alt=""><br><br><pre><strong>Input:</strong> root = [1,2,3]<br><strong>Output:</strong> 2<br><strong>Explanation:</strong> The longest consecutive path is [1, 2] or [2, 1].<br></pre><br><br><strong>Example 2:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/03/14/consec2-2-tree.jpg" alt=""><br><br><pre><strong>Input:</strong> root = [2,1,3]<br><strong>Output:</strong> 3<br><strong>Explanation:</strong> The longest consecutive path is [1, 2, 3] or [3, 2, 1].<br></pre><br><br><strong>Constraints:</strong>
-
-</em>   The number of nodes in the tree is in the range <code>[1, 3 * 10&lt;sup&gt;4&lt;/sup&gt;]</code>.<br><em>   `-3 </em> 10<sup>4</sup> &lt;= Node.val &lt;= 3 * 10<sup>4</sup>`<br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求任意节点到另一个节点的最长连续数列的长度(由小到大)</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>类似于LeetCode 298 Binary Tree Longest Consecutive Sequence，不过由于父亲到儿子可能递增或递减，所以DFS返回值也返回递增和递减的长度</p>
-<p>LeetCode 298 Binary Tree Longest Consecutive Sequence 父亲到儿子由小到大<br>LeetCode 549 Binary Tree Longest Consecutive Sequence II 任一节点到另一个节点由小到大</p>
-<p>类似于LeetCode 124 Binary Tree Maximum Path Sum，有四种情况：自己，自己+左，自己+右，左+右</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>DFS返回值也返回递增和递减的长度</li>
-<li>类似于LeetCode 124 Binary Tree Maximum Path Sum，有四种情况：自己，自己+左，自己+右，左+右</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">longestConsecutive</span><span class="params">(self, root: TreeNode)</span> -&gt; int:</span></span><br><span class="line">	max_len = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">dfs</span><span class="params">(root)</span>:</span></span><br><span class="line">		<span class="keyword">if</span> <span class="keyword">not</span> root:</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>, <span class="number">0</span>  <span class="comment"># (increasing, decreasing) from root</span></span><br><span class="line">		<span class="keyword">nonlocal</span> max_len</span><br><span class="line">		inc = desc = <span class="number">1</span></span><br><span class="line">		lpath = rpath = <span class="number">1</span></span><br><span class="line">		left = dfs(root.left)</span><br><span class="line">		right = dfs(root.right)</span><br><span class="line">		<span class="keyword">if</span> root.left <span class="keyword">and</span> root.val + <span class="number">1</span> == root.left.val:</span><br><span class="line">			lpath += left[<span class="number">0</span>]</span><br><span class="line">		<span class="keyword">if</span> root.right <span class="keyword">and</span> root.val + <span class="number">1</span> == root.right.val:</span><br><span class="line">			rpath += right[<span class="number">0</span>]</span><br><span class="line">		inc = max(<span class="number">1</span>, lpath, rpath)</span><br><span class="line"></span><br><span class="line">		lpath = rpath = <span class="number">1</span></span><br><span class="line">		<span class="keyword">if</span> root.left <span class="keyword">and</span> root.val - <span class="number">1</span> == root.left.val:</span><br><span class="line">			lpath += left[<span class="number">1</span>]</span><br><span class="line">		<span class="keyword">if</span> root.right <span class="keyword">and</span> root.val - <span class="number">1</span> == root.right.val:</span><br><span class="line">			rpath += right[<span class="number">1</span>]</span><br><span class="line">		desc = max(<span class="number">1</span>, lpath, rpath)</span><br><span class="line"></span><br><span class="line">		total = inc + desc - <span class="number">1</span></span><br><span class="line">		max_len = max(inc, desc, total, max_len)</span><br><span class="line">		<span class="keyword">return</span> inc, desc</span><br><span class="line"></span><br><span class="line">	dfs(root)</span><br><span class="line">	<span class="keyword">return</span> max_len</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2022/02/06/leetcode-298-binary-tree-longest-consecutive-sequence/">LeetCode 298 Binary Tree Longest Consecutive Sequence</a></h1>
-  
-
-      
-        <time datetime="2022-02-07T07:22:19.605Z">2022-02-06</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/binary-tree-longest-consecutive-sequence/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>Given the <code>root</code> of a binary tree, return <em>the length of the longest consecutive sequence path</em>.<br><br>The path refers to any sequence of nodes from some starting node to any node in the tree along the parent-child connections. The longest consecutive path needs to be from parent to child (cannot be the reverse).<br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/03/14/consec1-1-tree.jpg" alt=""><br><br><pre><strong>Input:</strong> root = [1,null,3,2,4,null,null,null,5]<br><strong>Output:</strong> 3<br><strong>Explanation:</strong> Longest consecutive sequence path is 3-4-5, so return 3.<br></pre><br><br><strong>Example 2:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/03/14/consec1-2-tree.jpg" alt=""><br><br><pre><strong>Input:</strong> root = [2,null,3,2,null,1]<br><strong>Output:</strong> 2<br><strong>Explanation:</strong> Longest consecutive sequence path is 2-3, not 3-2-1, so return 2.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   The number of nodes in the tree is in the range `[1, 3 </em> 10<sup>4</sup>]<code>.
-*</code>-3 <em> 10<sup>4</sup> &lt;= Node.val &lt;= 3 </em> 10<sup>4</sup>`<br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求从父到子的最长连续数列的长度(由小到大)</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>DFS</p>
-<p>LeetCode 298 Binary Tree Longest Consecutive Sequence 父亲到儿子由小到大<br>LeetCode 549 Binary Tree Longest Consecutive Sequence II 任一节点到另一个节点由小到大</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>题意是从父到儿子的有小到大数列，而不是儿子到父亲</li>
-<li>以root为起点的最长数列，若root不符合条件，不加入left或right的长度</li>
-<li>类似于LeetCode 124 Binary Tree Maximum Path Sum，有三种情况：自己，自己+左，自己+右</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">longestConsecutive</span><span class="params">(self, root: TreeNode)</span> -&gt; int:</span></span><br><span class="line">	max_len = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">dfs</span><span class="params">(root)</span>:</span></span><br><span class="line">		<span class="keyword">if</span> <span class="keyword">not</span> root:</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">		<span class="keyword">nonlocal</span> max_len</span><br><span class="line">		lpath = rpath = <span class="number">1</span></span><br><span class="line">		left = dfs(root.left)</span><br><span class="line">		right = dfs(root.right)</span><br><span class="line">		<span class="keyword">if</span> root.left <span class="keyword">and</span> root.val + <span class="number">1</span> == root.left.val:  <span class="comment"># remember not ==</span></span><br><span class="line">			lpath += left</span><br><span class="line">		<span class="keyword">if</span> root.right <span class="keyword">and</span> root.val + <span class="number">1</span> == root.right.val:</span><br><span class="line">			rpath += right</span><br><span class="line">		res = max(lpath, rpath)</span><br><span class="line">		max_len = max(res, max_len)</span><br><span class="line">		<span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line">	dfs(root)</span><br><span class="line">	<span class="keyword">return</span> max_len</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2022/02/06/leetcode-785-is-graph-bipartite/">LeetCode 785 Is Graph Bipartite?</a></h1>
-  
-
-      
-        <time datetime="2022-02-07T06:49:11.703Z">2022-02-06</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/is-graph-bipartite/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>There is an <strong>undirected</strong> graph with <code>n</code> nodes, where each node is numbered between <code>0</code> and <code>n - 1</code>. You are given a 2D array <code>graph</code>, where <code>graph[u]</code> is an array of nodes that node <code>u</code> is adjacent to. More formally, for each <code>v</code> in <code>graph[u]</code>, there is an undirected edge between node <code>u</code> and node <code>v</code>. The graph has the following properties:<br><br><em>   There are no self-edges (<code>graph[u]</code> does not contain <code>u</code>).
-</em>   There are no parallel edges (<code>graph[u]</code> does not contain duplicate values).<br><em>   If <code>v</code> is in <code>graph[u]</code>, then <code>u</code> is in <code>graph[v]</code> (the graph is undirected).
-</em>   The graph may not be connected, meaning there may be two nodes <code>u</code> and <code>v</code> such that there is no path between them.<br><br>A graph is <strong>bipartite</strong> if the nodes can be partitioned into two independent sets <code>A</code> and <code>B</code> such that <strong>every</strong> edge in the graph connects a node in set <code>A</code> and a node in set <code>B</code>.<br><br>Return <code>true</code> <em>if and only if it is <strong>bipartite</strong></em>.<br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2020/10/21/bi2.jpg" alt=""><br><br><pre><strong>Input:</strong> graph = [[1,2,3],[0,2],[0,1,3],[0,2]]<br><strong>Output:</strong> false<br><strong>Explanation:</strong> There is no way to partition the nodes into two independent sets such that every edge connects a node in one and a node in the other.</pre><br><br><strong>Example 2:</strong><br><br><img src="https://assets.leetcode.com/uploads/2020/10/21/bi1.jpg" alt=""><br><br><pre><strong>Input:</strong> graph = [[1,3],[0,2],[1,3],[0,2]]<br><strong>Output:</strong> true<br><strong>Explanation:</strong> We can partition the nodes into two sets: {0, 2} and {1, 3}.</pre><br><br><strong>Constraints:</strong><br><br><em>   <code>graph.length == n</code>
-</em>   <code>1 &lt;= n &lt;= 100</code><br><em>   <code>0 &lt;= graph[u].length &lt; n</code>
-</em>   <code>0 &lt;= graph[u][i] &lt;= n - 1</code><br><em>   <code>graph[u]</code> does not contain <code>u</code>.
-</em>   All the values of <code>graph[u]</code> are <strong>unique</strong>.<br>*   If <code>graph[u]</code> contains <code>v</code>, then <code>graph[v]</code> contains <code>u</code>.<br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>无向图中是否存在一个划分，将节点分为两集合，任何一条边都连接着两个集合，也就是不存在一条边在单一集合内。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>图上色法。两种颜色，将节点上色0，儿子上色1，若某个节点已经上的色和将要上的色矛盾（来自的路径不同），即不合法</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>图上色法。两种颜色，将节点上色0，儿子上色1，若某个节点已经上的色和将要上的色矛盾（来自的路径不同），即不合法</li>
-<li>题意表示，图可能是有几个连通图，所以要从每个节点做BFS，除非节点已访问过， Line 4. node_to_color作为visited的功能</li>
-<li>return True在两个函数中要写，否则返回None</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">isBipartite</span><span class="params">(self, graph: List[List[int]])</span> -&gt; bool:</span></span><br><span class="line">	node_to_color = collections.defaultdict(int)</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(graph)):</span><br><span class="line">		<span class="keyword">if</span> i <span class="keyword">in</span> node_to_color: <span class="comment"># disconnected nodes</span></span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		node_to_color[i] = <span class="number">0</span></span><br><span class="line">		<span class="keyword">if</span> <span class="keyword">not</span> self.bfs(graph, i, node_to_color):</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">bfs</span><span class="params">(self, graph, n, node_to_color)</span>:</span></span><br><span class="line">	queue = collections.deque([n])</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.popleft()</span><br><span class="line">		<span class="keyword">for</span> neighbor <span class="keyword">in</span> graph[node]:</span><br><span class="line">			<span class="keyword">if</span> neighbor <span class="keyword">in</span> node_to_color <span class="keyword">and</span> node_to_color[neighbor] != <span class="number">1</span> - node_to_color[node]:</span><br><span class="line">				<span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">			<span class="keyword">if</span> neighbor <span class="keyword">in</span> node_to_color:</span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			queue.append(neighbor)</span><br><span class="line">			node_to_color[neighbor] = <span class="number">1</span> - node_to_color[node]</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">True</span></span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(V + E)</code>，空间复杂度<code>O(V + E)</code>  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -296,23 +286,23 @@
   <ul class="entry">
     
       <li>
+        <a href="/2022/02/15/leetcode-670-maximum-swap/">LeetCode 670 Maximum Swap</a>
+      </li>
+    
+      <li>
+        <a href="/2022/02/15/leetcode-567-permutation-in-string/">LeetCode 567 Permutation in String</a>
+      </li>
+    
+      <li>
+        <a href="/2022/02/15/leetcode-438-find-all-anagrams-in-a-string/">LeetCode 438 Find All Anagrams in a String</a>
+      </li>
+    
+      <li>
         <a href="/2022/02/15/mock-001/">Mock 001 Count changes for two N-trees</a>
       </li>
     
       <li>
         <a href="/2022/02/15/leetcode-1166-design-file-system/">LeetCode 1166 Design File System</a>
-      </li>
-    
-      <li>
-        <a href="/2022/02/15/leetcode-839-similar-string-groups/">LeetCode 839 Similar String Groups</a>
-      </li>
-    
-      <li>
-        <a href="/2022/02/15/leetcode-1347-minimum-number-of-steps-to-make-two-strings-anagram/">LeetCode 1347 Minimum Number of Steps to Make Two Strings Anagram</a>
-      </li>
-    
-      <li>
-        <a href="/2022/02/15/leetcode-854-k-similar-strings/">LeetCode 854 K-Similar Strings</a>
       </li>
     
   </ul>
@@ -325,7 +315,7 @@
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 14px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 14px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 16.8px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 13.6px;">Binary Tree</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10.4px;">Bit Manipulation</a> <a href="/tags/Bloomberg/" style="font-size: 10.4px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.6px;">Breadth-first Search</a> <a href="/tags/Citadel/" style="font-size: 10.8px;">Citadel</a> <a href="/tags/Classic/" style="font-size: 18.4px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 14.8px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.2px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.2px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 14px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.6px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 19.2px;">Facebook</a> <a href="/tags/Google/" style="font-size: 11.6px;">Google</a> <a href="/tags/Graph/" style="font-size: 12.8px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.8px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.8px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 14px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 13.2px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.2px;">Iterator</a> <a href="/tags/Karat/" style="font-size: 12.4px;">Karat</a> <a href="/tags/Knowledge-Base/" style="font-size: 16.8px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 15.2px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.4px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 18px;">Math</a> <a href="/tags/Matrix/" style="font-size: 15.6px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.2px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.8px;">Merge Sort</a> <a href="/tags/Microsoft/" style="font-size: 12px;">Microsoft</a> <a href="/tags/Mtrix/" style="font-size: 10px;">Mtrix</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 16px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.8px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.4px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10.8px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.2px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.4px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 17.2px;">Stack</a> <a href="/tags/String/" style="font-size: 18.8px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.2px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 16.4px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.6px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.4px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.4px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.4px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
+    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 14px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 14px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 16.8px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 13.6px;">Binary Tree</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10.4px;">Bit Manipulation</a> <a href="/tags/Bloomberg/" style="font-size: 10.4px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.6px;">Breadth-first Search</a> <a href="/tags/Citadel/" style="font-size: 10.8px;">Citadel</a> <a href="/tags/Classic/" style="font-size: 18.4px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 14.8px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.2px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.2px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 14px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.6px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 19.2px;">Facebook</a> <a href="/tags/Google/" style="font-size: 11.6px;">Google</a> <a href="/tags/Graph/" style="font-size: 12.8px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.8px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.8px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 14px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 13.2px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.2px;">Iterator</a> <a href="/tags/Karat/" style="font-size: 12.4px;">Karat</a> <a href="/tags/Knowledge-Base/" style="font-size: 16.8px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 15.2px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.4px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 18px;">Math</a> <a href="/tags/Matrix/" style="font-size: 15.6px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.2px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.8px;">Merge Sort</a> <a href="/tags/Microsoft/" style="font-size: 12px;">Microsoft</a> <a href="/tags/Mtrix/" style="font-size: 10px;">Mtrix</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 16px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.8px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.4px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 11.6px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.2px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.4px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 17.2px;">Stack</a> <a href="/tags/String/" style="font-size: 18.8px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.2px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 16.4px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.6px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.4px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.4px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.4px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
   </div>
 </div>
 

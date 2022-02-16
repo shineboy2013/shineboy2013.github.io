@@ -53,6 +53,142 @@
     <header>
       
   
+    <h1 class="title"><a href="/2022/01/23/leetcode-315-count-of-smaller-numbers-after-self/">LeetCode 315 Count of Smaller Numbers After Self</a></h1>
+  
+
+      
+        <time datetime="2022-01-24T03:09:12.360Z">2022-01-23</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/count-of-smaller-numbers-after-self/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>You are given an integer array <code>nums</code> and you have to return a new <code>counts</code> array. The <code>counts</code> array has the property where <code>counts[i]</code> is the number of smaller elements to the right of <code>nums[i]</code>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> nums = [5,2,6,1]<br><strong>Output:</strong> [2,1,1,0]<br><strong>Explanation:</strong><br>To the right of 5 there are <strong>2</strong> smaller elements (2 and 1).<br>To the right of 2 there is only <strong>1</strong> smaller element (1).<br>To the right of 6 there is <strong>1</strong> smaller element (1).<br>To the right of 1 there is <strong>0</strong> smaller element.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> nums = [-1]<br><strong>Output:</strong> [0]<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> nums = [-1,-1]<br><strong>Output:</strong> [0,0]<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= nums.length &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code>
+</em>   <code>-10&lt;sup&gt;4&lt;/sup&gt; &lt;= nums[i] &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code><br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>数组中，统计每一位比自己小的数。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>一开始考虑用递减栈。但不可行, 因为这是统计题，而不是求比自己大的一个数LeetCode 503 Next Greater Element II。类似于merge sort，考虑统计逆序数</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>由于mergesort会改变数组顺序，所以统计数组count也要对应的数也会变，所以将原数组变成(数值, 下标)对，count就可以统计原数组</li>
+<li>计算逆序对时候，放在nums[i][0] &lt;= nums[j][0]中，核心在count[nums[i][1]] += j - mid - 1</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">countSmaller</span><span class="params">(self, nums: List[int])</span> -&gt; List[int]:</span></span><br><span class="line">	count = [<span class="number">0</span>] * len(nums)</span><br><span class="line">	num_with_idx = [(n, i) <span class="keyword">for</span> i, n <span class="keyword">in</span> enumerate(nums)]</span><br><span class="line">	self.merge_sort(num_with_idx, <span class="number">0</span>, len(nums) - <span class="number">1</span>, count)</span><br><span class="line">	<span class="keyword">return</span> count</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">merge_sort</span><span class="params">(self, nums, start, end, count)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> start &gt;= end:</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	mid = start + (end - start) // <span class="number">2</span></span><br><span class="line">	self.merge_sort(nums, start, mid, count)</span><br><span class="line">	self.merge_sort(nums, mid + <span class="number">1</span>, end, count)</span><br><span class="line">	self.merge(nums, start, mid, end, count)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">merge</span><span class="params">(self, nums, start, mid, end, count)</span>:</span></span><br><span class="line">	i, j = start, mid + <span class="number">1</span></span><br><span class="line">	res = []</span><br><span class="line">	<span class="keyword">while</span> i &lt;= mid <span class="keyword">and</span> j &lt;= end:</span><br><span class="line">		<span class="keyword">if</span> nums[i][<span class="number">0</span>] &lt;= nums[j][<span class="number">0</span>]:</span><br><span class="line">			res.append(nums[i])</span><br><span class="line">			count[nums[i][<span class="number">1</span>]] += j - mid - <span class="number">1</span></span><br><span class="line">			i += <span class="number">1</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			res.append(nums[j])</span><br><span class="line">			j += <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> i &lt;= mid:</span><br><span class="line">		res.append(nums[i])</span><br><span class="line">		count[nums[i][<span class="number">1</span>]] += j - mid - <span class="number">1</span></span><br><span class="line">		i += <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> j &lt;= end:</span><br><span class="line">		res.append(nums[j])</span><br><span class="line">		j += <span class="number">1</span></span><br><span class="line">	nums[start:end + <span class="number">1</span>] = res</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nlogn)</code>，空间复杂度<code>O(n)</code>  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2022/01/23/leetcode-348-design-tic-tac-toe/">LeetCode 348 Design Tic-Tac-Toe</a></h1>
+  
+
+      
+        <time datetime="2022-01-24T00:15:36.677Z">2022-01-23</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/design-tic-tac-toe/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>Assume the following rules are for the tic-tac-toe game on an <code>n x n</code> board between two players:<br><br>1.  A move is guaranteed to be valid and is placed on an empty block.<br>2.  Once a winning condition is reached, no more moves are allowed.<br>3.  A player who succeeds in placing <code>n</code> of their marks in a horizontal, vertical, or diagonal row wins the game.<br><br>Implement the <code>TicTacToe</code> class:<br><br><em>   <code>TicTacToe(int n)</code> Initializes the object the size of the board <code>n</code>.
+</em>   <code>int move(int row, int col, int player)</code> Indicates that the player with id <code>player</code> plays at the cell <code>(row, col)</code> of the board. The move is guaranteed to be a valid move.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input</strong><br>[“TicTacToe”, “move”, “move”, “move”, “move”, “move”, “move”, “move”]<br>[[3], [0, 0, 1], [0, 2, 2], [2, 2, 1], [1, 1, 2], [2, 0, 1], [1, 0, 2], [2, 1, 1]]<br><strong>Output</strong><br>[null, 0, 0, 0, 0, 0, 0, 1]<br><br><strong>Explanation</strong><br>TicTacToe ticTacToe = new TicTacToe(3);<br>Assume that player 1 is “X” and player 2 is “O” in the board.<br>ticTacToe.move(0, 0, 1); // return 0 (no one wins)<br>|X| | |<br>| | | |    // Player 1 makes a move at (0, 0).<br>| | | |<br><br>ticTacToe.move(0, 2, 2); // return 0 (no one wins)<br>|X| |O|<br>| | | |    // Player 2 makes a move at (0, 2).<br>| | | |<br><br>ticTacToe.move(2, 2, 1); // return 0 (no one wins)<br>|X| |O|<br>| | | |    // Player 1 makes a move at (2, 2).<br>| | |X|<br><br>ticTacToe.move(1, 1, 2); // return 0 (no one wins)<br>|X| |O|<br>| |O| |    // Player 2 makes a move at (1, 1).<br>| | |X|<br><br>ticTacToe.move(2, 0, 1); // return 0 (no one wins)<br>|X| |O|<br>| |O| |    // Player 1 makes a move at (2, 0).<br>|X| |X|<br><br>ticTacToe.move(1, 0, 2); // return 0 (no one wins)<br>|X| |O|<br>|O|O| |    // Player 2 makes a move at (1, 0).<br>|X| |X|<br><br>ticTacToe.move(2, 1, 1); // return 1 (player 1 wins)<br>|X| |O|<br>|O|O| |    // Player 1 makes a move at (2, 1).<br>|X|X|X|<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>2 &lt;= n &lt;= 100</code>
+</em>   player is <code>1</code> or <code>2</code>.<br><em>   <code>0 &lt;= row, col &lt; n</code>
+</em>   <code>(row, col)</code> are <strong>unique</strong> for each different call to <code>move</code>.<br><em>   At most <code>n&lt;sup&gt;2&lt;/sup&gt;</code> calls will be made to <code>move</code>.<br><br><em>*Follow-up:</em></em> Could you do better than <code>O(n&lt;sup&gt;2&lt;/sup&gt;)</code> per <code>move()</code> operation?<br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>设计井字过三关</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>游戏题。最重要是是数据结构，类似于LeetCode 051 N-Queens和LeetCode 037 Sudoku Solver用matrix记录每行，每列，对角线和反对角线的和。这样验证时候只需要O(1). </p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>对角线和反对角线只有一条，所以要先判断move的这个点是否在对角线上。</li>
+<li>由于用-1来代表某一个player，所以判断和时候，用abs</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TicTacToe</span><span class="params">(TestCases)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, n: int)</span>:</span></span><br><span class="line">        self.board_len = n</span><br><span class="line">        self.row = [<span class="number">0</span>] * n</span><br><span class="line">        self.col = [<span class="number">0</span>] * n</span><br><span class="line">        self.diag = <span class="number">0</span></span><br><span class="line">        self.anti_diag = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">move</span><span class="params">(self, row: int, col: int, player: int)</span> -&gt; int:</span></span><br><span class="line">        <span class="keyword">if</span> player == <span class="number">2</span>:</span><br><span class="line">            player = <span class="number">-1</span></span><br><span class="line">        self.row[row] += player</span><br><span class="line">        self.col[col] += player</span><br><span class="line">        <span class="keyword">if</span> row == col: <span class="comment"># remember</span></span><br><span class="line">            self.diag += player</span><br><span class="line">        <span class="keyword">if</span> row == self.board_len - <span class="number">1</span> - col:</span><br><span class="line">            self.anti_diag += player</span><br><span class="line">        does_win = abs(self.row[row]) == self.board_len <span class="keyword">or</span> abs(self.col[col]) == self.board_len <span class="keyword">or</span> \</span><br><span class="line">                abs(self.diag) == self.board_len <span class="keyword">or</span> abs(self.anti_diag) == self.board_len <span class="comment"># remember abs</span></span><br><span class="line">        <span class="keyword">if</span> does_win:</span><br><span class="line">            <span class="keyword">if</span> player == <span class="number">-1</span>:</span><br><span class="line">                <span class="keyword">return</span> <span class="number">2</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="keyword">return</span> player</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span></span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>move时间复杂度为<code>O(1)</code>，空间复杂度<code>O(n)</code>  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2022/01/23/leetcode-317-shortest-distance-from-all-buildings/">LeetCode 317 Shortest Distance from All Buildings</a></h1>
+  
+
+      
+        <time datetime="2022-01-23T23:33:23.203Z">2022-01-23</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/shortest-distance-from-all-buildings/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>You are given an <code>m x n</code> grid <code>grid</code> of values <code>0</code>, <code>1</code>, or <code>2</code>, where:<br><br><em>   each <code>0</code> marks <strong>an empty land</strong> that you can pass by freely,
+</em>   each <code>1</code> marks <strong>a building</strong> that you cannot pass through, and<br><em>   each <code>2</code> marks <strong>an obstacle</strong> that you cannot pass through.<br><br>You want to build a house on an empty land that reaches all buildings in the <strong>shortest total travel</strong> distance. You can only move up, down, left, and right.<br><br>Return <em>the <strong>shortest travel distance</strong> for such a house</em>. If it is not possible to build such a house according to the above rules, return <code>-1</code>.<br><br>The <strong>total travel distance</strong> is the sum of the distances between the houses of the friends and the meeting point.<br><br>The distance is calculated using <a href="http://en.wikipedia.org/wiki/Taxicab_geometry" target="_blank" rel="noopener">Manhattan Distance</a>, where <code>distance(p1, p2) = |p2.x - p1.x| + |p2.y - p1.y|</code>.<br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/03/14/buildings-grid.jpg" alt=""><br><br><pre><strong>Input:</strong> grid = [[1,0,2,0,1],[0,0,0,0,0],[0,0,1,0,0]]<br><strong>Output:</strong> 7<br><strong>Explanation:</strong> Given three buildings at (0,0), (0,4), (2,2), and an obstacle at (0,2).<br>The point (1,2) is an ideal empty land to build a house, as the total travel distance of 3+3+1=7 is minimal.<br>So return 7.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> grid = [[1,0]]<br><strong>Output:</strong> 1<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> grid = [[1]]<br><strong>Output:</strong> -1<br></pre><br><br><strong>Constraints:</strong>
+
+</em>   <code>m == grid.length</code><br><em>   <code>n == grid[i].length</code>
+</em>   <code>1 &lt;= m, n &lt;= 50</code><br><em>   <code>grid[i][j]</code> is either <code>0</code>, <code>1</code>, or <code>2</code>.
+</em>   There will be <strong>at least one</strong> building in the <code>grid</code>.<br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>找到所有大厦最短距离的点，这个点不能是大厦也不能是障碍</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>一开始觉得类似于LeetCode 296 Best Meeting Point，但由于有障碍，所以不能用贪婪法。最值考虑用BFS。属于对所有节点BFS。类似于LeetCode 200 Number of Islands，<br>从每一栋大厦开始做BFS，计算每个点到此大厦距离。然后对累计到这个点的总距离矩阵dis中。最后求距离矩阵的最小值。 </p>
+<p>此题难点在于-1的情况，也就是一个点不能到达其中一个building或者是这个building不能到达的点。所以要再用一个矩阵house_count来记录每一个点能到达的大厦数。</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>-1的情况，用一个矩阵house_count来记录每一个点能到达的大厦数。  </li>
+<li>用常数记录矩阵长和宽，不用x &gt;= len(grid) or y &gt;= len(grid[0]), 否则会TLE</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">OFFSETS = [(<span class="number">-1</span>, <span class="number">0</span>), (<span class="number">1</span>, <span class="number">0</span>), (<span class="number">0</span>, <span class="number">-1</span>), (<span class="number">0</span>, <span class="number">1</span>)]</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">shortestDistance</span><span class="params">(self, grid: List[List[int]])</span> -&gt; int:</span></span><br><span class="line">	dis = [[<span class="number">0</span> <span class="keyword">for</span> _ <span class="keyword">in</span> range(len(grid[<span class="number">0</span>]))] <span class="keyword">for</span> _ <span class="keyword">in</span> range(len(grid))]</span><br><span class="line">	house_count = [[<span class="number">0</span> <span class="keyword">for</span> _ <span class="keyword">in</span> range(len(grid[<span class="number">0</span>]))] <span class="keyword">for</span> _ <span class="keyword">in</span> range(len(grid))]</span><br><span class="line">	total_houses = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(grid)):</span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> range(len(grid[<span class="number">0</span>])):</span><br><span class="line">			<span class="keyword">if</span> grid[i][j] == <span class="number">1</span>:</span><br><span class="line">				self.bfs(grid, i, j, dis, house_count)</span><br><span class="line">				total_houses += <span class="number">1</span></span><br><span class="line">	min_dis = float(<span class="string">'inf'</span>) <span class="comment"># remember</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(dis)):</span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> range(len(dis[<span class="number">0</span>])):</span><br><span class="line">			<span class="keyword">if</span> dis[i][j] &gt; <span class="number">0</span> <span class="keyword">and</span> house_count[i][j] == total_houses:</span><br><span class="line">				min_dis = min(min_dis, dis[i][j])</span><br><span class="line">	<span class="keyword">return</span> <span class="number">-1</span> <span class="keyword">if</span> min_dis == float(<span class="string">'inf'</span>) <span class="keyword">else</span> min_dis <span class="comment"># remember</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">bfs</span><span class="params">(self, grid, start_x, start_y, dis, house_count)</span>:</span></span><br><span class="line">	h = len(grid)</span><br><span class="line">	w = len(grid[<span class="number">0</span>]) <span class="comment"># remember otherwise TLE</span></span><br><span class="line">	queue = collections.deque([(start_x, start_y, <span class="number">0</span>)])</span><br><span class="line">	visited = [[<span class="keyword">False</span> <span class="keyword">for</span> _ <span class="keyword">in</span> range(len(grid[<span class="number">0</span>]))] <span class="keyword">for</span> _ <span class="keyword">in</span> range(len(grid))]</span><br><span class="line">	visited[start_x][start_y] = <span class="keyword">True</span></span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.popleft()</span><br><span class="line">		<span class="keyword">for</span> _dx, _dy <span class="keyword">in</span> OFFSETS:</span><br><span class="line">			x, y = node[<span class="number">0</span>] + _dx, node[<span class="number">1</span>] + _dy</span><br><span class="line">			<span class="keyword">if</span> x &lt; <span class="number">0</span> <span class="keyword">or</span> x &gt;= h <span class="keyword">or</span> y &lt; <span class="number">0</span> <span class="keyword">or</span> y &gt;= w <span class="keyword">or</span> grid[x][y] != <span class="number">0</span> <span class="keyword">or</span> visited[x][y]:</span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			queue.append((x, y, node[<span class="number">2</span>] + <span class="number">1</span>))</span><br><span class="line">			visited[x][y] = <span class="keyword">True</span></span><br><span class="line">			dis[x][y] += node[<span class="number">2</span>] + <span class="number">1</span></span><br><span class="line">			house_count[x][y] += <span class="number">1</span></span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nm * nm)</code>，空间复杂度<code>O(nm)</code>  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2022/01/21/leetcode-304-range-sum-query-2d-immutable/">LeetCode 304 Range Sum Query 2D - Immutable</a></h1>
   
 
@@ -152,138 +288,6 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2022/01/20/leetcode-287-find-the-duplicate-number/">LeetCode 287 Find the Duplicate Number</a></h1>
-  
-
-      
-        <time datetime="2022-01-20T10:10:33.912Z">2022-01-20</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/find-the-duplicate-number/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>Given an array of integers <code>nums</code> containing <code>n + 1</code> integers where each integer is in the range <code>[1, n]</code> inclusive.<br><br>There is only <strong>one repeated number</strong> in <code>nums</code>, return <em>this repeated number</em>.<br><br>You must solve the problem <strong>without</strong> modifying the array <code>nums</code> and uses only constant extra space.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> nums = [1,3,4,2,2]<br><strong>Output:</strong> 2<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> nums = [3,1,3,4,2]<br><strong>Output:</strong> 3<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= n &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code>
-</em>   <code>nums.length == n + 1</code><br><em>   <code>1 &lt;= nums[i] &lt;= n</code>
-</em>   All the integers in <code>nums</code> appear only <strong>once</strong> except for <strong>precisely one integer</strong> which appears <strong>two or more</strong> times.<br><br><strong>Follow up:</strong><br><br><em>   How can we prove that at least one duplicate number must exist in <code>nums</code>?
-</em>   Can you solve the problem in linear runtime complexity?<br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定数值范围[1, n]找重复的数，只有一个重复数，但可能重复多次。题目要求不能用额外空间，不能修改数组</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>数值二分法</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>比较mid和count的关系，用例子来写程序，如[1, 2, 2, 3, 4]</li>
-<li><strong>重复的数可能重复多次</strong>，所以不能用异或法</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">findDuplicate</span><span class="params">(self, nums: List[int])</span> -&gt; int:</span></span><br><span class="line">	start, end, epsilon = min(nums), max(nums), <span class="number">0.5</span></span><br><span class="line">	<span class="keyword">while</span> end - start &gt; epsilon:</span><br><span class="line">		mid = start + (end - start) / <span class="number">2</span></span><br><span class="line">		count = len([n <span class="keyword">for</span> n <span class="keyword">in</span> nums <span class="keyword">if</span> n &lt;= mid])</span><br><span class="line">		<span class="keyword">if</span> count &lt;= mid:</span><br><span class="line">			start = mid</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			end = mid</span><br><span class="line">	<span class="keyword">return</span> int(end)</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nlogn)</code>，空间复杂度<code>O(1)</code>  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2022/01/20/leetcode-286-walls-and-gates/">LeetCode 286 Walls and Gates</a></h1>
-  
-
-      
-        <time datetime="2022-01-20T09:36:10.895Z">2022-01-20</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/walls-and-gates/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>You are given an <code>m x n</code> grid <code>rooms</code> initialized with these three possible values.<br><br><em>   <code>-1</code> A wall or an obstacle.
-</em>   <code>0</code> A gate.<br><em>   <code>INF</code> Infinity means an empty room. We use the value <code>2&lt;sup&gt;31&lt;/sup&gt; - 1 = 2147483647</code> to represent <code>INF</code> as you may assume that the distance to a gate is less than <code>2147483647</code>.<br><br>Fill each empty room with the distance to <em>its nearest gate</em>. If it is impossible to reach a gate, it should be filled with <code>INF</code>.<br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/01/03/grid.jpg" alt=""><br><br><pre><strong>Input:</strong> rooms = [[2147483647,-1,0,2147483647],[2147483647,2147483647,2147483647,-1],[2147483647,-1,2147483647,-1],[0,-1,2147483647,2147483647]]<br><strong>Output:</strong> [[3,-1,0,1],[2,2,1,-1],[1,-1,2,-1],[0,-1,3,4]]<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> rooms = [[-1]]<br><strong>Output:</strong> [[-1]]<br></pre><br><br><strong>Constraints:</strong>
-
-</em>   <code>m == rooms.length</code><br><em>   <code>n == rooms[i].length</code>
-</em>   <code>1 &lt;= m, n &lt;= 250</code><br>*   <code>rooms[i][j]</code> is <code>-1</code>, <code>0</code>, or <code>2&lt;sup&gt;31&lt;/sup&gt; - 1</code>.<br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求所有房间到门的最短距离</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>属于多始点BFS类型</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>门的距离不更新，所以出列后要判断该点是否为门，不是用距离来判断</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">OFFSET = [(<span class="number">-1</span>, <span class="number">0</span>), (<span class="number">1</span>, <span class="number">0</span>), (<span class="number">0</span>, <span class="number">1</span>), (<span class="number">0</span>, <span class="number">-1</span>)]</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span><span class="params">(TestCases)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">wallsAndGates</span><span class="params">(self, rooms: List[List[int]])</span> -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        <span class="string">"""</span></span><br><span class="line"><span class="string">        Do not return anything, modify rooms in-place instead.</span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        gates = []</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(len(rooms)):</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> range(len(rooms[<span class="number">0</span>])):</span><br><span class="line">                <span class="keyword">if</span> rooms[i][j] == <span class="number">0</span>:</span><br><span class="line">                    gates.append((i, j, <span class="number">0</span>))</span><br><span class="line">        queue = collections.deque(gates)</span><br><span class="line">        visited = set(gates)</span><br><span class="line">        <span class="keyword">while</span> queue:</span><br><span class="line">            x, y, distance = queue.popleft()</span><br><span class="line">            <span class="keyword">if</span> rooms[x][y] != <span class="number">0</span>: <span class="comment"># not distance != 0</span></span><br><span class="line">                rooms[x][y] = distance</span><br><span class="line">            <span class="keyword">for</span> _dx, _dy <span class="keyword">in</span> OFFSET:</span><br><span class="line">                _x, _y = x + _dx, y + _dy</span><br><span class="line">                <span class="keyword">if</span> _x &lt; <span class="number">0</span> <span class="keyword">or</span> _x &gt;= len(rooms) <span class="keyword">or</span> _y &lt; <span class="number">0</span> <span class="keyword">or</span> _y &gt;= len(rooms[<span class="number">0</span>]) <span class="keyword">or</span> \</span><br><span class="line">                        rooms[_x][_y] == <span class="number">-1</span> <span class="keyword">or</span> (_x, _y) <span class="keyword">in</span> visited:</span><br><span class="line">                    <span class="keyword">continue</span></span><br><span class="line">                queue.append((_x, _y, distance + <span class="number">1</span>))</span><br><span class="line">                visited.add((_x, _y))</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nm)</code>，空间复杂度<code>O(mn)</code>  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2022/01/20/leetcode-283-move-zeroes/">LeetCode 283 Move Zeroes</a></h1>
-  
-
-      
-        <time datetime="2022-01-20T08:58:11.187Z">2022-01-20</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/move-zeroes/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>Given an integer array <code>nums</code>, move all <code>0</code>‘s to the end of it while maintaining the relative order of the non-zero elements.<br><br><strong>Note</strong> that you must do this in-place without making a copy of the array.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> nums = [0,1,0,3,12]<br><strong>Output:</strong> [1,3,12,0,0]<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> nums = [0]<br><strong>Output:</strong> [0]<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= nums.length &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code>
-</em>   <code>-2&lt;sup&gt;31&lt;/sup&gt; &lt;= nums[i] &lt;= 2&lt;sup&gt;31&lt;/sup&gt; - 1</code><br><br><strong>Follow up:</strong> Could you minimize the total number of operations done?</div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>将数组的0全部移到数组末</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>简单题。Quicksort的partition的应用</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li><h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">moveZeroes</span><span class="params">(self, nums: List[int])</span> -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">	<span class="string">"""</span></span><br><span class="line"><span class="string">	Do not return anything, modify nums in-place instead.</span></span><br><span class="line"><span class="string">	"""</span></span><br><span class="line">	non_zero_idx = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(nums)):</span><br><span class="line">		<span class="keyword">if</span> nums[i] != <span class="number">0</span>:</span><br><span class="line">			nums[i], nums[non_zero_idx] = nums[non_zero_idx], nums[i]</span><br><span class="line">			non_zero_idx += <span class="number">1</span></span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -308,23 +312,23 @@
   <ul class="entry">
     
       <li>
+        <a href="/2022/02/15/leetcode-670-maximum-swap/">LeetCode 670 Maximum Swap</a>
+      </li>
+    
+      <li>
+        <a href="/2022/02/15/leetcode-567-permutation-in-string/">LeetCode 567 Permutation in String</a>
+      </li>
+    
+      <li>
+        <a href="/2022/02/15/leetcode-438-find-all-anagrams-in-a-string/">LeetCode 438 Find All Anagrams in a String</a>
+      </li>
+    
+      <li>
         <a href="/2022/02/15/mock-001/">Mock 001 Count changes for two N-trees</a>
       </li>
     
       <li>
         <a href="/2022/02/15/leetcode-1166-design-file-system/">LeetCode 1166 Design File System</a>
-      </li>
-    
-      <li>
-        <a href="/2022/02/15/leetcode-839-similar-string-groups/">LeetCode 839 Similar String Groups</a>
-      </li>
-    
-      <li>
-        <a href="/2022/02/15/leetcode-1347-minimum-number-of-steps-to-make-two-strings-anagram/">LeetCode 1347 Minimum Number of Steps to Make Two Strings Anagram</a>
-      </li>
-    
-      <li>
-        <a href="/2022/02/15/leetcode-854-k-similar-strings/">LeetCode 854 K-Similar Strings</a>
       </li>
     
   </ul>
@@ -337,7 +341,7 @@
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 14px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 14px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 16.8px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 13.6px;">Binary Tree</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10.4px;">Bit Manipulation</a> <a href="/tags/Bloomberg/" style="font-size: 10.4px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.6px;">Breadth-first Search</a> <a href="/tags/Citadel/" style="font-size: 10.8px;">Citadel</a> <a href="/tags/Classic/" style="font-size: 18.4px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 14.8px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.2px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.2px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 14px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.6px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 19.2px;">Facebook</a> <a href="/tags/Google/" style="font-size: 11.6px;">Google</a> <a href="/tags/Graph/" style="font-size: 12.8px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.8px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.8px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 14px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 13.2px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.2px;">Iterator</a> <a href="/tags/Karat/" style="font-size: 12.4px;">Karat</a> <a href="/tags/Knowledge-Base/" style="font-size: 16.8px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 15.2px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.4px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 18px;">Math</a> <a href="/tags/Matrix/" style="font-size: 15.6px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.2px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.8px;">Merge Sort</a> <a href="/tags/Microsoft/" style="font-size: 12px;">Microsoft</a> <a href="/tags/Mtrix/" style="font-size: 10px;">Mtrix</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 16px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.8px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.4px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10.8px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.2px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.4px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 17.2px;">Stack</a> <a href="/tags/String/" style="font-size: 18.8px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.2px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 16.4px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.6px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.4px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.4px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.4px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
+    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 14px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 14px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 16.8px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 13.6px;">Binary Tree</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10.4px;">Bit Manipulation</a> <a href="/tags/Bloomberg/" style="font-size: 10.4px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.6px;">Breadth-first Search</a> <a href="/tags/Citadel/" style="font-size: 10.8px;">Citadel</a> <a href="/tags/Classic/" style="font-size: 18.4px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 14.8px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.2px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.2px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 14px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.6px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 19.2px;">Facebook</a> <a href="/tags/Google/" style="font-size: 11.6px;">Google</a> <a href="/tags/Graph/" style="font-size: 12.8px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.8px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.8px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 14px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 13.2px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.2px;">Iterator</a> <a href="/tags/Karat/" style="font-size: 12.4px;">Karat</a> <a href="/tags/Knowledge-Base/" style="font-size: 16.8px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 15.2px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.4px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 18px;">Math</a> <a href="/tags/Matrix/" style="font-size: 15.6px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.2px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.8px;">Merge Sort</a> <a href="/tags/Microsoft/" style="font-size: 12px;">Microsoft</a> <a href="/tags/Mtrix/" style="font-size: 10px;">Mtrix</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 16px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.8px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.4px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 11.6px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.2px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.4px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 17.2px;">Stack</a> <a href="/tags/String/" style="font-size: 18.8px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.2px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 16.4px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.6px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.4px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.4px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.4px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
   </div>
 </div>
 

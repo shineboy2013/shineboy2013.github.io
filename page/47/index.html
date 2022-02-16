@@ -53,6 +53,142 @@
     <header>
       
   
+    <h1 class="title"><a href="/2021/12/05/lee-051/">LeetCode 051 N-Queens</a></h1>
+  
+
+      
+        <time datetime="2021-12-05T19:13:17.686Z">2021-12-05</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/n-queens/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><p>The <strong>n-queens</strong> puzzle is the problem of placing <code>n</code> queens on an <code>n x n</code> chessboard such that no two queens attack each other.</p><br><br><p>Given an integer <code>n</code>, return <em>all distinct solutions to the <strong>n-queens puzzle</strong></em>. You may return the answer in <strong>any order</strong>.</p><br><br><p>Each solution contains a distinct board configuration of the n-queens’ placement, where <code>‘Q’</code> and <code>‘.’</code> both indicate a queen and an empty space, respectively.</p><br><br><p>&nbsp;</p><br><p><strong>Example 1:</strong></p><br><img alt="" src="https://assets.leetcode.com/uploads/2020/11/13/queens.jpg" style="width: 600px; height: 268px;"><br><pre><strong>Input:</strong> n = 4<br><strong>Output:</strong> [[“.Q..”,”…Q”,”Q…”,”..Q.”],[“..Q.”,”Q…”,”…Q”,”.Q..”]]<br><strong>Explanation:</strong> There exist two distinct solutions to the 4-queens puzzle as shown above<br></pre><br><br><p><strong>Example 2:</strong></p><br><br><pre><strong>Input:</strong> n = 1<br><strong>Output:</strong> [[“Q”]]<br></pre><br><br><p>&nbsp;</p><br><p><strong>Constraints:</strong></p><br><br><ul><br>    <li><code>1 &lt;= n &lt;= 9</code></li><br></ul><br></div>
+
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>八皇后问题，求所有解</p>
+<h3 id="Global-dict算法思路-推荐-："><a href="#Global-dict算法思路-推荐-：" class="headerlink" title="Global dict算法思路(推荐)："></a><strong>Global dict算法思路(推荐)：</strong></h3><p>DFS填位法模板  </p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>用3个set，col_set, 对角线，反对角线set来提高效率。   </li>
+<li>path用append的方法加入，这样终止条件用n来比较，不能用len(path)  </li>
+<li>打印函数中，one_result在每轮后reset；字符串不能改其中一个，只能用子串+Q+子串： (‘.’ <em> path[i]) + ‘Q’ + (‘.’ </em> (n - path[i] - 1)) </li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">solveNQueens</span><span class="params">(self, n: int)</span> -&gt; List[List[str]]:</span></span><br><span class="line">	res, path = [], []</span><br><span class="line">	self.dfs(n, <span class="number">0</span>, path, res, set(), set(), set())</span><br><span class="line">	result = self.convert(res)</span><br><span class="line">	<span class="keyword">return</span> result</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dfs</span><span class="params">(self, n, start, path, res, col_set, diag_set, anti_diag_set)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> start == n: <span class="comment"># remember not len(path)</span></span><br><span class="line">		res.append(list(path))</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(n): <span class="comment"># 4</span></span><br><span class="line">		<span class="keyword">if</span> <span class="keyword">not</span> self.is_valid(start, i, col_set, diag_set, anti_diag_set):</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		path.append(i)  <span class="comment"># [0, 2]</span></span><br><span class="line">		col_set.add(i)</span><br><span class="line">		diag_set.add(start - i)</span><br><span class="line">		anti_diag_set.add(start + i)</span><br><span class="line">		self.dfs(n, start + <span class="number">1</span>, path, res, col_set, diag_set, anti_diag_set)</span><br><span class="line">		anti_diag_set.remove(start + i)</span><br><span class="line">		diag_set.remove(start - i)</span><br><span class="line">		col_set.remove(i)</span><br><span class="line">		path.pop()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">is_valid</span><span class="params">(self, i, val, col_set, diag_set, anti_diag_set)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> val <span class="keyword">in</span> col_set <span class="keyword">or</span> i - val <span class="keyword">in</span> diag_set <span class="keyword">or</span> i + val <span class="keyword">in</span> anti_diag_set:</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">True</span></span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n!)</code>，空间复杂度<code>O(n^2)</code></p>
+<hr>
+<h3 id="常数空间算法II解题思路-推荐-："><a href="#常数空间算法II解题思路-推荐-：" class="headerlink" title="常数空间算法II解题思路(推荐)："></a><strong>常数空间算法II解题思路(推荐)：</strong></h3><p>较直观的方法，但复杂度稍差  </p>
+<h3 id="Python代码：-1"><a href="#Python代码：-1" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">solveNQueens2</span><span class="params">(self, n: int)</span> -&gt; List[List[str]]:</span></span><br><span class="line">	res, path = [], []</span><br><span class="line">	self.dfs2(n, <span class="number">0</span>, path, res)</span><br><span class="line">	result = self.convert(res)</span><br><span class="line">	<span class="keyword">return</span> result</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dfs2</span><span class="params">(self, n, start, path, res)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> start == n: <span class="comment"># remember not len(path)</span></span><br><span class="line">		res.append(list(path))</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(n): <span class="comment"># 4</span></span><br><span class="line">		path.append(i) <span class="comment"># [0, 2]</span></span><br><span class="line">		<span class="keyword">if</span> self.is_valid2(path):</span><br><span class="line">			self.dfs2(n, start + <span class="number">1</span>, path, res)</span><br><span class="line">		path.pop()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">is_valid2</span><span class="params">(self, path)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> len(path) != len(set(path)):</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(path)):</span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> range(i + <span class="number">1</span>, len(path)):</span><br><span class="line">			<span class="comment">#if i == j:</span></span><br><span class="line">			 <span class="comment">#   continue</span></span><br><span class="line">			<span class="keyword">if</span> abs(i - j) == abs(path[i] - path[j]):</span><br><span class="line">				<span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">convert</span><span class="params">(self, res)</span>:</span></span><br><span class="line">	result, one_result = [], []</span><br><span class="line">	<span class="keyword">for</span> k <span class="keyword">in</span> range(len(res)):</span><br><span class="line">		one_result = [] <span class="comment"># remember</span></span><br><span class="line">		path = res[k]</span><br><span class="line">		n = len(path)</span><br><span class="line">		<span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">			s = (<span class="string">'.'</span> * path[i]) + <span class="string">'Q'</span> + (<span class="string">'.'</span> * (n - path[i] - <span class="number">1</span>))  <span class="comment"># remember not s[path[i]] = 'Q'</span></span><br><span class="line">			one_result.append(s)</span><br><span class="line">		result.append(one_result)</span><br><span class="line">	<span class="keyword">return</span> result</span><br></pre></td></tr></table></figure>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> List&lt;List&lt;String&gt;&gt; solveNQueens2(<span class="keyword">int</span> n) &#123;</span><br><span class="line">	List&lt;List&lt;String&gt;&gt; res = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">	<span class="keyword">int</span>[] col = <span class="keyword">new</span> <span class="keyword">int</span>[n];</span><br><span class="line">	solveR(n, col, <span class="number">0</span>, res);</span><br><span class="line">	<span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 5/2/2020</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solveR</span><span class="params">(<span class="keyword">int</span> n, <span class="keyword">int</span>[] col, <span class="keyword">int</span> st, List&lt;List&lt;String&gt;&gt; res)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(st == n) &#123;</span><br><span class="line">		print(col, res);</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">		col[st] = i;</span><br><span class="line">		<span class="keyword">if</span>(isValid(col, st))</span><br><span class="line">			solveR(n, col, st + <span class="number">1</span>, res);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">isValid</span><span class="params">(<span class="keyword">int</span>[] col, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; k; i++) &#123;</span><br><span class="line">		<span class="keyword">if</span>(col[i] == col[k])</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; k; i++) &#123;</span><br><span class="line">		<span class="keyword">if</span>(Math.abs(k - i) == Math.abs(col[k] - col[i])) <span class="comment">//use abs</span></span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n!)</code>，空间复杂度<code>O(n^2)</code>  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2021/12/05/lee-015/">LeetCode 015 3Sum</a></h1>
+  
+
+      
+        <time datetime="2021-12-05T19:09:01.704Z">2021-12-05</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/3sum/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>Given an integer array nums, return all the triplets <code>[nums[i], nums[j], nums[k]]</code> such that <code>i != j</code>, <code>i != k</code>, and <code>j != k</code>, and <code>nums[i] + nums[j] + nums[k] == 0</code>.<br><br>Notice that the solution set must not contain duplicate triplets.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> nums = [-1,0,1,2,-1,-4]<br><strong>Output:</strong> [[-1,-1,2],[-1,0,1]]<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> nums = []<br><strong>Output:</strong> []<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> nums = [0]<br><strong>Output:</strong> []<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>0 &lt;= nums.length &lt;= 3000</code>
+</em>   <code>-10&lt;sup&gt;5&lt;/sup&gt; &lt;= nums[i] &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code><br><br></div>
+
+
+<h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>N/A  </p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>先排序        </li>
+<li>结果要去重，用i, j, k指针比较前一个元素，若相等指针移动跳过，k是比较后一个元素  </li>
+<li>注意指针移动，等于target两指针都要移动，若与前一元素相等，相应指针移一位，要避免死循环  </li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">threeSum</span><span class="params">(self, nums: List[int])</span> -&gt; List[List[int]]:</span></span><br><span class="line">	nums.sort()</span><br><span class="line">	res = []</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(nums)):</span><br><span class="line">		<span class="keyword">if</span> i &gt; <span class="number">0</span> <span class="keyword">and</span> nums[i] == nums[i - <span class="number">1</span>]:</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		sub_res = self.two_sum(nums, i + <span class="number">1</span>, -nums[i])</span><br><span class="line">		<span class="keyword">for</span> li <span class="keyword">in</span> sub_res:</span><br><span class="line">			res.append([nums[i]] + li)</span><br><span class="line">	<span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">two_sum</span><span class="params">(self, nums, start, target)</span>:</span></span><br><span class="line">	j, k, res = start, len(nums) - <span class="number">1</span>, []</span><br><span class="line">	<span class="keyword">while</span> j &lt; k:</span><br><span class="line">		<span class="keyword">if</span> (j &gt; start <span class="keyword">and</span> nums[j] == nums[j - <span class="number">1</span>]) <span class="keyword">or</span> nums[j] + nums[k] &lt; target:</span><br><span class="line">			j += <span class="number">1</span></span><br><span class="line">		<span class="keyword">elif</span> (k &lt; len(nums) - <span class="number">1</span> <span class="keyword">and</span> nums[k] == nums[k + <span class="number">1</span>]) <span class="keyword">or</span> nums[j] + nums[k] &gt; target:</span><br><span class="line">			k -= <span class="number">1</span></span><br><span class="line">		<span class="keyword">elif</span> nums[j] + nums[k] == target:</span><br><span class="line">			res.append([nums[j], nums[k]])</span><br><span class="line">			j += <span class="number">1</span></span><br><span class="line">			k -= <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> List&lt;List&lt;Integer&gt;&gt; threeSum2(<span class="keyword">int</span>[] nums) &#123;</span><br><span class="line">	List&lt;List&lt;Integer&gt;&gt; re = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">	<span class="keyword">if</span>(nums == <span class="keyword">null</span> || nums.length == <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> re;</span><br><span class="line">	Arrays.sort(nums);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nums.length - <span class="number">2</span>; i++) &#123;</span><br><span class="line">		<span class="keyword">if</span>(i &gt; <span class="number">0</span> &amp;&amp; nums[i] == nums[i-<span class="number">1</span>])</span><br><span class="line">			<span class="keyword">continue</span>;</span><br><span class="line">		twoPointers(nums, i + <span class="number">1</span>, nums.length - <span class="number">1</span>, -nums[i], re);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> re;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">twoPointers</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> left, <span class="keyword">int</span> right, <span class="keyword">int</span> target, List&lt;List&lt;Integer&gt;&gt; re)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> leftOri = left, rightOri = right;</span><br><span class="line">	<span class="keyword">while</span>(left &lt; right) &#123;</span><br><span class="line">		<span class="keyword">if</span>(left &gt; leftOri &amp;&amp; nums[left] == nums[left-<span class="number">1</span>]) &#123;</span><br><span class="line">			left++;</span><br><span class="line">			<span class="keyword">continue</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(right &lt; rightOri &amp;&amp; nums[right] == nums[right + <span class="number">1</span>]) &#123;</span><br><span class="line">			right--;</span><br><span class="line">			<span class="keyword">continue</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">if</span>(nums[left] + nums[right] == target) </span><br><span class="line">			re.add(Arrays.asList(-target, nums[left++], nums[right--]));</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(nums[left] + nums[right] &lt; target)</span><br><span class="line">			left++;</span><br><span class="line">		<span class="keyword">else</span> </span><br><span class="line">			right--;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n^2)</code>，空间复杂度<code>O(1)</code>  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2021/12/05/lee-075/">LeetCode 075 Sort Colors</a></h1>
+  
+
+      
+        <time datetime="2021-12-05T19:05:21.391Z">2021-12-05</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/sort-colors/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>Given an array <code>nums</code> with <code>n</code> objects colored red, white, or blue, sort them <strong><a href="https://en.wikipedia.org/wiki/In-place_algorithm" target="_blank" rel="noopener">in-place</a></strong> so that objects of the same color are adjacent, with the colors in the order red, white, and blue.<br><br>We will use the integers <code>0</code>, <code>1</code>, and <code>2</code> to represent the color red, white, and blue, respectively.<br><br>You must solve this problem without using the library’s sort function.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> nums = [2,0,2,1,1,0]<br><strong>Output:</strong> [0,0,1,1,2,2]<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> nums = [2,0,1]<br><strong>Output:</strong> [0,1,2]<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>n == nums.length</code>
+</em>   <code>1 &lt;= n &lt;= 300</code><br><em>   <code>nums[i]</code> is either <code>0</code>, <code>1</code>, or <code>2</code>.<br><br><em>*Follow up:</em></em> Could you come up with a one-pass algorithm using only constant extra space?<br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>排序3值数组</p>
+<h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>类似于Quicksort的partition，但有三种值，需要有三个指针: left, i, right  </p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>三个指针: left, i, right. 循环不是for每个元素，而是i &lt;= right        </li>
+<li>nums[2]的时候，<strong>right要往前移</strong>   </li>
+<li>和partition一样： nums[i] == 0，left和i都移动，nums[i] == 1只移动i</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sortColors</span><span class="params">(self, nums: List[int])</span> -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">	left, i, right = <span class="number">0</span>, <span class="number">0</span>, len(nums) - <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> i &lt;= right: <span class="comment"># remember</span></span><br><span class="line">		<span class="keyword">if</span> nums[i] == <span class="number">0</span>:</span><br><span class="line">			nums[left], nums[i] = nums[i], nums[left]</span><br><span class="line">			left += <span class="number">1</span></span><br><span class="line">			i += <span class="number">1</span></span><br><span class="line">		<span class="keyword">elif</span> nums[i] == <span class="number">1</span>:</span><br><span class="line">			i += <span class="number">1</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			nums[i], nums[right] = nums[right], nums[i]</span><br><span class="line">			right -= <span class="number">1</span> <span class="comment"># remember</span></span><br></pre></td></tr></table></figure>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sortColors</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> middleStart = <span class="number">0</span>, middleEnd = nums.length-<span class="number">1</span>, i=<span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span>(i&lt;=middleEnd)&#123;</span><br><span class="line">		<span class="keyword">if</span>(nums[i]==<span class="number">2</span>)</span><br><span class="line">			swap(nums,i,middleEnd--);<span class="comment">//no i++ coz 2,0,2,2, swap 2,2 and i can't +1</span></span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(nums[i]==<span class="number">0</span>)</span><br><span class="line">			swap(nums,i++,middleStart++);</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			i++;</span><br><span class="line">	&#125;</span><br><span class="line">			</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">swap</span><span class="params">(<span class="keyword">int</span>[] a,<span class="keyword">int</span> i,<span class="keyword">int</span> j)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> temp = a[i];</span><br><span class="line">	a[i] = a[j];</span><br><span class="line">	a[j] = temp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2021/12/05/lee-098/">LeetCode 098 Validate Binary Search Tree</a></h1>
   
 
@@ -135,132 +271,6 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2021/12/05/lee-153/">LeetCode 153 Find Minimum in Rotated Sorted Array</a></h1>
-  
-
-      
-        <time datetime="2021-12-05T18:38:05.358Z">2021-12-05</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>Suppose an array of length <code>n</code> sorted in ascending order is <strong>rotated</strong> between <code>1</code> and <code>n</code> times. For example, the array <code>nums = [0,1,2,4,5,6,7]</code> might become:<br><br><em>   <code>[4,5,6,7,0,1,2]</code> if it was rotated <code>4</code> times.
-</em>   <code>[0,1,2,4,5,6,7]</code> if it was rotated <code>7</code> times.<br><br>Notice that <strong>rotating</strong> an array <code>[a[0], a[1], a[2], ..., a[n-1]]</code> 1 time results in the array <code>[a[n-1], a[0], a[1], a[2], ..., a[n-2]]</code>.<br><br>Given the sorted rotated array <code>nums</code> of <strong>unique</strong> elements, return <em>the minimum element of this array</em>.<br><br>You must write an algorithm that runs in <code>O(log n) time.</code><br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> nums = [3,4,5,1,2]<br><strong>Output:</strong> 1<br><strong>Explanation:</strong> The original array was [1,2,3,4,5] rotated 3 times.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> nums = [4,5,6,7,0,1,2]<br><strong>Output:</strong> 0<br><strong>Explanation:</strong> The original array was [0,1,2,4,5,6,7] and it was rotated 4 times.<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> nums = [11,13,15,17]<br><strong>Output:</strong> 11<br><strong>Explanation:</strong> The original array was [11,13,15,17] and it was rotated 4 times.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>n == nums.length</code>
-</em>   <code>1 &lt;= n &lt;= 5000</code><br><em>   <code>-5000 &lt;= nums[i] &lt;= 5000</code>
-</em>   All the integers of <code>nums</code> are <strong>unique</strong>.<br>*   <code>nums</code> is sorted and rotated between <code>1</code> and <code>n</code> times.<br><br></div>
-
-<h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>二分法  </p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>如果nums[start] &gt; nums[mid]或nums[mid] &gt; nums[end]都将会是min所在的区间。但是由于无位移数组的min在左边，所以<strong>优先判断后半区间nums[mid] &gt; nums[end]</strong>，否则若用nums[start] &gt; nums[mid] + else会忽略无位移情况。</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">findMin</span><span class="params">(self, nums: List[int])</span> -&gt; int:</span></span><br><span class="line">	start, end = <span class="number">0</span>, len(nums) - <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> start + <span class="number">1</span> &lt; end:</span><br><span class="line">		mid = start + (end - start) // <span class="number">2</span></span><br><span class="line">		<span class="keyword">if</span> nums[mid] &gt; nums[end]:</span><br><span class="line">			start = mid</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			end = mid</span><br><span class="line">	<span class="keyword">if</span> nums[start] &lt; nums[end]:</span><br><span class="line">		<span class="keyword">return</span> nums[start]</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		<span class="keyword">return</span> nums[end]</span><br></pre></td></tr></table></figure>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">findMin</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(nums == <span class="keyword">null</span> || nums.length == <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">int</span> start = <span class="number">0</span>, end = nums.length - <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">while</span>(start + <span class="number">1</span> &lt; end) &#123;</span><br><span class="line">		<span class="keyword">int</span> mid = start + (end - start) / <span class="number">2</span>;</span><br><span class="line">		<span class="keyword">if</span>(nums[start] &gt; nums[end]) &#123;</span><br><span class="line">			<span class="keyword">if</span> (nums[mid] &lt; nums[end])</span><br><span class="line">				end = mid;</span><br><span class="line">			<span class="keyword">else</span></span><br><span class="line">				start = mid;</span><br><span class="line">		&#125; </span><br><span class="line">		<span class="keyword">else</span> </span><br><span class="line">			<span class="keyword">return</span> nums[start];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span>(nums[start] &lt; nums[end])</span><br><span class="line">		<span class="keyword">return</span> nums[start];</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		<span class="keyword">return</span> nums[end];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(logn)</code>，空间复杂度<code>O(1)</code>  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2021/12/05/lee-033/">LeetCode 033 Search in Rotated Sorted Array</a></h1>
-  
-
-      
-        <time datetime="2021-12-05T18:35:46.612Z">2021-12-05</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/search-in-rotated-sorted-array/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>There is an integer array <code>nums</code> sorted in ascending order (with <strong>distinct</strong> values).<br><br>Prior to being passed to your function, <code>nums</code> is <strong>possibly rotated</strong> at an unknown pivot index <code>k</code> (<code>1 &lt;= k &lt; nums.length</code>) such that the resulting array is <code>[nums[k], nums[k+1], ..., nums[n-1], nums[0], nums[1], ..., nums[k-1]]</code> (<strong>0-indexed</strong>). For example, <code>[0,1,2,4,5,6,7]</code> might be rotated at pivot index <code>3</code> and become <code>[4,5,6,7,0,1,2]</code>.<br><br>Given the array <code>nums</code> <strong>after</strong> the possible rotation and an integer <code>target</code>, return <em>the index of</em> <code>target</code> <em>if it is in</em> <code>nums</code><em>, or</em> <code>-1</code> <em>if it is not in</em> <code>nums</code>.<br><br>You must write an algorithm with <code>O(log n)</code> runtime complexity.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> nums = [4,5,6,7,0,1,2], target = 0<br><strong>Output:</strong> 4<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> nums = [4,5,6,7,0,1,2], target = 3<br><strong>Output:</strong> -1<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> nums = [1], target = 0<br><strong>Output:</strong> -1<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= nums.length &lt;= 5000</code>
-</em>   <code>-10&lt;sup&gt;4&lt;/sup&gt; &lt;= nums[i] &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code><br><em>   All values of <code>nums</code> are <strong>unique</strong>.
-</em>   <code>nums</code> is an ascending array that is possibly rotated.<br>*   <code>-10&lt;sup&gt;4&lt;/sup&gt; &lt;= target &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code><br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>有序数组旋转了几位，求target的下标  </p>
-<h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>N/A  </p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>四种情况： 左半有序且target在这个有序区间内，左边有序的所有其他情况，右半有序且target在这个有序区间，右半有序的所有其他情况    </li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">search</span><span class="params">(self, nums: List[int], target: int)</span> -&gt; int:</span></span><br><span class="line">	start, end = <span class="number">0</span>, len(nums) - <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> start + <span class="number">1</span> &lt; end:</span><br><span class="line">		mid = start + (end - start) // <span class="number">2</span></span><br><span class="line">		<span class="keyword">if</span> nums[start] &lt; nums[mid] <span class="keyword">and</span> nums[start] &lt;= target &lt;= nums[mid]:  <span class="comment"># remember</span></span><br><span class="line">			end = mid</span><br><span class="line">		<span class="keyword">elif</span> nums[start] &lt; nums[mid]:</span><br><span class="line">			start = mid</span><br><span class="line">		<span class="keyword">elif</span> nums[mid] &lt; nums[end] <span class="keyword">and</span> nums[mid] &lt;= target &lt;= nums[end]:</span><br><span class="line">			start = mid</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			end = mid</span><br><span class="line">	<span class="keyword">if</span> nums[start] == target:</span><br><span class="line">		<span class="keyword">return</span> start</span><br><span class="line">	<span class="keyword">if</span> nums[end] == target:</span><br><span class="line">		<span class="keyword">return</span> end</span><br><span class="line">	<span class="keyword">return</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">search</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(nums == <span class="keyword">null</span> || nums.length == <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">int</span> start = <span class="number">0</span>, end = nums.length - <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">while</span>(start + <span class="number">1</span> &lt; end) &#123;</span><br><span class="line">		<span class="keyword">int</span> mid = start + (end - start) / <span class="number">2</span>;</span><br><span class="line">		<span class="keyword">if</span>(nums[mid] &gt; nums[start]) &#123; <span class="comment">// the left segment is increasing</span></span><br><span class="line">			<span class="comment">// pay attention to equal </span></span><br><span class="line">			<span class="keyword">if</span>(nums[start] &lt;= target &amp;&amp; target &lt;= nums[mid]) <span class="comment">//the [start, mid] is increasing</span></span><br><span class="line">				end = mid;</span><br><span class="line">			<span class="keyword">else</span></span><br><span class="line">				start = mid;</span><br><span class="line">		&#125; </span><br><span class="line">		<span class="keyword">else</span> &#123; </span><br><span class="line">			<span class="keyword">if</span>(nums[mid] &lt;= target &amp;&amp; target &lt;= nums[end]) <span class="comment">// the [mid, end] is increasing</span></span><br><span class="line">				start = mid;</span><br><span class="line">			<span class="keyword">else</span></span><br><span class="line">				end = mid;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(nums[start] == target)</span><br><span class="line">		<span class="keyword">return</span> start;</span><br><span class="line">	<span class="keyword">if</span>(nums[end] == target)</span><br><span class="line">		<span class="keyword">return</span> end;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(logn)</code>，空间复杂度<code>O(1)</code>  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2021/12/05/lee-278/">LeetCode 278 First Bad Version</a></h1>
-  
-
-      
-        <time datetime="2021-12-05T18:29:06.491Z">2021-12-05</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/gas-station/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>You are a product manager and currently leading a team to develop a new product. Unfortunately, the latest version of your product fails the quality check. Since each version is developed based on the previous version, all the versions after a bad version are also bad.<br><br>Suppose you have <code>n</code> versions <code>[1, 2, ..., n]</code> and you want to find out the first bad one, which causes all the following ones to be bad.<br><br>You are given an API <code>bool isBadVersion(version)</code> which returns whether <code>version</code> is bad. Implement a function to find the first bad version. You should minimize the number of calls to the API.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> n = 5, bad = 4<br><strong>Output:</strong> 4<br><strong>Explanation:</strong><br>call isBadVersion(3) -&gt; false<br>call isBadVersion(5) -&gt; true<br>call isBadVersion(4) -&gt; true<br>Then 4 is the first bad version.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> n = 1, bad = 1<br><strong>Output:</strong> 1<br></pre><br><br><strong>Constraints:</strong><br><br>*   <code>1 &lt;= bad &lt;= n &lt;= 2&lt;sup&gt;31&lt;/sup&gt; - 1</code><br><br></div>
-
-<h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>N/A  </p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>题目是先good再bad，所以用first position模板     </li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">firstBadVersion</span><span class="params">(self, n)</span>:</span></span><br><span class="line">	start, end = <span class="number">0</span>, n</span><br><span class="line">	<span class="keyword">while</span> start + <span class="number">1</span> &lt; end:</span><br><span class="line">		mid = start + (end - start) // <span class="number">2</span></span><br><span class="line">		<span class="keyword">if</span> isBadVersion(mid):</span><br><span class="line">			end = mid</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			start = mid</span><br><span class="line">	<span class="keyword">if</span> isBadVersion(start):</span><br><span class="line">		<span class="keyword">return</span> start</span><br><span class="line">	<span class="keyword">if</span> isBadVersion(end):</span><br><span class="line">		<span class="keyword">return</span> end</span><br><span class="line">	<span class="keyword">return</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">firstBadVersion</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> start = <span class="number">1</span>, end = n;</span><br><span class="line">	<span class="keyword">while</span>(start + <span class="number">1</span> &lt; end) &#123;</span><br><span class="line">		<span class="keyword">int</span> mid = start + (end - start) / <span class="number">2</span>;</span><br><span class="line">		<span class="keyword">if</span>(isBadVersion(mid)) </span><br><span class="line">			end = mid;</span><br><span class="line">		<span class="keyword">else</span> </span><br><span class="line">			start = mid;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span>(isBadVersion(start))</span><br><span class="line">		<span class="keyword">return</span> start;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		<span class="keyword">return</span> end;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(logn)</code>，空间复杂度<code>O(1)</code>  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -285,23 +295,23 @@
   <ul class="entry">
     
       <li>
+        <a href="/2022/02/15/leetcode-670-maximum-swap/">LeetCode 670 Maximum Swap</a>
+      </li>
+    
+      <li>
+        <a href="/2022/02/15/leetcode-567-permutation-in-string/">LeetCode 567 Permutation in String</a>
+      </li>
+    
+      <li>
+        <a href="/2022/02/15/leetcode-438-find-all-anagrams-in-a-string/">LeetCode 438 Find All Anagrams in a String</a>
+      </li>
+    
+      <li>
         <a href="/2022/02/15/mock-001/">Mock 001 Count changes for two N-trees</a>
       </li>
     
       <li>
         <a href="/2022/02/15/leetcode-1166-design-file-system/">LeetCode 1166 Design File System</a>
-      </li>
-    
-      <li>
-        <a href="/2022/02/15/leetcode-839-similar-string-groups/">LeetCode 839 Similar String Groups</a>
-      </li>
-    
-      <li>
-        <a href="/2022/02/15/leetcode-1347-minimum-number-of-steps-to-make-two-strings-anagram/">LeetCode 1347 Minimum Number of Steps to Make Two Strings Anagram</a>
-      </li>
-    
-      <li>
-        <a href="/2022/02/15/leetcode-854-k-similar-strings/">LeetCode 854 K-Similar Strings</a>
       </li>
     
   </ul>
@@ -314,7 +324,7 @@
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 14px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 14px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 16.8px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 13.6px;">Binary Tree</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10.4px;">Bit Manipulation</a> <a href="/tags/Bloomberg/" style="font-size: 10.4px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.6px;">Breadth-first Search</a> <a href="/tags/Citadel/" style="font-size: 10.8px;">Citadel</a> <a href="/tags/Classic/" style="font-size: 18.4px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 14.8px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.2px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.2px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 14px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.6px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 19.2px;">Facebook</a> <a href="/tags/Google/" style="font-size: 11.6px;">Google</a> <a href="/tags/Graph/" style="font-size: 12.8px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.8px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.8px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 14px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 13.2px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.2px;">Iterator</a> <a href="/tags/Karat/" style="font-size: 12.4px;">Karat</a> <a href="/tags/Knowledge-Base/" style="font-size: 16.8px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 15.2px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.4px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 18px;">Math</a> <a href="/tags/Matrix/" style="font-size: 15.6px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.2px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.8px;">Merge Sort</a> <a href="/tags/Microsoft/" style="font-size: 12px;">Microsoft</a> <a href="/tags/Mtrix/" style="font-size: 10px;">Mtrix</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 16px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.8px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.4px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 10.8px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.2px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.4px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 17.2px;">Stack</a> <a href="/tags/String/" style="font-size: 18.8px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.2px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 16.4px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.6px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.4px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.4px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.4px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
+    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 14px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 14px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 16.8px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 13.6px;">Binary Tree</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10.4px;">Bit Manipulation</a> <a href="/tags/Bloomberg/" style="font-size: 10.4px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.6px;">Breadth-first Search</a> <a href="/tags/Citadel/" style="font-size: 10.8px;">Citadel</a> <a href="/tags/Classic/" style="font-size: 18.4px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 14.8px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.2px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.2px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 14px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.6px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 19.2px;">Facebook</a> <a href="/tags/Google/" style="font-size: 11.6px;">Google</a> <a href="/tags/Graph/" style="font-size: 12.8px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 12.8px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.8px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 14px;">Heap</a> <a href="/tags/Interviewer/" style="font-size: 13.2px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.2px;">Iterator</a> <a href="/tags/Karat/" style="font-size: 12.4px;">Karat</a> <a href="/tags/Knowledge-Base/" style="font-size: 16.8px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 15.2px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.4px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 18px;">Math</a> <a href="/tags/Matrix/" style="font-size: 15.6px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.2px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.8px;">Merge Sort</a> <a href="/tags/Microsoft/" style="font-size: 12px;">Microsoft</a> <a href="/tags/Mtrix/" style="font-size: 10px;">Mtrix</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 16px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.8px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.4px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 11.6px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.2px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.4px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 17.2px;">Stack</a> <a href="/tags/String/" style="font-size: 18.8px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.2px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 16.4px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.6px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.4px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.4px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.4px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
   </div>
 </div>
 
