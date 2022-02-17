@@ -53,6 +53,62 @@
     <header>
       
   
+    <h1 class="title"><a href="/2020/03/08/lee-248/">LeetCode 248 Strobogrammatic Number III</a></h1>
+  
+
+      
+        <time datetime="2020-03-09T01:39:06.644Z">2020-03-08</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/strobogrammatic-number-iii/" target="_blank" rel="noopener">LeetCode 248 Strobogrammatic Number III</a></strong></p>
+<p>A strobogrammatic number is a number that looks the same when rotated 180 degrees (looked at upside down).<br>Write a function to count the total strobogrammatic numbers that exist in the range of low &lt;= num &lt;= high.</p>
+<p><strong>Example:</strong> </p>
+<pre>**Input: low = "50", high = "100"
+
+**Output:** 3 
+
+Explanation: 69, 88, and 96 are three strobogrammatic numbers.
+</pre>
+
+<p><strong>Note:</strong> Because the range might be a large number, the lowand high numbers are represented as string.</p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求某范围的旋转数的个数。旋转数是这个数旋转180度还是一样，如0, 1, 8， 还含两位的如69， 96. </p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>低频题。这是M公司的题目。这题不能用乘法原理，因为情况多变，要实实在在地找出每一个可能性。<br>类似于L351安卓解码种数，数字间有关系，求[m, n]范围间种数。用DFS将每一位填上合法位，此题区别是<br>需要它有对称性，所以DFS从中间向两边。API为f(res, low, high, map), res为当前结果字符串，map为旋转数的映射关系，<br>终止条件为res超过high，若在范围内，结果+1，也就是先将自己加入到结果中，然后两边加入旋转字符，进入下一轮递归，<br>累加到结果中。  </p>
+<p>注意: 与上题一样，和最左位不能为0除了0自己本身。</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>带限制条件的填位法DFS。</li>
+<li>奇偶位。对称中心既可以是奇数位也可以是偶数位。所以DFS有空字符，单个字符0, 1, 8等4种。  </li>
+<li>此题难点在验证： <strong>三种情况</strong>，需要比较字符串，所以要比较长度<br>1) 当前结果长度大于high, 长度等于high但大于high，返回0. <strong>只有这种情况是终止条件</strong><br>2) 当前结果长度大于low, 长度等于low但大于等于low，res = 1<br>3) 最左位为0，不合法如0880，但0本身除外， res = 0  </li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">strobogrammaticInRange</span><span class="params">(self, low: str, high: str)</span> -&gt; int:</span></span><br><span class="line">	stro_dict = &#123;<span class="string">'0'</span>: <span class="string">'0'</span>, <span class="string">'1'</span>: <span class="string">'1'</span>, <span class="string">'8'</span>: <span class="string">'8'</span>, <span class="string">'6'</span>: <span class="string">'9'</span>, <span class="string">'9'</span>: <span class="string">'6'</span>&#125;</span><br><span class="line">	res = <span class="number">0</span></span><br><span class="line">	res += self.dfs(<span class="string">''</span>, low, high, stro_dict)</span><br><span class="line">	res += self.dfs(<span class="string">'0'</span>, low, high, stro_dict)</span><br><span class="line">	res += self.dfs(<span class="string">'1'</span>, low, high, stro_dict)</span><br><span class="line">	res += self.dfs(<span class="string">'8'</span>, low, high, stro_dict)</span><br><span class="line">	<span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dfs</span><span class="params">(self, s, low, high, stro_dict)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> len(s) &gt; len(high) <span class="keyword">or</span> (len(s) == len(high) <span class="keyword">and</span> s &gt; high):</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">	res = <span class="number">0</span></span><br><span class="line">	<span class="keyword">if</span> len(s) &gt; len(low) <span class="keyword">or</span> (len(s) == len(low) <span class="keyword">and</span> s &gt;= low):</span><br><span class="line">		res = <span class="number">1</span></span><br><span class="line">	<span class="keyword">if</span> len(s) &gt; <span class="number">1</span> <span class="keyword">and</span> s[<span class="number">0</span>] == <span class="string">'0'</span>: <span class="comment"># i.e. 08</span></span><br><span class="line">		res = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> key, val <span class="keyword">in</span> stro_dict.items():</span><br><span class="line">		res += self.dfs(key + s + val, low, high, stro_dict)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>奇偶位。对称中心既可以是奇数位也可以是偶数位。  </li>
+<li>最左位为0，不合法如0880，但0本身除外。  </li>
+</ol>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">strobogrammaticInRange</span><span class="params">(String low, String high)</span> </span>&#123;</span><br><span class="line">	Map&lt;String, String&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">	map.put(<span class="string">"6"</span>, <span class="string">"9"</span>);</span><br><span class="line">	map.put(<span class="string">"9"</span>, <span class="string">"6"</span>);</span><br><span class="line">	map.put(<span class="string">"1"</span>, <span class="string">"1"</span>);</span><br><span class="line">	map.put(<span class="string">"8"</span>, <span class="string">"8"</span>);</span><br><span class="line">	map.put(<span class="string">"0"</span>, <span class="string">"0"</span>);</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">int</span> result = <span class="number">0</span>;</span><br><span class="line">	result += dfs(<span class="string">""</span>, low, high, map);</span><br><span class="line">	result += dfs(<span class="string">"1"</span>, low, high, map);</span><br><span class="line">	result += dfs(<span class="string">"0"</span>, low, high, map);</span><br><span class="line">	result += dfs(<span class="string">"8"</span>, low, high, map);</span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line">	</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">dfs</span><span class="params">(String res, String low, String high, Map&lt;String, String&gt; map)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(res.length() &gt; high.length() || (res.length() == high.length() &amp;&amp; res.compareTo(high) &gt; <span class="number">0</span>)) </span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> result = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">if</span>((res.length() == low.length() &amp;&amp; res.compareTo(low) &gt;= <span class="number">0</span>)  || res.length() &gt; low.length()) </span><br><span class="line">		result = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">if</span>(res.length() &gt; <span class="number">1</span> &amp;&amp; res.charAt(<span class="number">0</span>) == <span class="string">'0'</span>)</span><br><span class="line">		result = <span class="number">0</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">for</span> (Map.Entry&lt;String, String&gt; entry : map.entrySet()) &#123;</span><br><span class="line">		result += dfs(entry.getKey() + res + entry.getValue(), low, high, map);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(# of results)</code>，空间复杂度<code>O(lengh(high))</code>。  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2019/02/26/lee-540/">LeetCode 540 Single Element in a Sorted Array</a></h1>
   
 
@@ -289,56 +345,6 @@ minStack.getMin();   --> Returns -2.
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2018/05/07/lee-128-longest-consecutive-sequence/">LeetCode 128 Longest Consecutive Sequence</a></h1>
-  
-
-      
-        <time datetime="2018-05-08T06:57:44.775Z">2018-05-07</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/longest-consecutive-sequence" target="_blank" rel="noopener">LeetCode 128 Longest Consecutive Sequence</a></strong></p>
-<p>Given an unsorted array of integers, find the length of the longest consecutive elements sequence.</p>
-<p>Your algorithm should run in O(<em>n</em>) complexity.</p>
-<p><strong>Example:</strong></p>
-<pre>**Input:** [100, 4, 200, 1, 3, 2]
-**Output:** 4
-**Explanation:** The longest consecutive elements sequence is `[1, 2, 3, 4]`. Therefore its length is 4.
-</pre>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给出一个未排序的整数数组，找出最长的连续元素序列的长度。<br>如： 给出[100, 4, 200, 1, 3, 2]，最长的连续元素序列是[1, 2, 3, 4]。返回它的长度：4。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是连通问题，如果用排序方法，很容易，但时间复杂度为O(nlogn)。考虑改进，因为连通集，容易想到HashMap，把每个元素加入到其中，<br>然后对每个元素进行相邻查找。相邻查找就是以此元素为中心，向上向下在Map查找，从而得到此元素的最大连续序列长度。查找过的元素<br>在Map中删除，以免重复计算。</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>加入set之后的元素不能再内循环中删除，因为外循环是遍历每一个数，可能会遍历到删除的数，正确做法是用map的value来记录是否访问过。</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">longestConsecutive</span><span class="params">(self, nums: List[int])</span> -&gt; int:</span></span><br><span class="line">	num_set = collections.Counter(nums)</span><br><span class="line">	res = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> n <span class="keyword">in</span> nums:</span><br><span class="line">		<span class="keyword">if</span> num_set[n] == <span class="number">0</span>:</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		max_len = <span class="number">1</span></span><br><span class="line">		num_set[n] = <span class="number">0</span></span><br><span class="line">		i = n + <span class="number">1</span></span><br><span class="line">		<span class="keyword">while</span> i <span class="keyword">in</span> num_set:</span><br><span class="line">			num_set[i] = <span class="number">0</span></span><br><span class="line">			max_len += <span class="number">1</span></span><br><span class="line">			i += <span class="number">1</span></span><br><span class="line">		i = n - <span class="number">1</span></span><br><span class="line">		<span class="keyword">while</span> i <span class="keyword">in</span> num_set:</span><br><span class="line">			num_set[i] = <span class="number">0</span></span><br><span class="line">			max_len += <span class="number">1</span></span><br><span class="line">			i -= <span class="number">1</span></span><br><span class="line">		res = max(res, max_len)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>Java中在for循环中不能修改hashSet，所以只能用HashMap且value存boolean替代。HashMap表示此Map还是否含有该元素。</li>
-</ol>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">longestConsecutive</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> result = <span class="number">0</span>;</span><br><span class="line">	HashMap&lt;Integer,Boolean&gt; hm = <span class="keyword">new</span> HashMap&lt;Integer,Boolean&gt;();</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i : nums)</span><br><span class="line">		hm.put(i, <span class="keyword">true</span>);</span><br><span class="line">	</span><br><span class="line">	Iterator it = hm.keySet().iterator();</span><br><span class="line">	<span class="keyword">while</span>(it.hasNext())&#123;</span><br><span class="line">		<span class="keyword">int</span> key = (<span class="keyword">int</span>)it.next();</span><br><span class="line">		<span class="keyword">int</span> i = key+<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">int</span> count = <span class="number">1</span>;</span><br><span class="line">		<span class="keyword">while</span>(hm.containsKey(i) &amp;&amp; hm.get(i))&#123;</span><br><span class="line">			count++;</span><br><span class="line">			hm.put(i, <span class="keyword">false</span>);</span><br><span class="line">			i++;</span><br><span class="line">		&#125;</span><br><span class="line">		i = key-<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">while</span>(hm.containsKey(i) &amp;&amp; hm.get(i))&#123;</span><br><span class="line">			count++;</span><br><span class="line">			hm.put(i, <span class="keyword">false</span>);</span><br><span class="line">			i--;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(count&gt;result)</span><br><span class="line">			result = count;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line">		</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>。</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -363,6 +369,10 @@ minStack.getMin();   --> Returns -2.
   <ul class="entry">
     
       <li>
+        <a href="/2022/02/16/leetcode-2034-stock-price-fluctuation/">LeetCode 2034 Stock Price Fluctuation</a>
+      </li>
+    
+      <li>
         <a href="/2022/02/16/leetcode-2128-remove-all-ones-with-row-and-column-flips/">LeetCode 2128 Remove All Ones With Row and Column Flips</a>
       </li>
     
@@ -378,10 +388,6 @@ minStack.getMin();   --> Returns -2.
         <a href="/2022/02/16/leetcode-2007-find-original-array-from-doubled-array/">LeetCode 2007 Find Original Array From Doubled Array</a>
       </li>
     
-      <li>
-        <a href="/2022/02/16/leetcode-1146-snapshot-array/">LeetCode 1146 Snapshot Array</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -392,7 +398,7 @@ minStack.getMin();   --> Returns -2.
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 14.17px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 14.17px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 17.08px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 13.75px;">Binary Tree</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10.42px;">Bit Manipulation</a> <a href="/tags/Bloomberg/" style="font-size: 10.42px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.92px;">Breadth-first Search</a> <a href="/tags/Citadel/" style="font-size: 10.83px;">Citadel</a> <a href="/tags/Classic/" style="font-size: 18.33px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.25px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.25px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 14.17px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.58px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 19.17px;">Facebook</a> <a href="/tags/Google/" style="font-size: 14.58px;">Google</a> <a href="/tags/Graph/" style="font-size: 12.92px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 13.33px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 17.08px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 14.17px;">Heap</a> <a href="/tags/Interactive/" style="font-size: 10px;">Interactive</a> <a href="/tags/Interviewer/" style="font-size: 13.33px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.25px;">Iterator</a> <a href="/tags/Karat/" style="font-size: 12.5px;">Karat</a> <a href="/tags/Knowledge-Base/" style="font-size: 16.67px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 15.42px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.5px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 18.33px;">Math</a> <a href="/tags/Matrix/" style="font-size: 15.83px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.25px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.83px;">Merge Sort</a> <a href="/tags/Microsoft/" style="font-size: 12.08px;">Microsoft</a> <a href="/tags/Mtrix/" style="font-size: 10px;">Mtrix</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 15.83px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.83px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.42px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 11.67px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.25px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.42px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 17.5px;">Stack</a> <a href="/tags/String/" style="font-size: 18.75px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.25px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 16.25px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.67px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.58px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.42px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.42px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
+    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 14.17px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 14.17px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 17.08px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 13.75px;">Binary Tree</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10.42px;">Bit Manipulation</a> <a href="/tags/Bloomberg/" style="font-size: 10.42px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.92px;">Breadth-first Search</a> <a href="/tags/Citadel/" style="font-size: 10.83px;">Citadel</a> <a href="/tags/Classic/" style="font-size: 18.33px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.25px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.25px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 14.17px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.58px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 19.17px;">Facebook</a> <a href="/tags/Google/" style="font-size: 15px;">Google</a> <a href="/tags/Graph/" style="font-size: 12.92px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 13.33px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 17.08px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 14.17px;">Heap</a> <a href="/tags/Interactive/" style="font-size: 10px;">Interactive</a> <a href="/tags/Interviewer/" style="font-size: 13.33px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.25px;">Iterator</a> <a href="/tags/Karat/" style="font-size: 12.5px;">Karat</a> <a href="/tags/Knowledge-Base/" style="font-size: 16.67px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 15.42px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.5px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 18.33px;">Math</a> <a href="/tags/Matrix/" style="font-size: 15.83px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.25px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.83px;">Merge Sort</a> <a href="/tags/Microsoft/" style="font-size: 12.08px;">Microsoft</a> <a href="/tags/Mtrix/" style="font-size: 10px;">Mtrix</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 15.83px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.83px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.42px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 11.67px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.25px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.42px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 17.5px;">Stack</a> <a href="/tags/String/" style="font-size: 18.75px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.25px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 16.25px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.67px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.58px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.42px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.42px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
   </div>
 </div>
 
