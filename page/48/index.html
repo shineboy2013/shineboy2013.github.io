@@ -53,6 +53,56 @@
     <header>
       
   
+    <h1 class="title"><a href="/2021/12/05/lee-1857/">LeetCode 1857 Largest Color Value in a Directed Graph</a></h1>
+  
+
+      
+        <time datetime="2021-12-05T22:15:04.326Z">2021-12-05</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/largest-color-value-in-a-directed-graph/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>There is a <strong>directed graph</strong> of <code>n</code> colored nodes and <code>m</code> edges. The nodes are numbered from <code>0</code> to <code>n - 1</code>.<br><br>You are given a string <code>colors</code> where <code>colors[i]</code> is a lowercase English letter representing the <strong>color</strong> of the <code>i&lt;sup&gt;th&lt;/sup&gt;</code> node in this graph (<strong>0-indexed</strong>). You are also given a 2D array <code>edges</code> where <code>edges[j] = [a&lt;sub&gt;j&lt;/sub&gt;, b&lt;sub&gt;j&lt;/sub&gt;]</code> indicates that there is a <strong>directed edge</strong> from node <code>a&lt;sub&gt;j&lt;/sub&gt;</code> to node <code>b&lt;sub&gt;j&lt;/sub&gt;</code>.<br><br>A valid <strong>path</strong> in the graph is a sequence of nodes <code>x&lt;sub&gt;1&lt;/sub&gt; -&gt; x&lt;sub&gt;2&lt;/sub&gt; -&gt; x&lt;sub&gt;3&lt;/sub&gt; -&gt; ... -&gt; x&lt;sub&gt;k&lt;/sub&gt;</code> such that there is a directed edge from <code>x&lt;sub&gt;i&lt;/sub&gt;</code> to <code>x&lt;sub&gt;i+1&lt;/sub&gt;</code> for every <code>1 &lt;= i &lt; k</code>. The <strong>color value</strong> of the path is the number of nodes that are colored the <strong>most frequently</strong> occurring color along that path.<br><br>Return <em>the <strong>largest color value</strong> of any valid path in the given graph, or</em> <code>-1</code> <em>if the graph contains a cycle</em>.<br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/04/21/leet1.png" alt=""><br><br><pre><strong>Input:</strong> colors = “abaca”, edges = [[0,1],[0,2],[2,3],[3,4]]<br><strong>Output:</strong> 3<br><strong>Explanation:</strong> The path 0 -&gt; 2 -&gt; 3 -&gt; 4 contains 3 nodes that are colored <code>&quot;a&quot; (red in the above image)</code>.<br></pre><br><br><strong>Example 2:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/04/21/leet2.png" alt=""><br><br><pre><strong>Input:</strong> colors = “a”, edges = [[0,0]]<br><strong>Output:</strong> -1<br><strong>Explanation:</strong> There is a cycle from 0 to 0.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>n == colors.length</code>
+</em>   <code>m == edges.length</code><br><em>   <code>1 &lt;= n &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code>
+</em>   <code>0 &lt;= m &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code><br><em>   <code>colors</code> consists of lowercase English letters.
+</em>   <code>0 &lt;= a&lt;sub&gt;j&lt;/sub&gt;, b&lt;sub&gt;j&lt;/sub&gt; &lt; n</code><br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个图，有n个节点，每个节点的颜色已知，用a-z表示，求所有不循环路径上同种颜色的最大节点数，若有循环返回-1.</p>
+<h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>拓扑排序 + DP  </p>
+<ol>
+<li>看到侦测循环考虑用拓扑排序  </li>
+<li>拓扑排序的同时，如果知道父亲节点有最大的同种颜色数，容易计算儿子的同种颜色数dp[child]<br>dp[child] = max(dp[parent]) for all the parents for the child<br>由于有26种颜色，扩展到最大的第i种颜色数<strong>dp[child][i]表示以child为结尾的路径上第i种颜色的累计最大节点数</strong>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dp[child][i] = max(dp[parent][i] + 1) if color[child] == color[parent] for all the immediate parents for the child, i = 1..26 </span><br><span class="line">			= max(dp[parent][i])     if color[child] != color[parent]</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>见到最值且跟图相关，就考虑用BFS，而且要侦测循环就要用拓扑排序。要记录父节点颜色的累计和，考虑用DP，DP跟颜色相关且颜色都是小写字母，也就是26种    </li>
+<li>递归式是<strong>所有直接父节点的最大值</strong>。因为若有两条路径到达child这个节点，路径1第a种颜色有2个，而路径上第a种颜色有5个。 </li>
+<li>计算dp值在知道边的始点和终点上，也就是入度数减一之前。 </li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">largestPathValue</span><span class="params">(self, colors: str, edges: List[List[int]])</span> -&gt; int:</span></span><br><span class="line">	graph = [[] <span class="keyword">for</span> _ <span class="keyword">in</span> range(len(colors))]</span><br><span class="line">	in_degree = [<span class="number">0</span>] * len(colors)</span><br><span class="line">	<span class="keyword">for</span> _edge <span class="keyword">in</span> edges:</span><br><span class="line">		graph[_edge[<span class="number">0</span>]].append(_edge[<span class="number">1</span>])</span><br><span class="line">		in_degree[_edge[<span class="number">1</span>]] += <span class="number">1</span></span><br><span class="line">	res = []</span><br><span class="line">	dp = [[<span class="number">0</span> <span class="keyword">for</span> _ <span class="keyword">in</span> range(<span class="number">26</span>)] <span class="keyword">for</span> _ <span class="keyword">in</span> range(len(colors))]</span><br><span class="line">	initial_nodes = [i <span class="keyword">for</span> i <span class="keyword">in</span> range(len(in_degree)) <span class="keyword">if</span> in_degree[i] == <span class="number">0</span>]</span><br><span class="line">	<span class="keyword">for</span> _node <span class="keyword">in</span> initial_nodes:</span><br><span class="line">		dp[_node][ord(colors[_node]) - ord(<span class="string">'a'</span>)] = <span class="number">1</span></span><br><span class="line">	queue = collections.deque(initial_nodes)</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.popleft()</span><br><span class="line">		res.append(node)</span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> graph[node]:</span><br><span class="line">			<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">26</span>):</span><br><span class="line">				dp[j][i] = max(dp[j][i], dp[node][i] + (<span class="number">1</span> <span class="keyword">if</span> ord(colors[j]) - ord(<span class="string">'a'</span>) == i <span class="keyword">else</span> <span class="number">0</span>)) <span class="comment"># remember max(dp[j][i]</span></span><br><span class="line">			in_degree[j] -= <span class="number">1</span></span><br><span class="line">			<span class="keyword">if</span> in_degree[j] == <span class="number">0</span>:</span><br><span class="line">				queue.append(j)</span><br><span class="line">	<span class="keyword">return</span> <span class="number">-1</span> <span class="keyword">if</span> len(colors) != len(res) <span class="keyword">else</span> max(map(max, dp))</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(V + E)</code>，空间复杂度<code>O(V + E)</code>  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2021/12/05/lee-354/">LeetCode 354 Russian Doll Envelopes</a></h1>
   
 
@@ -251,50 +301,6 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2021/12/05/lee-015/">LeetCode 015 3Sum</a></h1>
-  
-
-      
-        <time datetime="2021-12-05T19:09:01.704Z">2021-12-05</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/3sum/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>Given an integer array nums, return all the triplets <code>[nums[i], nums[j], nums[k]]</code> such that <code>i != j</code>, <code>i != k</code>, and <code>j != k</code>, and <code>nums[i] + nums[j] + nums[k] == 0</code>.<br><br>Notice that the solution set must not contain duplicate triplets.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> nums = [-1,0,1,2,-1,-4]<br><strong>Output:</strong> [[-1,-1,2],[-1,0,1]]<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> nums = []<br><strong>Output:</strong> []<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> nums = [0]<br><strong>Output:</strong> []<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>0 &lt;= nums.length &lt;= 3000</code>
-</em>   <code>-10&lt;sup&gt;5&lt;/sup&gt; &lt;= nums[i] &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code><br><br></div>
-
-
-<h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>N/A  </p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>先排序        </li>
-<li>结果要去重，用i, j, k指针比较前一个元素，若相等指针移动跳过，k是比较后一个元素  </li>
-<li>注意指针移动，等于target两指针都要移动，若与前一元素相等，相应指针移一位，要避免死循环  </li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">threeSum</span><span class="params">(self, nums: List[int])</span> -&gt; List[List[int]]:</span></span><br><span class="line">	nums.sort()</span><br><span class="line">	res = []</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(nums)):</span><br><span class="line">		<span class="keyword">if</span> i &gt; <span class="number">0</span> <span class="keyword">and</span> nums[i] == nums[i - <span class="number">1</span>]:</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		sub_res = self.two_sum(nums, i + <span class="number">1</span>, -nums[i])</span><br><span class="line">		<span class="keyword">for</span> li <span class="keyword">in</span> sub_res:</span><br><span class="line">			res.append([nums[i]] + li)</span><br><span class="line">	<span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">two_sum</span><span class="params">(self, nums, start, target)</span>:</span></span><br><span class="line">	j, k, res = start, len(nums) - <span class="number">1</span>, []</span><br><span class="line">	<span class="keyword">while</span> j &lt; k:</span><br><span class="line">		<span class="keyword">if</span> (j &gt; start <span class="keyword">and</span> nums[j] == nums[j - <span class="number">1</span>]) <span class="keyword">or</span> nums[j] + nums[k] &lt; target:</span><br><span class="line">			j += <span class="number">1</span></span><br><span class="line">		<span class="keyword">elif</span> (k &lt; len(nums) - <span class="number">1</span> <span class="keyword">and</span> nums[k] == nums[k + <span class="number">1</span>]) <span class="keyword">or</span> nums[j] + nums[k] &gt; target:</span><br><span class="line">			k -= <span class="number">1</span></span><br><span class="line">		<span class="keyword">elif</span> nums[j] + nums[k] == target:</span><br><span class="line">			res.append([nums[j], nums[k]])</span><br><span class="line">			j += <span class="number">1</span></span><br><span class="line">			k -= <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> List&lt;List&lt;Integer&gt;&gt; threeSum2(<span class="keyword">int</span>[] nums) &#123;</span><br><span class="line">	List&lt;List&lt;Integer&gt;&gt; re = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">	<span class="keyword">if</span>(nums == <span class="keyword">null</span> || nums.length == <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> re;</span><br><span class="line">	Arrays.sort(nums);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nums.length - <span class="number">2</span>; i++) &#123;</span><br><span class="line">		<span class="keyword">if</span>(i &gt; <span class="number">0</span> &amp;&amp; nums[i] == nums[i-<span class="number">1</span>])</span><br><span class="line">			<span class="keyword">continue</span>;</span><br><span class="line">		twoPointers(nums, i + <span class="number">1</span>, nums.length - <span class="number">1</span>, -nums[i], re);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> re;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">twoPointers</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> left, <span class="keyword">int</span> right, <span class="keyword">int</span> target, List&lt;List&lt;Integer&gt;&gt; re)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> leftOri = left, rightOri = right;</span><br><span class="line">	<span class="keyword">while</span>(left &lt; right) &#123;</span><br><span class="line">		<span class="keyword">if</span>(left &gt; leftOri &amp;&amp; nums[left] == nums[left-<span class="number">1</span>]) &#123;</span><br><span class="line">			left++;</span><br><span class="line">			<span class="keyword">continue</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(right &lt; rightOri &amp;&amp; nums[right] == nums[right + <span class="number">1</span>]) &#123;</span><br><span class="line">			right--;</span><br><span class="line">			<span class="keyword">continue</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">if</span>(nums[left] + nums[right] == target) </span><br><span class="line">			re.add(Arrays.asList(-target, nums[left++], nums[right--]));</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(nums[left] + nums[right] &lt; target)</span><br><span class="line">			left++;</span><br><span class="line">		<span class="keyword">else</span> </span><br><span class="line">			right--;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n^2)</code>，空间复杂度<code>O(1)</code>  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -319,6 +325,10 @@
   <ul class="entry">
     
       <li>
+        <a href="/2022/02/24/leetcode-432-all-oone-data-structure/">LeetCode 432 All O one Data Structure</a>
+      </li>
+    
+      <li>
         <a href="/2022/02/16/leetcode-2034-stock-price-fluctuation/">LeetCode 2034 Stock Price Fluctuation</a>
       </li>
     
@@ -334,10 +344,6 @@
         <a href="/2022/02/16/leetcode-833-find-and-replace-in-string/">LeetCode 833 Find And Replace in String</a>
       </li>
     
-      <li>
-        <a href="/2022/02/16/leetcode-2007-find-original-array-from-doubled-array/">LeetCode 2007 Find Original Array From Doubled Array</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -348,7 +354,7 @@
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 14.17px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 14.17px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 17.08px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 13.75px;">Binary Tree</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10.42px;">Bit Manipulation</a> <a href="/tags/Bloomberg/" style="font-size: 10.42px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.92px;">Breadth-first Search</a> <a href="/tags/Citadel/" style="font-size: 10.83px;">Citadel</a> <a href="/tags/Classic/" style="font-size: 18.33px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.25px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.25px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 14.17px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.58px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 19.17px;">Facebook</a> <a href="/tags/Google/" style="font-size: 15px;">Google</a> <a href="/tags/Graph/" style="font-size: 12.92px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 13.33px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 17.08px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 14.17px;">Heap</a> <a href="/tags/Interactive/" style="font-size: 10px;">Interactive</a> <a href="/tags/Interviewer/" style="font-size: 13.33px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.25px;">Iterator</a> <a href="/tags/Karat/" style="font-size: 12.5px;">Karat</a> <a href="/tags/Knowledge-Base/" style="font-size: 16.67px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 15.42px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.5px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 18.33px;">Math</a> <a href="/tags/Matrix/" style="font-size: 15.83px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.25px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.83px;">Merge Sort</a> <a href="/tags/Microsoft/" style="font-size: 12.08px;">Microsoft</a> <a href="/tags/Mtrix/" style="font-size: 10px;">Mtrix</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 15.83px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.83px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.42px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 11.67px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.25px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.42px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 17.5px;">Stack</a> <a href="/tags/String/" style="font-size: 18.75px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.25px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 16.25px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.67px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.58px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.42px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.42px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
+    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 14.17px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 14.17px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 17.08px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 13.75px;">Binary Tree</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10.42px;">Bit Manipulation</a> <a href="/tags/Bloomberg/" style="font-size: 10.42px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.92px;">Breadth-first Search</a> <a href="/tags/Citadel/" style="font-size: 10.83px;">Citadel</a> <a href="/tags/Classic/" style="font-size: 18.33px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.25px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.25px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 14.17px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.58px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 19.17px;">Facebook</a> <a href="/tags/Google/" style="font-size: 15px;">Google</a> <a href="/tags/Graph/" style="font-size: 12.92px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 13.33px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 17.08px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 14.17px;">Heap</a> <a href="/tags/Interactive/" style="font-size: 10px;">Interactive</a> <a href="/tags/Interviewer/" style="font-size: 13.33px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.25px;">Iterator</a> <a href="/tags/Karat/" style="font-size: 12.5px;">Karat</a> <a href="/tags/Knowledge-Base/" style="font-size: 16.67px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 15.42px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.92px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 18.33px;">Math</a> <a href="/tags/Matrix/" style="font-size: 15.83px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.25px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.83px;">Merge Sort</a> <a href="/tags/Microsoft/" style="font-size: 12.08px;">Microsoft</a> <a href="/tags/Mtrix/" style="font-size: 10px;">Mtrix</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 15.83px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.83px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.42px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 11.67px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.25px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.42px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 17.5px;">Stack</a> <a href="/tags/String/" style="font-size: 18.75px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.25px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 16.25px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.67px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.58px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.42px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.42px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
   </div>
 </div>
 

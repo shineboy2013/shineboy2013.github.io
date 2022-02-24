@@ -53,6 +53,54 @@
     <header>
       
   
+    <h1 class="title"><a href="/2021/12/25/lee-1268/">LeetCode 1268 Search Suggestions System</a></h1>
+  
+
+      
+        <time datetime="2021-12-25T09:02:37.829Z">2021-12-25</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/search-suggestions-system/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>You are given an array of strings <code>products</code> and a string <code>searchWord</code>.<br><br>Design a system that suggests at most three product names from <code>products</code> after each character of <code>searchWord</code> is typed. Suggested products should have common prefix with <code>searchWord</code>. If there are more than three products with a common prefix return the three lexicographically minimums products.<br><br>Return <em>a list of lists of the suggested products after each character of</em> <code>searchWord</code> <em>is typed</em>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> products = [“mobile”,”mouse”,”moneypot”,”monitor”,”mousepad”], searchWord = “mouse”<br><strong>Output:</strong> [<br>[“mobile”,”moneypot”,”monitor”],<br>[“mobile”,”moneypot”,”monitor”],<br>[“mouse”,”mousepad”],<br>[“mouse”,”mousepad”],<br>[“mouse”,”mousepad”]<br>]<br><strong>Explanation:</strong> products sorted lexicographically = [“mobile”,”moneypot”,”monitor”,”mouse”,”mousepad”]<br>After typing m and mo all products match and we show user [“mobile”,”moneypot”,”monitor”]<br>After typing mou, mous and mouse the system suggests [“mouse”,”mousepad”]<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> products = [“havana”], searchWord = “havana”<br><strong>Output:</strong> [[“havana”],[“havana”],[“havana”],[“havana”],[“havana”],[“havana”]]<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> products = [“bags”,”baggage”,”banner”,”box”,”cloths”], searchWord = “bags”<br><strong>Output:</strong> [[“baggage”,”bags”,”banner”],[“baggage”,”bags”,”banner”],[“baggage”,”bags”],[“bags”]]<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= products.length &lt;= 1000</code>
+</em>   <code>1 &lt;= products[i].length &lt;= 3000</code><br><em>   `1 &lt;= sum(products[i].length) &lt;= 2 </em> 10<sup>4</sup><code>*   All the strings of</code>products<code>are **unique**.
+*</code>products[i]<code>consists of lowercase English letters.
+*</code>1 &lt;= searchWord.length &lt;= 1000<code>*</code>searchWord` consists of lowercase English letters.<br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>实现搜索结果为3个autocomplete的功能</p>
+<h3 id="Prefix解题思路-推荐-："><a href="#Prefix解题思路-推荐-：" class="headerlink" title="Prefix解题思路(推荐)："></a><strong>Prefix解题思路(推荐)：</strong></h3><p>Prefix</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>用Trie，另一种思路是用prefix，此法采用prefix法，将所有单词按前缀加入到字典中     </li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">suggestedProducts</span><span class="params">(self, products: List[str], searchWord: str)</span> -&gt; List[List[str]]:</span></span><br><span class="line">	products.sort()</span><br><span class="line">	prefix_dict = collections.defaultdict(list)</span><br><span class="line">	<span class="keyword">for</span> word <span class="keyword">in</span> products:</span><br><span class="line">		<span class="keyword">for</span> i <span class="keyword">in</span> range(len(word)):</span><br><span class="line">			prefix = word[:i + <span class="number">1</span>]</span><br><span class="line">			<span class="keyword">if</span> len(prefix_dict[prefix]) &lt; <span class="number">3</span>:</span><br><span class="line">				prefix_dict[prefix].append(word)</span><br><span class="line">	res = []</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(searchWord)):</span><br><span class="line">		prefix = searchWord[:i + <span class="number">1</span>]</span><br><span class="line">		res.append(prefix_dict[prefix])</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nL1 + L2)</code>，空间复杂度<code>O(nL1)</code>, L1为单词列表中最长的长度，L2为搜索单词长度，n为单词个数  </p>
+<hr>
+<h3 id="Trie-DFS算法II解题思路："><a href="#Trie-DFS算法II解题思路：" class="headerlink" title="Trie + DFS算法II解题思路："></a><strong>Trie + DFS算法II解题思路：</strong></h3><p>建Trie，然后根据搜索的前缀定位到Trie节点，然后对此节点做DFS找到3个单词，因为DFS和字母顺序是一致的，所以DFS可行<br>具体参考Leetcode solution</p>
+<hr>
+<h3 id="Two-pointers算法III解题思路："><a href="#Two-pointers算法III解题思路：" class="headerlink" title="Two pointers算法III解题思路："></a><strong>Two pointers算法III解题思路：</strong></h3><p>先排序，用双指针相向搜索，根据搜索单词的每一个字母，不断收缩搜索范围，左指针和右指针之间即为满足条件的结果。每轮将左指针往后三个结果加到结果集<br>具体参考Leetcode discussion  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2021/12/24/lee-735/">LeetCode 735 Asteroid Collision</a></h1>
   
 
@@ -246,52 +294,6 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2021/12/24/lee-362/">LeetCode 362 Design Hit Counter</a></h1>
-  
-
-      
-        <time datetime="2021-12-24T19:08:15.516Z">2021-12-24</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/design-hit-counter/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>Design a hit counter which counts the number of hits received in the past <code>5</code> minutes (i.e., the past <code>300</code> seconds).<br><br>Your system should accept a <code>timestamp</code> parameter (<strong>in seconds</strong> granularity), and you may assume that calls are being made to the system in chronological order (i.e., <code>timestamp</code> is monotonically increasing). Several hits may arrive roughly at the same time.<br><br>Implement the <code>HitCounter</code> class:<br><br><em>   <code>HitCounter()</code> Initializes the object of the hit counter system.
-</em>   <code>void hit(int timestamp)</code> Records a hit that happened at <code>timestamp</code> (<strong>in seconds</strong>). Several hits may happen at the same <code>timestamp</code>.<br><em>   <code>int getHits(int timestamp)</code> Returns the number of hits in the past 5 minutes from <code>timestamp</code> (i.e., the past <code>300</code> seconds).<br><br><strong>Example 1:</strong><br><br><pre><strong>Input</strong><br>[“HitCounter”, “hit”, “hit”, “hit”, “getHits”, “hit”, “getHits”, “getHits”]<br>[[], [1], [2], [3], [4], [300], [300], [301]]<br><strong>Output</strong><br>[null, null, null, null, 3, null, 4, 3]<br><br><strong>Explanation</strong><br>HitCounter hitCounter = new HitCounter();<br>hitCounter.hit(1);       // hit at timestamp 1.<br>hitCounter.hit(2);       // hit at timestamp 2.<br>hitCounter.hit(3);       // hit at timestamp 3.<br>hitCounter.getHits(4);   // get hits at timestamp 4, return 3.<br>hitCounter.hit(300);     // hit at timestamp 300.<br>hitCounter.getHits(300); // get hits at timestamp 300, return 4.<br>hitCounter.getHits(301); // get hits at timestamp 301, return 3.<br></pre><br><br><strong>Constraints:</strong>
-
-</em>   <code>1 &lt;= timestamp &lt;= 2 * 10&lt;sup&gt;9&lt;/sup&gt;</code><br><em>   All the calls are being made to the system in chronological order (i.e., <code>timestamp</code> is monotonically increasing).
-</em>   At most <code>300</code> calls will be made to <code>hit</code> and <code>getHits</code>.<br><br><strong>Follow up:</strong> What if the number of hits per second could be huge? Does your design scale?<br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>设计统计hits系统。题目要求：同一个时间可以有多个hits，hit是按时间顺序的。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>用一个固定大小为300的数组来记录timestamp和对应的hits的总数</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>题目要求：同一个时间可以有多个hits，hit是按时间顺序的。所以固定数组只要比较现在的timestamp是否和last_timestamp一样，不是的话reset hit。用<strong>循环数组</strong>记录   </li>
-<li>getHist是统计300以内（<strong>不包括300</strong>）的hit数。</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">HitCounter</span><span class="params">(TestCases)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.hits = [(<span class="number">0</span>, <span class="number">0</span>)] * <span class="number">300</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">hit</span><span class="params">(self, timestamp: int)</span> -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        last_timestamp, count = self.hits[timestamp % <span class="number">300</span>]</span><br><span class="line">        <span class="keyword">if</span> last_timestamp <span class="keyword">and</span> timestamp != last_timestamp:</span><br><span class="line">            self.hits[timestamp % <span class="number">300</span>] = (timestamp, <span class="number">0</span>)</span><br><span class="line">            count = <span class="number">0</span></span><br><span class="line">        count += <span class="number">1</span></span><br><span class="line">        self.hits[timestamp % <span class="number">300</span>] = (timestamp, count)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">getHits</span><span class="params">(self, timestamp: int)</span> -&gt; int:</span></span><br><span class="line">        res = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> t, count <span class="keyword">in</span> self.hits:</span><br><span class="line">            <span class="keyword">if</span> t <span class="keyword">and</span> timestamp - t &lt; <span class="number">300</span>:</span><br><span class="line">                res += count</span><br><span class="line">        <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>hit时间复杂度为<code>O(1)</code>，getHits时间复杂度为<code>O(1)</code>，空间复杂度<code>O(1)</code>  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -316,6 +318,10 @@
   <ul class="entry">
     
       <li>
+        <a href="/2022/02/24/leetcode-432-all-oone-data-structure/">LeetCode 432 All O one Data Structure</a>
+      </li>
+    
+      <li>
         <a href="/2022/02/16/leetcode-2034-stock-price-fluctuation/">LeetCode 2034 Stock Price Fluctuation</a>
       </li>
     
@@ -331,10 +337,6 @@
         <a href="/2022/02/16/leetcode-833-find-and-replace-in-string/">LeetCode 833 Find And Replace in String</a>
       </li>
     
-      <li>
-        <a href="/2022/02/16/leetcode-2007-find-original-array-from-doubled-array/">LeetCode 2007 Find Original Array From Doubled Array</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -345,7 +347,7 @@
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 14.17px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 14.17px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 17.08px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 13.75px;">Binary Tree</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10.42px;">Bit Manipulation</a> <a href="/tags/Bloomberg/" style="font-size: 10.42px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.92px;">Breadth-first Search</a> <a href="/tags/Citadel/" style="font-size: 10.83px;">Citadel</a> <a href="/tags/Classic/" style="font-size: 18.33px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.25px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.25px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 14.17px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.58px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 19.17px;">Facebook</a> <a href="/tags/Google/" style="font-size: 15px;">Google</a> <a href="/tags/Graph/" style="font-size: 12.92px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 13.33px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 17.08px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 14.17px;">Heap</a> <a href="/tags/Interactive/" style="font-size: 10px;">Interactive</a> <a href="/tags/Interviewer/" style="font-size: 13.33px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.25px;">Iterator</a> <a href="/tags/Karat/" style="font-size: 12.5px;">Karat</a> <a href="/tags/Knowledge-Base/" style="font-size: 16.67px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 15.42px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.5px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 18.33px;">Math</a> <a href="/tags/Matrix/" style="font-size: 15.83px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.25px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.83px;">Merge Sort</a> <a href="/tags/Microsoft/" style="font-size: 12.08px;">Microsoft</a> <a href="/tags/Mtrix/" style="font-size: 10px;">Mtrix</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 15.83px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.83px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.42px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 11.67px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.25px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.42px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 17.5px;">Stack</a> <a href="/tags/String/" style="font-size: 18.75px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.25px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 16.25px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.67px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.58px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.42px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.42px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
+    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 14.17px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 14.17px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 17.08px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 13.75px;">Binary Tree</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10.42px;">Bit Manipulation</a> <a href="/tags/Bloomberg/" style="font-size: 10.42px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.92px;">Breadth-first Search</a> <a href="/tags/Citadel/" style="font-size: 10.83px;">Citadel</a> <a href="/tags/Classic/" style="font-size: 18.33px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.25px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.25px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 14.17px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.58px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 19.17px;">Facebook</a> <a href="/tags/Google/" style="font-size: 15px;">Google</a> <a href="/tags/Graph/" style="font-size: 12.92px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 13.33px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 17.08px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 14.17px;">Heap</a> <a href="/tags/Interactive/" style="font-size: 10px;">Interactive</a> <a href="/tags/Interviewer/" style="font-size: 13.33px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.25px;">Iterator</a> <a href="/tags/Karat/" style="font-size: 12.5px;">Karat</a> <a href="/tags/Knowledge-Base/" style="font-size: 16.67px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 15.42px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.92px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 18.33px;">Math</a> <a href="/tags/Matrix/" style="font-size: 15.83px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.25px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.83px;">Merge Sort</a> <a href="/tags/Microsoft/" style="font-size: 12.08px;">Microsoft</a> <a href="/tags/Mtrix/" style="font-size: 10px;">Mtrix</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 15.83px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.83px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.42px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 11.67px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.25px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.42px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 17.5px;">Stack</a> <a href="/tags/String/" style="font-size: 18.75px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.25px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 16.25px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.67px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.58px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.42px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.42px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
   </div>
 </div>
 
