@@ -53,6 +53,82 @@
     <header>
       
   
+    <h1 class="title"><a href="/2021/11/14/lee-378/">LeetCode 378 Kth Smallest Element in a Sorted Matrix</a></h1>
+  
+
+      
+        <time datetime="2021-11-14T10:06:23.335Z">2021-11-14</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/kth-smallest-element-in-a-sorted-matrix/" target="_blank" rel="noopener">LeetCode 378 Kth Smallest Element in a Sorted Matrix</a></strong></p>
+<p>Given an <code>n x n</code> <code>matrix</code> where each of the rows and columns is sorted in ascending order, return <em>the</em> <code>k&lt;sup&gt;th&lt;/sup&gt;</code> <em>smallest element in the matrix</em>.</p>
+<p>Note that it is the <code>k&lt;sup&gt;th&lt;/sup&gt;</code> smallest element <strong>in the sorted order</strong>, not the <code>k&lt;sup&gt;th&lt;/sup&gt;</code> <strong>distinct</strong> element.</p>
+<p>You must find a solution with complexity better than <code>O(n&lt;sup&gt;2&lt;/sup&gt;)</code>.</p>
+<p><strong>Example 1:</strong></p>
+<pre>**Input:** matrix = [[1,5,9],[10,11,13],[12,13,15]], k = 8
+**Output:** 13
+**Explanation:** The elements in the matrix are [1,5,9,10,11,12,13,<u>**13**</u>,15], and the 8<sup>th</sup> smallest number is 13
+</pre>
+
+<p><strong>Example 2:</strong></p>
+<pre>**Input:** matrix = [[-5]], k = 1
+**Output:** -5
+</pre>
+
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>n == matrix.length == matrix[i].length</code></li>
+<li><code>1 &lt;= n &lt;= 300</code></li>
+<li><code>-10&lt;sup&gt;9&lt;/sup&gt; &lt;= matrix[i][j] &lt;= 10&lt;sup&gt;9&lt;/sup&gt;</code></li>
+<li>All the rows and columns of <code>matrix</code> are <strong>guaranteed</strong> to be sorted in <strong>non-decreasing order</strong>.</li>
+<li><code>1 &lt;= k &lt;= n&lt;sup&gt;2&lt;/sup&gt;</code></li>
+</ul>
+<p><strong>Follow up:</strong> Could you solve the problem in <code>O(n)</code> time complexity?</p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>按行按列有序矩阵中，找第k大的数。  </p>
+<h3 id="Heap解题思路-推荐-："><a href="#Heap解题思路-推荐-：" class="headerlink" title="Heap解题思路(推荐)："></a><strong>Heap解题思路(推荐)：</strong></h3><p>见Heap知识点。 分别将(value, i, j)放入heap中，取出堆顶元素后，去(i, j)相邻右和下节点放入堆中。这个方法容易实现，所以推荐。</p>
+<p>LeetCode 074 Search a 2D Matrix 每一行有序，下一行的首元素大于上一行的尾元素 + 找target<br>LeetCode 240 Search a 2D Matrix II 按行按列有序 + 找target<br>LeetCode 378 Kth Smallest Element in a Sorted Matrix 按行按列有序 + 找第k大<br>矩阵结构方面，第一道每一行都是独立，所以可以独立地按行按列做二分法<br>后两道，矩阵二维连续，所以解法都是类BFS，从某个点开始，然后比较它相邻的两个点。出发点不同，第二道在近似矩阵中点(右上角或左下角)，第三道在左上角出发。</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>将(value, i, j)放入heap中</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">kthSmallest4</span><span class="params">(self, matrix: List[List[int]], k: int)</span> -&gt; int:</span></span><br><span class="line">	OFFSETS = [(<span class="number">0</span>, <span class="number">1</span>), (<span class="number">1</span>, <span class="number">0</span>)]</span><br><span class="line">	heap = [(matrix[<span class="number">0</span>][<span class="number">0</span>], <span class="number">0</span>, <span class="number">0</span>)]</span><br><span class="line">	visited = set([(<span class="number">0</span>, <span class="number">0</span>)])</span><br><span class="line">	<span class="keyword">while</span> heap:</span><br><span class="line">		node = heapq.heappop(heap)</span><br><span class="line">		k -= <span class="number">1</span></span><br><span class="line">		<span class="keyword">if</span> k == <span class="number">0</span>:</span><br><span class="line">			<span class="keyword">return</span> node[<span class="number">0</span>]</span><br><span class="line">		<span class="keyword">for</span> _dx, _dy <span class="keyword">in</span> OFFSETS:</span><br><span class="line">			x, y = node[<span class="number">1</span>] + _dx, node[<span class="number">2</span>] + _dy</span><br><span class="line">			<span class="keyword">if</span> x &lt; <span class="number">0</span> <span class="keyword">or</span> x &gt;= len(matrix) <span class="keyword">or</span> y &lt; <span class="number">0</span> <span class="keyword">or</span> y &gt;= len(matrix[<span class="number">0</span>]) <span class="keyword">or</span> (x, y) <span class="keyword">in</span> visited:</span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			heapq.heappush(heap, (matrix[x][y], x, y))</span><br><span class="line">			visited.add((x, y))</span><br><span class="line">	<span class="keyword">return</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>for循环是k个，每次循环理论上产生2个节点，所以总共是2^k个，复杂度为<code>O(klog(<em>2</em><sup>k</sup>)</code>, 也就是<code>O(<em>k</em><sup>2</sup>)</code><br>由于矩阵最多n^2个元素，所以复杂度为<code>O(klog(<em>n</em><sup>2</sup>)</code><br>所以时间复杂度为<code>O(klogn)</code>，空间复杂度<code>O(<em>n</em><sup>2</sup>)</code>。</p>
+<hr>
+<h3 id="数值二分法算法II解题思路："><a href="#数值二分法算法II解题思路：" class="headerlink" title="数值二分法算法II解题思路："></a><strong>数值二分法算法II解题思路：</strong></h3><p>第k的数运用数值二分法  </p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><ol>
+<li>数值二分法  </li>
+<li>难点在于统计小于mid的个数。若遍历全矩阵比较慢，采用按行遍历，每行再用二分法找到小于mid的数的个数，再求和。  </li>
+</ol>
+<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>注意k–, k从1开始</li>
+<li>每行统计小于mid个数用find smaller的模板。返回值要加1，因为下标转换成个数。     </li>
+</ol>
+<h3 id="Python代码：-1"><a href="#Python代码：-1" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">kthSmallest</span><span class="params">(self, matrix: List[List[int]], k: int)</span> -&gt; int:</span></span><br><span class="line">	k -= <span class="number">1</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> matrix <span class="keyword">or</span> <span class="keyword">not</span> matrix[<span class="number">0</span>]:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line">	N, M = len(matrix), len(matrix[<span class="number">0</span>])</span><br><span class="line">	start, end, epsilon = matrix[<span class="number">0</span>][<span class="number">0</span>], matrix[N - <span class="number">1</span>][M - <span class="number">1</span>], <span class="number">0.5</span></span><br><span class="line">	<span class="keyword">while</span> end - start &gt; epsilon:</span><br><span class="line">		mid = start + (end - start) / <span class="number">2</span></span><br><span class="line">		count = sum([self.get_count(matrix[i], mid) <span class="keyword">for</span> i <span class="keyword">in</span> range(N)])</span><br><span class="line">		<span class="keyword">if</span> k &lt; count:</span><br><span class="line">			end = mid</span><br><span class="line">		<span class="keyword">elif</span> k &gt; count:</span><br><span class="line">			start = mid</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			start = mid</span><br><span class="line">	<span class="keyword">return</span> math.floor(end)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_count</span><span class="params">(self, nums: List[int], target: float)</span> -&gt; int:</span></span><br><span class="line">	start, end = <span class="number">0</span>, len(nums) - <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> start + <span class="number">1</span> &lt; end:</span><br><span class="line">		mid = start + (end - start) // <span class="number">2</span></span><br><span class="line">		<span class="keyword">if</span> target &gt; nums[mid]:</span><br><span class="line">			start = mid</span><br><span class="line">		<span class="keyword">elif</span> target &lt; nums[mid]:</span><br><span class="line">			end = mid</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			end = mid</span><br><span class="line">	<span class="keyword">if</span> nums[end] &lt; target:</span><br><span class="line">		<span class="keyword">return</span> end + <span class="number">1</span></span><br><span class="line">	<span class="keyword">if</span> nums[start] &lt; target:</span><br><span class="line">		<span class="keyword">return</span> start + <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span></span><br></pre></td></tr></table></figure>
+<p>用bisect优化  </p>
+<h3 id="Python代码：-2"><a href="#Python代码：-2" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">kthSmallest</span><span class="params">(self, matrix: List[List[int]], k: int)</span> -&gt; int:</span></span><br><span class="line">	k -= <span class="number">1</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> matrix <span class="keyword">or</span> <span class="keyword">not</span> matrix[<span class="number">0</span>]:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line">	N, M = len(matrix), len(matrix[<span class="number">0</span>])</span><br><span class="line">	start, end, epsilon = matrix[<span class="number">0</span>][<span class="number">0</span>], matrix[N - <span class="number">1</span>][M - <span class="number">1</span>], <span class="number">0.5</span></span><br><span class="line">	<span class="keyword">while</span> end - start &gt; epsilon:</span><br><span class="line">		mid = start + (end - start) / <span class="number">2</span></span><br><span class="line">		count = sum([bisect.bisect(matrix[i], mid) + <span class="number">1</span> <span class="keyword">for</span> i <span class="keyword">in</span> range(N)])</span><br><span class="line">		<span class="keyword">if</span> k &lt; count:</span><br><span class="line">			end = mid</span><br><span class="line">		<span class="keyword">elif</span> k &gt; count:</span><br><span class="line">			start = mid</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			start = mid</span><br><span class="line">	<span class="keyword">return</span> math.floor(end)</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>while循环有log[(max - min)/epsilon]个，假设数字平均分布，复杂度是log(n), 每个循环按每行(n行)统计小于mid的个数，<br>每次统计调用get_count用了log(n)，<br>所以总时间复杂度为<code>O(log(n) * nlogn)</code>，空间复杂度<code>O(1)</code>。</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2021/11/14/lee-2073/">LeetCode 2073 Time Needed to Buy Tickets</a></h1>
   
 
@@ -273,46 +349,6 @@ Since the researcher has 3 papers with at least 3 citations each and the remaini
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2021/10/30/stack/">Stack</a></h1>
-  
-
-      
-        <time datetime="2021-10-30T08:10:59.930Z">2021-10-30</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>定义： 栈里元素维持由栈底到栈顶从大到小的顺序叫递减栈。跟最小堆一样，递减栈的<strong>栈首元素最小</strong>。<br><img src="/images/stack.png" alt="">  </p>
-<p>反之是递增栈，不过此法因为用递减栈比较多，所以统称递减栈。通常是将下标而不是值放入到栈中，这样还可以知道元素间的距离。  </p>
-<h3 id="应用："><a href="#应用：" class="headerlink" title="应用："></a><strong>应用：</strong></h3><ol>
-<li>数组不能打乱顺序且求极值</li>
-</ol>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>跟最小堆一样，当元素大于栈顶元素的时候才倒逼栈内元素出栈。    </li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">stack = []</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(len(li)):</span><br><span class="line">	<span class="keyword">while</span> stack <span class="keyword">and</span> li[i] &gt; li[stack[<span class="number">-1</span>]]:</span><br><span class="line">		index = stack.pop()</span><br><span class="line"></span><br><span class="line">	stack.append(i)</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>。</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -337,6 +373,10 @@ Since the researcher has 3 papers with at least 3 citations each and the remaini
   <ul class="entry">
     
       <li>
+        <a href="/2022/03/01/leetcode-772-basic-calculator-iii/">LeetCode 772 Basic Calculator III</a>
+      </li>
+    
+      <li>
         <a href="/2022/02/24/leetcode-432-all-oone-data-structure/">LeetCode 432 All O one Data Structure</a>
       </li>
     
@@ -350,10 +390,6 @@ Since the researcher has 3 papers with at least 3 citations each and the remaini
     
       <li>
         <a href="/2022/02/16/leetcode-843-guess-the-word/">LeetCode 843 Guess the Word</a>
-      </li>
-    
-      <li>
-        <a href="/2022/02/16/leetcode-833-find-and-replace-in-string/">LeetCode 833 Find And Replace in String</a>
       </li>
     
   </ul>

@@ -53,6 +53,50 @@
     <header>
       
   
+    <h1 class="title"><a href="/2022/01/15/lee-076/">LeetCode 076 Minimum Window Substring</a></h1>
+  
+
+      
+        <time datetime="2022-01-15T22:12:18.658Z">2022-01-15</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/minimum-window-substring/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>Given two strings <code>s</code> and <code>t</code> of lengths <code>m</code> and <code>n</code> respectively, return <em>the <strong>minimum window substring</strong> of</em> <code>s</code> <em>such that every character in</em> <code>t</code> <em>(<strong>including duplicates</strong>) is included in the window. If there is no such substring__, return the empty string</em> <code>&quot;&quot;</code><em>.</em><br><br>The testcases will be generated such that the answer is <strong>unique</strong>.<br><br>A <strong>substring</strong> is a contiguous sequence of characters within the string.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> s = “ADOBECODEBANC”, t = “ABC”<br><strong>Output:</strong> “BANC”<br><strong>Explanation:</strong> The minimum window substring “BANC” includes ‘A’, ‘B’, and ‘C’ from string t.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> s = “a”, t = “a”<br><strong>Output:</strong> “a”<br><strong>Explanation:</strong> The entire string s is the minimum window.<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> s = “a”, t = “aa”<br><strong>Output:</strong> “”<br><strong>Explanation:</strong> Both ‘a’s from t must be included in the window.<br>Since the largest window of s only has one ‘a’, return empty string.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>m == s.length</code>
+</em>   <code>n == t.length</code><br><em>   <code>1 &lt;= m, n &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code>
+</em>   <code>s</code> and <code>t</code> consist of uppercase and lowercase English letters.<br><br><strong>Follow up:</strong> Could you find an algorithm that runs in <code>O(m + n)</code> time?</div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>最短摘要：给定s和t两个字符串，求在s中包含所有t的字符的最短子串。这个结果可以包含不在t的字符，某个字符数量也可以多于t中的字符但不能少于。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>提到window substring就用滑动窗口或者同向双指针。</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>用同向双指针模板。<strong>用map来统计t的字符频率，用unique_count统计满足条件唯一字符个数。while的条件为unique_count达到了map的大小</strong>。 </li>
+<li>while里面的统计与while外面的统计本质一样，但相反。若s中某字符多于s中的，map为负值，left指针右移时，负值会变回正值。</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">minWindow</span><span class="params">(self, s: str, t: str)</span> -&gt; str:</span></span><br><span class="line">	t_char_to_count = collections.Counter(t)</span><br><span class="line">	left, unique_count, min_len, res = <span class="number">0</span>, <span class="number">0</span>, float(<span class="string">'inf'</span>), <span class="string">''</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(s)):</span><br><span class="line">		<span class="keyword">if</span> s[i] <span class="keyword">in</span> t_char_to_count:</span><br><span class="line">			t_char_to_count[s[i]] -= <span class="number">1</span></span><br><span class="line">			<span class="keyword">if</span> t_char_to_count[s[i]] == <span class="number">0</span>:</span><br><span class="line">				unique_count += <span class="number">1</span></span><br><span class="line">		<span class="keyword">while</span> unique_count == len(t_char_to_count):</span><br><span class="line">			<span class="keyword">if</span> i - left + <span class="number">1</span> &lt; min_len:</span><br><span class="line">				min_len = i - left + <span class="number">1</span></span><br><span class="line">				res = s[left:i + <span class="number">1</span>]</span><br><span class="line">			<span class="keyword">if</span> s[left] <span class="keyword">in</span> t_char_to_count:</span><br><span class="line">				t_char_to_count[s[left]] += <span class="number">1</span></span><br><span class="line">				<span class="keyword">if</span> t_char_to_count[s[left]] &gt; <span class="number">0</span>:</span><br><span class="line">					unique_count -= <span class="number">1</span></span><br><span class="line">			left += <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(m)</code>, n和m分别为s和t的长度  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2022/01/15/lee-073/">LeetCode 073 Set Matrix Zeroes</a></h1>
   
 
@@ -232,49 +276,6 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2022/01/05/lee-062/">LeetCode 062 Unique Paths</a></h1>
-  
-
-      
-        <time datetime="2022-01-05T11:14:56.806Z">2022-01-05</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/unique-paths/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>There is a robot on an <code>m x n</code> grid. The robot is initially located at the <strong>top-left corner</strong> (i.e., <code>grid[0][0]</code>). The robot tries to move to the <strong>bottom-right corner</strong> (i.e., <code>grid[m - 1][n - 1]</code>). The robot can only move either down or right at any point in time.<br><br>Given the two integers <code>m</code> and <code>n</code>, return <em>the number of possible unique paths that the robot can take to reach the bottom-right corner</em>.<br><br>The test cases are generated so that the answer will be less than or equal to <code>2 * 10&lt;sup&gt;9&lt;/sup&gt;</code>.<br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2018/10/22/robot_maze.png" alt=""><br><br><pre><strong>Input:</strong> m = 3, n = 7<br><strong>Output:</strong> 28<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> m = 3, n = 2<br><strong>Output:</strong> 3<br><strong>Explanation:</strong> From the top-left corner, there are a total of 3 ways to reach the bottom-right corner:<br>1. Right -&gt; Down -&gt; Down<br>2. Down -&gt; Down -&gt; Right<br>3. Down -&gt; Right -&gt; Down<br></pre><br><br><strong>Constraints:</strong><br><br>*   <code>1 &lt;= m, n &lt;= 100</code><br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求矩阵路径总数</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>求个数用DP，递归式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dp[i][j] = dp[i-1][j] + dp[i][j-1]</span><br></pre></td></tr></table></figure></p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>初始值dp[1] = 1而不是dp[0] = 1因为第二行的第一格不能加左边的虚拟格=1</li>
-<li>range(m)不是range(len(m))</li>
-<li>优化空间用一维</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">uniquePaths</span><span class="params">(self, m: int, n: int)</span> -&gt; int:</span></span><br><span class="line">	dp = [<span class="number">0</span>] * (n + <span class="number">1</span>)</span><br><span class="line">	dp[<span class="number">1</span>] = <span class="number">1</span> <span class="comment"># remember not dp[0] = 1</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(m): <span class="comment"># remember no len(m)</span></span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">1</span>, len(dp)):</span><br><span class="line">			dp[j] += dp[j - <span class="number">1</span>]</span><br><span class="line">	<span class="keyword">return</span> dp[<span class="number">-1</span>]</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n<sup>2</sup>)</code>，空间复杂度<code>O(n<sup>2</sup>)</code> </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -299,6 +300,10 @@
   <ul class="entry">
     
       <li>
+        <a href="/2022/03/01/leetcode-772-basic-calculator-iii/">LeetCode 772 Basic Calculator III</a>
+      </li>
+    
+      <li>
         <a href="/2022/02/24/leetcode-432-all-oone-data-structure/">LeetCode 432 All O one Data Structure</a>
       </li>
     
@@ -312,10 +317,6 @@
     
       <li>
         <a href="/2022/02/16/leetcode-843-guess-the-word/">LeetCode 843 Guess the Word</a>
-      </li>
-    
-      <li>
-        <a href="/2022/02/16/leetcode-833-find-and-replace-in-string/">LeetCode 833 Find And Replace in String</a>
       </li>
     
   </ul>

@@ -53,6 +53,52 @@
     <header>
       
   
+    <h1 class="title"><a href="/2022/02/06/leetcode-549-binary-tree-longest-consecutive-sequence-ii/">LeetCode 549 Binary Tree Longest Consecutive Sequence II</a></h1>
+  
+
+      
+        <time datetime="2022-02-07T07:51:56.353Z">2022-02-06</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/binary-tree-longest-consecutive-sequence-ii/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>Given the <code>root</code> of a binary tree, return <em>the length of the longest consecutive path in the tree</em>.<br><br>A consecutive path is a path where the values of the consecutive nodes in the path differ by one. This path can be either increasing or decreasing.<br><br><em>   For example, <code>[1,2,3,4]</code> and <code>[4,3,2,1]</code> are both considered valid, but the path <code>[1,2,4,3]</code> is not valid.<br><br>On the other hand, the path can be in the child-Parent-child order, where not necessarily be parent-child order.<br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/03/14/consec2-1-tree.jpg" alt=""><br><br><pre><strong>Input:</strong> root = [1,2,3]<br><strong>Output:</strong> 2<br><strong>Explanation:</strong> The longest consecutive path is [1, 2] or [2, 1].<br></pre><br><br><strong>Example 2:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/03/14/consec2-2-tree.jpg" alt=""><br><br><pre><strong>Input:</strong> root = [2,1,3]<br><strong>Output:</strong> 3<br><strong>Explanation:</strong> The longest consecutive path is [1, 2, 3] or [3, 2, 1].<br></pre><br><br><strong>Constraints:</strong>
+
+</em>   The number of nodes in the tree is in the range <code>[1, 3 * 10&lt;sup&gt;4&lt;/sup&gt;]</code>.<br><em>   `-3 </em> 10<sup>4</sup> &lt;= Node.val &lt;= 3 * 10<sup>4</sup>`<br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求任意节点到另一个节点的最长连续数列的长度(由小到大)</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>类似于LeetCode 298 Binary Tree Longest Consecutive Sequence，不过由于父亲到儿子可能递增或递减，所以DFS返回值也返回递增和递减的长度</p>
+<p>LeetCode 298 Binary Tree Longest Consecutive Sequence 父亲到儿子由小到大<br>LeetCode 549 Binary Tree Longest Consecutive Sequence II 任一节点到另一个节点由小到大</p>
+<p>类似于LeetCode 124 Binary Tree Maximum Path Sum，有四种情况：自己，自己+左，自己+右，左+右</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>DFS返回值也返回递增和递减的长度</li>
+<li>类似于LeetCode 124 Binary Tree Maximum Path Sum，有四种情况：自己，自己+左，自己+右，左+右</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">longestConsecutive</span><span class="params">(self, root: TreeNode)</span> -&gt; int:</span></span><br><span class="line">	max_len = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">dfs</span><span class="params">(root)</span>:</span></span><br><span class="line">		<span class="keyword">if</span> <span class="keyword">not</span> root:</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>, <span class="number">0</span>  <span class="comment"># (increasing, decreasing) from root</span></span><br><span class="line">		<span class="keyword">nonlocal</span> max_len</span><br><span class="line">		inc = desc = <span class="number">1</span></span><br><span class="line">		lpath = rpath = <span class="number">1</span></span><br><span class="line">		left = dfs(root.left)</span><br><span class="line">		right = dfs(root.right)</span><br><span class="line">		<span class="keyword">if</span> root.left <span class="keyword">and</span> root.val + <span class="number">1</span> == root.left.val:</span><br><span class="line">			lpath += left[<span class="number">0</span>]</span><br><span class="line">		<span class="keyword">if</span> root.right <span class="keyword">and</span> root.val + <span class="number">1</span> == root.right.val:</span><br><span class="line">			rpath += right[<span class="number">0</span>]</span><br><span class="line">		inc = max(<span class="number">1</span>, lpath, rpath)</span><br><span class="line"></span><br><span class="line">		lpath = rpath = <span class="number">1</span></span><br><span class="line">		<span class="keyword">if</span> root.left <span class="keyword">and</span> root.val - <span class="number">1</span> == root.left.val:</span><br><span class="line">			lpath += left[<span class="number">1</span>]</span><br><span class="line">		<span class="keyword">if</span> root.right <span class="keyword">and</span> root.val - <span class="number">1</span> == root.right.val:</span><br><span class="line">			rpath += right[<span class="number">1</span>]</span><br><span class="line">		desc = max(<span class="number">1</span>, lpath, rpath)</span><br><span class="line"></span><br><span class="line">		total = inc + desc - <span class="number">1</span></span><br><span class="line">		max_len = max(inc, desc, total, max_len)</span><br><span class="line">		<span class="keyword">return</span> inc, desc</span><br><span class="line"></span><br><span class="line">	dfs(root)</span><br><span class="line">	<span class="keyword">return</span> max_len</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2022/02/06/leetcode-298-binary-tree-longest-consecutive-sequence/">LeetCode 298 Binary Tree Longest Consecutive Sequence</a></h1>
   
 
@@ -254,50 +300,6 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2022/01/30/leetcode-518-coin-change-2/">LeetCode 518 Coin Change 2</a></h1>
-  
-
-      
-        <time datetime="2022-01-30T08:11:02.133Z">2022-01-30</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/coin-change-2/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>You are given an integer array <code>coins</code> representing coins of different denominations and an integer <code>amount</code> representing a total amount of money.<br><br>Return <em>the number of combinations that make up that amount</em>. If that amount of money cannot be made up by any combination of the coins, return <code>0</code>.<br><br>You may assume that you have an infinite number of each kind of coin.<br><br>The answer is <strong>guaranteed</strong> to fit into a signed <strong>32-bit</strong> integer.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> amount = 5, coins = [1,2,5]<br><strong>Output:</strong> 4<br><strong>Explanation:</strong> there are four ways to make up the amount:<br>5=5<br>5=2+2+1<br>5=2+1+1+1<br>5=1+1+1+1+1<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> amount = 3, coins = [2]<br><strong>Output:</strong> 0<br><strong>Explanation:</strong> the amount of 3 cannot be made up just with coins of 2.<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> amount = 10, coins = [10]<br><strong>Output:</strong> 1<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= coins.length &lt;= 300</code>
-</em>   <code>1 &lt;= coins[i] &lt;= 5000</code><br><em>   All the values of <code>coins</code> are <strong>unique</strong>.
-</em>   <code>0 &lt;= amount &lt;= 5000</code><br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求兑换硬币的种数</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>类似于LeetCode 322 Coin Change，那题求最小个数，此题求总数，也是用DP。<br>递归式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dp[i] = sum(dp[j]), i = j + coins[i]</span><br></pre></td></tr></table></figure></p>
-<p>LeetCode 377 Combination Sum IV 题目基本一样，唯一区别是结果元素有序，属于排列<br>LeetCode 518 Coin Change 2 题目基本一样，唯一区别是结果元素无序，属于组合</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>递归5部曲</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li><strong>for循环顺序不能错，先coin再dp</strong>，否则会有重复计算，如dp[3] = 2 + 1和1 + 2. 字面上理解也是可以知道重复。但如果coin先的话，就只能用1的硬币，第二轮是只能用2的硬币，如此类推，显然不会重复，dp[3] = dp[2] + 1(只用硬币1), dp[1] + 2(只用硬币2) </li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># dp[i] = dp[j], i = j + coins[i]</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">change</span><span class="params">(self, amount: int, coins: List[int])</span> -&gt; int:</span></span><br><span class="line">	dp = [<span class="number">0</span>] * (amount + <span class="number">1</span>)</span><br><span class="line">	dp[<span class="number">0</span>] = <span class="number">1</span></span><br><span class="line">	<span class="keyword">for</span> coin <span class="keyword">in</span> coins:</span><br><span class="line">		<span class="keyword">for</span> i <span class="keyword">in</span> range(len(dp)): <span class="comment"># [0, 0]</span></span><br><span class="line">			<span class="keyword">if</span> i + coin &lt;= amount:</span><br><span class="line">				dp[i + coin] += dp[i]</span><br><span class="line">	<span class="keyword">return</span> dp[<span class="number">-1</span>]</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n*amount)</code>，空间复杂度<code>O(amount)</code>  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -322,6 +324,10 @@
   <ul class="entry">
     
       <li>
+        <a href="/2022/03/01/leetcode-772-basic-calculator-iii/">LeetCode 772 Basic Calculator III</a>
+      </li>
+    
+      <li>
         <a href="/2022/02/24/leetcode-432-all-oone-data-structure/">LeetCode 432 All O one Data Structure</a>
       </li>
     
@@ -335,10 +341,6 @@
     
       <li>
         <a href="/2022/02/16/leetcode-843-guess-the-word/">LeetCode 843 Guess the Word</a>
-      </li>
-    
-      <li>
-        <a href="/2022/02/16/leetcode-833-find-and-replace-in-string/">LeetCode 833 Find And Replace in String</a>
       </li>
     
   </ul>

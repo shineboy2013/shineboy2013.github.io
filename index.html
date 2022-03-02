@@ -53,6 +53,51 @@
     <header>
       
   
+    <h1 class="title"><a href="/2022/03/01/leetcode-772-basic-calculator-iii/">LeetCode 772 Basic Calculator III</a></h1>
+  
+
+      
+        <time datetime="2022-03-02T06:31:18.494Z">2022-03-01</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/basic-calculator-iii/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>Implement a basic calculator to evaluate a simple expression string.<br><br>The expression string contains only non-negative integers, <code>&#39;+&#39;</code>, <code>&#39;-&#39;</code>, <code>&#39;*&#39;</code>, <code>&#39;/&#39;</code> operators, and open <code>&#39;(&#39;</code> and closing parentheses <code>&#39;)&#39;</code>. The integer division should <strong>truncate toward zero</strong>.<br><br>You may assume that the given expression is always valid. All intermediate results will be in the range of <code>[-2&lt;sup&gt;31&lt;/sup&gt;, 2&lt;sup&gt;31&lt;/sup&gt; - 1]</code>.<br><br><strong>Note:</strong> You are not allowed to use any built-in function which evaluates strings as mathematical expressions, such as <code>eval()</code>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> s = “1+1”<br><strong>Output:</strong> 2<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> s = “6-4/2”<br><strong>Output:</strong> 4<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> s = “2<em>(5+5</em>2)/3+(6/2+8)”<br><strong>Output:</strong> 21<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= s &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code>
+</em>   <code>s</code> consists of digits, <code>&#39;+&#39;</code>, <code>&#39;-&#39;</code>, <code>&#39;*&#39;</code>, <code>&#39;/&#39;</code>, <code>&#39;(&#39;</code>, and <code>&#39;)&#39;</code>.<br><em>   <code>s</code> is a <em>*valid</em></em> expression.<br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>实现字符串加减乘除且有括号。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>类似于Leetcode 227求加减乘除，这里多了括号，括号内含加减乘除，所以每对括号是一轮DFS。遇到左括号，就进入递归，遇到右括号就返回递归值</p>
+<p><a href="https://shineboy2013.github.io/2021/12/08/lee-224/" target="_blank" rel="noopener">LeetCode 224 Basic Calculator</a> 括号加减法, 同一层括号内求和遇括号入栈<br><a href="https://shineboy2013.github.io/2021/12/06/lee-227/" target="_blank" rel="noopener">LeetCode 227 Basic Calculator II</a> 加减乘除, 和的每一项入栈，方便出栈计乘除<br>[LeetCode 772 Basic Calculator III] 加减乘除括号, L227的递归版</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>不同于L227, 类似于填位法将i作为DFS参数传入，返回括号内的值以及i。i放入while循环， i += 1要加入到空格情况和循环最后</li>
+<li>最后位加入加号要移除DFS中，放入主函数</li>
+<li><strong>注意处理括号情况的顺序，左括号在空格后，右括号在最后</strong></li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">calculate</span><span class="params">(self, s: str)</span> -&gt; int:</span></span><br><span class="line">	s += <span class="string">'+'</span></span><br><span class="line">	<span class="keyword">return</span> self.dfs(s, <span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dfs</span><span class="params">(self, s, i)</span>:</span></span><br><span class="line">	res, num, stack, op = <span class="number">0</span>, <span class="number">0</span>, [], <span class="string">'+'</span></span><br><span class="line">	<span class="keyword">while</span> i &lt; len(s):</span><br><span class="line">		char = s[i]</span><br><span class="line">		<span class="keyword">if</span> char == <span class="string">' '</span>:</span><br><span class="line">			i += <span class="number">1</span></span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		<span class="keyword">if</span> char == <span class="string">'('</span>:</span><br><span class="line">			num, i = self.dfs(s, i + <span class="number">1</span>)</span><br><span class="line">		<span class="keyword">elif</span> char.isdigit():</span><br><span class="line">			num = num * <span class="number">10</span> + int(char)</span><br><span class="line">		<span class="keyword">elif</span> op == <span class="string">'-'</span>:</span><br><span class="line">			stack.append(-num)</span><br><span class="line">		<span class="keyword">elif</span> op == <span class="string">'+'</span>:</span><br><span class="line">			stack.append(num) <span class="comment"># [4+2*1]</span></span><br><span class="line">		<span class="keyword">elif</span> op == <span class="string">'*'</span>:</span><br><span class="line">			prev = stack.pop()</span><br><span class="line">			stack.append(prev * num)</span><br><span class="line">		<span class="keyword">elif</span> op == <span class="string">'/'</span>:</span><br><span class="line">			prev = stack.pop()</span><br><span class="line">			stack.append(int(prev / num))  <span class="comment"># remember</span></span><br><span class="line">		<span class="keyword">if</span> char <span class="keyword">in</span> <span class="string">'+-*/'</span>:</span><br><span class="line">			num = <span class="number">0</span></span><br><span class="line">			op = char</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> char == <span class="string">')'</span>:</span><br><span class="line">			<span class="keyword">return</span> sum(stack), i</span><br><span class="line">		i += <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> sum(stack)</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2022/02/24/leetcode-432-all-oone-data-structure/">LeetCode 432 All O one Data Structure</a></h1>
   
 
@@ -235,52 +280,6 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2022/02/16/leetcode-833-find-and-replace-in-string/">LeetCode 833 Find And Replace in String</a></h1>
-  
-
-      
-        <time datetime="2022-02-16T23:28:45.137Z">2022-02-16</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/find-and-replace-in-string/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>You are given a <strong>0-indexed</strong> string <code>s</code> that you must perform <code>k</code> replacement operations on. The replacement operations are given as three <strong>0-indexed</strong> parallel arrays, <code>indices</code>, <code>sources</code>, and <code>targets</code>, all of length <code>k</code>.<br><br>To complete the <code>i&lt;sup&gt;th&lt;/sup&gt;</code> replacement operation:<br><br>1.  Check if the <strong>substring</strong> <code>sources[i]</code> occurs at index <code>indices[i]</code> in the <strong>original string</strong> <code>s</code>.<br>2.  If it does not occur, <strong>do nothing</strong>.<br>3.  Otherwise if it does occur, <strong>replace</strong> that substring with <code>targets[i]</code>.<br><br>For example, if <code>s = &quot;&lt;u&gt;ab&lt;/u&gt;cd&quot;</code>, <code>indices[i] = 0</code>, <code>sources[i] = &quot;ab&quot;</code>, and <code>targets[i] = &quot;eee&quot;</code>, then the result of this replacement will be <code>&quot;&lt;u&gt;eee&lt;/u&gt;cd&quot;</code>.<br><br>All replacement operations must occur <strong>simultaneously</strong>, meaning the replacement operations should not affect the indexing of each other. The testcases will be generated such that the replacements will <strong>not overlap</strong>.<br><br><em>   For example, a testcase with <code>s = &quot;abc&quot;</code>, <code>indices = [0, 1]</code>, and <code>sources = [&quot;ab&quot;,&quot;bc&quot;]</code> will not be generated because the <code>&quot;ab&quot;</code> and <code>&quot;bc&quot;</code> replacements overlap.<br><br>Return <em>the <strong>resulting string</strong> after performing all replacement operations on</em> <code>s</code>.<br><br>A <strong>substring</strong> is a contiguous sequence of characters in a string.<br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/06/12/833-ex1.png" alt=""><br><br><pre><strong>Input:</strong> s = “abcd”, indices = [0, 2], sources = [“a”, “cd”], targets = [“eee”, “ffff”]<br><strong>Output:</strong> “eeebffff”<br><strong>Explanation:</strong><br>“a” occurs at index 0 in s, so we replace it with “eee”.<br>“cd” occurs at index 2 in s, so we replace it with “ffff”.<br></pre><br><br><strong>Example 2:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/06/12/833-ex2-1.png" alt=""><br><br><pre><strong>Input:</strong> s = “abcd”, indices = [0, 2], sources = [“ab”,”ec”], targets = [“eee”,”ffff”]<br><strong>Output:</strong> “eeecd”<br><strong>Explanation:</strong><br>“ab” occurs at index 0 in s, so we replace it with “eee”.<br>“ec” does not occur at index 2 in s, so we do nothing.<br></pre><br><br><strong>Constraints:</strong>
-
-</em>   <code>1 &lt;= s.length &lt;= 1000</code><br><em>   <code>k == indices.length == sources.length == targets.length</code>
-</em>   <code>1 &lt;= k &lt;= 100</code><br><em>   <code>0 &lt;= indexes[i] &lt; s.length</code>
-</em>   <code>1 &lt;= sources[i].length, targets[i].length &lt;= 50</code><br><em>   <code>s</code> consists of only lowercase English letters.
-</em>   <code>sources[i]</code> and <code>targets[i]</code> consist of only lowercase English letters.<br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>整洁题。找到位置，然后验证，最后替换</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>N/A</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>i是循环外的变量，所以poplate index_dict注意不能重名</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">findReplaceString</span><span class="params">(self, s: str, indices: List[int], sources: List[str], targets: List[str])</span> -&gt; str:</span></span><br><span class="line">	res = <span class="string">''</span></span><br><span class="line">	index_dict = &#123;&#125;</span><br><span class="line">	<span class="keyword">for</span> _i, _n <span class="keyword">in</span> enumerate(indices):</span><br><span class="line">		index_dict[_n] = _i <span class="comment"># 0 -&gt; 0, 2 -&gt; 1</span></span><br><span class="line">	i = <span class="number">0</span></span><br><span class="line">	<span class="keyword">while</span> i &lt; len(s):</span><br><span class="line">		<span class="keyword">if</span> i <span class="keyword">in</span> index_dict <span class="keyword">and</span> s[i:i + len(sources[index_dict[i]])] == sources[index_dict[i]]:</span><br><span class="line">			res += targets[index_dict[i]]</span><br><span class="line">			i += len(sources[index_dict[i]])</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			res += s[i]</span><br><span class="line">			i += <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -303,6 +302,10 @@
   <ul class="entry">
     
       <li>
+        <a href="/2022/03/01/leetcode-772-basic-calculator-iii/">LeetCode 772 Basic Calculator III</a>
+      </li>
+    
+      <li>
         <a href="/2022/02/24/leetcode-432-all-oone-data-structure/">LeetCode 432 All O one Data Structure</a>
       </li>
     
@@ -316,10 +319,6 @@
     
       <li>
         <a href="/2022/02/16/leetcode-843-guess-the-word/">LeetCode 843 Guess the Word</a>
-      </li>
-    
-      <li>
-        <a href="/2022/02/16/leetcode-833-find-and-replace-in-string/">LeetCode 833 Find And Replace in String</a>
       </li>
     
   </ul>

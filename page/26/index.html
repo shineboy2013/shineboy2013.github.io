@@ -53,6 +53,52 @@
     <header>
       
   
+    <h1 class="title"><a href="/2022/01/03/lee-787/">LeetCode 787 Cheapest Flights Within K Stops</a></h1>
+  
+
+      
+        <time datetime="2022-01-04T05:15:53.988Z">2022-01-03</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/cheapest-flights-within-k-stops" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>There are <code>n</code> cities connected by some number of flights. You are given an array <code>flights</code> where <code>flights[i] = [from&lt;sub&gt;i&lt;/sub&gt;, to&lt;sub&gt;i&lt;/sub&gt;, price&lt;sub&gt;i&lt;/sub&gt;]</code> indicates that there is a flight from city <code>from&lt;sub&gt;i&lt;/sub&gt;</code> to city <code>to&lt;sub&gt;i&lt;/sub&gt;</code> with cost <code>price&lt;sub&gt;i&lt;/sub&gt;</code>.<br><br>You are also given three integers <code>src</code>, <code>dst</code>, and <code>k</code>, return <em><strong>the cheapest price</strong> from</em> <code>src</code> <em>to</em> <code>dst</code> <em>with at most</em> <code>k</code> <em>stops.</em> If there is no such route, return<code>-1</code>.<br><br><strong>Example 1:</strong><br><br><img src="https://s3-lc-upload.s3.amazonaws.com/uploads/2018/02/16/995.png" alt=""><br><br><pre><strong>Input:</strong> n = 3, flights = [[0,1,100],[1,2,100],[0,2,500]], src = 0, dst = 2, k = 1<br><strong>Output:</strong> 200<br><strong>Explanation:</strong> The graph is shown.<br>The cheapest price from city <code>0</code> to city <code>2</code> with at most 1 stop costs 200, as marked red in the picture.<br></pre><br><br><strong>Example 2:</strong><br><br><img src="https://s3-lc-upload.s3.amazonaws.com/uploads/2018/02/16/995.png" alt=""><br><br><pre><strong>Input:</strong> n = 3, flights = [[0,1,100],[1,2,100],[0,2,500]], src = 0, dst = 2, k = 0<br><strong>Output:</strong> 500<br><strong>Explanation:</strong> The graph is shown.<br>The cheapest price from city <code>0</code> to city <code>2</code> with at most 0 stop costs 500, as marked blue in the picture.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= n &lt;= 100</code>
+</em>   <code>0 &lt;= flights.length &lt;= (n * (n - 1) / 2)</code><br><em>   <code>flights[i].length == 3</code>
+</em>   <code>0 &lt;= from&lt;sub&gt;i&lt;/sub&gt;, to&lt;sub&gt;i&lt;/sub&gt; &lt; n</code><br><em>   <code>from&lt;sub&gt;i&lt;/sub&gt; != to&lt;sub&gt;i&lt;/sub&gt;</code>
+</em>   <code>1 &lt;= price&lt;sub&gt;i&lt;/sub&gt; &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code><br><em>   There will not be any multiple flights between two cities.
+</em>   <code>0 &lt;= src, dst, k &lt; n</code><br>*   <code>src != dst</code><br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求只允许停k个站情况下，最便宜机票价格</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>BFS + Heap<br>这是单源最短路径的典型应用。可以用Dijkstra，机票价格相当于单源最短路径问题中的路径大小。一开始我用BFS，但得到TLE，因为存在循环，导致节点被重复访问(同一路径)。但一个节点的确可以被用不同路径访问。所以引入visited[node] = dis </p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>node需要被多次访问，所以跟模板不同，visited的检测要放在neighbor循环之外且用node且初始化为空。visited不再是set，它需要记录node离src的距离。一方面用于循环检测，因为如果存在循环，会出现dist &gt;= visited[node]。若该节点的当前距离小于之前的最小距离，此时也要加入到heap，因为贪婪法，虽然此路径费用较高，但它距离更近，当k限制比较小时，此路径可能满足要求。这就是为什么一个节点会被多次访问的原因。</li>
+<li><strong>若路径不存在返回-1</strong></li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">findCheapestPrice</span><span class="params">(self, n: int, flights: List[List[int]], src: int, dst: int, k: int)</span> -&gt; int:</span></span><br><span class="line">	graph = collections.defaultdict(list)</span><br><span class="line">	<span class="keyword">for</span> pair <span class="keyword">in</span> flights:</span><br><span class="line">		graph[pair[<span class="number">0</span>]].append((pair[<span class="number">1</span>], pair[<span class="number">2</span>]))</span><br><span class="line">    heap = ([(<span class="number">0</span>, src, <span class="number">0</span>)]) <span class="comment"># price, node_id, distance</span></span><br><span class="line">	visited = &#123;&#125;</span><br><span class="line">	<span class="keyword">while</span> heap:</span><br><span class="line">		p, node, dist = heapq.heappop(heap)</span><br><span class="line">		<span class="keyword">if</span> node == dst <span class="keyword">and</span> dist &lt;= k + <span class="number">1</span>:</span><br><span class="line">			<span class="keyword">return</span> p</span><br><span class="line">		<span class="keyword">if</span> node <span class="keyword">in</span> visited <span class="keyword">and</span> dist &gt;= visited[node]:</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		visited[node] = dist</span><br><span class="line">		<span class="keyword">for</span> neighbor, _price <span class="keyword">in</span> graph[node]:</span><br><span class="line">			heapq.heappush(heap, (p + _price, neighbor, dist + <span class="number">1</span>))</span><br><span class="line">	<span class="keyword">return</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(VlogV)</code>，空间复杂度<code>O(V)</code>  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2022/01/03/lee-166/">LeetCode 166 Fraction to Recurring Decimal</a></h1>
   
 
@@ -223,51 +269,6 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2022/01/03/lee-341/">LeetCode 341 Flatten Nested List Iterator</a></h1>
-  
-
-      
-        <time datetime="2022-01-03T20:55:59.417Z">2022-01-03</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/flatten-nested-list-iterator" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>You are given a nested list of integers <code>nestedList</code>. Each element is either an integer or a list whose elements may also be integers or other lists. Implement an iterator to flatten it.<br><br>Implement the <code>NestedIterator</code> class:<br><br><em>   <code>NestedIterator(List&lt;NestedInteger&gt; nestedList)</code> Initializes the iterator with the nested list <code>nestedList</code>.
-</em>   <code>int next()</code> Returns the next integer in the nested list.<br><em>   <code>boolean hasNext()</code> Returns <code>true</code> if there are still some integers in the nested list and <code>false</code> otherwise.<br><br>Your code will be tested with the following pseudocode:<br><br><pre>initialize iterator with nestedList<br>res = []<br>while iterator.hasNext()<br>    append iterator.next() to the end of res<br>return res<br></pre><br><br>If <code>res</code> matches the expected flattened list, then your code will be judged as correct.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> nestedList = [[1,1],2,[1,1]]<br><strong>Output:</strong> [1,1,2,1,1]<br><strong>Explanation:</strong> By calling next repeatedly until hasNext returns false, the order of elements returned by next should be: [1,1,2,1,1].<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> nestedList = [1,[4,[6]]]<br><strong>Output:</strong> [1,4,6]<br><strong>Explanation:</strong> By calling next repeatedly until hasNext returns false, the order of elements returned by next should be: [1,4,6].<br></pre><br><br><strong>Constraints:</strong>
-
-</em>   <code>1 &lt;= nestedList.length &lt;= 500</code><br>*   The values of the integers in the nested list is in the range <code>[-10&lt;sup&gt;6&lt;/sup&gt;, 10&lt;sup&gt;6&lt;/sup&gt;]</code>.<br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>实现Nested List的Iterator。Nested List是NestedInteger的数组，NestedInteger可以是int，也可以是Nested List</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>有点似括号题但区别是从前往后读取。用Queue或Stack都可以，插入或删除其一需要反序，删除nestedinteger(=list)后要将它里面所有nestedinteger加入。Queue要从队首加入和删除，Stack要从栈顶加入和删除，用Stack比较方便。</p>
-<p>Nested List题目：<br>LeetCode 341 Flatten Nested List Iterator Iterator - Stack<br>LeetCode 339 Nested List Weight Sum - BFS<br>LeetCode 364 Nested List Weight Sum II - BFS</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>用Stack，<strong>逆序将nestedList中nestedinteger加入到stack，直到栈顶元素为int，hasNext才算结束</strong></li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">NestedIterator</span><span class="params">(TestCases)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, nestedList)</span>:</span></span><br><span class="line">        self.stack = []</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> reversed(range(len(nestedList))):</span><br><span class="line">            self.stack.append(nestedList[i])</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">next</span><span class="params">(self)</span> -&gt; int:</span></span><br><span class="line">        <span class="keyword">if</span> self.hasNext():</span><br><span class="line">            <span class="keyword">return</span> self.stack.pop().getInteger()</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">None</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">hasNext</span><span class="params">(self)</span> -&gt; bool:</span></span><br><span class="line">        <span class="keyword">while</span> self.stack <span class="keyword">and</span> <span class="keyword">not</span> self.stack[<span class="number">-1</span>].isInteger():</span><br><span class="line">            nestedList = self.stack.pop().getList()</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> reversed(range(len(nestedList))):</span><br><span class="line">                self.stack.append(nestedList[i])</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">True</span> <span class="keyword">if</span> self.stack <span class="keyword">else</span> <span class="keyword">False</span></span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>next操作时间复杂度为<code>O(V/N)</code>或<code>O(1)</code>，空间复杂度<code>O(L + N)</code>, N为所有数，V为nested list数，O(N + V)/N. O(1)如果不存在nested list </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -292,6 +293,10 @@
   <ul class="entry">
     
       <li>
+        <a href="/2022/03/01/leetcode-772-basic-calculator-iii/">LeetCode 772 Basic Calculator III</a>
+      </li>
+    
+      <li>
         <a href="/2022/02/24/leetcode-432-all-oone-data-structure/">LeetCode 432 All O one Data Structure</a>
       </li>
     
@@ -305,10 +310,6 @@
     
       <li>
         <a href="/2022/02/16/leetcode-843-guess-the-word/">LeetCode 843 Guess the Word</a>
-      </li>
-    
-      <li>
-        <a href="/2022/02/16/leetcode-833-find-and-replace-in-string/">LeetCode 833 Find And Replace in String</a>
       </li>
     
   </ul>

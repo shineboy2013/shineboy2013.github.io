@@ -53,6 +53,68 @@
     <header>
       
   
+    <h1 class="title"><a href="/2020/04/26/lee-272/">LeetCode 272 Closest Binary Search Tree Value II</a></h1>
+  
+
+      
+        <time datetime="2020-04-26T18:31:21.211Z">2020-04-26</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/closest-binary-search-tree-value-ii/" target="_blank" rel="noopener">LeetCode 272 Closest Binary Search Tree Value II</a></strong></p>
+<p>Given a non-empty binary search tree and a target value, find <em>k</em> values in the BST that are closest to the target.</p>
+<p>Note:</p>
+<ul>
+<li>Given target value is a floating point.</li>
+<li>You may assume <em>k</em> is always valid, that is: <em>k</em>≤ total nodes.</li>
+<li>You are guaranteed to have only one unique set of <em>k</em> values in the BST that are closest to the target.</li>
+</ul>
+<p>Example:</p>
+<pre>Input: root = [4,2,5,1,3], target = 3.714286, and _k_ = 2
+
+    4
+   / \
+  2   5
+ / \
+1   3
+
+Output: [4,3]</pre>
+
+<p>Follow up:<br>Assume that the BST is balanced, could you solve it in less than <em>O</em>(<em>n</em>) runtime (where <em>n</em> = total nodes)?</p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>找BST中给定目标的最接近的k个值。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>首先观察得到最接近的节点一定在二叉树的搜索路径上的节点的其中一个。这样可以分成两组<br>前驱节点和后驱节点（比target大），加入到两个stack中，由BST的iterator可以知道这两个<br>stack的越靠近栈首就越接近target，所以出栈的一定是最接近target的。只要比较两栈首元素<br>即可。如果某个节点出栈要找其儿子节点填充。找前驱节点和后驱节点的方法是相反的。这里可<br>参照KB的BST非递归中序遍历。    </p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>找最接近target的节点，<strong>不用判断左右儿子是否为空</strong>，因为若为空，表示root更接近。大于target的放入successors，否则是predecessors</li>
+<li>然后判断两栈首谁大，谁大的就获得相应的比它远离target的节点入栈。如predecessors是左节点的所有右儿子。</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">closestKValues</span><span class="params">(self, root: TreeNode, target: float, k: int)</span> -&gt; List[int]:</span></span><br><span class="line">	predecessors, successors = [], []</span><br><span class="line">	it = root</span><br><span class="line">	<span class="keyword">while</span> it:</span><br><span class="line">		<span class="keyword">if</span> target &lt; it.val:</span><br><span class="line">			successors.append(it)</span><br><span class="line">			it = it.left</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			predecessors.append(it)</span><br><span class="line">			it = it.right</span><br><span class="line">	res = []</span><br><span class="line">	<span class="keyword">while</span> k &gt; <span class="number">0</span>:</span><br><span class="line">		<span class="keyword">if</span> predecessors <span class="keyword">and</span> (<span class="keyword">not</span> successors <span class="keyword">or</span> target - predecessors[<span class="number">-1</span>].val &lt; successors[<span class="number">-1</span>].val - target):</span><br><span class="line">			node = predecessors.pop()</span><br><span class="line">			<span class="keyword">if</span> node.left:</span><br><span class="line">				n = node.left</span><br><span class="line">				<span class="keyword">while</span> n:</span><br><span class="line">					predecessors.append(n)</span><br><span class="line">					n = n.right</span><br><span class="line">			res.append(node.val)</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			node = successors.pop()</span><br><span class="line">			<span class="keyword">if</span> node.right:</span><br><span class="line">				n = node.right</span><br><span class="line">				<span class="keyword">while</span> n:</span><br><span class="line">					successors.append(n)</span><br><span class="line">					n = n.left</span><br><span class="line">			res.append(node.val)</span><br><span class="line">		k -= <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>target - preOrder.peek().val &lt; postOrder.peek().val - target的条件前<br>记得加上!preOrder.isEmpty()</li>
+</ol>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line">public List&lt;Integer&gt; closestKValues(TreeNode root, double target, int k) &#123;</span><br><span class="line">	List&lt;Integer&gt; res = new ArrayList&lt;&gt;();</span><br><span class="line">	if(root == null)</span><br><span class="line">		return res;</span><br><span class="line">	Stack&lt;TreeNode&gt; preOrder = new Stack&lt;&gt;();</span><br><span class="line">	Stack&lt;TreeNode&gt; postOrder = new Stack&lt;&gt;();</span><br><span class="line">	findTargetAndPopulateStacks(preOrder, postOrder, root, target);</span><br><span class="line">	</span><br><span class="line">	while(k-- &gt; 0) &#123;</span><br><span class="line">		if(postOrder.isEmpty() || (!preOrder.isEmpty() &amp;&amp; </span><br><span class="line">				target - preOrder.peek().val &lt; postOrder.peek().val - target))</span><br><span class="line">			getPredecessor(preOrder, res);</span><br><span class="line">		else </span><br><span class="line">			getSuccessor(postOrder, res);</span><br><span class="line">	&#125;</span><br><span class="line">	return res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void findTargetAndPopulateStacks(Stack&lt;TreeNode&gt; preOrder, Stack&lt;TreeNode&gt; postOrder, </span><br><span class="line">		TreeNode root, double target) &#123;</span><br><span class="line">	TreeNode node = root;</span><br><span class="line">	while(node != null) &#123;</span><br><span class="line">		if(node.val &lt; target) &#123; </span><br><span class="line">			preOrder.push(node);</span><br><span class="line">			node = node.right;</span><br><span class="line">		&#125;</span><br><span class="line">		else &#123;</span><br><span class="line">			postOrder.push(node);</span><br><span class="line">			node = node.left;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void getSuccessor(Stack&lt;TreeNode&gt; postOrder, List&lt;Integer&gt; res) &#123;</span><br><span class="line">	TreeNode node = postOrder.pop();</span><br><span class="line">	res.add(node.val);</span><br><span class="line">	if(node.right != null) &#123;</span><br><span class="line">		TreeNode n = node.right;</span><br><span class="line">		while(n != null) &#123;</span><br><span class="line">			postOrder.push(n);</span><br><span class="line">			n = n.left;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void getPredecessor(Stack&lt;TreeNode&gt; preOrder, List&lt;Integer&gt; res) &#123;</span><br><span class="line">	TreeNode node = preOrder.pop();</span><br><span class="line">	res.add(node.val);</span><br><span class="line">	if(node.left != null) &#123;</span><br><span class="line">		TreeNode n = node.left;</span><br><span class="line">		while(n != null) &#123;</span><br><span class="line">			preOrder.push(n);</span><br><span class="line">			n = n.right;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为O(k + logn)，空间复杂度O(logn)。  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2020/04/26/lee-173/">LeetCode 173 Binary Search Tree Iterator</a></h1>
   
 
@@ -338,93 +400,6 @@ Explanation: [0, 0] → [2, 1] → [4, 2] → [3, 4] → [5, 5]
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2020/04/20/lee-297/">LeetCode 297 Serialize and Deserialize Binary Tree</a></h1>
-  
-
-      
-        <time datetime="2020-04-20T18:36:09.608Z">2020-04-20</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/serialize-and-deserialize-binary-tree/" target="_blank" rel="noopener">LeetCode 297 Serialize and Deserialize Binary Tree</a></strong></p>
-<p>Serialization is the process of converting a data structure or object into a sequence of bits so that it can be stored in a file or memory buffer, or transmitted across a network connection link to be reconstructed later in the same or another computer environment.</p>
-<p>Design an algorithm to serialize and deserialize a binary tree. There is no restriction on how your serialization/deserialization algorithm should work. You just need to ensure that a binary tree can be serialized to a string and this string can be deserialized to the original tree structure.</p>
-<p><strong>Example: </strong></p>
-<pre>You may serialize the following tree:
-
-    1
-   / \
-  2   3
-     / \
-    4   5
-
-as `"[1,2,3,null,null,4,5]"`
-</pre>
-
-<p><strong>Clarification:</strong> The above format is the same as <a href="/faq/#binary-tree">how LeetCode serializes a binary tree</a>. You do not necessarily need to follow this format, so please be creative and come up with different approaches yourself.</p>
-<p><strong>Note: </strong>Do not use class member/global/static variables to store states. Your serialize and deserialize algorithms should be stateless.</p>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>序列化和反序列化二叉树。</p>
-<h2 id="Python解法"><a href="#Python解法" class="headerlink" title="Python解法"></a><strong>Python解法</strong></h2><h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>BFS解码，空节点也要入列，因为要转成#，且不让代码往下执行</li>
-<li>难点是用#补充空节点，令每个非空节点必有左右儿子，这样解码就可以固定地每轮扫描两个。出列一个父节点，<strong>p扫描两个儿子且生成节点</strong>，若为#即空节点不入列，这和编码不同。主要因为编码的长度比节点数多，所以生成节点时，不需要再处理空节点。<br>Line 25 - 32有重复，这里放在一起方便理解，也可以封装成函数  </li>
-<li><strong>类型转换int和str, Python用popleft不是pop</strong>  </li>
-<li>Line 11非空节点值要记得加入  </li>
-<li>空节点或空字符单独处理</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">serialize</span><span class="params">(self, root)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> root:</span><br><span class="line">		<span class="keyword">return</span> <span class="string">''</span></span><br><span class="line">	queue = collections.deque([root])</span><br><span class="line">	res = []</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.popleft()</span><br><span class="line">		<span class="keyword">if</span> node:</span><br><span class="line">			res.append(str(node.val))</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			res.append(<span class="string">'#'</span>)</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line"></span><br><span class="line">		queue.append(node.left)</span><br><span class="line">		queue.append(node.right)</span><br><span class="line">	<span class="keyword">return</span> <span class="string">','</span>.join(res)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">deserialize</span><span class="params">(self, data)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> data:</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">None</span></span><br><span class="line">	vals = data.split(<span class="string">','</span>)</span><br><span class="line">	p = <span class="number">0</span></span><br><span class="line">	root = TreeNode(int(vals[<span class="number">0</span>]))</span><br><span class="line">	queue = collections.deque([root])</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.popleft()</span><br><span class="line"></span><br><span class="line">		p += <span class="number">1</span></span><br><span class="line">		<span class="keyword">if</span> vals[p] != <span class="string">'#'</span>:</span><br><span class="line">			node.left = TreeNode(int(vals[p]))</span><br><span class="line">			queue.append(node.left)</span><br><span class="line">		p += <span class="number">1</span></span><br><span class="line">		<span class="keyword">if</span> vals[p] != <span class="string">'#'</span>:</span><br><span class="line">			node.right = TreeNode(int(vals[p]))</span><br><span class="line">			queue.append(node.right)</span><br><span class="line">	<span class="keyword">return</span> root</span><br></pre></td></tr></table></figure>
-<hr>
-<h2 id="Java解法"><a href="#Java解法" class="headerlink" title="Java解法"></a><strong>Java解法</strong></h2><h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>BFS可以涉及三重循环</p>
-<ol>
-<li>q不为空  </li>
-<li>是否按层遍历  </li>
-<li>是否为图  </li>
-</ol>
-<p>这题不需要按层遍历，所以不用第二重。而且只是二叉树，不用第三重循环。</p>
-<p>编码方式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">	      1</span><br><span class="line">	    /   \</span><br><span class="line">	   #     3</span><br><span class="line">	        /  \</span><br><span class="line">	       2   #</span><br><span class="line">	      / \</span><br><span class="line">	     #   #</span><br><span class="line">=&gt; 1,#,3,2,#,#,#</span><br></pre></td></tr></table></figure></p>
-<h3 id="BFS解题步骤："><a href="#BFS解题步骤：" class="headerlink" title="BFS解题步骤："></a><strong>BFS解题步骤：</strong></h3><p>serialize:  </p>
-<ol>
-<li>建queue，然后首节点入列</li>
-<li>进入q的非空循环，队首出列，分别加入左右子树。由于空子树也会被遍历，所以左右子树可能为空，队首为空时continue<br>且val加入到结果字符串</li>
-<li>用#代替null且删去末尾的#和，  </li>
-</ol>
-<p>deserialize:<br>这方法难实现点。用两个指针来代表遍历上一层和该层节点们。q出列的节点是上一层节点head，而idx指向的是<br>该层节点。这样head.left = Node(tokens[idx])就建立了它们的关系。两指针分别向后一位。每轮循环父指针<br>向后一位，而idx向后两位，因为有左右儿子。</p>
-<ol>
-<li>建queue，然后首节点入列</li>
-<li>进入q的非空循环，队首出列，分别生成非空左右子树，且建立父子关系。idx走两步，非空儿子加入q。  </li>
-</ol>
-<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>#也要入栈，因为结果需要  </li>
-<li>解码需要一个字符串扫描指针（类全局指针），左右儿子无条件扫两位。这点DFS也是一样的。  </li>
-<li>deserialize中循环条件要加入idx &lt; tokens.length因为serialize末尾#已经删除。  </li>
-<li>字符串相等判断用equals，不用==。  </li>
-</ol>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">serialize2</span><span class="params">(TreeNode root)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(root == <span class="keyword">null</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"&#123;&#125;"</span>;</span><br><span class="line"></span><br><span class="line">	StringBuilder sb = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">	Queue&lt;TreeNode&gt; q = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">	q.add(root);</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty()) &#123;		</span><br><span class="line">		TreeNode n = q.poll();</span><br><span class="line">		sb.append(n == <span class="keyword">null</span> ? <span class="string">"null"</span> : n.val);</span><br><span class="line">		sb.append(<span class="string">","</span>);</span><br><span class="line">		<span class="keyword">if</span>(n == <span class="keyword">null</span>)</span><br><span class="line">			<span class="keyword">continue</span>;</span><br><span class="line">		q.add(n.left);</span><br><span class="line">		q.add(n.right);</span><br><span class="line">	&#125;</span><br><span class="line">	String res = sb.toString().replaceAll(<span class="string">"null"</span>, <span class="string">"#"</span>);</span><br><span class="line">	<span class="keyword">int</span> endIdx = res.length() - <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">while</span>(res.charAt(endIdx) == <span class="string">','</span> || res.charAt(endIdx) == <span class="string">'#'</span>)</span><br><span class="line">		endIdx--;</span><br><span class="line">	<span class="keyword">return</span> <span class="string">"&#123;"</span> + res.substring(<span class="number">0</span>, endIdx + <span class="number">1</span>) + <span class="string">"&#125;"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> TreeNode <span class="title">deserialize2</span><span class="params">(String data)</span> </span>&#123;</span><br><span class="line">	String str = data.substring(<span class="number">1</span>, data.length() - <span class="number">1</span>);</span><br><span class="line">	<span class="keyword">if</span>(<span class="string">""</span>.equals(str))</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">	</span><br><span class="line">	String[] tokens = str.split(<span class="string">","</span>);</span><br><span class="line">	<span class="keyword">int</span> idx = <span class="number">1</span>;</span><br><span class="line">	Queue&lt;TreeNode&gt; q = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">	TreeNode root = <span class="keyword">new</span> TreeNode(Integer.parseInt(tokens[<span class="number">0</span>]));</span><br><span class="line">	q.offer(root);</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty() &amp;&amp; idx &lt; tokens.length) &#123;</span><br><span class="line">		TreeNode head = q.poll();</span><br><span class="line">		<span class="keyword">if</span>(head == <span class="keyword">null</span>)</span><br><span class="line">			<span class="keyword">continue</span>;</span><br><span class="line">		head.left = generateChildNode(idx++, tokens, q);</span><br><span class="line">		head.right = generateChildNode(idx++, tokens, q);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">TreeNode <span class="title">generateChildNode</span><span class="params">(<span class="keyword">int</span> idx, String[] tokens, Queue&lt;TreeNode&gt; q)</span> </span>&#123;</span><br><span class="line">	TreeNode root = <span class="keyword">null</span>;</span><br><span class="line">	<span class="keyword">if</span>(idx &lt; tokens.length &amp;&amp; !<span class="string">"#"</span>.equals(tokens[idx])) &#123;</span><br><span class="line">		root = <span class="keyword">new</span> TreeNode(Integer.parseInt(tokens[idx]));</span><br><span class="line">		q.offer(root);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<hr>
-<h3 id="DFS算法II解题思路："><a href="#DFS算法II解题思路：" class="headerlink" title="DFS算法II解题思路："></a><strong>DFS算法II解题思路：</strong></h3><p>DFS的serialize很简单，但deserialize比较难。有点类似于前序遍历的递归版。因为编码时候就是前序遍历，解码时候也是先root再左右。<br>需要维护一个指针p来记录已处理的字符串。  </p>
-<p>编码方式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">    1</span><br><span class="line">  2   3</span><br><span class="line">5  6</span><br><span class="line">=&gt; 1,2,5,#,#,6,#,#,3,#,#</span><br></pre></td></tr></table></figure></p>
-<h3 id="Java代码：-1"><a href="#Java代码：-1" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">serialize</span><span class="params">(TreeNode root)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(root==<span class="keyword">null</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"#"</span>;</span><br><span class="line">	String rootStr = root.val+<span class="string">""</span>;</span><br><span class="line">	String lStr = serialize(root.left);</span><br><span class="line">	String rStr = serialize(root.right);</span><br><span class="line">	<span class="keyword">return</span> rootStr+<span class="string">","</span>+lStr+<span class="string">","</span>+rStr;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> p=<span class="number">0</span>;</span><br><span class="line">String[] items = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> TreeNode <span class="title">deserialize</span><span class="params">(String data)</span></span>&#123;</span><br><span class="line">	p = <span class="number">0</span>;</span><br><span class="line">	items = <span class="keyword">null</span>;</span><br><span class="line">	<span class="keyword">return</span> deserializeR(data);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> TreeNode <span class="title">deserializeR</span><span class="params">(String data)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(data==<span class="keyword">null</span>||data.length()==<span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">	<span class="keyword">if</span>(p&gt;=data.length())</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">	String curVal = getNext(data);</span><br><span class="line">	<span class="keyword">if</span>(curVal.equals(<span class="string">"#"</span>))</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">	</span><br><span class="line">	TreeNode newRoot = <span class="keyword">new</span> TreeNode(Integer.parseInt(curVal));</span><br><span class="line">	newRoot.left = deserializeR(data);</span><br><span class="line">	newRoot.right = deserializeR(data);</span><br><span class="line">	<span class="keyword">return</span> newRoot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">getNext</span><span class="params">(String s)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(items==<span class="keyword">null</span>)</span><br><span class="line">		items = s.split(<span class="string">","</span>);</span><br><span class="line">	<span class="keyword">return</span> items[p++];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -449,6 +424,10 @@ as `"[1,2,3,null,null,4,5]"`
   <ul class="entry">
     
       <li>
+        <a href="/2022/03/01/leetcode-772-basic-calculator-iii/">LeetCode 772 Basic Calculator III</a>
+      </li>
+    
+      <li>
         <a href="/2022/02/24/leetcode-432-all-oone-data-structure/">LeetCode 432 All O one Data Structure</a>
       </li>
     
@@ -462,10 +441,6 @@ as `"[1,2,3,null,null,4,5]"`
     
       <li>
         <a href="/2022/02/16/leetcode-843-guess-the-word/">LeetCode 843 Guess the Word</a>
-      </li>
-    
-      <li>
-        <a href="/2022/02/16/leetcode-833-find-and-replace-in-string/">LeetCode 833 Find And Replace in String</a>
       </li>
     
   </ul>

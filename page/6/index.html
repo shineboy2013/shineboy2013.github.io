@@ -53,6 +53,50 @@
     <header>
       
   
+    <h1 class="title"><a href="/2022/02/08/leetcode-1761-minimum-degree-of-a-connected-trio-in-a-graph/">LeetCode 1761 Minimum Degree of a Connected Trio in a Graph</a></h1>
+  
+
+      
+        <time datetime="2022-02-08T09:49:32.723Z">2022-02-08</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/minimum-degree-of-a-connected-trio-in-a-graph/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>You are given an undirected graph. You are given an integer <code>n</code> which is the number of nodes in the graph and an array <code>edges</code>, where each <code>edges[i] = [u&lt;sub&gt;i&lt;/sub&gt;, v&lt;sub&gt;i&lt;/sub&gt;]</code> indicates that there is an undirected edge between <code>u&lt;sub&gt;i&lt;/sub&gt;</code> and <code>v&lt;sub&gt;i&lt;/sub&gt;</code>.<br><br>A <strong>connected trio</strong> is a set of <strong>three</strong> nodes where there is an edge between <strong>every</strong> pair of them.<br><br>The <strong>degree of a connected trio</strong> is the number of edges where one endpoint is in the trio, and the other is not.<br><br>Return <em>the <strong>minimum</strong> degree of a connected trio in the graph, or</em> <code>-1</code> <em>if the graph has no connected trios.</em><br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/01/26/trios1.png" alt=""><br><br><pre><strong>Input:</strong> n = 6, edges = [[1,2],[1,3],[3,2],[4,1],[5,2],[3,6]]<br><strong>Output:</strong> 3<br><strong>Explanation:</strong> There is exactly one trio, which is [1,2,3]. The edges that form its degree are bolded in the figure above.<br></pre><br><br><strong>Example 2:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/01/26/trios2.png" alt=""><br><br><pre><strong>Input:</strong> n = 7, edges = [[1,3],[4,1],[4,3],[2,5],[5,6],[6,7],[7,5],[2,6]]<br><strong>Output:</strong> 0<br><strong>Explanation:</strong> There are exactly three trios:<br>1) [1,4,3] with degree 0.<br>2) [2,5,6] with degree 2.<br>3) [5,6,7] with degree 2.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>2 &lt;= n &lt;= 400</code>
+</em>   <code>edges[i].length == 2</code><br><em>   `1 &lt;= edges.length &lt;= n </em> (n-1) / 2<code>*</code>1 &lt;= u<sub>i</sub>, v<sub>i</sub> &lt;= n<code>*</code>u<sub>i</sub> != v<sub>i</sub>`<br>*   There are no repeated edges.<br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个图，trio是三个节点直接互相相连，而度数表示连着trio的边的个数</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>根据定义，找出所有三个节点的组合，判断是否trio，然后根据trio的每个节点的度数总和 - 6即为所求<br>遍历所有三个节点组合时，会重复了两次。所以一个优化是，先按度数排序节点，若节点度数大于等于最小度数除以3，跳出循环。因为这个最小度数的节点已经大于等于3，trio里其他两个度数比它大的节点的度数更加会大于最小度数除以3，这样总度数肯定大于此时的最小度数</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>根据定义，找出所有三个节点的组合u -&gt; v, v -&gt; w, w是否在u中，判断是否trio。先按度数排序节点，若节点度数大于等于最小度数除以3，跳出循环</li>
+<li>邻接图用set，因为Line 13查找w是否在u中可以提高效率</li>
+<li>min_degree / 3不是// 3</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">minTrioDegree</span><span class="params">(self, n: int, edges: List[List[int]])</span> -&gt; int:</span></span><br><span class="line">	graph = collections.defaultdict(set) <span class="comment"># use set coz if w in graph[u]</span></span><br><span class="line">	<span class="keyword">for</span> u, v <span class="keyword">in</span> edges:</span><br><span class="line">		graph[u].add(v)</span><br><span class="line">		graph[v].add(u)</span><br><span class="line"></span><br><span class="line">	min_degree = float(<span class="string">'inf'</span>)</span><br><span class="line">	<span class="keyword">for</span> u <span class="keyword">in</span> sorted(range(<span class="number">1</span>, n + <span class="number">1</span>), key=<span class="keyword">lambda</span> x: len(graph[x])):</span><br><span class="line">		<span class="keyword">if</span> len(graph[u]) &gt;= min_degree / <span class="number">3</span>: <span class="comment"># remember / 3 not // 3</span></span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		<span class="keyword">for</span> v <span class="keyword">in</span> graph[u]:</span><br><span class="line">			<span class="keyword">for</span> w <span class="keyword">in</span> graph[v]:</span><br><span class="line">				<span class="keyword">if</span> w <span class="keyword">in</span> graph[u]:</span><br><span class="line">					min_degree = min(min_degree, len(graph[u]) + len(graph[v]) + len(graph[w]))</span><br><span class="line">	<span class="keyword">return</span> min_degree - <span class="number">6</span> <span class="keyword">if</span> min_degree != float(<span class="string">'inf'</span>) <span class="keyword">else</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n<sup>3</sup>)</code>，空间复杂度<code>O(n<sup>2</sup>)</code>  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2022/02/08/leetcode-979-distribute-coins-in-binary-tree/">LeetCode 979 Distribute Coins in Binary Tree</a></h1>
   
 
@@ -218,53 +262,6 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2022/02/07/leetcode-1405-longest-happy-string/">LeetCode 1405 Longest Happy String</a></h1>
-  
-
-      
-        <time datetime="2022-02-08T06:20:09.075Z">2022-02-07</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/longest-happy-string/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>A string <code>s</code> is called <strong>happy</strong> if it satisfies the following conditions:<br><br><em>   <code>s</code> only contains the letters <code>&#39;a&#39;</code>, <code>&#39;b&#39;</code>, and <code>&#39;c&#39;</code>.
-</em>   <code>s</code> does not contain any of <code>&quot;aaa&quot;</code>, <code>&quot;bbb&quot;</code>, or <code>&quot;ccc&quot;</code> as a substring.<br><em>   <code>s</code> contains <strong>at most</strong> <code>a</code> occurrences of the letter <code>&#39;a&#39;</code>.
-</em>   <code>s</code> contains <strong>at most</strong> <code>b</code> occurrences of the letter <code>&#39;b&#39;</code>.<br><em>   <code>s</code> contains <strong>at most</strong> <code>c</code> occurrences of the letter <code>&#39;c&#39;</code>.<br><br>Given three integers <code>a</code>, <code>b</code>, and <code>c</code>, return <em>the <strong>longest possible happy</strong> string</em>. If there are multiple longest happy strings, return <em>any of them</em>. If there is no such string, return <em>the empty string</em> <code>&quot;&quot;</code>.<br><br>A <strong>substring</strong> is a contiguous sequence of characters within a string.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> a = 1, b = 1, c = 7<br><strong>Output:</strong> “ccaccbcc”<br><strong>Explanation:</strong> “ccbccacc” would also be a correct answer.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> a = 7, b = 1, c = 0<br><strong>Output:</strong> “aabaa”<br><strong>Explanation:</strong> It is the only correct answer in this case.<br></pre><br><br><strong>Constraints:</strong>
-
-</em>   <code>0 &lt;= a, b, c &lt;= 100</code><br>*   <code>a + b + c &gt; 0</code><br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定三个整数代表abc的个数，生成一个字符串，字符串abc频数不能超过这3个数，不能有连续的aaa, bbb, ccc, 求此种字符串的最大长度</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>由第一个例子看出，先尽量用频数最多的字符，直到连续3个为止，然后再用次多的，如此反复做。这里用到最多和次多，所以考虑用Heap</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>每次选频数最高的字符，但若此字符已连续3次，选次高的，用heap。 </li>
-<li>大于0的频数才加入到heap Line 4和Line 17</li>
-<li>heapreplace等于heappop次高的和heappush最高的。<strong>既然要有次高，heap就不能为空</strong></li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">longestDiverseString</span><span class="params">(self, a: int, b: int, c: int)</span> -&gt; str:</span></span><br><span class="line">	res = <span class="string">''</span></span><br><span class="line">	heap = []</span><br><span class="line">	<span class="keyword">if</span> a &gt; <span class="number">0</span>: <span class="comment"># remember</span></span><br><span class="line">		heapq.heappush(heap, (-a, <span class="string">'a'</span>))</span><br><span class="line">	<span class="keyword">if</span> b &gt; <span class="number">0</span>:</span><br><span class="line">		heapq.heappush(heap, (-b, <span class="string">'b'</span>))</span><br><span class="line">	<span class="keyword">if</span> c &gt; <span class="number">0</span>:</span><br><span class="line">		heapq.heappush(heap, (-c, <span class="string">'c'</span>))</span><br><span class="line">	<span class="keyword">while</span> heap:</span><br><span class="line">		count, char = heapq.heappop(heap)</span><br><span class="line">		<span class="keyword">if</span> len(res) &gt; <span class="number">1</span> <span class="keyword">and</span> res[<span class="number">-2</span>] == res[<span class="number">-1</span>] == char:</span><br><span class="line">			<span class="keyword">if</span> <span class="keyword">not</span> heap:</span><br><span class="line">				<span class="keyword">break</span></span><br><span class="line">			count, char = heapq.heapreplace(heap, (count, char))</span><br><span class="line">		res += char</span><br><span class="line">		<span class="keyword">if</span> count + <span class="number">1</span>:</span><br><span class="line">			heapq.heappush(heap, (count + <span class="number">1</span>, char))</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -289,6 +286,10 @@
   <ul class="entry">
     
       <li>
+        <a href="/2022/03/01/leetcode-772-basic-calculator-iii/">LeetCode 772 Basic Calculator III</a>
+      </li>
+    
+      <li>
         <a href="/2022/02/24/leetcode-432-all-oone-data-structure/">LeetCode 432 All O one Data Structure</a>
       </li>
     
@@ -302,10 +303,6 @@
     
       <li>
         <a href="/2022/02/16/leetcode-843-guess-the-word/">LeetCode 843 Guess the Word</a>
-      </li>
-    
-      <li>
-        <a href="/2022/02/16/leetcode-833-find-and-replace-in-string/">LeetCode 833 Find And Replace in String</a>
       </li>
     
   </ul>

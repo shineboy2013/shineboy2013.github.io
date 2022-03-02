@@ -53,6 +53,75 @@
     <header>
       
   
+    <h1 class="title"><a href="/2018/01/10/lee-329/">LeetCode 329 Longest Increasing Path in a Matrix</a></h1>
+  
+
+      
+        <time datetime="2018-01-10T09:46:52.076Z">2018-01-10</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/longest-increasing-path-in-a-matrix" target="_blank" rel="noopener">LeetCode 329 Longest Increasing Path in a Matrix</a></strong></p>
+<p>Given an integer matrix, find the length of the longest increasing path.</p>
+<p>From each cell, you can either move to four directions: left, right, up or down. You may NOT move diagonally or move outside of the boundary (i.e. wrap-around is not allowed).</p>
+<p><strong>Example 1:</strong></p>
+<pre>nums = [
+  [<font color="red">9</font>,9,4],
+  [<font color="red">6</font>,6,8],
+  [<font color="red">2</font>,<font color="red">1</font>,1]
+]
+</pre>
+
+<p>Return <code>4</code><br>The longest increasing path is <code>[1, 2, 6, 9]</code>.</p>
+<p><strong>Example 2:</strong></p>
+<pre>nums = [
+  [<font color="red">3</font>,<font color="red">4</font>,<font color="red">5</font>],
+  [3,2,<font color="red">6</font>],
+  [2,2,1]
+]
+</pre>
+
+<p>Return <code>4</code><br>The longest increasing path is <code>[3, 4, 5, 6]</code>. Moving diagonally is not allowed.</p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个整数矩阵，计算其最长递增路径的长度。<br>从每一个单元格出发，你可以向四个方向移动：左右上下。你不可以沿着对角线移动也不能移出边界。（亦即，环绕是不允许的）。</p>
+<h3 id="Floyd解题思路："><a href="#Floyd解题思路：" class="headerlink" title="Floyd解题思路："></a><strong>Floyd解题思路：</strong></h3><p>这是经典题，类似于LIS题，只要将以每个点为终点的最长路径长度存起来，就可以类推它的邻近点的最长长度（DP）。f(x,y)=max{f(x,y),4个邻近点的f+1}<br>由于这是求最长路径题且为矩阵，可以考虑按步长计算，就是Floyd的思路，就是先计算步长为1,2一直到所以最长路径长度矩阵长度不再更新为止。<br>另一个思路也是用矩阵存起每个点最长路径长度，但用DFS搜索，直至这个点的值不为初始值为止，详见书影博客。</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>矩阵为空或长度为0</li>
+<li>当任何值没有更新时，Floyd停止计算</li>
+</ol>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">longestIncreasingPath</span><span class="params">(<span class="keyword">int</span>[][] matrix)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (matrix==<span class="keyword">null</span> || matrix.length==<span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span>[][] path = <span class="keyword">new</span> <span class="keyword">int</span>[matrix.length][matrix[<span class="number">0</span>].length];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;matrix.length;i++)</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;matrix[<span class="number">0</span>].length;j++)</span><br><span class="line">			path[i][j] = <span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">boolean</span> nextPath = <span class="keyword">true</span>;</span><br><span class="line">	<span class="keyword">while</span>(nextPath)&#123;</span><br><span class="line">		nextPath = <span class="keyword">false</span>;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;matrix.length;i++)</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;matrix[<span class="number">0</span>].length;j++)&#123;</span><br><span class="line">				<span class="keyword">if</span>(changeCell(matrix, path, i, j))</span><br><span class="line">					nextPath = <span class="keyword">true</span>;</span><br><span class="line">			&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">int</span> max = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;matrix.length;i++)</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;matrix[<span class="number">0</span>].length;j++)</span><br><span class="line">			<span class="keyword">if</span>(path[i][j]&gt;max)</span><br><span class="line">				max = path[i][j];</span><br><span class="line">	<span class="keyword">return</span> max;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">changeCell</span><span class="params">(<span class="keyword">int</span>[][] matrix, <span class="keyword">int</span>[][] path, <span class="keyword">int</span> i, <span class="keyword">int</span> j)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> pre = path[i][j];</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(i-<span class="number">1</span>&gt;=<span class="number">0</span> &amp;&amp; matrix[i-<span class="number">1</span>][j]&lt;matrix[i][j] &amp;&amp;  path[i-<span class="number">1</span>][j]+<span class="number">1</span>&gt;path[i][j])</span><br><span class="line">		path[i][j] = path[i-<span class="number">1</span>][j]+<span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(i+<span class="number">1</span>&lt;matrix.length &amp;&amp; matrix[i+<span class="number">1</span>][j]&lt;matrix[i][j] &amp;&amp;  path[i+<span class="number">1</span>][j]+<span class="number">1</span>&gt;path[i][j])</span><br><span class="line">		path[i][j] = path[i+<span class="number">1</span>][j]+<span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(j-<span class="number">1</span>&gt;=<span class="number">0</span> &amp;&amp; matrix[i][j-<span class="number">1</span>]&lt;matrix[i][j] &amp;&amp;  path[i][j-<span class="number">1</span>]+<span class="number">1</span>&gt;path[i][j])</span><br><span class="line">		path[i][j] = path[i][j-<span class="number">1</span>]+<span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(j+<span class="number">1</span>&lt;matrix[<span class="number">0</span>].length &amp;&amp; matrix[i][j+<span class="number">1</span>]&lt;matrix[i][j] &amp;&amp;  path[i][j+<span class="number">1</span>]+<span class="number">1</span>&gt;path[i][j])</span><br><span class="line">		path[i][j] = path[i][j+<span class="number">1</span>]+<span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(pre!=path[i][j])</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>k为最长路径长度，时间复杂度为<code>O(k<em>n</em><sup>2</sup>)</code>，空间复杂度<code>O(<em>n</em><sup>2</sup>)</code>。   </p>
+<hr>
+<h3 id="DP算法II解题思路-推荐-："><a href="#DP算法II解题思路-推荐-：" class="headerlink" title="DP算法II解题思路(推荐)："></a><strong>DP算法II解题思路(推荐)：</strong></h3><p>求最值，考虑用DP，但DP的应用条件为有序，所以不妨将所有值排序。<br>先对所有数的值排序作为新的输入数组，按这个顺序，计算DP，每个点的往前4个方向的DP值+1。<br>如题第一个例子, 元祖里第一个为值，后两个为xy坐标<br>[(1, 2, 1), (1, 2, 2)…]<br>递归公式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dp[x][y] = dp[x + dx][y + dy] + 1, ifmatrix[x][y] &gt; matrix[x + dx][y + dy]:</span><br></pre></td></tr></table></figure></p>
+<p>最后计算max(dp)  </p>
+<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>当递增时，才更新DP，Line 13</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">longestIncreasingPath</span><span class="params">(self, matrix: List[List[int]])</span> -&gt; int:</span></span><br><span class="line">	ary = []</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(matrix)):</span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> range(len(matrix[<span class="number">0</span>])):</span><br><span class="line">		   ary.append((matrix[i][j], i, j))</span><br><span class="line">	ary.sort()</span><br><span class="line">	dp = [[<span class="number">1</span> <span class="keyword">for</span> _ <span class="keyword">in</span> range(len(matrix[<span class="number">0</span>]))] <span class="keyword">for</span> _ <span class="keyword">in</span> range(len(matrix))]</span><br><span class="line">	<span class="keyword">for</span> val, _x, _y <span class="keyword">in</span> ary:</span><br><span class="line">		<span class="keyword">for</span> _dx, _dy <span class="keyword">in</span> OFFSETS:</span><br><span class="line">			x, y = _x + _dx, _y + _dy</span><br><span class="line">			<span class="keyword">if</span> x &lt; <span class="number">0</span> <span class="keyword">or</span> x &gt;= len(matrix) <span class="keyword">or</span> y &lt; <span class="number">0</span> <span class="keyword">or</span> y &gt;= len(matrix[<span class="number">0</span>]):</span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			<span class="keyword">if</span> matrix[x][y] &gt; matrix[_x][_y]:</span><br><span class="line">				dp[x][y] = max(dp[x][y], dp[_x][_y] + <span class="number">1</span>)</span><br><span class="line">	<span class="keyword">return</span> max(map(max, dp))</span><br></pre></td></tr></table></figure>
+<h2 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h2><p>排序是n^2logn^2 = n^2logn, dp计算是n^2<br>所以时间复杂度为<code>O(<em>n</em><sup>2</sup>logn)</code>，空间复杂度<code>O(<em>n</em><sup>2</sup>)</code></p>
+<hr>
+<h3 id="算法III解题思路："><a href="#算法III解题思路：" class="headerlink" title="算法III解题思路："></a><strong>算法III解题思路：</strong></h3><p>这题也可以额用记忆性搜索DFS来解。</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2018/01/09/lee-332/">LeetCode 332 Reconstruct Itinerary</a></h1>
   
 
@@ -292,51 +361,6 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2017/12/31/lee-316/">LeetCode 316 Remove Duplicate Letters</a></h1>
-  
-
-      
-        <time datetime="2017-12-31T19:07:51.935Z">2017-12-31</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/remove-duplicate-letters" target="_blank" rel="noopener">LeetCode 316 Remove Duplicate Letters</a></strong></p>
-<p>Given a string which contains only lowercase letters, remove duplicate letters so that every letter appear once and only once. You must make sure your result is the smallest in lexicographical order among all possible results.</p>
-<p><strong>Example:</strong>  </p>
-<p>Given <code>&quot;bcabc&quot;</code><br>Return <code>&quot;abc&quot;</code></p>
-<p>Given <code>&quot;cbacdcbc&quot;</code><br>Return <code>&quot;acdb&quot;</code></p>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个只包含小写字母的字符串，从中移除重复字母使得每个字母只出现一次。你必须确保结果的字典序最小。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这题是保持原顺序输出结果，所以考虑用递减栈(<strong>递增栈，从栈底递增，求最小即用递增</strong>，如求k个最大用最小堆一样)。先看例子bcabc-&gt;abc，a入栈倒逼<br>bc出栈，可解此题。因为既然bc在栈外还有，就可以出栈，保证第一个字母最小（题目要求）。再看cbacdcbc，acd时候b入栈，不能倒逼cd出栈<br>因为d是唯一一个，所以还要维护一个hashMap来记录每个字母的词频。所以入栈条件为准入栈元素小于栈顶元素且栈顶元素为最后一个（频数&gt;0）。<br>hashMap作用有两个，第一个为统计词频，第二个为记录未入栈的字母的频数。<br>resultSet记录stack中所有唯一元素，用于判断是否需要入栈。这是难点，对于已在栈中的重复元素不需要再入栈，因为它在栈中的位置已经是目前<br>最小的位置，如果要出现更小的结果只能通过非栈内元素倒逼产生新结果。如acabc，第二个a不需要逼c出来，b可以做到这一点，a已在最小位置。  </p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>已在栈内的<strong>重复元素</strong>不入栈，也不倒逼任何元素出栈，也就是直接忽略它，只要将其频数减一即可，表示已处理。比如abacb，第二个a不能倒逼b。<strong>用两个数据结构：set保证不重复加入到栈内，map保证外面还有元素可入栈</strong>  </li>
-<li>进入循环后频数立刻减一，不要出列时候才做，参见BFS。  </li>
-<li>出栈条件：栈不为空，准入栈元素小于栈顶元素，<strong>栈顶元素频数&gt;0</strong>（表示栈外还有元素可以入栈）。  </li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">removeDuplicateLetters</span><span class="params">(self, s: str)</span> -&gt; str:</span></span><br><span class="line">	char_to_count = collections.Counter(s)</span><br><span class="line">	stack, stack_set = [], set()</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(s)):</span><br><span class="line">		char_to_count[s[i]] -= <span class="number">1</span></span><br><span class="line">		<span class="keyword">if</span> s[i] <span class="keyword">in</span> stack_set:</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		<span class="keyword">while</span> stack <span class="keyword">and</span> s[i] &lt; stack[<span class="number">-1</span>] <span class="keyword">and</span> char_to_count[stack[<span class="number">-1</span>]] &gt; <span class="number">0</span>:</span><br><span class="line">			stack_set.remove(stack[<span class="number">-1</span>])</span><br><span class="line">			stack.pop()</span><br><span class="line">		stack.append(s[i])</span><br><span class="line">		stack_set.add(s[i])</span><br><span class="line">	<span class="keyword">return</span> <span class="string">''</span>.join(stack)</span><br></pre></td></tr></table></figure>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">removeDuplicateLetters</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">	Stack&lt;Character&gt; stack = <span class="keyword">new</span> Stack&lt;Character&gt;();</span><br><span class="line">	Map&lt;Character, Integer&gt; map = <span class="keyword">new</span> HashMap&lt;Character, Integer&gt;();</span><br><span class="line">	Set&lt;Character&gt; result = <span class="keyword">new</span> HashSet&lt;Character&gt;();</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;s.length();i++)&#123;</span><br><span class="line">		Character c = s.charAt(i);</span><br><span class="line">		<span class="keyword">if</span>(map.containsKey(c))</span><br><span class="line">			map.put(c, map.get(c)+<span class="number">1</span>);</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			map.put(c, <span class="number">1</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;s.length();i++)&#123;</span><br><span class="line">		Character c = s.charAt(i);</span><br><span class="line">		map.put(c, map.get(c)-<span class="number">1</span>);</span><br><span class="line">		</span><br><span class="line">		<span class="comment">//Stack已经有c就不加入</span></span><br><span class="line">		<span class="keyword">if</span>(result.contains(c))</span><br><span class="line">			<span class="keyword">continue</span>;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">while</span>(!stack.isEmpty() &amp;&amp; c&lt;stack.peek() &amp;&amp; map.get(stack.peek())&gt;<span class="number">0</span>)&#123;</span><br><span class="line">			result.remove(stack.peek());</span><br><span class="line">			stack.pop();</span><br><span class="line">		&#125;</span><br><span class="line">		stack.push(c);</span><br><span class="line">		result.add(c);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	StringBuilder sb = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">	<span class="keyword">while</span>(!stack.isEmpty())</span><br><span class="line">		sb.append(stack.pop());</span><br><span class="line">	<span class="keyword">return</span> sb.reverse().toString();  	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>所有元素入栈出栈最多一次，所以时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>。</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -361,6 +385,10 @@
   <ul class="entry">
     
       <li>
+        <a href="/2022/03/01/leetcode-772-basic-calculator-iii/">LeetCode 772 Basic Calculator III</a>
+      </li>
+    
+      <li>
         <a href="/2022/02/24/leetcode-432-all-oone-data-structure/">LeetCode 432 All O one Data Structure</a>
       </li>
     
@@ -374,10 +402,6 @@
     
       <li>
         <a href="/2022/02/16/leetcode-843-guess-the-word/">LeetCode 843 Guess the Word</a>
-      </li>
-    
-      <li>
-        <a href="/2022/02/16/leetcode-833-find-and-replace-in-string/">LeetCode 833 Find And Replace in String</a>
       </li>
     
   </ul>

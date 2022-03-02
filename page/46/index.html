@@ -53,6 +53,53 @@
     <header>
       
   
+    <h1 class="title"><a href="/2021/12/06/lee-295/">LeetCode 295 Find Median from Data Stream</a></h1>
+  
+
+      
+        <time datetime="2021-12-06T17:48:27.935Z">2021-12-06</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/find-median-from-data-stream/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>The <strong>median</strong> is the middle value in an ordered integer list. If the size of the list is even, there is no middle value and the median is the mean of the two middle values.<br><br><em>   For example, for <code>arr = [2,3,4]</code>, the median is <code>3</code>.
+</em>   For example, for <code>arr = [2,3]</code>, the median is <code>(2 + 3) / 2 = 2.5</code>.<br><br>Implement the MedianFinder class:<br><br><em>   <code>MedianFinder()</code> initializes the <code>MedianFinder</code> object.
+</em>   <code>void addNum(int num)</code> adds the integer <code>num</code> from the data stream to the data structure.<br><em>   <code>double findMedian()</code> returns the median of all elements so far. Answers within <code>10&lt;sup&gt;-5&lt;/sup&gt;</code> of the actual answer will be accepted.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input</strong><br>[“MedianFinder”, “addNum”, “addNum”, “findMedian”, “addNum”, “findMedian”]<br>[[], [1], [2], [], [3], []]<br><strong>Output</strong><br>[null, null, null, 1.5, null, 2.0]<br><br><strong>Explanation</strong><br>MedianFinder medianFinder = new MedianFinder();<br>medianFinder.addNum(1);    // arr = [1]<br>medianFinder.addNum(2);    // arr = [1, 2]<br>medianFinder.findMedian(); // return 1.5 (i.e., (1 + 2) / 2)<br>medianFinder.addNum(3);    // arr[1, 2, 3]<br>medianFinder.findMedian(); // return 2.0<br></pre><br><br><strong>Constraints:</strong>
+
+</em>   <code>-10&lt;sup&gt;5&lt;/sup&gt; &lt;= num &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code><br><em>   There will be at least one element in the data structure before calling <code>findMedian</code>.
+</em>   At most <code>5 * 10&lt;sup&gt;4&lt;/sup&gt;</code> calls will be made to <code>addNum</code> and <code>findMedian</code>.<br><br><strong>Follow up:</strong><br><br><em>   If all integer numbers from the stream are in the range <code>[0, 100]</code>, how would you optimize your solution?
+</em>   If <code>99%</code> of all integer numbers from the stream are in the range <code>[0, 100]</code>, how would you optimize your solution?<br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求动态中位数</p>
+<h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>用max_heap, min_heap, 保证min_heap个数永远等于max_heap或多一个。插入元素先进max_heap, 再heappop将堆顶元素加入min_heap, 若此时比max_heap多2个，就再heappop加入到max_heap. </p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>中位数有1-2个  </li>
+<li>Python中的max_heap用负数实现，<strong>入堆出堆都要取反</strong>        </li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MedianFinder</span><span class="params">(TestCases)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.max_heap = []</span><br><span class="line">        self.min_heap = []</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">addNum</span><span class="params">(self, num: int)</span> -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        heapq.heappush(self.max_heap, -num)</span><br><span class="line">        max_value = -heapq.heappop(self.max_heap)</span><br><span class="line">        heapq.heappush(self.min_heap, max_value)</span><br><span class="line">        <span class="keyword">if</span> len(self.min_heap) - len(self.max_heap) &gt;= <span class="number">2</span>:</span><br><span class="line">            min_value = heapq.heappop(self.min_heap)</span><br><span class="line">            heapq.heappush(self.max_heap, -min_value)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">findMedian</span><span class="params">(self)</span> -&gt; float:</span></span><br><span class="line">        <span class="keyword">if</span> len(self.max_heap) == len(self.min_heap):</span><br><span class="line">            <span class="keyword">return</span> (-self.max_heap[<span class="number">0</span>] + self.min_heap[<span class="number">0</span>]) / <span class="number">2</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> self.min_heap[<span class="number">0</span>]</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(logn)</code>，空间复杂度<code>O(n)</code>  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2021/12/06/lee-227/">LeetCode 227 Basic Calculator II</a></h1>
   
 
@@ -72,13 +119,14 @@
 <h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>实现字符串加减乘除，但无括号。</p>
 <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>逆波兰式的实现用Stack。Stack只存数，而且<strong>只存加号操作符</strong>的数，也就是说，<br>如果是减，就将-num入栈，<br>如果是乘除，立刻计算stack[-1]乘除num的结果再压入栈，因为乘除是最高优先级可以直接计算，而加减不可以。<br>所以用<strong>一个stack</strong>  </p>
 <p>代码中含三种情况：空格，运算符，数字</p>
+<p><a href="https://shineboy2013.github.io/2021/12/08/lee-224/" target="_blank" rel="noopener">LeetCode 224 Basic Calculator</a> 括号加减法, 同一层括号内求和遇括号入栈<br><a href="https://shineboy2013.github.io/2021/12/06/lee-227/" target="_blank" rel="noopener">LeetCode 227 Basic Calculator II</a> 加减乘除, 和的每一项入栈，方便出栈计乘除<br>[LeetCode 772 Basic Calculator III] 加减乘除括号, L227的递归版</p>
 <h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><p>此题没有括号，不能用模板，要借用op来记录前一个操作符  </p>
 <ol>
 <li>op记录前一个运算符，char为运算符或当前字符。计算时候根据op，因为char(+)只是第二个操作数(1-2+)的终结字符，此时表明操作数stack[-1], num以及操作符op均已完成，可以计算         </li>
 <li>最容易错的是向下取整Line 18, 题目返回要求整数。所以<strong>要除法后取整int(prev / num)</strong></li>
 <li>s末尾加入加号，方便parse最后一个num  </li>
 </ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">calculate</span><span class="params">(self, s: str)</span> -&gt; int:</span></span><br><span class="line">	s += <span class="string">'+'</span></span><br><span class="line">	res, num, stack, op = <span class="number">0</span>, <span class="number">0</span>, [], <span class="string">'+'</span></span><br><span class="line">	<span class="keyword">for</span> char <span class="keyword">in</span> s:</span><br><span class="line">		<span class="keyword">if</span> char == <span class="string">' '</span>:</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		<span class="keyword">elif</span> char.isdigit():</span><br><span class="line">			num = num * <span class="number">10</span> + int(char)</span><br><span class="line">		<span class="keyword">elif</span> op == <span class="string">'-'</span>:</span><br><span class="line">			stack.append(-num)</span><br><span class="line">		<span class="keyword">elif</span> op == <span class="string">'+'</span>:</span><br><span class="line">			stack.append(num) <span class="comment"># [4+2*1]</span></span><br><span class="line">		<span class="keyword">elif</span> op == <span class="string">'*'</span>:</span><br><span class="line">			prev = stack.pop()</span><br><span class="line">			stack.append(prev * num)</span><br><span class="line">		<span class="keyword">elif</span> op == <span class="string">'/'</span>:</span><br><span class="line">			prev = stack.pop()</span><br><span class="line">			stack.append(int(prev / num))  <span class="comment"># remember</span></span><br><span class="line">		<span class="keyword">if</span> char <span class="keyword">in</span> <span class="string">'+-*/'</span>:</span><br><span class="line">			num = <span class="number">0</span></span><br><span class="line">			op = char</span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> stack:</span><br><span class="line">		n = stack.pop()</span><br><span class="line">		res += n</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">calculate</span><span class="params">(self, s: str)</span> -&gt; int:</span></span><br><span class="line">	s += <span class="string">'+'</span></span><br><span class="line">	res, num, stack, op = <span class="number">0</span>, <span class="number">0</span>, [], <span class="string">'+'</span></span><br><span class="line">	<span class="keyword">for</span> char <span class="keyword">in</span> s:</span><br><span class="line">		<span class="keyword">if</span> char == <span class="string">' '</span>:</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		<span class="keyword">elif</span> char.isdigit():</span><br><span class="line">			num = num * <span class="number">10</span> + int(char)</span><br><span class="line">		<span class="keyword">elif</span> op == <span class="string">'-'</span>:</span><br><span class="line">			stack.append(-num)</span><br><span class="line">		<span class="keyword">elif</span> op == <span class="string">'+'</span>:</span><br><span class="line">			stack.append(num) <span class="comment"># [4+2*1]</span></span><br><span class="line">		<span class="keyword">elif</span> op == <span class="string">'*'</span>:</span><br><span class="line">			prev = stack.pop()</span><br><span class="line">			stack.append(prev * num)</span><br><span class="line">		<span class="keyword">elif</span> op == <span class="string">'/'</span>:</span><br><span class="line">			prev = stack.pop()</span><br><span class="line">			stack.append(int(prev / num))  <span class="comment"># remember</span></span><br><span class="line">		<span class="keyword">if</span> char <span class="keyword">in</span> <span class="string">'+-*/'</span>:</span><br><span class="line">			num = <span class="number">0</span></span><br><span class="line">			op = char</span><br><span class="line">    <span class="keyword">return</span> sum(stack)</span><br></pre></td></tr></table></figure>
 <h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>  </p>
 
       
@@ -232,66 +280,6 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2021/12/05/lee-729/">LeetCode 729 My Calendar I</a></h1>
-  
-
-      
-        <time datetime="2021-12-06T05:41:01.328Z">2021-12-05</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/my-calendar-i/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>You are implementing a program to use as your calendar. We can add a new event if adding the event will not cause a <strong>double booking</strong>.<br><br>A <strong>double booking</strong> happens when two events have some non-empty intersection (i.e., some moment is common to both events.).<br><br>The event can be represented as a pair of integers <code>start</code> and <code>end</code> that represents a booking on the half-open interval <code>[start, end)</code>, the range of real numbers <code>x</code> such that <code>start &lt;= x &lt; end</code>.<br><br>Implement the <code>MyCalendar</code> class:<br><br><em>   <code>MyCalendar()</code> Initializes the calendar object.
-</em>   <code>boolean book(int start, int end)</code> Returns <code>true</code> if the event can be added to the calendar successfully without causing a <strong>double booking</strong>. Otherwise, return <code>false</code> and do not add the event to the calendar.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input</strong><br>[“MyCalendar”, “book”, “book”, “book”]<br>[[], [10, 20], [15, 25], [20, 30]]<br><strong>Output</strong><br>[null, true, false, true]<br><br><strong>Explanation</strong><br>MyCalendar myCalendar = new MyCalendar();<br>myCalendar.book(10, 20); // return True<br>myCalendar.book(15, 25); // return False, It can not be booked because time 15 is already booked by another event.<br>myCalendar.book(20, 30); // return True, The event can be booked, as the first event takes every time less than 20, but not including 20.</pre><br><br><strong>Constraints:</strong><br><br><em>   <code>0 &lt;= start &lt; end &lt;= 10&lt;sup&gt;9&lt;/sup&gt;</code>
-</em>   At most <code>1000</code> calls will be made to <code>book</code>.<br><br></div>
-
-<h3 id="暴力法算法思路-推荐-："><a href="#暴力法算法思路-推荐-：" class="headerlink" title="暴力法算法思路(推荐)："></a><strong>暴力法算法思路(推荐)：</strong></h3><p>存储所有区间</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>区间比较难写，用符合加入会议条件的相反来写，not (start &gt;= root.end or end &lt;= root.start)      </li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyCalendar</span><span class="params">(TestCases)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.calendar = []</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">book</span><span class="params">(self, start: int, end: int)</span> -&gt; bool:</span></span><br><span class="line">        <span class="keyword">for</span> s, e <span class="keyword">in</span> self.calendar:</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> (start &gt;= e <span class="keyword">or</span> end &lt;= s):</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">        self.calendar.append((start, end))</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">True</span></span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n<sup>2</sup>)</code>, 空间复杂度<code>O(n)</code> </p>
-<hr>
-<h3 id="端点排序法解题思路II："><a href="#端点排序法解题思路II：" class="headerlink" title="端点排序法解题思路II："></a><strong>端点排序法解题思路II：</strong></h3><p>区间重合题考虑用heap或者端点排序法，输入是必须有序，所以此题可以令区间有序，而heap用于处理重合情况下的计算，此题不适用，所以用端点排序法。</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>区间端点排序，(endpoint, 1/-1), 1表示始点，-1表示终点。用bisect搜索时，注意输入也要用两维(start, 1)    </li>
-<li>难点在于比较结果决定返回Ture or False。两种情况返回False：好的情况是输入区间的搜索结果的下标应该相等表示可以插入到现有两区间之间，所以<strong>若不等</strong>，就不符合。第二种是若现有区间完全覆盖新区间，此时搜索结果下标也一样，所以此情况<strong>新区间终点的搜索结果(后一个节点)是终点</strong>。同时为保证搜索结果不处理越界，<strong>加入空端点</strong>  </li>
-<li>若同一个端点同时存在始点和端点，不用合并，因为它们已经按-1, 1排序了。 </li>
-</ol>
-<h3 id="Python代码：-1"><a href="#Python代码：-1" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyCalendar</span><span class="params">(TestCases)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.calendar = [(float(<span class="string">'-inf'</span>), <span class="number">-1</span>), (float(<span class="string">'inf'</span>), <span class="number">1</span>)]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">book</span><span class="params">(self, start: int, end: int)</span> -&gt; bool:</span></span><br><span class="line">        index_start = bisect.bisect(self.calendar, (start, <span class="number">1</span>)) <span class="comment"># remember params</span></span><br><span class="line">        index_end = bisect.bisect(self.calendar, (end, <span class="number">-1</span>))</span><br><span class="line">        <span class="keyword">if</span> index_start != index_end <span class="keyword">or</span> self.calendar[index_end][<span class="number">1</span>] == <span class="number">-1</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">        <span class="comment"># no need to merge endpoints coz they are sorted in (a, -1), (a, 1) as expected</span></span><br><span class="line">        bisect.insort(self.calendar, (start, <span class="number">1</span>))</span><br><span class="line">        bisect.insort(self.calendar, (end, <span class="number">-1</span>))</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">True</span></span><br></pre></td></tr></table></figure>
-<h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n<sup>2</sup>)</code>，由于insort是插入需要移动数组，所以是O(n), 空间复杂度<code>O(n)</code>  </p>
-<hr>
-<h3 id="线段树算法III思路-不推荐-："><a href="#线段树算法III思路-不推荐-：" class="headerlink" title="线段树算法III思路(不推荐)："></a><strong>线段树算法III思路(不推荐)：</strong></h3><p>区间重合题考虑用heap类似meeting rooms，输入是必须有序，但这里新区间与已有区间不是有序且不能online处理，所以不能用heap。<br>考虑用start, end排序，二分法查找，只能处理单次，因为插入不方便。<br>要查找和插入都能低于O(n)，就只能用TreeMap。类似于线段树存储区间，此题每个Node存储一个区间。新区间的end，start分别与root的start和end比较，若不重合，就递归到左右子树。此树投影为离散且不重合的区间。   </p>
-<h3 id="注意事项：-2"><a href="#注意事项：-2" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>考察二叉树插入算法，<strong>返回值需要是TreeNode</strong>，如root.left = self.dfs(root.left, start, end)。由于需要知道是否成功插入，所以返回值多加一个boolean  </li>
-<li>区间比较难写，用符合加入会议条件的相反来写，not (start &gt;= root.end or end &lt;= root.start)      </li>
-<li>is_left or is_right任意一个加入成功都可以，所以是or不是and  </li>
-</ol>
-<h3 id="Python代码：-2"><a href="#Python代码：-2" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyCalendar</span><span class="params">(TestCases)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.head = <span class="keyword">None</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">book</span><span class="params">(self, start: int, end: int)</span> -&gt; bool:</span></span><br><span class="line">        root, is_booked = self.dfs(self.head, start, end)</span><br><span class="line">        self.head = root</span><br><span class="line">        <span class="keyword">return</span> is_booked</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">dfs</span><span class="params">(self, root, start, end)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> root:</span><br><span class="line">            <span class="keyword">return</span> TreeNode(start, end), <span class="keyword">True</span></span><br><span class="line">        <span class="comment">#if root.start &lt;= start &lt; root.end or root.start &lt; end &lt;= root.end: # remember</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> (start &gt;= root.end <span class="keyword">or</span> end &lt;= root.start):</span><br><span class="line">            <span class="keyword">return</span> root, <span class="keyword">False</span></span><br><span class="line">        is_left = is_right = <span class="keyword">False</span></span><br><span class="line">        <span class="keyword">if</span> end &lt;= root.start:</span><br><span class="line">            root.left, is_left = self.dfs(root.left, start, end)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            root.right, is_right = self.dfs(root.right, start, end)</span><br><span class="line">        <span class="keyword">return</span> root, is_left <span class="keyword">or</span> is_right <span class="comment"># remember or</span></span><br></pre></td></tr></table></figure>
-<h3 id="算法分析：-2"><a href="#算法分析：-2" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nlogn)</code>，最差情况为<code>O(n<sup>2</sup>)</code>，空间复杂度<code>O(n)</code>  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -316,6 +304,10 @@
   <ul class="entry">
     
       <li>
+        <a href="/2022/03/01/leetcode-772-basic-calculator-iii/">LeetCode 772 Basic Calculator III</a>
+      </li>
+    
+      <li>
         <a href="/2022/02/24/leetcode-432-all-oone-data-structure/">LeetCode 432 All O one Data Structure</a>
       </li>
     
@@ -329,10 +321,6 @@
     
       <li>
         <a href="/2022/02/16/leetcode-843-guess-the-word/">LeetCode 843 Guess the Word</a>
-      </li>
-    
-      <li>
-        <a href="/2022/02/16/leetcode-833-find-and-replace-in-string/">LeetCode 833 Find And Replace in String</a>
       </li>
     
   </ul>
