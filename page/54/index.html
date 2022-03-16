@@ -53,6 +53,47 @@
     <header>
       
   
+    <h1 class="title"><a href="/2021/11/29/trie/">Trie</a></h1>
+  
+
+      
+        <time datetime="2021-11-30T00:47:38.487Z">2021-11-29</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>Leetcode 208 Implement Trie (Prefix Tree), 也可以用HashMap将所有前缀加入到Map来实现，效率稍低。  </p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>TrieNode用{}和is_end，insert, search, startswith用it和i迭代比较  </li>
+<li>startswith含整个单词，如单词apple，startswith(‘apple’) -&gt; True  </li>
+<li><del>Line 11记得加，也就是dict在取value是一定要先检验key是否存在。</del>可以不加，解决方案是用defaultdict（后版本）。  </li>
+</ol>
+<p>新版本比旧版本更简洁，体现在is_end的处理放在了for循环外。<br>存储结构举例：  a<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">TrieNode(</span><br><span class="line">  children = &#123; </span><br><span class="line">              &apos;a&apos;:  TrieNode(is_End = True)</span><br><span class="line">		     &#125;</span><br><span class="line">  is_end = False</span><br><span class="line">)</span><br></pre></td></tr></table></figure></p>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.head = TrieNode()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">insert</span><span class="params">(self, word: str)</span> -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        it = self.head</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(len(word)):</span><br><span class="line">            <span class="comment"># if word[i] not in it.children:</span></span><br><span class="line">                <span class="comment">#it.children[word[i]] = TrieNode()</span></span><br><span class="line">            it = it.children[word[i]]</span><br><span class="line">        it.is_end = <span class="keyword">True</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span><span class="params">(self, word: str)</span> -&gt; bool:</span></span><br><span class="line">        it = self.head</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(len(word)):</span><br><span class="line">            <span class="keyword">if</span> word[i] <span class="keyword">not</span> <span class="keyword">in</span> it.children:</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">            it = it.children[word[i]]</span><br><span class="line">        <span class="keyword">return</span> it.is_end</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">startsWith</span><span class="params">(self, prefix: str)</span> -&gt; bool:</span></span><br><span class="line">        it = self.head</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(len(prefix)):</span><br><span class="line">            <span class="keyword">if</span> prefix[i] <span class="keyword">not</span> <span class="keyword">in</span> it.children:</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">            it = it.children[prefix[i]]</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TrieNode</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.children = collections.defaultdict(TrieNode)  <span class="comment"># &#123;&#125;</span></span><br><span class="line">        self.is_end = <span class="keyword">False</span></span><br></pre></td></tr></table></figure>
+<p>旧版本： 冗余了一个if语句if i == len(word) - 1   </p>
+<h3 id="Python代码：-1"><a href="#Python代码：-1" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Trie</span><span class="params">(TestCases)</span>:</span></span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.head = TrieNode()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">insert</span><span class="params">(self, word: str)</span> -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> word:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        it = self.head</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(len(word)):</span><br><span class="line">            <span class="comment"># if word[i] not in it.children:</span></span><br><span class="line">                <span class="comment"># it.children[word[i]] = TrieNode()</span></span><br><span class="line">            it = it.children[word[i]]</span><br><span class="line">            <span class="keyword">if</span> i == len(word) - <span class="number">1</span>:</span><br><span class="line">                it.is_end = <span class="keyword">True</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span><span class="params">(self, word: str)</span> -&gt; bool:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> word:</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">        it = self.head</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(len(word)):</span><br><span class="line">            <span class="keyword">if</span> word[i] <span class="keyword">not</span> <span class="keyword">in</span> it.children:</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">            it = it.children[word[i]]</span><br><span class="line">            <span class="keyword">if</span> i == len(word) - <span class="number">1</span> <span class="keyword">and</span> it.is_end:</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">startsWith</span><span class="params">(self, prefix: str)</span> -&gt; bool:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> prefix:</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">        it = self.head</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(len(prefix)):</span><br><span class="line">            <span class="keyword">if</span> prefix[i] <span class="keyword">not</span> <span class="keyword">in</span> it.children:</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">            it = it.children[prefix[i]]</span><br><span class="line">            <span class="keyword">if</span> i == len(prefix) - <span class="number">1</span>:</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TrieNode</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.children = collections.defaultdict(TrieNode)  <span class="comment"># &#123;&#125;</span></span><br><span class="line">        self.is_end = <span class="keyword">False</span></span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>每个操作时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>，n为单词长度。</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2021/11/27/lee-1048/">LeetCode 1048 Longest String Chain</a></h1>
   
 
@@ -114,10 +155,10 @@
         <ul>
 <li>典型递归式</li>
 <li>单序列或匹配型DP模板</li>
-<li>打印路径</li>
 <li>数值到个数DP模板(最常考) </li>
 <li>区间型DP模板</li>
 <li>压缩空间</li>
+<li>打印路径</li>
 </ul>
 <h2 id="典型递归式："><a href="#典型递归式：" class="headerlink" title="典型递归式："></a>典型递归式：</h2><p>单序列型(与一个或多个前状态有关)<br>硬币个数(数值型)： dp[i] = min(dp[i], dp[i - j] + 1)<br>偷房子： dp[i] = max(dp[i-1], dp[i-2] + nums[i - 1])<br>LIS： dp[i] = max(dp[i], dp[j] + 1)  1 &lt;= j &lt; i<br>Work break： dp[i] |= dp[j] and s[j:i] in word_set, 0 &lt;= j &lt; i    </p>
 <p>坐标型DP(与上、左等两个前状态有关)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dp[n][m] = max&#123;1, min(dp[n+1][m], dp[n][m+1]) - dungeon[n][m]&#125;</span><br></pre></td></tr></table></figure></p>
@@ -369,47 +410,6 @@ Steps needed = 1 + 1 + 2 + 2 + 3 + 3 + 4 + 4 + 5 + 5 + 6 + 6 + 7 = 49.
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2021/11/15/merge-sort/">合并排序</a></h1>
-  
-
-      
-        <time datetime="2021-11-15T10:37:01.085Z">2021-11-15</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>递归分前半和后半排序然后合并。  </p>
-<h3 id="应用："><a href="#应用：" class="headerlink" title="应用："></a><strong>应用：</strong></h3><ol>
-<li>排序</li>
-<li>求逆序数</li>
-</ol>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>merge函数中更改输入nums。  </li>
-<li>line 15的等号决定是否stable sort。  </li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">merge_sort</span><span class="params">(self, nums: List[int])</span>:</span></span><br><span class="line">	self.m_sort(nums, <span class="number">0</span>, len(nums) - <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">m_sort</span><span class="params">(self, nums: List[int], start: int, end: int)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> start &gt;= end:</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	mid = start + (end - start) // <span class="number">2</span></span><br><span class="line">	self.m_sort(nums, start, mid)</span><br><span class="line">	self.m_sort(nums, mid + <span class="number">1</span>, end)</span><br><span class="line">	self.merge(nums, start, mid, end)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">merge</span><span class="params">(self, nums: List[int], start: int, mid: int, end: int)</span>:</span></span><br><span class="line">	i, j, res = start, mid + <span class="number">1</span>, []</span><br><span class="line">	<span class="keyword">while</span> i &lt;= mid <span class="keyword">and</span> j &lt;= end:  <span class="comment"># = decides if it is stable sort</span></span><br><span class="line">		<span class="keyword">if</span> nums[i] &lt;= nums[j]:</span><br><span class="line">			res.append(nums[i])</span><br><span class="line">			i += <span class="number">1</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			res.append(nums[j])</span><br><span class="line">			j += <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> i &lt;= mid:</span><br><span class="line">		res.append(nums[i])</span><br><span class="line">		i += <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> j &lt;= end:</span><br><span class="line">		res.append(nums[j])</span><br><span class="line">		j += <span class="number">1</span></span><br><span class="line">	nums[start:end + <span class="number">1</span>] = res</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nlogn)</code>，空间复杂度<code>O(n)</code>。</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -434,6 +434,10 @@ Steps needed = 1 + 1 + 2 + 2 + 3 + 3 + 4 + 4 + 5 + 5 + 6 + 6 + 7 = 49.
   <ul class="entry">
     
       <li>
+        <a href="/2022/03/15/leetcode-0706-design-hashmap/">LeetCode 706 Design HashMap</a>
+      </li>
+    
+      <li>
         <a href="/2022/03/07/mock-002/">Mock 002 Print 5-min intervals</a>
       </li>
     
@@ -447,10 +451,6 @@ Steps needed = 1 + 1 + 2 + 2 + 3 + 3 + 4 + 4 + 5 + 5 + 6 + 6 + 7 = 49.
     
       <li>
         <a href="/2022/02/16/leetcode-2034-stock-price-fluctuation/">LeetCode 2034 Stock Price Fluctuation</a>
-      </li>
-    
-      <li>
-        <a href="/2022/02/16/leetcode-2128-remove-all-ones-with-row-and-column-flips/">LeetCode 2128 Remove All Ones With Row and Column Flips</a>
       </li>
     
   </ul>

@@ -53,6 +53,49 @@
     <header>
       
   
+    <h1 class="title"><a href="/2021/12/26/lee-759/">LeetCode 759 Employee Free Time</a></h1>
+  
+
+      
+        <time datetime="2021-12-26T21:44:38.256Z">2021-12-26</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/employee-free-time/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>We are given a list <code>schedule</code> of employees, which represents the working time for each employee.<br><br>Each employee has a list of non-overlapping <code>Intervals</code>, and these intervals are in sorted order.<br><br>Return the list of finite intervals representing <strong>common, positive-length free time</strong> for <em>all</em> employees, also in sorted order.<br><br>(Even though we are representing <code>Intervals</code> in the form <code>[x, y]</code>, the objects inside are <code>Intervals</code>, not lists or arrays. For example, <code>schedule[0][0].start = 1</code>, <code>schedule[0][0].end = 2</code>, and <code>schedule[0][0][0]</code> is not defined).  Also, we wouldn’t include intervals like [5, 5] in our answer, as they have zero length.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> schedule = [[[1,2],[5,6]],[[1,3]],[[4,10]]]<br><strong>Output:</strong> [[3,4]]<br><strong>Explanation:</strong> There are a total of three employees, and all common<br>free time intervals would be [-inf, 1], [3, 4], [10, inf].<br>We discard any intervals that contain inf as they aren’t finite.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> schedule = [[[1,3],[6,7]],[[2,4]],[[2,5],[9,12]]]<br><strong>Output:</strong> [[5,6],[7,9]]<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= schedule.length , schedule[i].length &lt;= 50</code>
+</em>   <code>0 &lt;= schedule[i].start &lt; schedule[i].end &lt;= 10^8</code><br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定员工的schedule，给所有员工的空余时间的区间</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>一开始考虑用Leetcode 056 merge intervals，然后求不能merge时的区间。后来想用Leetcode 253 meeting rooms II也是关于重合区间，只要active meetings为0时，就表示空余区间，此法更容易实现   </p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>用Leetcode 253 meeting rooms II的排序解法  </li>
+<li>注意输入是每一个员工的schedule如[Interval(1, 2), Interval(5, 6)]，然后是所有员工schedule的列表  </li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test</span><span class="params">(self)</span>:</span></span><br><span class="line">	TestCases.compare(self, self.employeeFreeTime([[Interval(<span class="number">1</span>, <span class="number">2</span>), Interval(<span class="number">5</span>, <span class="number">6</span>)], [Interval(<span class="number">1</span>, <span class="number">3</span>)], [Interval(<span class="number">4</span>, <span class="number">10</span>)]]), [Interval(<span class="number">3</span>, <span class="number">4</span>)])</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">employeeFreeTime</span><span class="params">(self, schedule: [[Interval]])</span> -&gt; [Interval]:</span></span><br><span class="line">	schedule_endpoints = []</span><br><span class="line">	<span class="keyword">for</span> li <span class="keyword">in</span> schedule:</span><br><span class="line">		<span class="keyword">for</span> s <span class="keyword">in</span> li:</span><br><span class="line">			schedule_endpoints.append((s.start, <span class="number">0</span>)) <span class="comment"># [(1, 0),(2,1),(5,0), (6,1)]</span></span><br><span class="line">			schedule_endpoints.append((s.end, <span class="number">1</span>))</span><br><span class="line">	schedule_endpoints.sort()</span><br><span class="line">	res, free_time, active_schedule = [], [], <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(schedule_endpoints)):</span><br><span class="line">		<span class="keyword">if</span> schedule_endpoints[i][<span class="number">1</span>] == <span class="number">0</span>:</span><br><span class="line">			active_schedule += <span class="number">1</span> <span class="comment"># 0</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			active_schedule -= <span class="number">1</span> <span class="comment">#</span></span><br><span class="line">		<span class="keyword">if</span> active_schedule == <span class="number">0</span>:</span><br><span class="line">			free_time.append(schedule_endpoints[i][<span class="number">0</span>]) <span class="comment">#[2,5]</span></span><br><span class="line">		<span class="keyword">if</span> active_schedule == <span class="number">1</span> <span class="keyword">and</span> len(free_time) == <span class="number">1</span>:</span><br><span class="line">			free_time.append(schedule_endpoints[i][<span class="number">0</span>])</span><br><span class="line">			free_interval = Interval(free_time[<span class="number">0</span>], free_time[<span class="number">1</span>])</span><br><span class="line">			res.append(free_interval)</span><br><span class="line">			free_time = []</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nlogn)</code>，空间复杂度<code>O(n)</code>  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2021/12/26/lee-1010/">LeetCode 1010 Pairs of Songs With Total Durations Divisible by 60</a></h1>
   
 
@@ -225,55 +268,6 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2021/12/25/lee-529/">LeetCode 529 Minesweeper</a></h1>
-  
-
-      
-        <time datetime="2021-12-26T02:19:07.868Z">2021-12-25</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/minesweeper/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>Let’s play the minesweeper game (<a href="https://en.wikipedia.org/wiki/Minesweeper_(video_game" target="_blank" rel="noopener">Wikipedia</a>), <a href="http://minesweeperonline.com" target="_blank" rel="noopener">online game</a>)!<br><br>You are given an <code>m x n</code> char matrix <code>board</code> representing the game board where:<br><br><em>   <code>&#39;M&#39;</code> represents an unrevealed mine,
-</em>   <code>&#39;E&#39;</code> represents an unrevealed empty square,<br><em>   <code>&#39;B&#39;</code> represents a revealed blank square that has no adjacent mines (i.e., above, below, left, right, and all 4 diagonals),
-</em>   digit (<code>&#39;1&#39;</code> to <code>&#39;8&#39;</code>) represents how many mines are adjacent to this revealed square, and<br><em>   <code>&#39;X&#39;</code> represents a revealed mine.<br><br>You are also given an integer array <code>click</code> where <code>click = [click&lt;sub&gt;r&lt;/sub&gt;, click&lt;sub&gt;c&lt;/sub&gt;]</code> represents the next click position among all the unrevealed squares (<code>&#39;M&#39;</code> or <code>&#39;E&#39;</code>).<br><br>Return <em>the board after revealing this position according to the following rules</em>:<br><br>1.  If a mine <code>&#39;M&#39;</code> is revealed, then the game is over. You should change it to <code>&#39;X&#39;</code>.<br>2.  If an empty square <code>&#39;E&#39;</code> with no adjacent mines is revealed, then change it to a revealed blank <code>&#39;B&#39;</code> and all of its adjacent unrevealed squares should be revealed recursively.<br>3.  If an empty square <code>&#39;E&#39;</code> with at least one adjacent mine is revealed, then change it to a digit (<code>&#39;1&#39;</code> to <code>&#39;8&#39;</code>) representing the number of adjacent mines.<br>4.  Return the board when no more squares will be revealed.<br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2018/10/12/minesweeper_example_1.png" alt=""><br><br><pre><strong>Input:</strong> board = [[“E”,”E”,”E”,”E”,”E”],[“E”,”E”,”M”,”E”,”E”],[“E”,”E”,”E”,”E”,”E”],[“E”,”E”,”E”,”E”,”E”]], click = [3,0]<br><strong>Output:</strong> [[“B”,”1”,”E”,”1”,”B”],[“B”,”1”,”M”,”1”,”B”],[“B”,”1”,”1”,”1”,”B”],[“B”,”B”,”B”,”B”,”B”]]<br></pre><br><br><strong>Example 2:</strong><br><br><img src="https://assets.leetcode.com/uploads/2018/10/12/minesweeper_example_2.png" alt=""><br><br><pre><strong>Input:</strong> board = [[“B”,”1”,”E”,”1”,”B”],[“B”,”1”,”M”,”1”,”B”],[“B”,”1”,”1”,”1”,”B”],[“B”,”B”,”B”,”B”,”B”]], click = [1,2]<br><strong>Output:</strong> [[“B”,”1”,”E”,”1”,”B”],[“B”,”1”,”X”,”1”,”B”],[“B”,”1”,”1”,”1”,”B”],[“B”,”B”,”B”,”B”,”B”]]<br></pre><br><br><strong>Constraints:</strong>
-
-</em>   <code>m == board.length</code><br><em>   <code>n == board[i].length</code>
-</em>   <code>1 &lt;= m, n &lt;= 50</code><br><em>   <code>board[i][j]</code> is either <code>&#39;M&#39;</code>, <code>&#39;E&#39;</code>, <code>&#39;B&#39;</code>, or a digit from <code>&#39;1&#39;</code> to <code>&#39;8&#39;</code>.
-</em>   <code>click.length == 2</code><br><em>   <code>0 &lt;= click&lt;sub&gt;r&lt;/sub&gt; &lt; m</code>
-</em>   <code>0 &lt;= click&lt;sub&gt;c&lt;/sub&gt; &lt; n</code><br>*   <code>board[click&lt;sub&gt;r&lt;/sub&gt;][click&lt;sub&gt;c&lt;/sub&gt;]</code> is either <code>&#39;M&#39;</code> or <code>&#39;E&#39;</code>.<br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定扫雷版上的某一个状态，计算扫雷版上的下一个状态</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>N/A</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>三种情况： 1. 踩雷，只需更改此格。 2. 踩到数字格也就是雷相邻的格，计算此格的临近雷数，更改此格。 3. 从此格开始BFS访问全版，节点出列后如果是数字格不加入到queue中，否则继续BFS访问，更改此格。     </li>
-<li>x, y = node[0] + _dx, node[1] + _dy用node[0], node[1]不要用i, j  </li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">updateBoard</span><span class="params">(self, board: List[List[str]], click: List[int])</span> -&gt; List[List[str]]:</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> board[click[<span class="number">0</span>]][click[<span class="number">1</span>]] == <span class="string">'M'</span>:</span><br><span class="line">		board[click[<span class="number">0</span>]][click[<span class="number">1</span>]] = <span class="string">'X'</span></span><br><span class="line">		<span class="keyword">return</span> board</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		mine_num = self.get_neighboring_mine_num(board, click[<span class="number">0</span>], click[<span class="number">1</span>])</span><br><span class="line">		<span class="keyword">if</span> mine_num &gt; <span class="number">0</span>:</span><br><span class="line">			board[click[<span class="number">0</span>]][click[<span class="number">1</span>]] = str(mine_num)</span><br><span class="line">			<span class="keyword">return</span> board</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			<span class="keyword">return</span> self.bfs(board, click[<span class="number">0</span>], click[<span class="number">1</span>])</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">bfs</span><span class="params">(self, board, i, j)</span>:</span></span><br><span class="line">	queue = collections.deque([(i, j)])</span><br><span class="line">	visited = set([(i, j)])</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.popleft()</span><br><span class="line">		mine_num = self.get_neighboring_mine_num(board, node[<span class="number">0</span>], node[<span class="number">1</span>])</span><br><span class="line">		<span class="keyword">if</span> mine_num &gt; <span class="number">0</span>:</span><br><span class="line">			board[node[<span class="number">0</span>]][node[<span class="number">1</span>]] = str(mine_num)</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			board[node[<span class="number">0</span>]][node[<span class="number">1</span>]] = <span class="string">'B'</span></span><br><span class="line">		<span class="keyword">for</span> _dx, _dy <span class="keyword">in</span> OFFSETS:</span><br><span class="line">			x, y = node[<span class="number">0</span>] + _dx, node[<span class="number">1</span>] + _dy <span class="comment"># remember not to use i, j</span></span><br><span class="line">			<span class="keyword">if</span> x &lt; <span class="number">0</span> <span class="keyword">or</span> x &gt;= len(board) <span class="keyword">or</span> y &lt; <span class="number">0</span> <span class="keyword">or</span> y &gt;= len(board[<span class="number">0</span>]) <span class="keyword">or</span> (x, y) <span class="keyword">in</span> visited:</span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			queue.append((x, y))</span><br><span class="line">			visited.add((x, y))</span><br><span class="line">	<span class="keyword">return</span> board</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_neighboring_mine_num</span><span class="params">(self, board, i, j)</span>:</span></span><br><span class="line">	num = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> _dx, _dy <span class="keyword">in</span> OFFSETS:</span><br><span class="line">		x, y = i + _dx, j + _dy</span><br><span class="line">		<span class="keyword">if</span> <span class="number">0</span> &lt;= x &lt; len(board) <span class="keyword">and</span> <span class="number">0</span> &lt;= y &lt; len(board[<span class="number">0</span>]) <span class="keyword">and</span> board[x][y] == <span class="string">'M'</span>:</span><br><span class="line">			num += <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> num</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n<sup>2</sup>)</code>，空间复杂度<code>O(n<sup>2</sup>)</code>  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
 
 <nav id="pagination">
   
@@ -298,6 +292,10 @@
   <ul class="entry">
     
       <li>
+        <a href="/2022/03/15/leetcode-0706-design-hashmap/">LeetCode 706 Design HashMap</a>
+      </li>
+    
+      <li>
         <a href="/2022/03/07/mock-002/">Mock 002 Print 5-min intervals</a>
       </li>
     
@@ -311,10 +309,6 @@
     
       <li>
         <a href="/2022/02/16/leetcode-2034-stock-price-fluctuation/">LeetCode 2034 Stock Price Fluctuation</a>
-      </li>
-    
-      <li>
-        <a href="/2022/02/16/leetcode-2128-remove-all-ones-with-row-and-column-flips/">LeetCode 2128 Remove All Ones With Row and Column Flips</a>
       </li>
     
   </ul>
