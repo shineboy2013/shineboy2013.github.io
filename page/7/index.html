@@ -53,23 +53,75 @@
     <header>
       
   
-    <h1 class="title"><a href="/2022/02/07/leetcode-1304-find-n-unique-integers-sum-up-to-zero/">LeetCode 1304 Find N Unique Integers Sum up to Zero</a></h1>
+    <h1 class="title"><a href="/2022/02/12/leetcode-498-diagonal-traverse/">LeetCode 498 Diagonal Traverse</a></h1>
   
 
       
-        <time datetime="2022-02-08T07:03:16.849Z">2022-02-07</time>
+        <time datetime="2022-02-13T00:56:43.553Z">2022-02-12</time>
       
     </header>
     <div class="entry">
       
-        <p><strong><a href="https://leetcode.com/problems/find-n-unique-integers-sum-up-to-zero/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>Given an integer <code>n</code>, return <strong>any</strong> array containing <code>n</code> <strong>unique</strong> integers such that they add up to <code>0</code>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> n = 5<br><strong>Output:</strong> [-7,-1,1,3,4]<br><strong>Explanation:</strong> These arrays also are accepted [-5,-1,1,2,3] , [-3,-1,2,-2,4].<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> n = 3<br><strong>Output:</strong> [-1,0,1]<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> n = 1<br><strong>Output:</strong> [0]<br></pre><br><br><strong>Constraints:</strong><br><br>*   <code>1 &lt;= n &lt;= 1000</code><br><br></div>
+        <p><strong><a href="https://leetcode.com/problems/diagonal-traverse/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>Given an <code>m x n</code> matrix <code>mat</code>, return <em>an array of all the elements of the array in a diagonal order</em>.<br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/04/10/diag1-grid.jpg" alt=""><br><br><pre><strong>Input:</strong> mat = [[1,2,3],[4,5,6],[7,8,9]]<br><strong>Output:</strong> [1,2,4,7,5,3,6,8,9]<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> mat = [[1,2],[3,4]]<br><strong>Output:</strong> [1,2,3,4]<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>m == mat.length</code>
+</em>   <code>n == mat[i].length</code><br><em>   <code>1 &lt;= m, n &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code>
+</em>   <code>1 &lt;= m * n &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code><br>*   <code>-10&lt;sup&gt;5&lt;/sup&gt; &lt;= mat[i][j] &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code><br><br></div>
 
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定n，求n个数的数组使得数组和为0</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>Easy题，只要将相反数放入数组即可</p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>按类对角线梅花间竹地遍历每个元素，输出最后结果</p>
+<h3 id="找规律解题思路："><a href="#找规律解题思路：" class="headerlink" title="找规律解题思路："></a><strong>找规律解题思路：</strong></h3><p>边界条件很难找，而且每一层的结束点也和矩阵的长度或宽度有关。先找规律，可以看出<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">每层的所有元素下标和相等</span><br></pre></td></tr></table></figure></p>
+<p>正常从左到右从上到下遍历矩阵，用一个dict来每层的每一个数，可以看出这些数的顺序都是按题目要求的，只不过是正序或逆序，所以最后按照奇偶决定是否正序或逆序加入到结果</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><ol>
+<li>从左到右从上到下遍历矩阵，dict[i + j]来加入每层的每一个数</li>
+<li>dict的key的范围容易得知，按照奇偶决定是否正序或逆序加入到结果</li>
+</ol>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>dict[i + j]来加入每层的每一个数</li>
+<li>dict的key的最大值为len(mat) + len(mat[0]) - 1</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">findDiagonalOrder</span><span class="params">(self, mat: List[List[int]])</span> -&gt; List[int]:</span></span><br><span class="line">	groups = collections.defaultdict(list)</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(mat)):</span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> range(len(mat[<span class="number">0</span>])):</span><br><span class="line">			groups[i + j].append(mat[i][j])</span><br><span class="line">	res = []</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(mat) + len(mat[<span class="number">0</span>]) - <span class="number">1</span>):</span><br><span class="line">		<span class="keyword">if</span> i % <span class="number">2</span> == <span class="number">1</span>:</span><br><span class="line">			res.extend(groups[i])</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			res.extend(groups[i][::<span class="number">-1</span>])</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nm)</code>，空间复杂度<code>O(nm)</code>  </p>
+<hr>
+<h3 id="按题意II解题思路："><a href="#按题意II解题思路：" class="headerlink" title="按题意II解题思路："></a><strong>按题意II解题思路：</strong></h3><h3 id="Python代码：-1"><a href="#Python代码：-1" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">print_diagnals</span><span class="params">(matrix)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> matrix <span class="keyword">or</span> <span class="keyword">not</span> matrix[<span class="number">0</span>]:</span><br><span class="line">        <span class="keyword">return</span> []</span><br><span class="line">    res = []</span><br><span class="line">    is_reversed = <span class="keyword">True</span></span><br><span class="line">    <span class="comment"># all diagnal starting from top row</span></span><br><span class="line">    <span class="keyword">for</span> col <span class="keyword">in</span> range(len(matrix[<span class="number">0</span>])):</span><br><span class="line">        diag_row, diag_col = <span class="number">0</span>, col</span><br><span class="line">        one_print = []</span><br><span class="line">        <span class="keyword">while</span> diag_row &lt; len(matrix) <span class="keyword">and</span> diag_col &gt;= <span class="number">0</span>:</span><br><span class="line">            one_print.append(matrix[diag_row][diag_col])</span><br><span class="line">            diag_row += <span class="number">1</span></span><br><span class="line">            diag_col -= <span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> is_reversed:</span><br><span class="line">            res.extend(one_print[::<span class="number">-1</span>])</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            res.extend(one_print)</span><br><span class="line">        is_reversed = <span class="keyword">not</span> is_reversed</span><br><span class="line">    <span class="comment"># diagnal start rightmost columns</span></span><br><span class="line">    <span class="keyword">for</span> row <span class="keyword">in</span> range(<span class="number">1</span>, len(matrix)):</span><br><span class="line">        diag_row, diag_col = row, len(matrix[<span class="number">0</span>]) - <span class="number">1</span></span><br><span class="line">        one_print = []</span><br><span class="line">        <span class="keyword">while</span> diag_row &lt; len(matrix) <span class="keyword">and</span> diag_col &gt;= <span class="number">0</span>:</span><br><span class="line">            one_print.append(matrix[diag_row][diag_col])</span><br><span class="line">            diag_row += <span class="number">1</span></span><br><span class="line">            diag_col -= <span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> is_reversed:</span><br><span class="line">            res.extend(one_print[::<span class="number">-1</span>])</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            res.extend(one_print)</span><br><span class="line">        is_reversed = <span class="keyword">not</span> is_reversed</span><br><span class="line">    <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nm)</code>，空间复杂度<code>O(1)</code>  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2022/02/08/leetcode-1779-find-nearest-point-that-has-the-same-x-or-y-coordinate/">LeetCode 1779 Find Nearest Point That Has the Same X or Y Coordinate</a></h1>
+  
+
+      
+        <time datetime="2022-02-08T10:22:03.551Z">2022-02-08</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/minimum-degree-of-a-connected-trio-in-a-graph/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>You are given two integers, <code>x</code> and <code>y</code>, which represent your current location on a Cartesian grid: <code>(x, y)</code>. You are also given an array <code>points</code> where each <code>points[i] = [a&lt;sub&gt;i&lt;/sub&gt;, b&lt;sub&gt;i&lt;/sub&gt;]</code> represents that a point exists at <code>(a&lt;sub&gt;i&lt;/sub&gt;, b&lt;sub&gt;i&lt;/sub&gt;)</code>. A point is <strong>valid</strong> if it shares the same x-coordinate or the same y-coordinate as your location.<br><br>Return <em>the index <strong>(0-indexed)</strong> of the <strong>valid</strong> point with the smallest <strong>Manhattan distance</strong> from your current location</em>. If there are multiple, return <em>the valid point with the <strong>smallest</strong> index</em>. If there are no valid points, return <code>-1</code>.<br><br>The <strong>Manhattan distance</strong> between two points <code>(x&lt;sub&gt;1&lt;/sub&gt;, y&lt;sub&gt;1&lt;/sub&gt;)</code> and <code>(x&lt;sub&gt;2&lt;/sub&gt;, y&lt;sub&gt;2&lt;/sub&gt;)</code> is <code>abs(x&lt;sub&gt;1&lt;/sub&gt; - x&lt;sub&gt;2&lt;/sub&gt;) + abs(y&lt;sub&gt;1&lt;/sub&gt; - y&lt;sub&gt;2&lt;/sub&gt;)</code>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> x = 3, y = 4, points = [[1,2],[3,1],[2,4],[2,3],[4,4]]<br><strong>Output:</strong> 2<br><strong>Explanation:</strong> Of all the points, only [3,1], [2,4] and [4,4] are valid. Of the valid points, [2,4] and [4,4] have the smallest Manhattan distance from your current location, with a distance of 1. [2,4] has the smallest index, so return 2.</pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> x = 3, y = 4, points = [[3,4]]<br><strong>Output:</strong> 0<br><strong>Explanation:</strong> The answer is allowed to be on the same location as your current location.</pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> x = 3, y = 4, points = [[2,3]]<br><strong>Output:</strong> -1<br><strong>Explanation:</strong> There are no valid points.</pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= points.length &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code>
+</em>   <code>points[i].length == 2</code><br>*   <code>1 &lt;= x, y, a&lt;sub&gt;i&lt;/sub&gt;, b&lt;sub&gt;i&lt;/sub&gt; &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code><br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个坐标和一堆坐标，这个坐标与某个点在同一条y轴或x轴上叫合法点，求它到这些点的最小曼哈顿距离对应的点的下标，若有多个结果，返回最小的数组下标。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>Easy题，根据题意求</p>
 <h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
 <h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li><h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sumZero</span><span class="params">(self, n: int)</span> -&gt; List[int]:</span></span><br><span class="line">	res = []</span><br><span class="line">	<span class="keyword">if</span> n % <span class="number">2</span> == <span class="number">1</span>:</span><br><span class="line">		res.append(<span class="number">0</span>)</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(n // <span class="number">2</span>):</span><br><span class="line">		res.append(i + <span class="number">1</span>)</span><br><span class="line">		res.append(-i - <span class="number">1</span>)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<li><h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">nearestValidPoint</span><span class="params">(self, x: int, y: int, points: List[List[int]])</span> -&gt; int:</span></span><br><span class="line">	min_dis = float(<span class="string">'inf'</span>)</span><br><span class="line">	res = <span class="number">-1</span></span><br><span class="line">	<span class="keyword">for</span> i, (_x, _y) <span class="keyword">in</span> enumerate(points):</span><br><span class="line">		<span class="keyword">if</span> x == _x <span class="keyword">or</span> y == _y:</span><br><span class="line">			<span class="keyword">if</span> abs(x - _x) + abs(y - _y) &lt; min_dis:</span><br><span class="line">				min_dis = abs(x - _x) + abs(y - _y)</span><br><span class="line">				res = i</span><br><span class="line">			<span class="keyword">elif</span> abs(x - _x) + abs(y - _y) == min_dis <span class="keyword">and</span> i &lt; res:</span><br><span class="line">				res = i</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
 </li>
 </ol>
 <h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
@@ -94,28 +146,71 @@
     <header>
       
   
-    <h1 class="title"><a href="/2022/02/07/leetcode-984-string-without-aaa-or-bbb/">LeetCode 984 String Without AAA or BBB</a></h1>
+    <h1 class="title"><a href="/2022/02/08/leetcode-1761-minimum-degree-of-a-connected-trio-in-a-graph/">LeetCode 1761 Minimum Degree of a Connected Trio in a Graph</a></h1>
   
 
       
-        <time datetime="2022-02-08T06:42:39.348Z">2022-02-07</time>
+        <time datetime="2022-02-08T09:49:32.723Z">2022-02-08</time>
       
     </header>
     <div class="entry">
       
-        <p><strong><a href="https://leetcode.com/problems/string-without-aaa-or-bbb/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>Given two integers <code>a</code> and <code>b</code>, return <strong>any</strong> string <code>s</code> such that:<br><br><em>   <code>s</code> has length <code>a + b</code> and contains exactly <code>a</code> <code>&#39;a&#39;</code> letters, and exactly <code>b</code> <code>&#39;b&#39;</code> letters,
-</em>   The substring <code>&#39;aaa&#39;</code> does not occur in <code>s</code>, and<br><em>   The substring <code>&#39;bbb&#39;</code> does not occur in <code>s</code>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> a = 1, b = 2<br><strong>Output:</strong> “abb”<br><strong>Explanation:</strong> “abb”, “bab” and “bba” are all correct answers.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> a = 4, b = 1<br><strong>Output:</strong> “aabaa”<br></pre><br><br><strong>Constraints:</strong>
+        <p><strong><a href="https://leetcode.com/problems/minimum-degree-of-a-connected-trio-in-a-graph/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>You are given an undirected graph. You are given an integer <code>n</code> which is the number of nodes in the graph and an array <code>edges</code>, where each <code>edges[i] = [u&lt;sub&gt;i&lt;/sub&gt;, v&lt;sub&gt;i&lt;/sub&gt;]</code> indicates that there is an undirected edge between <code>u&lt;sub&gt;i&lt;/sub&gt;</code> and <code>v&lt;sub&gt;i&lt;/sub&gt;</code>.<br><br>A <strong>connected trio</strong> is a set of <strong>three</strong> nodes where there is an edge between <strong>every</strong> pair of them.<br><br>The <strong>degree of a connected trio</strong> is the number of edges where one endpoint is in the trio, and the other is not.<br><br>Return <em>the <strong>minimum</strong> degree of a connected trio in the graph, or</em> <code>-1</code> <em>if the graph has no connected trios.</em><br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/01/26/trios1.png" alt=""><br><br><pre><strong>Input:</strong> n = 6, edges = [[1,2],[1,3],[3,2],[4,1],[5,2],[3,6]]<br><strong>Output:</strong> 3<br><strong>Explanation:</strong> There is exactly one trio, which is [1,2,3]. The edges that form its degree are bolded in the figure above.<br></pre><br><br><strong>Example 2:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/01/26/trios2.png" alt=""><br><br><pre><strong>Input:</strong> n = 7, edges = [[1,3],[4,1],[4,3],[2,5],[5,6],[6,7],[7,5],[2,6]]<br><strong>Output:</strong> 0<br><strong>Explanation:</strong> There are exactly three trios:<br>1) [1,4,3] with degree 0.<br>2) [2,5,6] with degree 2.<br>3) [5,6,7] with degree 2.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>2 &lt;= n &lt;= 400</code>
+</em>   <code>edges[i].length == 2</code><br><em>   `1 &lt;= edges.length &lt;= n </em> (n-1) / 2<code>*</code>1 &lt;= u<sub>i</sub>, v<sub>i</sub> &lt;= n<code>*</code>u<sub>i</sub> != v<sub>i</sub>`<br>*   There are no repeated edges.<br><br></div>
 
-</em>   <code>0 &lt;= a, b &lt;= 100</code><br>*   It is guaranteed such an <code>s</code> exists for the given <code>a</code> and <code>b</code>.<br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定两个整数代表ab的个数，生成一个字符串，字符串ab频数不能超过这2个数，不能有连续的aaa, bbb, 求此种字符串的最大长度</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>参考LeetCode 1405 Longest Happy String, 此题不用heap因为只有两种字符</p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个图，trio是三个节点直接互相相连，而度数表示连着trio的边的个数</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>根据定义，找出所有三个节点的组合，判断是否trio，然后根据trio的每个节点的度数总和 - 6即为所求<br>遍历所有三个节点组合时，会重复了两次。所以一个优化是，先按度数排序节点，若节点度数大于等于最小度数除以3，跳出循环。因为这个最小度数的节点已经大于等于3，trio里其他两个度数比它大的节点的度数更加会大于最小度数除以3，这样总度数肯定大于此时的最小度数</p>
 <h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
 <h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>不能连续的处理</li>
+<li>根据定义，找出所有三个节点的组合u -&gt; v, v -&gt; w, w是否在u中，判断是否trio。先按度数排序节点，若节点度数大于等于最小度数除以3，跳出循环</li>
+<li>邻接图用set，因为Line 13查找w是否在u中可以提高效率</li>
+<li>min_degree / 3不是// 3</li>
 </ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">strWithout3a3b</span><span class="params">(self, a: int, b: int)</span> -&gt; str:</span></span><br><span class="line">	res = <span class="string">''</span></span><br><span class="line">	<span class="keyword">while</span> a &gt; <span class="number">0</span> <span class="keyword">or</span> b &gt; <span class="number">0</span>:</span><br><span class="line">		<span class="keyword">if</span> a &gt; b:</span><br><span class="line">			<span class="keyword">if</span> len(res) &gt; <span class="number">1</span> <span class="keyword">and</span> res[<span class="number">-2</span>] == res[<span class="number">-1</span>] == <span class="string">'a'</span>:</span><br><span class="line">				res += <span class="string">'b'</span></span><br><span class="line">				b -= <span class="number">1</span></span><br><span class="line">			<span class="keyword">else</span>:</span><br><span class="line">				res += <span class="string">'a'</span></span><br><span class="line">				a -= <span class="number">1</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			<span class="keyword">if</span> len(res) &gt; <span class="number">1</span> <span class="keyword">and</span> res[<span class="number">-2</span>] == res[<span class="number">-1</span>] == <span class="string">'b'</span>:</span><br><span class="line">				res += <span class="string">'a'</span></span><br><span class="line">				a -= <span class="number">1</span></span><br><span class="line">			<span class="keyword">else</span>:</span><br><span class="line">				res += <span class="string">'b'</span></span><br><span class="line">				b -= <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">minTrioDegree</span><span class="params">(self, n: int, edges: List[List[int]])</span> -&gt; int:</span></span><br><span class="line">	graph = collections.defaultdict(set) <span class="comment"># use set coz if w in graph[u]</span></span><br><span class="line">	<span class="keyword">for</span> u, v <span class="keyword">in</span> edges:</span><br><span class="line">		graph[u].add(v)</span><br><span class="line">		graph[v].add(u)</span><br><span class="line"></span><br><span class="line">	min_degree = float(<span class="string">'inf'</span>)</span><br><span class="line">	<span class="keyword">for</span> u <span class="keyword">in</span> sorted(range(<span class="number">1</span>, n + <span class="number">1</span>), key=<span class="keyword">lambda</span> x: len(graph[x])):</span><br><span class="line">		<span class="keyword">if</span> len(graph[u]) &gt;= min_degree / <span class="number">3</span>: <span class="comment"># remember / 3 not // 3</span></span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		<span class="keyword">for</span> v <span class="keyword">in</span> graph[u]:</span><br><span class="line">			<span class="keyword">for</span> w <span class="keyword">in</span> graph[v]:</span><br><span class="line">				<span class="keyword">if</span> w <span class="keyword">in</span> graph[u]:</span><br><span class="line">					min_degree = min(min_degree, len(graph[u]) + len(graph[v]) + len(graph[w]))</span><br><span class="line">	<span class="keyword">return</span> min_degree - <span class="number">6</span> <span class="keyword">if</span> min_degree != float(<span class="string">'inf'</span>) <span class="keyword">else</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n<sup>3</sup>)</code>，空间复杂度<code>O(n<sup>2</sup>)</code>  </p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2022/02/08/leetcode-979-distribute-coins-in-binary-tree/">LeetCode 979 Distribute Coins in Binary Tree</a></h1>
+  
+
+      
+        <time datetime="2022-02-08T08:30:55.871Z">2022-02-08</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><strong><a href="https://leetcode.com/problems/distribute-coins-in-binary-tree/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>You are given the <code>root</code> of a binary tree with <code>n</code> nodes where each <code>node</code> in the tree has <code>node.val</code> coins. There are <code>n</code> coins in total throughout the whole tree.<br><br>In one move, we may choose two adjacent nodes and move one coin from one node to another. A move may be from parent to child, or from child to parent.<br><br>Return <em>the <strong>minimum</strong> number of moves required to make every node have <strong>exactly</strong> one coin</em>.<br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2019/01/18/tree1.png" alt=""><br><br><pre><strong>Input:</strong> root = [3,0,0]<br><strong>Output:</strong> 2<br><strong>Explanation:</strong> From the root of the tree, we move one coin to its left child, and one coin to its right child.<br></pre><br><br><strong>Example 2:</strong><br><br><img src="https://assets.leetcode.com/uploads/2019/01/18/tree2.png" alt=""><br><br><pre><strong>Input:</strong> root = [0,3,0]<br><strong>Output:</strong> 3<br><strong>Explanation:</strong> From the left child of the root, we move two coins to the root [taking two moves]. Then, we move one coin from the root of the tree to the right child.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   The number of nodes in the tree is <code>n</code>.
+</em>   <code>1 &lt;= n &lt;= 100</code><br><em>   <code>0 &lt;= Node.val &lt;= n</code>
+</em>   The sum of all <code>Node.val</code> is <code>n</code>.<br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>二叉树某些节点含有硬币，求将这些硬币推向其他节点，使得所有节点都有一个硬币，求总移动次数</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>先思考，若硬币都在root，也就是求所有节点的路径和。可以用每个节点的路径和求和，也可以定义dfs返回节点数，用全局变量加左右数，每轮递归都加一次，所以每个节点被加了其路径长度的次数。本算法采用后者<br>下面思考若硬币不在root，由于硬币可以从儿子给父亲，这是双向的，所以<strong>dfs定义为儿子给父亲的硬币数</strong>，若节点没有硬币，返回值会是负数，也就是父亲给儿子硬币，此时这个负数正是以此节点为root的数的总的节点数，所以与上述定义一致。<br>所以返回root.val + left + right - 1，left和right都是负数，left + right - 1是树的大小的负数，此结果为剩余硬币推给父亲的硬币数<br>res += abs(left) + abs(right)左子树和右子树所有节点一起走一条边的路径和</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li><strong>dfs定义为儿子给父亲的硬币数(若有硬币)，同时是子树的节点数的负数(若无硬币)</strong></li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">distributeCoins</span><span class="params">(self, root: TreeNode)</span> -&gt; int:</span></span><br><span class="line">	res = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">dfs</span><span class="params">(root)</span>:</span></span><br><span class="line">		<span class="keyword">if</span> <span class="keyword">not</span> root:</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">		<span class="keyword">nonlocal</span> res</span><br><span class="line">		left = dfs(root.left)</span><br><span class="line">		right = dfs(root.right)</span><br><span class="line">		res += abs(left) + abs(right)</span><br><span class="line">		<span class="keyword">return</span> root.val + left + right - <span class="number">1</span></span><br><span class="line"></span><br><span class="line">	dfs(root)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
 <h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
 
       
@@ -138,114 +233,27 @@
     <header>
       
   
-    <h1 class="title"><a href="/2022/02/07/leetcode-1405-longest-happy-string/">LeetCode 1405 Longest Happy String</a></h1>
+    <h1 class="title"><a href="/2022/02/07/leetcode-1448-count-good-nodes-in-binary-tree/">LeetCode 1448 Count Good Nodes in Binary Tree</a></h1>
   
 
       
-        <time datetime="2022-02-08T06:20:09.075Z">2022-02-07</time>
+        <time datetime="2022-02-08T07:07:29.316Z">2022-02-07</time>
       
     </header>
     <div class="entry">
       
-        <p><strong><a href="https://leetcode.com/problems/longest-happy-string/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>A string <code>s</code> is called <strong>happy</strong> if it satisfies the following conditions:<br><br><em>   <code>s</code> only contains the letters <code>&#39;a&#39;</code>, <code>&#39;b&#39;</code>, and <code>&#39;c&#39;</code>.
-</em>   <code>s</code> does not contain any of <code>&quot;aaa&quot;</code>, <code>&quot;bbb&quot;</code>, or <code>&quot;ccc&quot;</code> as a substring.<br><em>   <code>s</code> contains <strong>at most</strong> <code>a</code> occurrences of the letter <code>&#39;a&#39;</code>.
-</em>   <code>s</code> contains <strong>at most</strong> <code>b</code> occurrences of the letter <code>&#39;b&#39;</code>.<br><em>   <code>s</code> contains <strong>at most</strong> <code>c</code> occurrences of the letter <code>&#39;c&#39;</code>.<br><br>Given three integers <code>a</code>, <code>b</code>, and <code>c</code>, return <em>the <strong>longest possible happy</strong> string</em>. If there are multiple longest happy strings, return <em>any of them</em>. If there is no such string, return <em>the empty string</em> <code>&quot;&quot;</code>.<br><br>A <strong>substring</strong> is a contiguous sequence of characters within a string.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> a = 1, b = 1, c = 7<br><strong>Output:</strong> “ccaccbcc”<br><strong>Explanation:</strong> “ccbccacc” would also be a correct answer.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> a = 7, b = 1, c = 0<br><strong>Output:</strong> “aabaa”<br><strong>Explanation:</strong> It is the only correct answer in this case.<br></pre><br><br><strong>Constraints:</strong>
+        <p><strong><a href="https://leetcode.com/problems/count-good-nodes-in-binary-tree/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>Given a binary tree <code>root</code>, a node <em>X</em> in the tree is named <strong>good</strong> if in the path from root to <em>X</em> there are no nodes with a value <em>greater than</em> X.<br><br>Return the number of <strong>good</strong> nodes in the binary tree.<br><br><strong>Example 1:</strong><br><br><strong><img src="https://assets.leetcode.com/uploads/2020/04/02/test_sample_1.png" alt=""></strong><br><br><pre><strong>Input:</strong> root = [3,1,4,3,null,1,5]<br><strong>Output:</strong> 4<br><strong>Explanation:</strong> Nodes in blue are <strong>good</strong>.<br>Root Node (3) is always a good node.<br>Node 4 -&gt; (3,4) is the maximum value in the path starting from the root.<br>Node 5 -&gt; (3,4,5) is the maximum value in the path<br>Node 3 -&gt; (3,1,3) is the maximum value in the path.</pre><br><br><strong>Example 2:</strong><br><br><strong><img src="https://assets.leetcode.com/uploads/2020/04/02/test_sample_2.png" alt=""></strong><br><br><pre><strong>Input:</strong> root = [3,3,null,4,2]<br><strong>Output:</strong> 3<br><strong>Explanation:</strong> Node 2 -&gt; (3, 3, 2) is not good, because “3” is higher than it.</pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> root = [1]<br><strong>Output:</strong> 1<br><strong>Explanation:</strong> Root is considered as <strong>good</strong>.</pre><br><br><strong>Constraints:</strong><br><br><em>   The number of nodes in the binary tree is in the range <code>[1, 10^5]</code>.
+</em>   Each node’s value is between <code>[-10^4, 10^4]</code>.<br><br></div>
 
-</em>   <code>0 &lt;= a, b, c &lt;= 100</code><br>*   <code>a + b + c &gt; 0</code><br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定三个整数代表abc的个数，生成一个字符串，字符串abc频数不能超过这3个数，不能有连续的aaa, bbb, ccc, 求此种字符串的最大长度</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>由第一个例子看出，先尽量用频数最多的字符，直到连续3个为止，然后再用次多的，如此反复做。这里用到最多和次多，所以考虑用Heap</p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>一个节点是good表示该节点从root到自己的路径上，所有节点都小于等于自己。求二叉树的good节点个数</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>统计左右子树的good节点个数，最重要是引入类似于min, max验证BST，<strong>引入path_max来记录路径上的最大值</strong>，只要该节点值大于path_max就是good节点。DFS返回good节点个数</p>
 <h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
 <h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>每次选频数最高的字符，但若此字符已连续3次，选次高的，用heap。 </li>
-<li>大于0的频数才加入到heap Line 4和Line 17</li>
-<li>heapreplace等于heappop次高的和heappush最高的。<strong>既然要有次高，heap就不能为空</strong></li>
+<li><strong>引入path_max来记录路径上的最大值</strong></li>
 </ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">longestDiverseString</span><span class="params">(self, a: int, b: int, c: int)</span> -&gt; str:</span></span><br><span class="line">	res = <span class="string">''</span></span><br><span class="line">	heap = []</span><br><span class="line">	<span class="keyword">if</span> a &gt; <span class="number">0</span>: <span class="comment"># remember</span></span><br><span class="line">		heapq.heappush(heap, (-a, <span class="string">'a'</span>))</span><br><span class="line">	<span class="keyword">if</span> b &gt; <span class="number">0</span>:</span><br><span class="line">		heapq.heappush(heap, (-b, <span class="string">'b'</span>))</span><br><span class="line">	<span class="keyword">if</span> c &gt; <span class="number">0</span>:</span><br><span class="line">		heapq.heappush(heap, (-c, <span class="string">'c'</span>))</span><br><span class="line">	<span class="keyword">while</span> heap:</span><br><span class="line">		count, char = heapq.heappop(heap)</span><br><span class="line">		<span class="keyword">if</span> len(res) &gt; <span class="number">1</span> <span class="keyword">and</span> res[<span class="number">-2</span>] == res[<span class="number">-1</span>] == char:</span><br><span class="line">			<span class="keyword">if</span> <span class="keyword">not</span> heap:</span><br><span class="line">				<span class="keyword">break</span></span><br><span class="line">			count, char = heapq.heapreplace(heap, (count, char))</span><br><span class="line">		res += char</span><br><span class="line">		<span class="keyword">if</span> count + <span class="number">1</span>:</span><br><span class="line">			heapq.heappush(heap, (count + <span class="number">1</span>, char))</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">goodNodes</span><span class="params">(self, root: TreeNode)</span> -&gt; int:</span></span><br><span class="line">	<span class="keyword">return</span> self.dfs(root, float(<span class="string">'-inf'</span>))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dfs</span><span class="params">(self, root, path_max)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> root:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">	left = self.dfs(root.left, max(root.val, path_max))</span><br><span class="line">	right = self.dfs(root.right, max(root.val, path_max))</span><br><span class="line">	res = left + right</span><br><span class="line">	<span class="keyword">if</span> path_max &lt;= root.val:</span><br><span class="line">		res += <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
 <h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2022/02/07/leetcode-1647-minimum-deletions-to-make-character-frequencies-unique/">LeetCode 1647 Minimum Deletions to Make Character Frequencies Unique</a></h1>
-  
-
-      
-        <time datetime="2022-02-08T02:42:06.875Z">2022-02-07</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p><strong><a href="https://leetcode.com/problems/minimum-deletions-to-make-character-frequencies-unique/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>A string <code>s</code> is called <strong>good</strong> if there are no two different characters in <code>s</code> that have the same <strong>frequency</strong>.<br><br>Given a string <code>s</code>, return <em>the <strong>minimum</strong> number of characters you need to delete to make</em> <code>s</code> <em><strong>good</strong>.</em><br><br>The <strong>frequency</strong> of a character in a string is the number of times it appears in the string. For example, in the string <code>&quot;aab&quot;</code>, the <strong>frequency</strong> of <code>&#39;a&#39;</code> is <code>2</code>, while the <strong>frequency</strong> of <code>&#39;b&#39;</code> is <code>1</code>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> s = “aab”<br><strong>Output:</strong> 0<br><strong>Explanation:</strong> <code>s</code> is already good.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> s = “aaabbbcc”<br><strong>Output:</strong> 2<br><strong>Explanation:</strong> You can delete two ‘b’s resulting in the good string “aaabcc”.<br>Another way it to delete one ‘b’ and one ‘c’ resulting in the good string “aaabbc”.</pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> s = “ceabaacb”<br><strong>Output:</strong> 2<br><strong>Explanation:</strong> You can delete both ‘c’s resulting in the good string “eabaab”.<br>Note that we only care about characters that are still in the string at the end (i.e. frequency of 0 is ignored).<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= s.length &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code>
-</em>   <code>s</code> contains only lowercase English letters.<br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个字符串，求最小删除次数使得字符串的每一种字符频率不同</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>按题意求解，若遇到频率相同的字符，就将其减一，也就是删除一个字符，使得它不再与其他字符频率相同直到0. 关键在用一个unique_count的set来记录频数</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>用一个unique_count的set来记录频数</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">minDeletions</span><span class="params">(self, s: str)</span> -&gt; int:</span></span><br><span class="line">	char_to_count = collections.Counter(s)</span><br><span class="line">	unique_count = set()</span><br><span class="line">	res = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> char, count <span class="keyword">in</span> char_to_count.items():</span><br><span class="line">		cur_count = count</span><br><span class="line">		<span class="keyword">while</span> cur_count <span class="keyword">in</span> unique_count:</span><br><span class="line">			cur_count -= <span class="number">1</span></span><br><span class="line">			res += <span class="number">1</span></span><br><span class="line">		<span class="keyword">if</span> cur_count &gt; <span class="number">0</span>:</span><br><span class="line">			unique_count.add(cur_count)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>  </p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2022/02/07/karat-003/">Karat 003 Nonogram</a></h1>
-  
-
-      
-        <time datetime="2022-02-07T10:16:22.375Z">2022-02-07</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p>A nonogram is a logic puzzle, similar to a crossword, in which the player is given<br>a blank grid and has to color it according to some instructions. Specifically,<br>each cell can be either black or white, which we will represent as 0 for black and<br>1 for white.<br>+————+<br>| 1 1 1 1 |<br>| 0 1 1 1 |<br>| 0 1 0 0 |<br>| 1 1 0 1 |<br>| 0 0 1 1 |<br>+————+<br>For each row and column, the instructions give the lengths of contiguous runs of<br>black (0) cells. For example, the instructions for one row of [ 2, 1 ] indicate<br>that there must be a run of two black cells, followed later by another run of one<br>black cell, and the rest of the row filled with white cells.<br>These are valid solutions: [ 1, 0, 0, 1, 0 ] and [ 0, 0, 1, 1, 0 ] and also [ 0,<br>0, 1, 0, 1 ]<br>This is not valid: [ 1, 0, 1, 0, 0 ] since the runs are not in the correct order.<br>This is not valid: [ 1, 0, 0, 0, 1 ] since the two runs of 0s are not separated by<br>1s.<br>Your job is to write a function to validate a possible solution against a set of<br>instructions. Given a 2D matrix representing a player’s solution; and instructions<br>for each row along with additional instructions for each column; return True or<br>False according to whether both sets of instructions match.</p>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>Nonogram日本游戏，0表示黑子，[2, 1]表示黑子的连续数目，如棋盘状态[ 1, 0, 0, 1, 0 ]，表示连续黑子数为[2, 1]<br>[ 1, 0, 0, 0, 1 ]连续黑子数为[3]. 验证棋盘的每一行和每一列是否满足rows和cols所指定的连续黑子数</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>按题意求解</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>递归只有一种情况</li>
-<li>答案需求全局</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">valid_nonogram</span><span class="params">(self, matrix, rows, cols)</span>:</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(matrix)):</span><br><span class="line">		<span class="keyword">if</span> self.get_consecutive_zeros(matrix[i]) != rows[i]:</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">	<span class="keyword">for</span> j <span class="keyword">in</span> range(len(matrix[<span class="number">0</span>])):</span><br><span class="line">		col_vals = []</span><br><span class="line">		<span class="keyword">for</span> i <span class="keyword">in</span> range(len(matrix)):</span><br><span class="line">			col_vals.append(matrix[i][j])</span><br><span class="line">		<span class="keyword">if</span> self.get_consecutive_zeros(col_vals) != cols[j]:</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># [ 1, 0, 0, 1, 0 ] -&gt; [2, 1], # of 0s</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_consecutive_zeros</span><span class="params">(self, matrix_row)</span>:</span></span><br><span class="line">	count, res = <span class="number">0</span>, []</span><br><span class="line">	<span class="keyword">for</span> n <span class="keyword">in</span> matrix_row:</span><br><span class="line">		<span class="keyword">if</span> n == <span class="number">0</span>:</span><br><span class="line">			count += <span class="number">1</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			<span class="keyword">if</span> count &gt; <span class="number">0</span>:</span><br><span class="line">				res.append(count)</span><br><span class="line">			count = <span class="number">0</span></span><br><span class="line">	<span class="keyword">if</span> count &gt; <span class="number">0</span>:</span><br><span class="line">		res.append(count)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nm)</code>，空间复杂度<code>O(n)</code>  </p>
 
       
     </div>
@@ -286,23 +294,23 @@
   <ul class="entry">
     
       <li>
-        <a href="/2022/03/15/leetcode-0706-design-hashmap/">LeetCode 706 Design HashMap</a>
+        <a href="/2022/03/19/leetcode-791-custom-sort-string/">LeetCode 791 Custom Sort String</a>
       </li>
     
       <li>
-        <a href="/2022/03/07/mock-002/">Mock 002 Print 5-min intervals</a>
+        <a href="/2022/03/19/leetcode-426-convert-binary-search-tree-to-sorted-doubly-linked-list/">LeetCode 426 Convert Binary Search Tree to Sorted Doubly Linked List</a>
       </li>
     
       <li>
-        <a href="/2022/03/01/leetcode-772-basic-calculator-iii/">LeetCode 772 Basic Calculator III</a>
+        <a href="/2022/03/19/leetcode-408-valid-word-abbreviation/">LeetCode 408 Valid Word Abbreviation</a>
       </li>
     
       <li>
-        <a href="/2022/02/24/leetcode-432-all-oone-data-structure/">LeetCode 432 All O one Data Structure</a>
+        <a href="/2022/03/16/leetcode-921-minimum-add-to-make-parentheses-valid/">LeetCode 921 Minimum Add to Make Parentheses Valid</a>
       </li>
     
       <li>
-        <a href="/2022/02/16/leetcode-2034-stock-price-fluctuation/">LeetCode 2034 Stock Price Fluctuation</a>
+        <a href="/2022/03/16/leetcode-938-range-sum-of-bst/">LeetCode 938 Range Sum of BST</a>
       </li>
     
   </ul>
@@ -315,7 +323,7 @@
 <div class="widget tagcloud">
   <h3 class="title">Tag Cloud</h3>
   <div class="entry">
-    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 14.17px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 14.17px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 17.08px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 13.75px;">Binary Tree</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10.42px;">Bit Manipulation</a> <a href="/tags/Bloomberg/" style="font-size: 10.42px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.92px;">Breadth-first Search</a> <a href="/tags/Citadel/" style="font-size: 10.83px;">Citadel</a> <a href="/tags/Classic/" style="font-size: 18.33px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.25px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.25px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 14.58px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.58px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 19.17px;">Facebook</a> <a href="/tags/Google/" style="font-size: 15px;">Google</a> <a href="/tags/Graph/" style="font-size: 12.92px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 13.33px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 17.08px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 14.17px;">Heap</a> <a href="/tags/Interactive/" style="font-size: 10px;">Interactive</a> <a href="/tags/Interviewer/" style="font-size: 13.33px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.25px;">Iterator</a> <a href="/tags/Karat/" style="font-size: 12.5px;">Karat</a> <a href="/tags/Knowledge-Base/" style="font-size: 16.67px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 15.42px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 12.92px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 18.33px;">Math</a> <a href="/tags/Matrix/" style="font-size: 15.83px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.25px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.83px;">Merge Sort</a> <a href="/tags/Microsoft/" style="font-size: 12.08px;">Microsoft</a> <a href="/tags/Mtrix/" style="font-size: 10px;">Mtrix</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 15.83px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.83px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.42px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 11.67px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.25px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.42px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 17.5px;">Stack</a> <a href="/tags/String/" style="font-size: 18.75px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.25px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 16.25px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.67px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.58px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.42px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.42px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
+    <a href="/tags/Airbnb/" style="font-size: 10px;">Airbnb</a> <a href="/tags/Amazon/" style="font-size: 14.35px;">Amazon</a> <a href="/tags/Array/" style="font-size: 20px;">Array</a> <a href="/tags/Backtracking/" style="font-size: 14.35px;">Backtracking</a> <a href="/tags/Binary-Search/" style="font-size: 16.96px;">Binary Search</a> <a href="/tags/Binary-Tree/" style="font-size: 13.91px;">Binary Tree</a> <a href="/tags/Bit-Manipulation/" style="font-size: 10.43px;">Bit Manipulation</a> <a href="/tags/Bloomberg/" style="font-size: 10.43px;">Bloomberg</a> <a href="/tags/Breadth-first-Search/" style="font-size: 17.83px;">Breadth-first Search</a> <a href="/tags/Citadel/" style="font-size: 10.87px;">Citadel</a> <a href="/tags/Classic/" style="font-size: 18.26px;">Classic</a> <a href="/tags/Depth-first-Search/" style="font-size: 15.22px;">Depth-first Search</a> <a href="/tags/Design/" style="font-size: 11.3px;">Design</a> <a href="/tags/Divide-and-Conquer/" style="font-size: 11.3px;">Divide and Conquer</a> <a href="/tags/DoorDash/" style="font-size: 14.78px;">DoorDash</a> <a href="/tags/Dynamic-Programming/" style="font-size: 19.57px;">Dynamic Programming</a> <a href="/tags/Facebook/" style="font-size: 19.13px;">Facebook</a> <a href="/tags/Google/" style="font-size: 15.22px;">Google</a> <a href="/tags/Graph/" style="font-size: 13.04px;">Graph</a> <a href="/tags/Greedy/" style="font-size: 13.48px;">Greedy</a> <a href="/tags/Hash-Table/" style="font-size: 16.96px;">Hash Table</a> <a href="/tags/Heap/" style="font-size: 14.35px;">Heap</a> <a href="/tags/Interactive/" style="font-size: 10px;">Interactive</a> <a href="/tags/Interviewer/" style="font-size: 13.48px;">Interviewer</a> <a href="/tags/Iterator/" style="font-size: 11.3px;">Iterator</a> <a href="/tags/Karat/" style="font-size: 12.61px;">Karat</a> <a href="/tags/Knowledge-Base/" style="font-size: 16.52px;">Knowledge Base</a> <a href="/tags/Linked-List/" style="font-size: 15.65px;">Linked List</a> <a href="/tags/LinkedIn/" style="font-size: 13.04px;">LinkedIn</a> <a href="/tags/Math/" style="font-size: 18.26px;">Math</a> <a href="/tags/Matrix/" style="font-size: 16.09px;">Matrix</a> <a href="/tags/Memoization/" style="font-size: 11.3px;">Memoization</a> <a href="/tags/Merge-Sort/" style="font-size: 10.87px;">Merge Sort</a> <a href="/tags/Microsoft/" style="font-size: 12.17px;">Microsoft</a> <a href="/tags/Mtrix/" style="font-size: 10px;">Mtrix</a> <a href="/tags/Object-Oriented-Design/" style="font-size: 10px;">Object Oriented Design</a> <a href="/tags/Prefix-Sum/" style="font-size: 10px;">Prefix Sum</a> <a href="/tags/Python-KB/" style="font-size: 16.09px;">Python KB</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Quickselect/" style="font-size: 10px;">Quickselect</a> <a href="/tags/Randomized/" style="font-size: 10px;">Randomized</a> <a href="/tags/Recursion/" style="font-size: 10.87px;">Recursion</a> <a href="/tags/Segment-Tree/" style="font-size: 10.43px;">Segment Tree</a> <a href="/tags/Sliding-Window/" style="font-size: 11.74px;">Sliding Window</a> <a href="/tags/Sliding-window/" style="font-size: 10px;">Sliding window</a> <a href="/tags/Sort/" style="font-size: 11.3px;">Sort</a> <a href="/tags/Sorting/" style="font-size: 10.43px;">Sorting</a> <a href="/tags/Stack/" style="font-size: 17.39px;">Stack</a> <a href="/tags/String/" style="font-size: 18.7px;">String</a> <a href="/tags/Topological-Sort/" style="font-size: 11.3px;">Topological Sort</a> <a href="/tags/Tree/" style="font-size: 16.96px;">Tree</a> <a href="/tags/Trie/" style="font-size: 11.74px;">Trie</a> <a href="/tags/Two-Pointers/" style="font-size: 14.78px;">Two Pointers</a> <a href="/tags/Uber/" style="font-size: 10.43px;">Uber</a> <a href="/tags/Union-Find/" style="font-size: 10.43px;">Union Find</a> <a href="/tags/tiktok/" style="font-size: 10px;">tiktok</a>
   </div>
 </div>
 
