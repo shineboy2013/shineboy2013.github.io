@@ -20,19 +20,19 @@
     var CONFIG = {"hostname":"shineboy2013.github.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="题目大意： 生成唯一ID如用户ID，订单ID。 解题思路： 基本思路是将所有网站映射到一个整数。 三大核心需求：  全局唯一(unique) 按照时间粗略有序(sortable by time)。按时间查询是普遍的请求，如得到最新的1000个用户。 尽可能短。省空间，查询要更有效率。  UUID： UUID是一类算法的统称，具体有不同的实现。UUID的有点是每台机器可以独立产生ID，理论上保证 不">
+  <meta name="description" content="题目大意：生成唯一ID如用户ID，订单ID。 解题思路：基本思路是将所有网站映射到一个整数。三大核心需求：  全局唯一(unique) 按照时间粗略有序(sortable by time)。按时间查询是普遍的请求，如得到最新的1000个用户。 尽可能短。省空间，查询要更有效率。  UUID：UUID是一类算法的统称，具体有不同的实现。UUID的有点是每台机器可以独立产生ID，理论上保证不会重复，所">
 <meta name="keywords" content="Design">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Design Distributed ID Generator">
 <meta property="og:url" content="https://shineboy2013.github.com/2018/06/17/design-distributed-id/index.html">
 <meta property="og:site_name" content="KK&#39;s blog">
-<meta property="og:description" content="题目大意： 生成唯一ID如用户ID，订单ID。 解题思路： 基本思路是将所有网站映射到一个整数。 三大核心需求：  全局唯一(unique) 按照时间粗略有序(sortable by time)。按时间查询是普遍的请求，如得到最新的1000个用户。 尽可能短。省空间，查询要更有效率。  UUID： UUID是一类算法的统称，具体有不同的实现。UUID的有点是每台机器可以独立产生ID，理论上保证 不">
+<meta property="og:description" content="题目大意：生成唯一ID如用户ID，订单ID。 解题思路：基本思路是将所有网站映射到一个整数。三大核心需求：  全局唯一(unique) 按照时间粗略有序(sortable by time)。按时间查询是普遍的请求，如得到最新的1000个用户。 尽可能短。省空间，查询要更有效率。  UUID：UUID是一类算法的统称，具体有不同的实现。UUID的有点是每台机器可以独立产生ID，理论上保证不会重复，所">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="https://shineboy2013.github.com/images/design-distributed-id.png">
 <meta property="og:updated_time" content="2018-06-18T07:14:09.010Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Design Distributed ID Generator">
-<meta name="twitter:description" content="题目大意： 生成唯一ID如用户ID，订单ID。 解题思路： 基本思路是将所有网站映射到一个整数。 三大核心需求：  全局唯一(unique) 按照时间粗略有序(sortable by time)。按时间查询是普遍的请求，如得到最新的1000个用户。 尽可能短。省空间，查询要更有效率。  UUID： UUID是一类算法的统称，具体有不同的实现。UUID的有点是每台机器可以独立产生ID，理论上保证 不">
+<meta name="twitter:description" content="题目大意：生成唯一ID如用户ID，订单ID。 解题思路：基本思路是将所有网站映射到一个整数。三大核心需求：  全局唯一(unique) 按照时间粗略有序(sortable by time)。按时间查询是普遍的请求，如得到最新的1000个用户。 尽可能短。省空间，查询要更有效率。  UUID：UUID是一类算法的统称，具体有不同的实现。UUID的有点是每台机器可以独立产生ID，理论上保证不会重复，所">
 <meta name="twitter:image" content="https://shineboy2013.github.com/images/design-distributed-id.png">
 
 <link rel="canonical" href="https://shineboy2013.github.com/2018/06/17/design-distributed-id/">
@@ -176,8 +176,29 @@
 
 
     <main class="main">
-	  <div style="border: 2.5px dotted #e8f0ff;margin-top: 5px;margin-bottom: 5px;margin-left: auto;margin-right: auto;width: 60%;" id="amzn-assoc-ad-23516389-beb7-4b79-b097-e01eac20c9f9"></div><script async src="//z-na.amazon-adsystem.com/widgets/onejs?MarketPlace=US&adInstanceId=23516389-beb7-4b79-b097-e01eac20c9f9"></script>
-      <div class="main-inner">
+	  <!--<div style="border: 2.5px dotted #e8f0ff;margin-top: 5px;margin-bottom: 5px;margin-left: auto;margin-right: auto;width: 60%;" id="amzn-assoc-ad-23516389-beb7-4b79-b097-e01eac20c9f9"></div><script async src="//z-na.amazon-adsystem.com/widgets/onejs?MarketPlace=US&adInstanceId=23516389-beb7-4b79-b097-e01eac20c9f9"></script> -->
+
+ 	  <div style="border: 2.5px dotted #e8f0ff;margin-top: 5px;margin-bottom: 5px;margin-left: auto;margin-right: auto;width: 62%;height: 378px;" id="amzn-assoc-ad-23516389-beb7-4b79-b097-e01eac20c9f9">
+
+			<div style="width: 200px;height: 350px;float: left;margin-left: 25px;">
+			  <a href="http://www.amazon.com/tryprimefree?_encoding=UTF8&amp;linkCode=ib1&amp;tag=shineboy2013-20&amp;linkId=amzn1.curatedcontent.ATVPDKIKX0DER.526e27d4-30bd-4568-aef6-dd07117e235b_1657254561004&amp;ref_=ihub_curatedcontent_526e27d4-30bd-4568-aef6-dd07117e235b" target="_blank" rel="noopener noreferrer" style="width: 100%;"><img src="https://m.media-amazon.com/images/G/01/pvc/PV1.jpeg" alt="Amazon Prime Free Trial" class="ImageCell__ContentImage-sc-8h0xue-0 fRqwBT"></a>
+			  <a href="http://www.amazon.com/tryprimefree?_encoding=UTF8&amp;linkCode=ib1&amp;tag=shineboy2013-20&amp;linkId=amzn1.curatedcontent.ATVPDKIKX0DER.526e27d4-30bd-4568-aef6-dd07117e235b_1657254561004&amp;ref_=ihub_curatedcontent_526e27d4-30bd-4568-aef6-dd07117e235b" title="Amazon Prime Free Trial" target="_blank" rel="noopener noreferrer" class="sc-dIUggk bEXxnw">Amazon Prime Free Trial</a>
+			</div>
+			<div style="width: 200px;height: 350px;float: left;margin-left: 25px;">
+			  <a href="https://www.amazon.com/b/?node=15443147011&amp;_encoding=UTF8&amp;linkCode=ib1&amp;tag=shineboy2013-20&amp;linkId=amzn1.curatedcontent.ATVPDKIKX0DER.b83b1015-12e4-4000-8f2c-d7cebc709796_1657254561002&amp;ref_=ihub_curatedcontent_b83b1015-12e4-4000-8f2c-d7cebc709796" target="_blank" rel="noopener noreferrer" style="width: 100%;"><img src="https://m.media-amazon.com/images/G/01/US-hq/2022/img/Alexa_Voice_Service_AVS_/XCM_CUTTLE_1420331_2270942_US_CUTTLE_300x300_en_US.jpg" alt="This Prime Day, save up to 70% on speakers, smart TVs, smart watches and more!" class="ImageCell__ContentImage-sc-8h0xue-0 fRqwBT"></a>
+			  <a href="https://www.amazon.com/b/?node=15443147011&_encoding=UTF8&linkCode=ib1&tag=shineboy2013-20&linkId=amzn1.curatedcontent.ATVPDKIKX0DER.b83b1015-12e4-4000-8f2c-d7cebc709796_1657254561002&ref_=ihub_curatedcontent_b83b1015-12e4-4000-8f2c-d7cebc709796" title="Amazon Prime Free Trial" target="_blank" rel="noopener noreferrer" class="sc-dIUggk bEXxnw">This Prime Day, save up to 70% on speakers, smart TVs, smart watches and more!</a>
+			</div>
+			<div style="width: 200px;height: 350px;float: left;margin-left: 25px;">
+			  <a href="https://www.amazon.com/Blink-Floodlight-Camera/dp/B094YXVVRF?_encoding=UTF8&amp;linkCode=ib1&amp;tag=shineboy2013-20&amp;linkId=amzn1.curatedcontent.ATVPDKIKX0DER.39beba8c-ca4b-4525-94ea-e7e3fc388e7f_1657254560999&amp;ref_=ihub_curatedcontent_39beba8c-ca4b-4525-94ea-e7e3fc388e7f" target="_blank" rel="noopener noreferrer" style="width: 100%;"><img src="https://m.media-amazon.com/images/G/01/kindle/journeys/NDE5MGFkMzct/NDE5MGFkMzct-NGM0OTgxZmQt-w300.jpeg" alt="Blink Outdoor Camera - Early Prime Day Deals" class="ImageCell__ContentImage-sc-8h0xue-0 fRqwBT"></a>
+			  <a href="https://www.amazon.com/Blink-Floodlight-Camera/dp/B094YXVVRF?_encoding=UTF8&amp;linkCode=ib1&amp;tag=shineboy2013-20&amp;linkId=amzn1.curatedcontent.ATVPDKIKX0DER.39beba8c-ca4b-4525-94ea-e7e3fc388e7f_1657254560999&amp;ref_=ihub_curatedcontent_39beba8c-ca4b-4525-94ea-e7e3fc388e7f" title="Blink Outdoor Camera - Early Prime Day Deals" target="_blank" rel="noopener noreferrer" class="sc-dIUggk bEXxnw">Blink Outdoor Camera - Early Prime Day Deals</a>
+			</div>
+			<span style="font-family: Arial,Helvetica,sans-serif;font-size: 10px;font-weight: bold;line-height: 11px;color: #777;width: 600px;">
+				Ads by Amazon
+			</span>
+	  </div>
+
+	  
+	  <div class="main-inner">
         <div class="content-wrap">
           
 
@@ -246,32 +267,16 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3><strong>题目大意：</strong></h3>
-<p>生成唯一ID如用户ID，订单ID。</p>
-<h3><strong>解题思路：</strong></h3>
-<p>基本思路是将所有网站映射到一个整数。
-三大核心需求：</p>
+        <h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>生成唯一ID如用户ID，订单ID。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>基本思路是将所有网站映射到一个整数。<br>三大核心需求：</p>
 <ol>
 <li>全局唯一(unique)</li>
 <li>按照时间粗略有序(sortable by time)。按时间查询是普遍的请求，如得到最新的1000个用户。</li>
 <li>尽可能短。省空间，查询要更有效率。</li>
 </ol>
-<h3><strong>UUID：</strong></h3>
-<p>UUID是一类算法的统称，具体有不同的实现。UUID的有点是每台机器可以独立产生ID，理论上保证<br>
-不会重复，所以天然是分布式的，缺点是生成的ID太长，不仅占用内存，而且索引查询效率低。
-4个字节表示的Unix timestamp,
-3个字节表示的机器的ID
-2个字节表示的进程ID
-3个字节表示的计数器</p>
-<h3><strong>多机器分别自增：</strong></h3>
-<p>假设用8台MySQL服务器协同工作，第一台MySQL初始值是1，每次自增8，第二台MySQL初始值是2，<br>
-每次自增8，依次类推。前面用一个 round-robin load balancer 挡着，每来一个请求，由<br>
-round-robin balancer 随机地将请求发给8台MySQL中的任意一个，然后返回一个ID。<br>
-load balance可以确保请求平均分配到不同的机器，所以粗略有序，缺点是加机器要re-hash这些Id<br>
-且顺序不够稳定。</p>
-<h3><strong>Twitter Snowflake：</strong></h3>
-<p>原理与UUID基本一样。也是时间戳+机器id+自增序号。时间戳保证有序。<br>
-<img src="/images/design-distributed-id.png" alt=""></p>
+<h3 id="UUID："><a href="#UUID：" class="headerlink" title="UUID："></a><strong>UUID：</strong></h3><p>UUID是一类算法的统称，具体有不同的实现。UUID的有点是每台机器可以独立产生ID，理论上保证<br>不会重复，所以天然是分布式的，缺点是生成的ID太长，不仅占用内存，而且索引查询效率低。<br>4个字节表示的Unix timestamp,<br>3个字节表示的机器的ID<br>2个字节表示的进程ID<br>3个字节表示的计数器</p>
+<h3 id="多机器分别自增："><a href="#多机器分别自增：" class="headerlink" title="多机器分别自增："></a><strong>多机器分别自增：</strong></h3><p>假设用8台MySQL服务器协同工作，第一台MySQL初始值是1，每次自增8，第二台MySQL初始值是2，<br>每次自增8，依次类推。前面用一个 round-robin load balancer 挡着，每来一个请求，由<br>round-robin balancer 随机地将请求发给8台MySQL中的任意一个，然后返回一个ID。<br>load balance可以确保请求平均分配到不同的机器，所以粗略有序，缺点是加机器要re-hash这些Id<br>且顺序不够稳定。</p>
+<h3 id="Twitter-Snowflake："><a href="#Twitter-Snowflake：" class="headerlink" title="Twitter Snowflake："></a><strong>Twitter Snowflake：</strong></h3><p>原理与UUID基本一样。也是时间戳+机器id+自增序号。时间戳保证有序。<br><img src="/images/design-distributed-id.png" alt="">  </p>
 
     </div>
 
@@ -357,7 +362,7 @@ load balance可以确保请求平均分配到不同的机器，所以粗略有�
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">1.</span> <span class="nav-text">题目大意：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">2.</span> <span class="nav-text">解题思路：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">3.</span> <span class="nav-text">UUID：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">4.</span> <span class="nav-text">多机器分别自增：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">5.</span> <span class="nav-text">Twitter Snowflake：</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#题目大意："><span class="nav-number">1.</span> <span class="nav-text">题目大意：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解题思路："><span class="nav-number">2.</span> <span class="nav-text">解题思路：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#UUID："><span class="nav-number">3.</span> <span class="nav-text">UUID：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多机器分别自增："><span class="nav-number">4.</span> <span class="nav-text">多机器分别自增：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Twitter-Snowflake："><span class="nav-number">5.</span> <span class="nav-text">Twitter Snowflake：</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
