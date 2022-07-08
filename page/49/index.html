@@ -169,6 +169,7 @@
 
 
     <main class="main">
+	  <div style="border: 2.5px dotted #e8f0ff;margin-top: 5px;margin-bottom: 5px;margin-left: auto;margin-right: auto;width: 60%;" id="amzn-assoc-ad-23516389-beb7-4b79-b097-e01eac20c9f9"></div><script async src="//z-na.amazon-adsystem.com/widgets/onejs?MarketPlace=US&adInstanceId=23516389-beb7-4b79-b097-e01eac20c9f9"></script>
       <div class="main-inner">
         <div class="content-wrap">
           
@@ -239,18 +240,61 @@
 
       
           <p><strong><a href="https://leetcode.com/problems/maximum-profit-in-job-scheduling/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>We have <code>n</code> jobs, where every job is scheduled to be done from <code>startTime[i]</code> to <code>endTime[i]</code>, obtaining a profit of <code>profit[i]</code>.<br><br>You’re given the <code>startTime</code>, <code>endTime</code> and <code>profit</code> arrays, return the maximum profit you can take such that there are no two jobs in the subset with overlapping time range.<br><br>If you choose a job that ends at time <code>X</code> you will be able to start another job that starts at time <code>X</code>.<br><br><strong>Example 1:</strong><br><br><strong><img src="https://assets.leetcode.com/uploads/2019/10/10/sample1_1584.png" alt=""></strong><br><br><pre><strong>Input:</strong> startTime = [1,2,3,3], endTime = [3,4,5,6], profit = [50,10,40,70]<br><strong>Output:</strong> 120<br><strong>Explanation:</strong> The subset chosen is the first and fourth job.<br>Time range [1-3]+[3-6] , we get profit of 120 = 50 + 70.<br></pre><br><br><strong>Example 2:</strong><br><br><strong><img src="https://assets.leetcode.com/uploads/2019/10/10/sample22_1584.png" alt=""></strong><br><br><pre><strong>Input:</strong> startTime = [1,2,3,4,6], endTime = [3,5,10,6,9], profit = [20,20,100,70,60]<br><strong>Output:</strong> 150<br><strong>Explanation:</strong> The subset chosen is the first, fourth and fifth job.<br>Profit obtained 150 = 20 + 70 + 60.<br></pre><br><br><strong>Example 3:</strong><br><br><strong><img src="https://assets.leetcode.com/uploads/2019/10/10/sample3_1584.png" alt=""></strong><br><br><pre><strong>Input:</strong> startTime = [1,1,1], endTime = [2,3,4], profit = [5,6,4]<br><strong>Output:</strong> 6<br></pre><br><br><strong>Constraints:</strong><br><br><em>   `1 &lt;= startTime.length == endTime.length == profit.length &lt;= 5 </em> 10<sup>4</sup><code>*</code>1 &lt;= startTime[i] &lt; endTime[i] &lt;= 10<sup>9</sup><code>*</code>1 &lt;= profit[i] &lt;= 10<sup>4</sup>`<br><br></div>
-
-<h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>DP + 排序<br>一开始以为类似于meeting rooms II，所以用heap，但只能计算conflicts不能计算profits，但排序思想有用。<br>求最值问题第一时间考虑用DP，所以考虑以第i-1个job为结尾的最大利润：  </p>
-<p><pre><br>dp[i] = max -&gt; dp[j] + profits[i-1]), 第i个job的startTime[i-1] &gt;= endTime[j], 第j个job与第i个job没有conflicts<br>            -&gt; dp[j]                                                          第j个job与第i个job有conflicts<br></pre><br>复杂度为O(n^2)  </p>
-<p>写出递归式后，求startTime &gt;= endTime其实就是按endTime排序，这样有助于搜索这个条件. 这里有个难点是要加强命题至累计利润，因为正如Cooldown股票题一样，dp[j]不应该是以job j为结尾的最大利润，而应该是前j个job的最大利润，这些job不一定都是相邻<br>加强命题dp[i]是累计利润，也就是并不需要计算所有dp[j…i]的值（第一式子），公式变成  </p>
-<p><pre><br>dp[i] = max -&gt; dp[j] + profits[i-1]), j = start[i-1]对应的Endtime下标, 第j个job与第i个job没有conflicts<br>            -&gt; dp[j]                                                   第j个job与第i个job有conflicts<br></pre><br>要找出这个j，就对刚才排序了的endtime数组用bisect找下标。类似于LIS, 复杂度为O(nlogn)  </p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>bisect的使用求大于startTime的endTime下标，此下标j减一正是所求，但dp和数组中下标转换是差1，所以dp[j - 1 + 1]是前值的DP值。      </li>
-<li><strong>加强命题至累计利润</strong>dp[i], 见line 9 - 10 </li>
+<p>&lt;div&gt;</p>
+<p>We have <code>n</code> jobs, where every job is scheduled to be done from <code>startTime[i]</code> to <code>endTime[i]</code>, obtaining a profit of <code>profit[i]</code>.</p>
+<p>You're given the <code>startTime</code>, <code>endTime</code> and <code>profit</code> arrays, return the maximum profit you can take such that there are no two jobs in the subset with overlapping time range.</p>
+<p>If you choose a job that ends at time <code>X</code> you will be able to start another job that starts at time <code>X</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong><img src="https://assets.leetcode.com/uploads/2019/10/10/sample1_1584.png" alt=""></strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> startTime = [1,2,3,3], endTime = [3,4,5,6], profit = [50,10,40,70]
+<strong>Output:</strong> 120
+<strong>Explanation:</strong> The subset chosen is the first and fourth job.
+Time range [1-3]+[3-6] , we get profit of 120 = 50 + 70.
+&lt;/pre&gt;</p>
+<p><strong>Example 2:</strong></p>
+<p><strong><img src="https://assets.leetcode.com/uploads/2019/10/10/sample22_1584.png" alt=""></strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> startTime = [1,2,3,4,6], endTime = [3,5,10,6,9], profit = [20,20,100,70,60]
+<strong>Output:</strong> 150
+<strong>Explanation:</strong> The subset chosen is the first, fourth and fifth job.
+Profit obtained 150 = 20 + 70 + 60.
+&lt;/pre&gt;</p>
+<p><strong>Example 3:</strong></p>
+<p><strong><img src="https://assets.leetcode.com/uploads/2019/10/10/sample3_1584.png" alt=""></strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> startTime = [1,1,1], endTime = [2,3,4], profit = [5,6,4]
+<strong>Output:</strong> 6
+&lt;/pre&gt;</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= startTime.length == endTime.length == profit.length &lt;= 5 * 10&lt;sup&gt;4&lt;/sup&gt;</code></li>
+<li><code>1 &lt;= startTime[i] &lt; endTime[i] &lt;= 10&lt;sup&gt;9&lt;/sup&gt;</code></li>
+<li><code>1 &lt;= profit[i] &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code></li>
+</ul>
+<p>&lt;/div&gt;</p>
+<h3><strong>算法思路：</strong></h3>
+<p>DP + 排序<br>
+一开始以为类似于meeting rooms II，所以用heap，但只能计算conflicts不能计算profits，但排序思想有用。<br>
+求最值问题第一时间考虑用DP，所以考虑以第i-1个job为结尾的最大利润：<br>
+&lt;pre&gt;
+dp[i] = max -&gt; dp[j] + profits[i-1]), 第i个job的startTime[i-1] &gt;= endTime[j], 第j个job与第i个job没有conflicts<br>
+		    -&gt; dp[j]				                                          第j个job与第i个job有conflicts<br>
+&lt;/pre&gt;
+复杂度为O(n^2)</p>
+<p>写出递归式后，求startTime &gt;= endTime其实就是按endTime排序，这样有助于搜索这个条件. 这里有个难点是要加强命题至累计利润，因为正如Cooldown股票题一样，dp[j]不应该是以job j为结尾的最大利润，而应该是前j个job的最大利润，这些job不一定都是相邻<br>
+加强命题dp[i]是累计利润，也就是并不需要计算所有dp[j...i]的值（第一式子），公式变成<br>
+&lt;pre&gt;
+dp[i] = max -&gt; dp[j] + profits[i-1]), j = start[i-1]对应的Endtime下标, 第j个job与第i个job没有conflicts<br>
+		    -&gt; dp[j]				                                   第j个job与第i个job有conflicts<br>
+&lt;/pre&gt;
+要找出这个j，就对刚才排序了的endtime数组用bisect找下标。类似于LIS, 复杂度为O(nlogn)</p>
+<h3><strong>注意事项：</strong></h3>
+<ol>
+<li>bisect的使用求大于startTime的endTime下标，此下标j减一正是所求，但dp和数组中下标转换是差1，所以dp[j - 1 + 1]是前值的DP值。</li>
+<li><strong>加强命题至累计利润</strong>dp[i], 见line 9 - 10</li>
 </ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">jobScheduling</span><span class="params">(self, startTime: List[int], endTime: List[int], profit: List[int])</span> -&gt; int:</span></span><br><span class="line">	job_by_endtime, dp, max_profit = [], [<span class="number">0</span>] * (len(startTime) + <span class="number">1</span>), <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(startTime)):</span><br><span class="line">		job_by_endtime.append((endTime[i], startTime[i], profit[i]))</span><br><span class="line">	job_by_endtime.sort()</span><br><span class="line">	end_time_sorted = [pair[<span class="number">0</span>] <span class="keyword">for</span> pair <span class="keyword">in</span> job_by_endtime]</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, len(dp)):</span><br><span class="line">		j = bisect.bisect(end_time_sorted, job_by_endtime[i - <span class="number">1</span>][<span class="number">1</span>]) <span class="comment"># previous end time &lt;= current start time</span></span><br><span class="line">		dp[i] = max(max_profit, dp[j] + job_by_endtime[i - <span class="number">1</span>][<span class="number">2</span>]) <span class="comment"># remember</span></span><br><span class="line">		max_profit = max(max_profit, dp[i]) <span class="comment"># remember</span></span><br><span class="line">	<span class="keyword">return</span> dp[<span class="number">-1</span>]</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nlogn)</code>，空间复杂度<code>O(n)</code>  </p>
+<h3><strong>Python代码：</strong></h3>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">jobScheduling</span><span class="params">(self, startTime: List[int], endTime: List[int], profit: List[int])</span> -&gt; int:</span></span><br><span class="line">	job_by_endtime, dp, max_profit = [], [<span class="number">0</span>] * (len(startTime) + <span class="number">1</span>), <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(startTime)):</span><br><span class="line">		job_by_endtime.append((endTime[i], startTime[i], profit[i]))</span><br><span class="line">	job_by_endtime.sort()</span><br><span class="line">	end_time_sorted = [pair[<span class="number">0</span>] <span class="keyword">for</span> pair <span class="keyword">in</span> job_by_endtime]</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, len(dp)):</span><br><span class="line">		j = bisect.bisect(end_time_sorted, job_by_endtime[i - <span class="number">1</span>][<span class="number">1</span>]) <span class="comment"># previous end time &lt;= current start time</span></span><br><span class="line">		dp[i] = max(max_profit, dp[j] + job_by_endtime[i - <span class="number">1</span>][<span class="number">2</span>]) <span class="comment"># remember</span></span><br><span class="line">		max_profit = max(max_profit, dp[i]) <span class="comment"># remember</span></span><br><span class="line">	<span class="keyword">return</span> dp[<span class="number">-1</span>]</span><br></pre></td></tr></table></figure></p>
+<h3><strong>算法分析：</strong></h3>
+<p>时间复杂度为<code>O(nlogn)</code>，空间复杂度<code>O(n)</code></p>
 
       
     </div>
@@ -330,20 +374,53 @@
 
       
           <p><strong><a href="https://leetcode.com/problems/minimum-jumps-to-reach-home/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>A certain bug’s home is on the x-axis at position <code>x</code>. Help them get there from position <code>0</code>.<br><br>The bug jumps according to the following rules:<br><br><em>   It can jump exactly <code>a</code> positions <strong>forward</strong> (to the right).
-</em>   It can jump exactly <code>b</code> positions <strong>backward</strong> (to the left).<br><em>   It cannot jump backward twice in a row.
-</em>   It cannot jump to any <code>forbidden</code> positions.<br><br>The bug may jump forward <strong>beyond</strong> its home, but it <strong>cannot jump</strong> to positions numbered with <strong>negative</strong> integers.<br><br>Given an array of integers <code>forbidden</code>, where <code>forbidden[i]</code> means that the bug cannot jump to the position <code>forbidden[i]</code>, and integers <code>a</code>, <code>b</code>, and <code>x</code>, return <em>the minimum number of jumps needed for the bug to reach its home</em>. If there is no possible sequence of jumps that lands the bug on position <code>x</code>, return <code>-1.</code><br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> forbidden = [14,4,18,1,15], a = 3, b = 15, x = 9<br><strong>Output:</strong> 3<br><strong>Explanation:</strong> 3 jumps forward (0 -&gt; 3 -&gt; 6 -&gt; 9) will get the bug home.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> forbidden = [8,3,16,6,12,20], a = 15, b = 13, x = 11<br><strong>Output:</strong> -1<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> forbidden = [1,6,2,14,5,17,4], a = 16, b = 9, x = 7<br><strong>Output:</strong> 2<br><strong>Explanation:</strong> One jump forward (0 -&gt; 16) then one jump backward (16 -&gt; 7) will get the bug home.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= forbidden.length &lt;= 1000</code>
-</em>   <code>1 &lt;= a, b, forbidden[i] &lt;= 2000</code><br><em>   <code>0 &lt;= x &lt;= 2000</code>
-</em>   All the elements in <code>forbidden</code> are distinct.<br>*   Position <code>x</code> is not forbidden.<br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求从0到x的最小步数，可以往前跳a步，往后跳b步，不能跳到负数，不能连续两次往前跳，不能跳到被禁止的位置。</p>
-<h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>类似于Jump game，不过此题要用真的BFS，用三个元素push如queue: (point, distance, is_backward), is_backward记录是否回退两次而剪枝，distance是结果。</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>用BFS模板，但此题到了某个位置可以有两个状态：向前跳和向后跳。所以<strong>visited不能只含位置，必须包含方向</strong>，(position, is_backward). if (neighbor, neighbor_is_backward) in visited也记得包含方向，否则LTE，因为Python不会检查是否tuple  </li>
-<li>upper limit为max(x, max(forbidden)) + a + b，否则LTE，这个比较推导，可以这么理解max(x, max(forbidden))之后可以自由不受限制地走，必定存在一个点之后会重复且无意义，如a和b的最小倍数。举个例子找规律，a=2, b=1, x=10, 要走到11的话就要先到x+a+b再往回走     </li>
+<p>&lt;div&gt;</p>
+<p>A certain bug's home is on the x-axis at position <code>x</code>. Help them get there from position <code>0</code>.</p>
+<p>The bug jumps according to the following rules:</p>
+<ul>
+<li>It can jump exactly <code>a</code> positions <strong>forward</strong> (to the right).</li>
+<li>It can jump exactly <code>b</code> positions <strong>backward</strong> (to the left).</li>
+<li>It cannot jump backward twice in a row.</li>
+<li>It cannot jump to any <code>forbidden</code> positions.</li>
+</ul>
+<p>The bug may jump forward <strong>beyond</strong> its home, but it <strong>cannot jump</strong> to positions numbered with <strong>negative</strong> integers.</p>
+<p>Given an array of integers <code>forbidden</code>, where <code>forbidden[i]</code> means that the bug cannot jump to the position <code>forbidden[i]</code>, and integers <code>a</code>, <code>b</code>, and <code>x</code>, return <em>the minimum number of jumps needed for the bug to reach its home</em>. If there is no possible sequence of jumps that lands the bug on position <code>x</code>, return <code>-1.</code></p>
+<p><strong>Example 1:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> forbidden = [14,4,18,1,15], a = 3, b = 15, x = 9
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> 3 jumps forward (0 -&gt; 3 -&gt; 6 -&gt; 9) will get the bug home.
+&lt;/pre&gt;</p>
+<p><strong>Example 2:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> forbidden = [8,3,16,6,12,20], a = 15, b = 13, x = 11
+<strong>Output:</strong> -1
+&lt;/pre&gt;</p>
+<p><strong>Example 3:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> forbidden = [1,6,2,14,5,17,4], a = 16, b = 9, x = 7
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> One jump forward (0 -&gt; 16) then one jump backward (16 -&gt; 7) will get the bug home.
+&lt;/pre&gt;</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= forbidden.length &lt;= 1000</code></li>
+<li><code>1 &lt;= a, b, forbidden[i] &lt;= 2000</code></li>
+<li><code>0 &lt;= x &lt;= 2000</code></li>
+<li>All the elements in <code>forbidden</code> are distinct.</li>
+<li>Position <code>x</code> is not forbidden.</li>
+</ul>
+<p>&lt;/div&gt;</p>
+<h3><strong>题目大意：</strong></h3>
+<p>求从0到x的最小步数，可以往前跳a步，往后跳b步，不能跳到负数，不能连续两次往前跳，不能跳到被禁止的位置。</p>
+<h3><strong>算法思路：</strong></h3>
+<p>类似于Jump game，不过此题要用真的BFS，用三个元素push如queue: (point, distance, is_backward), is_backward记录是否回退两次而剪枝，distance是结果。</p>
+<h3><strong>注意事项：</strong></h3>
+<ol>
+<li>用BFS模板，但此题到了某个位置可以有两个状态：向前跳和向后跳。所以<strong>visited不能只含位置，必须包含方向</strong>，(position, is_backward). if (neighbor, neighbor_is_backward) in visited也记得包含方向，否则LTE，因为Python不会检查是否tuple</li>
+<li>upper limit为max(x, max(forbidden)) + a + b，否则LTE，这个比较推导，可以这么理解max(x, max(forbidden))之后可以自由不受限制地走，必定存在一个点之后会重复且无意义，如a和b的最小倍数。举个例子找规律，a=2, b=1, x=10, 要走到11的话就要先到x+a+b再往回走</li>
 </ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">minimumJumps</span><span class="params">(self, forbidden: List[int], a: int, b: int, x: int)</span> -&gt; int:</span></span><br><span class="line">	forbidden_set = set(forbidden)</span><br><span class="line">	limit = max(x, max(forbidden)) + a + b</span><br><span class="line">	queue = collections.deque([(<span class="number">0</span>, <span class="number">0</span>, <span class="keyword">False</span>)])</span><br><span class="line">	visited = set([(<span class="number">0</span>, <span class="keyword">False</span>)])  <span class="comment"># remember two states</span></span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.popleft()</span><br><span class="line">		<span class="keyword">if</span> node[<span class="number">0</span>] == x:</span><br><span class="line">			<span class="keyword">return</span> node[<span class="number">1</span>]</span><br><span class="line">		<span class="keyword">for</span> neighbor <span class="keyword">in</span> [node[<span class="number">0</span>] + a, node[<span class="number">0</span>] - b]:</span><br><span class="line">			<span class="keyword">if</span> neighbor <span class="keyword">in</span> forbidden_set <span class="keyword">or</span> neighbor &lt; <span class="number">0</span> <span class="keyword">or</span> neighbor &gt; limit: <span class="comment"># remember limit</span></span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			<span class="keyword">if</span> neighbor == node[<span class="number">0</span>] - b <span class="keyword">and</span> node[<span class="number">2</span>]: <span class="comment"># no backward twice</span></span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			neighbor_is_backward = <span class="keyword">True</span> <span class="keyword">if</span> neighbor == node[<span class="number">0</span>] - b <span class="keyword">else</span> <span class="keyword">False</span></span><br><span class="line">			<span class="keyword">if</span> (neighbor, neighbor_is_backward) <span class="keyword">in</span> visited: <span class="comment"># remember not neighbor in visited - LTE</span></span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			queue.append((neighbor, node[<span class="number">1</span>] + <span class="number">1</span>, neighbor_is_backward))</span><br><span class="line">			visited.add((neighbor, neighbor_is_backward))</span><br><span class="line">	<span class="keyword">return</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(max(x, max(forbidden)) + a + b)</code>，空间复杂度<code>O(max(x, max(forbidden)) + a + b)</code>  </p>
+<h3><strong>Python代码：</strong></h3>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">minimumJumps</span><span class="params">(self, forbidden: List[int], a: int, b: int, x: int)</span> -&gt; int:</span></span><br><span class="line">	forbidden_set = set(forbidden)</span><br><span class="line">	limit = max(x, max(forbidden)) + a + b</span><br><span class="line">	queue = collections.deque([(<span class="number">0</span>, <span class="number">0</span>, <span class="keyword">False</span>)])</span><br><span class="line">	visited = set([(<span class="number">0</span>, <span class="keyword">False</span>)])  <span class="comment"># remember two states</span></span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.popleft()</span><br><span class="line">		<span class="keyword">if</span> node[<span class="number">0</span>] == x:</span><br><span class="line">			<span class="keyword">return</span> node[<span class="number">1</span>]</span><br><span class="line">		<span class="keyword">for</span> neighbor <span class="keyword">in</span> [node[<span class="number">0</span>] + a, node[<span class="number">0</span>] - b]:</span><br><span class="line">			<span class="keyword">if</span> neighbor <span class="keyword">in</span> forbidden_set <span class="keyword">or</span> neighbor &lt; <span class="number">0</span> <span class="keyword">or</span> neighbor &gt; limit: <span class="comment"># remember limit</span></span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			<span class="keyword">if</span> neighbor == node[<span class="number">0</span>] - b <span class="keyword">and</span> node[<span class="number">2</span>]: <span class="comment"># no backward twice</span></span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			neighbor_is_backward = <span class="keyword">True</span> <span class="keyword">if</span> neighbor == node[<span class="number">0</span>] - b <span class="keyword">else</span> <span class="keyword">False</span></span><br><span class="line">			<span class="keyword">if</span> (neighbor, neighbor_is_backward) <span class="keyword">in</span> visited: <span class="comment"># remember not neighbor in visited - LTE</span></span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			queue.append((neighbor, node[<span class="number">1</span>] + <span class="number">1</span>, neighbor_is_backward))</span><br><span class="line">			visited.add((neighbor, neighbor_is_backward))</span><br><span class="line">	<span class="keyword">return</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure></p>
+<h3><strong>算法分析：</strong></h3>
+<p>时间复杂度为<code>O(max(x, max(forbidden)) + a + b)</code>，空间复杂度<code>O(max(x, max(forbidden)) + a + b)</code></p>
 
       
     </div>
@@ -423,17 +500,41 @@
 
       
           <p><strong><a href="https://leetcode.com/problems/count-binary-substrings/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>Give a binary string <code>s</code>, return the number of non-empty substrings that have the same number of <code>0</code>‘s and <code>1</code>‘s, and all the <code>0</code>‘s and all the <code>1</code>‘s in these substrings are grouped consecutively.<br><br>Substrings that occur multiple times are counted the number of times they occur.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> s = “00110011”<br><strong>Output:</strong> 6<br><strong>Explanation:</strong> There are 6 substrings that have equal number of consecutive 1’s and 0’s: “0011”, “01”, “1100”, “10”, “0011”, and “01”.<br>Notice that some of these substrings repeat and are counted the number of times they occur.<br>Also, “00110011” is not a valid substring because all the 0’s (and 1’s) are not grouped together.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> s = “10101”<br><strong>Output:</strong> 4<br><strong>Explanation:</strong> There are 4 substrings: “10”, “01”, “10”, “01” that have equal number of consecutive 1’s and 0’s.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= s.length &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code>
-</em>   <code>s[i]</code> is either <code>&#39;0&#39;</code> or <code>&#39;1&#39;</code>.<br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>子串中，连续0和连续1的个数中间对称，求这样的子串的个数</p>
-<h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>这题至少medium，一开始考虑给定一个字符串怎么判断是否满足条件，统计个数和flag变化。然后是双重循环分别以a[0..n-1]为开头的子串判断，若不满足就跳出内循环，复杂度为O(n).<br>既然是连续，又是只有0和1，不妨考虑统计个数。如00110011,统计0和1的个数为count=[2,2,2,2]相邻的数代表不同种类，所以去min(count[i-1], count[i])，如2, 2可以是01/10, 0011/1100两种，具体以哪个数开始取决于数组本身。统计i=[1..n-1]即所求。复杂度为O(n).  </p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>累计思想，按0和1累计得到累计数组，然后求相邻最小个数的和。      </li>
-<li>循环出来，处理最后一个部分。 </li>
+<p>&lt;div&gt;</p>
+<p>Give a binary string <code>s</code>, return the number of non-empty substrings that have the same number of <code>0</code>'s and <code>1</code>'s, and all the <code>0</code>'s and all the <code>1</code>'s in these substrings are grouped consecutively.</p>
+<p>Substrings that occur multiple times are counted the number of times they occur.</p>
+<p><strong>Example 1:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> s = &quot;00110011&quot;
+<strong>Output:</strong> 6
+<strong>Explanation:</strong> There are 6 substrings that have equal number of consecutive 1's and 0's: &quot;0011&quot;, &quot;01&quot;, &quot;1100&quot;, &quot;10&quot;, &quot;0011&quot;, and &quot;01&quot;.
+Notice that some of these substrings repeat and are counted the number of times they occur.
+Also, &quot;00110011&quot; is not a valid substring because all the 0's (and 1's) are not grouped together.
+&lt;/pre&gt;</p>
+<p><strong>Example 2:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> s = &quot;10101&quot;
+<strong>Output:</strong> 4
+<strong>Explanation:</strong> There are 4 substrings: &quot;10&quot;, &quot;01&quot;, &quot;10&quot;, &quot;01&quot; that have equal number of consecutive 1's and 0's.
+&lt;/pre&gt;</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= s.length &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code></li>
+<li><code>s[i]</code> is either <code>'0'</code> or <code>'1'</code>.</li>
+</ul>
+<p>&lt;/div&gt;</p>
+<h3><strong>题目大意：</strong></h3>
+<p>子串中，连续0和连续1的个数中间对称，求这样的子串的个数</p>
+<h3><strong>算法思路：</strong></h3>
+<p>这题至少medium，一开始考虑给定一个字符串怎么判断是否满足条件，统计个数和flag变化。然后是双重循环分别以a[0..n-1]为开头的子串判断，若不满足就跳出内循环，复杂度为O(n).<br>
+既然是连续，又是只有0和1，不妨考虑统计个数。如00110011,统计0和1的个数为count=[2,2,2,2]相邻的数代表不同种类，所以去min(count[i-1], count[i])，如2, 2可以是01/10, 0011/1100两种，具体以哪个数开始取决于数组本身。统计i=[1..n-1]即所求。复杂度为O(n).</p>
+<h3><strong>注意事项：</strong></h3>
+<ol>
+<li>累计思想，按0和1累计得到累计数组，然后求相邻最小个数的和。</li>
+<li>循环出来，处理最后一个部分。</li>
 </ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">countBinarySubstrings</span><span class="params">(self, s: str)</span> -&gt; int:</span></span><br><span class="line">	presum, count, res = [], <span class="number">1</span>, <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, len(s)): <span class="comment">#</span></span><br><span class="line">		<span class="keyword">if</span> s[i - <span class="number">1</span>] == s[i]:</span><br><span class="line">			count += <span class="number">1</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			presum.append(count) <span class="comment">#[2, 2,2,2]</span></span><br><span class="line">			count = <span class="number">1</span></span><br><span class="line">	<span class="keyword">if</span> count &gt; <span class="number">0</span>:</span><br><span class="line">		presum.append(count)</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, len(presum)):</span><br><span class="line">		res += min(presum[i - <span class="number">1</span>], presum[i])</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>  </p>
+<h3><strong>Python代码：</strong></h3>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">countBinarySubstrings</span><span class="params">(self, s: str)</span> -&gt; int:</span></span><br><span class="line">	presum, count, res = [], <span class="number">1</span>, <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, len(s)): <span class="comment">#</span></span><br><span class="line">		<span class="keyword">if</span> s[i - <span class="number">1</span>] == s[i]:</span><br><span class="line">			count += <span class="number">1</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			presum.append(count) <span class="comment">#[2, 2,2,2]</span></span><br><span class="line">			count = <span class="number">1</span></span><br><span class="line">	<span class="keyword">if</span> count &gt; <span class="number">0</span>:</span><br><span class="line">		presum.append(count)</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, len(presum)):</span><br><span class="line">		res += min(presum[i - <span class="number">1</span>], presum[i])</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure></p>
+<h3><strong>算法分析：</strong></h3>
+<p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code></p>
 
       
     </div>
@@ -513,25 +614,54 @@
 
       
           <p><strong><a href="https://leetcode.com/problems/largest-color-value-in-a-directed-graph/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>There is a <strong>directed graph</strong> of <code>n</code> colored nodes and <code>m</code> edges. The nodes are numbered from <code>0</code> to <code>n - 1</code>.<br><br>You are given a string <code>colors</code> where <code>colors[i]</code> is a lowercase English letter representing the <strong>color</strong> of the <code>i&lt;sup&gt;th&lt;/sup&gt;</code> node in this graph (<strong>0-indexed</strong>). You are also given a 2D array <code>edges</code> where <code>edges[j] = [a&lt;sub&gt;j&lt;/sub&gt;, b&lt;sub&gt;j&lt;/sub&gt;]</code> indicates that there is a <strong>directed edge</strong> from node <code>a&lt;sub&gt;j&lt;/sub&gt;</code> to node <code>b&lt;sub&gt;j&lt;/sub&gt;</code>.<br><br>A valid <strong>path</strong> in the graph is a sequence of nodes <code>x&lt;sub&gt;1&lt;/sub&gt; -&gt; x&lt;sub&gt;2&lt;/sub&gt; -&gt; x&lt;sub&gt;3&lt;/sub&gt; -&gt; ... -&gt; x&lt;sub&gt;k&lt;/sub&gt;</code> such that there is a directed edge from <code>x&lt;sub&gt;i&lt;/sub&gt;</code> to <code>x&lt;sub&gt;i+1&lt;/sub&gt;</code> for every <code>1 &lt;= i &lt; k</code>. The <strong>color value</strong> of the path is the number of nodes that are colored the <strong>most frequently</strong> occurring color along that path.<br><br>Return <em>the <strong>largest color value</strong> of any valid path in the given graph, or</em> <code>-1</code> <em>if the graph contains a cycle</em>.<br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/04/21/leet1.png" alt=""><br><br><pre><strong>Input:</strong> colors = “abaca”, edges = [[0,1],[0,2],[2,3],[3,4]]<br><strong>Output:</strong> 3<br><strong>Explanation:</strong> The path 0 -&gt; 2 -&gt; 3 -&gt; 4 contains 3 nodes that are colored <code>&quot;a&quot; (red in the above image)</code>.<br></pre><br><br><strong>Example 2:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/04/21/leet2.png" alt=""><br><br><pre><strong>Input:</strong> colors = “a”, edges = [[0,0]]<br><strong>Output:</strong> -1<br><strong>Explanation:</strong> There is a cycle from 0 to 0.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>n == colors.length</code>
-</em>   <code>m == edges.length</code><br><em>   <code>1 &lt;= n &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code>
-</em>   <code>0 &lt;= m &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code><br><em>   <code>colors</code> consists of lowercase English letters.
-</em>   <code>0 &lt;= a&lt;sub&gt;j&lt;/sub&gt;, b&lt;sub&gt;j&lt;/sub&gt; &lt; n</code><br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个图，有n个节点，每个节点的颜色已知，用a-z表示，求所有不循环路径上同种颜色的最大节点数，若有循环返回-1.</p>
-<h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>拓扑排序 + DP  </p>
+<p>&lt;div&gt;</p>
+<p>There is a <strong>directed graph</strong> of <code>n</code> colored nodes and <code>m</code> edges. The nodes are numbered from <code>0</code> to <code>n - 1</code>.</p>
+<p>You are given a string <code>colors</code> where <code>colors[i]</code> is a lowercase English letter representing the <strong>color</strong> of the <code>i&lt;sup&gt;th&lt;/sup&gt;</code> node in this graph (<strong>0-indexed</strong>). You are also given a 2D array <code>edges</code> where <code>edges[j] = [a&lt;sub&gt;j&lt;/sub&gt;, b&lt;sub&gt;j&lt;/sub&gt;]</code> indicates that there is a <strong>directed edge</strong> from node <code>a&lt;sub&gt;j&lt;/sub&gt;</code> to node <code>b&lt;sub&gt;j&lt;/sub&gt;</code>.</p>
+<p>A valid <strong>path</strong> in the graph is a sequence of nodes <code>x&lt;sub&gt;1&lt;/sub&gt; -&gt; x&lt;sub&gt;2&lt;/sub&gt; -&gt; x&lt;sub&gt;3&lt;/sub&gt; -&gt; ... -&gt; x&lt;sub&gt;k&lt;/sub&gt;</code> such that there is a directed edge from <code>x&lt;sub&gt;i&lt;/sub&gt;</code> to <code>x&lt;sub&gt;i+1&lt;/sub&gt;</code> for every <code>1 &lt;= i &lt; k</code>. The <strong>color value</strong> of the path is the number of nodes that are colored the <strong>most frequently</strong> occurring color along that path.</p>
+<p>Return <em>the <strong>largest color value</strong> of any valid path in the given graph, or</em> <code>-1</code> <em>if the graph contains a cycle</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><img src="https://assets.leetcode.com/uploads/2021/04/21/leet1.png" alt=""></p>
+<p>&lt;pre&gt;<strong>Input:</strong> colors = &quot;abaca&quot;, edges = [[0,1],[0,2],[2,3],[3,4]]
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> The path 0 -&gt; 2 -&gt; 3 -&gt; 4 contains 3 nodes that are colored <code>&quot;a&quot; (red in the above image)</code>.
+&lt;/pre&gt;</p>
+<p><strong>Example 2:</strong></p>
+<p><img src="https://assets.leetcode.com/uploads/2021/04/21/leet2.png" alt=""></p>
+<p>&lt;pre&gt;<strong>Input:</strong> colors = &quot;a&quot;, edges = [[0,0]]
+<strong>Output:</strong> -1
+<strong>Explanation:</strong> There is a cycle from 0 to 0.
+&lt;/pre&gt;</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>n == colors.length</code></li>
+<li><code>m == edges.length</code></li>
+<li><code>1 &lt;= n &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code></li>
+<li><code>0 &lt;= m &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code></li>
+<li><code>colors</code> consists of lowercase English letters.</li>
+<li><code>0 &lt;= a&lt;sub&gt;j&lt;/sub&gt;, b&lt;sub&gt;j&lt;/sub&gt; &lt; n</code></li>
+</ul>
+<p>&lt;/div&gt;</p>
+<h3><strong>题目大意：</strong></h3>
+<p>给定一个图，有n个节点，每个节点的颜色已知，用a-z表示，求所有不循环路径上同种颜色的最大节点数，若有循环返回-1.</p>
+<h3><strong>算法思路：</strong></h3>
+<p>拓扑排序 + DP</p>
 <ol>
-<li>看到侦测循环考虑用拓扑排序  </li>
-<li>拓扑排序的同时，如果知道父亲节点有最大的同种颜色数，容易计算儿子的同种颜色数dp[child]<br>dp[child] = max(dp[parent]) for all the parents for the child<br>由于有26种颜色，扩展到最大的第i种颜色数<strong>dp[child][i]表示以child为结尾的路径上第i种颜色的累计最大节点数</strong>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dp[child][i] = max(dp[parent][i] + 1) if color[child] == color[parent] for all the immediate parents for the child, i = 1..26 </span><br><span class="line">			= max(dp[parent][i])     if color[child] != color[parent]</span><br></pre></td></tr></table></figure>
-</li>
+<li>看到侦测循环考虑用拓扑排序</li>
+<li>拓扑排序的同时，如果知道父亲节点有最大的同种颜色数，容易计算儿子的同种颜色数dp[child]<br>
+dp[child] = max(dp[parent]) for all the parents for the child<br>
+由于有26种颜色，扩展到最大的第i种颜色数<strong>dp[child][i]表示以child为结尾的路径上第i种颜色的累计最大节点数</strong><br>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dp[child][i] = max(dp[parent][i] + 1) if color[child] == color[parent] for all the immediate parents for the child, i = 1..26 </span><br><span class="line">			= max(dp[parent][i])     if color[child] != color[parent]</span><br></pre></td></tr></table></figure></li>
 </ol>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>见到最值且跟图相关，就考虑用BFS，而且要侦测循环就要用拓扑排序。要记录父节点颜色的累计和，考虑用DP，DP跟颜色相关且颜色都是小写字母，也就是26种    </li>
-<li>递归式是<strong>所有直接父节点的最大值</strong>。因为若有两条路径到达child这个节点，路径1第a种颜色有2个，而路径上第a种颜色有5个。 </li>
-<li>计算dp值在知道边的始点和终点上，也就是入度数减一之前。 </li>
+<h3><strong>注意事项：</strong></h3>
+<ol>
+<li>见到最值且跟图相关，就考虑用BFS，而且要侦测循环就要用拓扑排序。要记录父节点颜色的累计和，考虑用DP，DP跟颜色相关且颜色都是小写字母，也就是26种</li>
+<li>递归式是<strong>所有直接父节点的最大值</strong>。因为若有两条路径到达child这个节点，路径1第a种颜色有2个，而路径上第a种颜色有5个。</li>
+<li>计算dp值在知道边的始点和终点上，也就是入度数减一之前。</li>
 </ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">largestPathValue</span><span class="params">(self, colors: str, edges: List[List[int]])</span> -&gt; int:</span></span><br><span class="line">	graph = [[] <span class="keyword">for</span> _ <span class="keyword">in</span> range(len(colors))]</span><br><span class="line">	in_degree = [<span class="number">0</span>] * len(colors)</span><br><span class="line">	<span class="keyword">for</span> _edge <span class="keyword">in</span> edges:</span><br><span class="line">		graph[_edge[<span class="number">0</span>]].append(_edge[<span class="number">1</span>])</span><br><span class="line">		in_degree[_edge[<span class="number">1</span>]] += <span class="number">1</span></span><br><span class="line">	res = []</span><br><span class="line">	dp = [[<span class="number">0</span> <span class="keyword">for</span> _ <span class="keyword">in</span> range(<span class="number">26</span>)] <span class="keyword">for</span> _ <span class="keyword">in</span> range(len(colors))]</span><br><span class="line">	initial_nodes = [i <span class="keyword">for</span> i <span class="keyword">in</span> range(len(in_degree)) <span class="keyword">if</span> in_degree[i] == <span class="number">0</span>]</span><br><span class="line">	<span class="keyword">for</span> _node <span class="keyword">in</span> initial_nodes:</span><br><span class="line">		dp[_node][ord(colors[_node]) - ord(<span class="string">'a'</span>)] = <span class="number">1</span></span><br><span class="line">	queue = collections.deque(initial_nodes)</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.popleft()</span><br><span class="line">		res.append(node)</span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> graph[node]:</span><br><span class="line">			<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">26</span>):</span><br><span class="line">				dp[j][i] = max(dp[j][i], dp[node][i] + (<span class="number">1</span> <span class="keyword">if</span> ord(colors[j]) - ord(<span class="string">'a'</span>) == i <span class="keyword">else</span> <span class="number">0</span>)) <span class="comment"># remember max(dp[j][i]</span></span><br><span class="line">			in_degree[j] -= <span class="number">1</span></span><br><span class="line">			<span class="keyword">if</span> in_degree[j] == <span class="number">0</span>:</span><br><span class="line">				queue.append(j)</span><br><span class="line">	<span class="keyword">return</span> <span class="number">-1</span> <span class="keyword">if</span> len(colors) != len(res) <span class="keyword">else</span> max(map(max, dp))</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(V + E)</code>，空间复杂度<code>O(V + E)</code>  </p>
+<h3><strong>Python代码：</strong></h3>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">largestPathValue</span><span class="params">(self, colors: str, edges: List[List[int]])</span> -&gt; int:</span></span><br><span class="line">	graph = [[] <span class="keyword">for</span> _ <span class="keyword">in</span> range(len(colors))]</span><br><span class="line">	in_degree = [<span class="number">0</span>] * len(colors)</span><br><span class="line">	<span class="keyword">for</span> _edge <span class="keyword">in</span> edges:</span><br><span class="line">		graph[_edge[<span class="number">0</span>]].append(_edge[<span class="number">1</span>])</span><br><span class="line">		in_degree[_edge[<span class="number">1</span>]] += <span class="number">1</span></span><br><span class="line">	res = []</span><br><span class="line">	dp = [[<span class="number">0</span> <span class="keyword">for</span> _ <span class="keyword">in</span> range(<span class="number">26</span>)] <span class="keyword">for</span> _ <span class="keyword">in</span> range(len(colors))]</span><br><span class="line">	initial_nodes = [i <span class="keyword">for</span> i <span class="keyword">in</span> range(len(in_degree)) <span class="keyword">if</span> in_degree[i] == <span class="number">0</span>]</span><br><span class="line">	<span class="keyword">for</span> _node <span class="keyword">in</span> initial_nodes:</span><br><span class="line">		dp[_node][ord(colors[_node]) - ord(<span class="string">'a'</span>)] = <span class="number">1</span></span><br><span class="line">	queue = collections.deque(initial_nodes)</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.popleft()</span><br><span class="line">		res.append(node)</span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> graph[node]:</span><br><span class="line">			<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">26</span>):</span><br><span class="line">				dp[j][i] = max(dp[j][i], dp[node][i] + (<span class="number">1</span> <span class="keyword">if</span> ord(colors[j]) - ord(<span class="string">'a'</span>) == i <span class="keyword">else</span> <span class="number">0</span>)) <span class="comment"># remember max(dp[j][i]</span></span><br><span class="line">			in_degree[j] -= <span class="number">1</span></span><br><span class="line">			<span class="keyword">if</span> in_degree[j] == <span class="number">0</span>:</span><br><span class="line">				queue.append(j)</span><br><span class="line">	<span class="keyword">return</span> <span class="number">-1</span> <span class="keyword">if</span> len(colors) != len(res) <span class="keyword">else</span> max(map(max, dp))</span><br></pre></td></tr></table></figure></p>
+<h3><strong>算法分析：</strong></h3>
+<p>时间复杂度为<code>O(V + E)</code>，空间复杂度<code>O(V + E)</code></p>
 
       
     </div>
@@ -611,18 +741,42 @@
 
       
           <p><strong><a href="https://leetcode.com/problems/russian-doll-envelopes/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>You are given a 2D array of integers <code>envelopes</code> where <code>envelopes[i] = [w&lt;sub&gt;i&lt;/sub&gt;, h&lt;sub&gt;i&lt;/sub&gt;]</code> represents the width and the height of an envelope.<br><br>One envelope can fit into another if and only if both the width and height of one envelope are greater than the other envelope’s width and height.<br><br>Return <em>the maximum number of envelopes you can Russian doll (i.e., put one inside the other)</em>.<br><br><strong>Note:</strong> You cannot rotate an envelope.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> envelopes = [[5,4],[6,4],[6,7],[2,3]]<br><strong>Output:</strong> 3<br><strong>Explanation:</strong> The maximum number of envelopes you can Russian doll is <code>3</code> ([2,3] =&gt; [5,4] =&gt; [6,7]).<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> envelopes = [[1,1],[1,1],[1,1]]<br><strong>Output:</strong> 1<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= envelopes.length &lt;= 5000</code>
-</em>   <code>envelopes[i].length == 2</code><br>*   <code>1 &lt;= w&lt;sub&gt;i&lt;/sub&gt;, h&lt;sub&gt;i&lt;/sub&gt; &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code><br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>信封套信封，能套上的条件是内信封的宽度和高度均小于外信封。求最多有多少个信封能套在一次</p>
-<h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>类似于LIS，先排序宽度，高度就变成LIS问题。  </p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<p>&lt;div&gt;</p>
+<p>You are given a 2D array of integers <code>envelopes</code> where <code>envelopes[i] = [w&lt;sub&gt;i&lt;/sub&gt;, h&lt;sub&gt;i&lt;/sub&gt;]</code> represents the width and the height of an envelope.</p>
+<p>One envelope can fit into another if and only if both the width and height of one envelope are greater than the other envelope's width and height.</p>
+<p>Return <em>the maximum number of envelopes you can Russian doll (i.e., put one inside the other)</em>.</p>
+<p><strong>Note:</strong> You cannot rotate an envelope.</p>
+<p><strong>Example 1:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> envelopes = [[5,4],[6,4],[6,7],[2,3]]
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> The maximum number of envelopes you can Russian doll is <code>3</code> ([2,3] =&gt; [5,4] =&gt; [6,7]).
+&lt;/pre&gt;</p>
+<p><strong>Example 2:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> envelopes = [[1,1],[1,1],[1,1]]
+<strong>Output:</strong> 1
+&lt;/pre&gt;</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= envelopes.length &lt;= 5000</code></li>
+<li><code>envelopes[i].length == 2</code></li>
+<li><code>1 &lt;= w&lt;sub&gt;i&lt;/sub&gt;, h&lt;sub&gt;i&lt;/sub&gt; &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code></li>
+</ul>
+<p>&lt;/div&gt;</p>
+<h3><strong>题目大意：</strong></h3>
+<p>信封套信封，能套上的条件是内信封的宽度和高度均小于外信封。求最多有多少个信封能套在一次</p>
+<h3><strong>算法思路：</strong></h3>
+<p>类似于LIS，先排序宽度，高度就变成LIS问题。</p>
+<h3><strong>注意事项：</strong></h3>
+<ol>
 <li>宽度和高度都是严格递增，所以排序envelopes的时候，先顺序排序宽度，再逆序排高度，<strong>逆序是防止同一宽度但高度不同的信封成为合法结果</strong>，如[3, 4], [3, 5], 高度LIS变成[4, 5]但不合法。还要注意Python语法：envelopes.sort(key=lambda x: (x[0], -x[1]))</li>
 <li>用bisect_left因为，若高度相等，原地替换并不往后加。</li>
 </ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">maxEnvelopes</span><span class="params">(self, envelopes: List[List[int]])</span> -&gt; int:</span></span><br><span class="line">	envelopes.sort(key=<span class="keyword">lambda</span> x: (x[<span class="number">0</span>], -x[<span class="number">1</span>])) <span class="comment"># remember format and reversed order</span></span><br><span class="line">	sorted_height = []</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(envelopes)):</span><br><span class="line">		index = bisect.bisect_left(sorted_height, envelopes[i][<span class="number">1</span>]) <span class="comment"># remember left</span></span><br><span class="line">		<span class="keyword">if</span> index &lt; len(sorted_height):</span><br><span class="line">			sorted_height[index] = envelopes[i][<span class="number">1</span>]</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			sorted_height.append(envelopes[i][<span class="number">1</span>])</span><br><span class="line">	<span class="keyword">return</span> len(sorted_height)</span><br></pre></td></tr></table></figure>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxEnvelopes</span><span class="params">(<span class="keyword">int</span>[][] envelopes)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(envelopes == <span class="keyword">null</span> || envelopes.length == <span class="number">0</span> || </span><br><span class="line">			envelopes[<span class="number">0</span>] == <span class="keyword">null</span> || envelopes[<span class="number">0</span>].length != <span class="number">2</span>) <span class="comment">// remember for 2d array</span></span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	Arrays.sort(envelopes, <span class="keyword">new</span> Comparator&lt;<span class="keyword">int</span>[]&gt;() &#123;</span><br><span class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(<span class="keyword">int</span>[] a, <span class="keyword">int</span>[] b)</span> </span>&#123;</span><br><span class="line">			<span class="keyword">if</span>(a[<span class="number">0</span>] == b[<span class="number">0</span>])</span><br><span class="line">				<span class="keyword">return</span> b[<span class="number">1</span>] - a[<span class="number">1</span>]; <span class="comment">// remember the reverse order for [4,5], [4,6] case must strictly increasing for width and height</span></span><br><span class="line">			<span class="keyword">else</span></span><br><span class="line">				<span class="keyword">return</span> a[<span class="number">0</span>] - b[<span class="number">0</span>];</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;);</span><br><span class="line">	<span class="keyword">int</span> len = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span>[] lis = <span class="keyword">new</span> <span class="keyword">int</span>[envelopes.length];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span>[] e : envelopes) &#123;</span><br><span class="line">		<span class="keyword">int</span> index = Arrays.binarySearch(lis, <span class="number">0</span>, len, e[<span class="number">1</span>]);</span><br><span class="line">		<span class="keyword">if</span>(index &lt; <span class="number">0</span>) &#123;</span><br><span class="line">			index = -index - <span class="number">1</span>;</span><br><span class="line">			lis[index] = e[<span class="number">1</span>];</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			lis[index] = e[<span class="number">1</span>];</span><br><span class="line">		<span class="keyword">if</span>(index == len)</span><br><span class="line">			len++;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> len;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>Insert时间复杂度为<code>O(nlogn)</code>，空间复杂度<code>O(1)</code>  </p>
+<h3><strong>Python代码：</strong></h3>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">maxEnvelopes</span><span class="params">(self, envelopes: List[List[int]])</span> -&gt; int:</span></span><br><span class="line">	envelopes.sort(key=<span class="keyword">lambda</span> x: (x[<span class="number">0</span>], -x[<span class="number">1</span>])) <span class="comment"># remember format and reversed order</span></span><br><span class="line">	sorted_height = []</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(envelopes)):</span><br><span class="line">		index = bisect.bisect_left(sorted_height, envelopes[i][<span class="number">1</span>]) <span class="comment"># remember left</span></span><br><span class="line">		<span class="keyword">if</span> index &lt; len(sorted_height):</span><br><span class="line">			sorted_height[index] = envelopes[i][<span class="number">1</span>]</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			sorted_height.append(envelopes[i][<span class="number">1</span>])</span><br><span class="line">	<span class="keyword">return</span> len(sorted_height)</span><br></pre></td></tr></table></figure></p>
+<h3><strong>Java代码：</strong></h3>
+<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxEnvelopes</span><span class="params">(<span class="keyword">int</span>[][] envelopes)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(envelopes == <span class="keyword">null</span> || envelopes.length == <span class="number">0</span> || </span><br><span class="line">			envelopes[<span class="number">0</span>] == <span class="keyword">null</span> || envelopes[<span class="number">0</span>].length != <span class="number">2</span>) <span class="comment">// remember for 2d array</span></span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	Arrays.sort(envelopes, <span class="keyword">new</span> Comparator&lt;<span class="keyword">int</span>[]&gt;() &#123;</span><br><span class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(<span class="keyword">int</span>[] a, <span class="keyword">int</span>[] b)</span> </span>&#123;</span><br><span class="line">			<span class="keyword">if</span>(a[<span class="number">0</span>] == b[<span class="number">0</span>])</span><br><span class="line">				<span class="keyword">return</span> b[<span class="number">1</span>] - a[<span class="number">1</span>]; <span class="comment">// remember the reverse order for [4,5], [4,6] case must strictly increasing for width and height</span></span><br><span class="line">			<span class="keyword">else</span></span><br><span class="line">				<span class="keyword">return</span> a[<span class="number">0</span>] - b[<span class="number">0</span>];</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;);</span><br><span class="line">	<span class="keyword">int</span> len = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span>[] lis = <span class="keyword">new</span> <span class="keyword">int</span>[envelopes.length];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span>[] e : envelopes) &#123;</span><br><span class="line">		<span class="keyword">int</span> index = Arrays.binarySearch(lis, <span class="number">0</span>, len, e[<span class="number">1</span>]);</span><br><span class="line">		<span class="keyword">if</span>(index &lt; <span class="number">0</span>) &#123;</span><br><span class="line">			index = -index - <span class="number">1</span>;</span><br><span class="line">			lis[index] = e[<span class="number">1</span>];</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			lis[index] = e[<span class="number">1</span>];</span><br><span class="line">		<span class="keyword">if</span>(index == len)</span><br><span class="line">			len++;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> len;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3><strong>算法分析：</strong></h3>
+<p>Insert时间复杂度为<code>O(nlogn)</code>，空间复杂度<code>O(1)</code></p>
 
       
     </div>
@@ -646,10 +800,12 @@
 
 
 
-          </div>
-		  <a href="mailto:metajobreferral@gmail.com?subject=Mail from Github">
-		   <img alt="Free mock interview" border="0" src="/images/static/ad.jpg" width="270" />
-		  </a>
+          </div>		  
+		  <div style="margin-top: 10px">
+			  <a href="mailto:metajobreferral@gmail.com?subject=Mail from Github">
+			   <img alt="Free mock interview" border="0" src="/images/static/ad.jpg" width="270" />
+			  </a>
+		  </div>
           
 
 <script>
