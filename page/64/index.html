@@ -201,6 +201,104 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2018/05/07/lee-128-longest-consecutive-sequence/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KK Shum">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KK's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/05/07/lee-128-longest-consecutive-sequence/" class="post-title-link" itemprop="url">LeetCode 128 Longest Consecutive Sequence</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2018-05-07 23:57:44" itemprop="dateCreated datePublished" datetime="2018-05-07T23:57:44-07:00">2018-05-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-01-16 18:16:30" itemprop="dateModified" datetime="2022-01-16T18:16:30-08:00">2022-01-16</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2018/05/07/lee-128-longest-consecutive-sequence/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/05/07/lee-128-longest-consecutive-sequence/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong><a href="https://leetcode.com/problems/longest-consecutive-sequence" target="_blank" rel="noopener">LeetCode 128 Longest Consecutive Sequence</a></strong></p>
+<p>Given an unsorted array of integers, find the length of the longest consecutive elements sequence.</p>
+<p>Your algorithm should run in O(<em>n</em>) complexity.</p>
+<p><strong>Example:</strong></p>
+<pre>**Input:** [100, 4, 200, 1, 3, 2]
+**Output:** 4
+**Explanation:** The longest consecutive elements sequence is `[1, 2, 3, 4]`. Therefore its length is 4.
+</pre>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给出一个未排序的整数数组，找出最长的连续元素序列的长度。<br>如： 给出[100, 4, 200, 1, 3, 2]，最长的连续元素序列是[1, 2, 3, 4]。返回它的长度：4。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是连通问题，如果用排序方法，很容易，但时间复杂度为O(nlogn)。考虑改进，因为连通集，容易想到HashMap，把每个元素加入到其中，<br>然后对每个元素进行相邻查找。相邻查找就是以此元素为中心，向上向下在Map查找，从而得到此元素的最大连续序列长度。查找过的元素<br>在Map中删除，以免重复计算。</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>加入set之后的元素不能再内循环中删除，因为外循环是遍历每一个数，可能会遍历到删除的数，正确做法是用map的value来记录是否访问过。</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">longestConsecutive</span><span class="params">(self, nums: List[int])</span> -&gt; int:</span></span><br><span class="line">	num_set = collections.Counter(nums)</span><br><span class="line">	res = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> n <span class="keyword">in</span> nums:</span><br><span class="line">		<span class="keyword">if</span> num_set[n] == <span class="number">0</span>:</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		max_len = <span class="number">1</span></span><br><span class="line">		num_set[n] = <span class="number">0</span></span><br><span class="line">		i = n + <span class="number">1</span></span><br><span class="line">		<span class="keyword">while</span> i <span class="keyword">in</span> num_set:</span><br><span class="line">			num_set[i] = <span class="number">0</span></span><br><span class="line">			max_len += <span class="number">1</span></span><br><span class="line">			i += <span class="number">1</span></span><br><span class="line">		i = n - <span class="number">1</span></span><br><span class="line">		<span class="keyword">while</span> i <span class="keyword">in</span> num_set:</span><br><span class="line">			num_set[i] = <span class="number">0</span></span><br><span class="line">			max_len += <span class="number">1</span></span><br><span class="line">			i -= <span class="number">1</span></span><br><span class="line">		res = max(res, max_len)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>Java中在for循环中不能修改hashSet，所以只能用HashMap且value存boolean替代。HashMap表示此Map还是否含有该元素。</li>
+</ol>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">longestConsecutive</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> result = <span class="number">0</span>;</span><br><span class="line">	HashMap&lt;Integer,Boolean&gt; hm = <span class="keyword">new</span> HashMap&lt;Integer,Boolean&gt;();</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i : nums)</span><br><span class="line">		hm.put(i, <span class="keyword">true</span>);</span><br><span class="line">	</span><br><span class="line">	Iterator it = hm.keySet().iterator();</span><br><span class="line">	<span class="keyword">while</span>(it.hasNext())&#123;</span><br><span class="line">		<span class="keyword">int</span> key = (<span class="keyword">int</span>)it.next();</span><br><span class="line">		<span class="keyword">int</span> i = key+<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">int</span> count = <span class="number">1</span>;</span><br><span class="line">		<span class="keyword">while</span>(hm.containsKey(i) &amp;&amp; hm.get(i))&#123;</span><br><span class="line">			count++;</span><br><span class="line">			hm.put(i, <span class="keyword">false</span>);</span><br><span class="line">			i++;</span><br><span class="line">		&#125;</span><br><span class="line">		i = key-<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">while</span>(hm.containsKey(i) &amp;&amp; hm.get(i))&#123;</span><br><span class="line">			count++;</span><br><span class="line">			hm.put(i, <span class="keyword">false</span>);</span><br><span class="line">			i--;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(count&gt;result)</span><br><span class="line">			result = count;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line">		</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2018/05/01/design-chime/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -679,97 +777,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2018/03/17/lee-019/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="KK Shum">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="KK's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/03/17/lee-019/" class="post-title-link" itemprop="url">LeetCode 019 Remove Nth Node From End of List</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2018-03-17 20:35:41 / Modified: 21:06:12" itemprop="dateCreated datePublished" datetime="2018-03-17T20:35:41-07:00">2018-03-17</time>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2018/03/17/lee-019/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/03/17/lee-019/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong><a href="https://leetcode.com/problems/remove-nth-node-from-end-of-list" target="_blank" rel="noopener">LeetCode 019 Remove Nth Node From End of List</a></strong></p>
-<p>Given a linked list, remove the <em>n</em><sup>th</sup> node from the end of list and return its head.</p>
-<p>For example,</p>
-<pre>   Given linked list: 1->2->3->4->5, and n = 2.
-
-   After removing the second node from the end, the linked list becomes 1->2->3->5.
-</pre>
-
-<p><strong>Note:</strong><br>Given <em>n</em> will always be valid.<br>Try to do this in one pass.</p>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>删除一个单链表末尾开始算起的第n个结点，然后返回该单链表。 例如：<br>输入: 1-&gt;2-&gt;3-&gt;4-&gt;5 其中n=2；<br>输出： 1-&gt;2-&gt;3-&gt;5;<br>n一定合法，只能遍历一次链表。  </p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是经典题。两指针法。距离为N的两指针，当前指针到末尾，后指针即是要删除的节点。头部插入fake节点，类似于mergeIntervals L56末尾插入一个空节点避免特别化处理。</p>
-<ol>
-<li>快指针从fake节点开始先走n步</li>
-<li>慢指针开始一起和快指针同步走，直到快指针到最后一个（next为空）</li>
-<li>此时慢指针是要删除指针的上一个，删除操作是可以的。</li>
-</ol>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><p>因为头指针也可能被删除，如只有一个节点的链表，n=1。删除操作在待删除节点的上一个节点上操作，所以引入假头节点prehead。 </p>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ListNode <span class="title">removeNthFromEnd</span><span class="params">(ListNode head, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">	ListNode prehead = <span class="keyword">new</span> ListNode(-<span class="number">1</span>);</span><br><span class="line">	prehead.next = head;</span><br><span class="line">	</span><br><span class="line">	ListNode slow = prehead, fast = prehead;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++)</span><br><span class="line">		fast = fast.next;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">while</span>(fast.next != <span class="keyword">null</span>)&#123;</span><br><span class="line">		fast = fast.next;</span><br><span class="line">		slow = slow.next;</span><br><span class="line">	&#125;</span><br><span class="line">	deleteNode(slow);</span><br><span class="line">	<span class="keyword">return</span> prehead.next;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">deleteNode</span><span class="params">(ListNode p)</span></span>&#123;</span><br><span class="line">	p.next = p.next.next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>。   </p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -844,7 +851,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">356</span>
+          <span class="site-state-item-count">357</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

@@ -201,6 +201,96 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/02/16/leetcode-1146-snapshot-array/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KK Shum">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KK's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/02/16/leetcode-1146-snapshot-array/" class="post-title-link" itemprop="url">LeetCode 1146 Snapshot Array</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-02-16 11:20:59 / Modified: 11:55:55" itemprop="dateCreated datePublished" datetime="2022-02-16T11:20:59-08:00">2022-02-16</time>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2022/02/16/leetcode-1146-snapshot-array/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/02/16/leetcode-1146-snapshot-array/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong><a href="https://leetcode.com/problems/snapshot-array/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>Implement a SnapshotArray that supports the following interface:<br><br><em>   <code>SnapshotArray(int length)</code> initializes an array-like data structure with the given length.  <strong>Initially, each element equals 0</strong>.
+</em>   <code>void set(index, val)</code> sets the element at the given <code>index</code> to be equal to <code>val</code>.<br><em>   <code>int snap()</code> takes a snapshot of the array and returns the <code>snap_id</code>: the total number of times we called <code>snap()</code> minus <code>1</code>.
+</em>   <code>int get(index, snap_id)</code> returns the value at the given <code>index</code>, at the time we took the snapshot with the given <code>snap_id</code><br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> [“SnapshotArray”,”set”,”snap”,”set”,”get”]<br>[[3],[0,5],[],[0,6],[0,0]]<br><strong>Output:</strong> [null,null,0,null,5]<br><strong>Explanation:</strong><br>SnapshotArray snapshotArr = new SnapshotArray(3); // set the length to be 3<br>snapshotArr.set(0,5);  // Set array[0] = 5<br>snapshotArr.snap();  // Take a snapshot, return snap_id = 0<br>snapshotArr.set(0,6);<br>snapshotArr.get(0,0);  // Get the value of array[0] with snap_id = 0, return 5</pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= length &lt;= 50000</code>
+</em>   At most <code>50000</code> calls will be made to <code>set</code>, <code>snap</code>, and <code>get</code>.<br><em>   <code>0 &lt;= index &lt; length</code>
+</em>   <code>0 &lt;= snap_id &lt;</code>(the total number of times we call <code>snap()</code>)<br>*   <code>0 &lt;= val &lt;= 10^9</code><br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>设计一个数据结构支持数组的快照</p>
+<h3 id="Binary-Search解题思路-推荐-："><a href="#Binary-Search解题思路-推荐-：" class="headerlink" title="Binary Search解题思路(推荐)："></a><strong>Binary Search解题思路(推荐)：</strong></h3><p>暴力法是每次快照时候，将当时的数组的所有值存入dict中，key为(snap_id, index), value为数组值，得到MLE<br>后来考虑用二分法优化snap，将数值跟前值不同才存入历史记录，但得到TLE，应该是因为snap时间太长，因为要遍历整个数组<br>所以应该将存入历史这一步放在set中，每次值改变才存入历史记录，虽然一个snap_id可能会存入多值，大部分是不需要，因为同一个snap_id应该取最新值，但这样设计费了空间，省了时间。</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>历史记录为3d数组，第一维为数组index, 第二维为所有历史记录，第三维为每一个记录为[snap_id, value]。由于数组初始值为0，所以初始历史记录为[-1, 0]</li>
+<li>snap_id和题目要求的id差1，比如第一次call snap为0，但是之前的snap应该为-1</li>
+<li>最容易错的在于二分法，要先将snap_id + 1，比如[-1, 0], [0, 5], [0, 6], [0, 2], [1, 1], [1, 4]…找snap_id = 0的值也就是要找最后的，所以先加1，找到[1, 1]再下标减1</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SnapshotArray</span><span class="params">(TestCases)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, length: int)</span>:</span></span><br><span class="line">        self.snap_id = <span class="number">0</span></span><br><span class="line">        self.history = [[[<span class="number">-1</span>, <span class="number">0</span>]] <span class="keyword">for</span> _ <span class="keyword">in</span> range(length)]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">set</span><span class="params">(self, index: int, val: int)</span> -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        self.history[index].append([self.snap_id, val])</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">snap</span><span class="params">(self)</span> -&gt; int:</span></span><br><span class="line">        self.snap_id += <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> self.snap_id - <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span><span class="params">(self, index: int, snap_id: int)</span> -&gt; int:</span></span><br><span class="line">        last_snap_id = bisect.bisect(self.history[index], [snap_id + <span class="number">1</span>]) - <span class="number">1</span> <span class="comment"># remember snap + 1</span></span><br><span class="line">        <span class="keyword">return</span> self.history[index][last_snap_id][<span class="number">1</span>]</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>get时间复杂度为<code>O(logn)</code>，空间复杂度<code>O(n)</code>, 数组某值n更改次数  </p>
+<hr>
+<h3 id="暴力法算法II解题思路-不推荐-："><a href="#暴力法算法II解题思路-不推荐-：" class="headerlink" title="暴力法算法II解题思路(不推荐)："></a><strong>暴力法算法II解题思路(不推荐)：</strong></h3><h3 id="Python代码：-1"><a href="#Python代码：-1" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, length: int)</span>:</span></span><br><span class="line">	self.ary = [<span class="number">0</span>] * length</span><br><span class="line">	self.snap_id = <span class="number">-1</span></span><br><span class="line">	self.idx_snap_to_val = &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">set</span><span class="params">(self, index: int, val: int)</span> -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">	self.ary[index] = val</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">snap</span><span class="params">(self)</span> -&gt; int:</span></span><br><span class="line">	self.snap_id += <span class="number">1</span></span><br><span class="line">	<span class="keyword">for</span> i, n <span class="keyword">in</span> enumerate(self.ary):</span><br><span class="line">		self.idx_snap_to_val[(i, self.snap_id)] = self.ary[i]</span><br><span class="line">	<span class="keyword">return</span> self.snap_id</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get</span><span class="params">(self, index: int, snap_id: int)</span> -&gt; int:</span></span><br><span class="line">	<span class="keyword">return</span> self.idx_snap_to_val[(index, snap_id)]</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/02/16/leetcode-1937-maximum-number-of-points-with-cost/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -550,89 +640,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/02/15/leetcode-438-find-all-anagrams-in-a-string/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="KK Shum">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="KK's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/02/15/leetcode-438-find-all-anagrams-in-a-string/" class="post-title-link" itemprop="url">LeetCode 438 Find All Anagrams in a String</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2022-02-15 17:52:25 / Modified: 17:57:00" itemprop="dateCreated datePublished" datetime="2022-02-15T17:52:25-08:00">2022-02-15</time>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2022/02/15/leetcode-438-find-all-anagrams-in-a-string/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/02/15/leetcode-438-find-all-anagrams-in-a-string/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong><a href="https://leetcode.com/problems/find-all-anagrams-in-a-string/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>Given two strings <code>s</code> and <code>p</code>, return <em>an array of all the start indices of</em> <code>p</code><em>‘s anagrams in</em> <code>s</code>. You may return the answer in <strong>any order</strong>.<br><br>An <strong>Anagram</strong> is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> s = “cbaebabacd”, p = “abc”<br><strong>Output:</strong> [0,6]<br><strong>Explanation:</strong><br>The substring with start index = 0 is “cba”, which is an anagram of “abc”.<br>The substring with start index = 6 is “bac”, which is an anagram of “abc”.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> s = “abab”, p = “ab”<br><strong>Output:</strong> [0,1,2]<br><strong>Explanation:</strong><br>The substring with start index = 0 is “ab”, which is an anagram of “ab”.<br>The substring with start index = 1 is “ba”, which is an anagram of “ab”.<br>The substring with start index = 2 is “ab”, which is an anagram of “ab”.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   `1 &lt;= s.length, p.length &lt;= 3 </em> 10<sup>4</sup><code>*</code>s<code>and</code>p` consist of lowercase English letters.<br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求字符串s中含p的anagram的所有初始下标</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>求某子串的频率统计，第一时间想到滑动窗口。此题较特殊，属于固定大小窗口的滑动窗口，因为p的大小是固定的，窗口大小必须和p长度一样。</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li><h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">findAnagrams</span><span class="params">(self, s: str, p: str)</span> -&gt; List[int]:</span></span><br><span class="line">	char_to_count_p = collections.Counter(p)</span><br><span class="line">	substr_win = collections.defaultdict(int)</span><br><span class="line">	res = []</span><br><span class="line">	<span class="keyword">for</span> i, char <span class="keyword">in</span> enumerate(s):</span><br><span class="line">		substr_win[s[i]] += <span class="number">1</span></span><br><span class="line">		<span class="comment"># window: [i - len(p) + 1, i]</span></span><br><span class="line">		<span class="keyword">if</span> i &gt;= len(p):</span><br><span class="line">			substr_win[s[i - len(p)]] -= <span class="number">1</span></span><br><span class="line">			<span class="keyword">if</span> substr_win[s[i - len(p)]] == <span class="number">0</span>:</span><br><span class="line">				substr_win.pop(s[i - len(p)])</span><br><span class="line">		<span class="keyword">if</span> substr_win == char_to_count_p:</span><br><span class="line">			res.append(i - len(p) + <span class="number">1</span>)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>  </p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -707,7 +714,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">356</span>
+          <span class="site-state-item-count">357</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
