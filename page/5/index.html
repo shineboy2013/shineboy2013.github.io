@@ -201,6 +201,179 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/02/15/leetcode-670-maximum-swap/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KK Shum">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KK's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/02/15/leetcode-670-maximum-swap/" class="post-title-link" itemprop="url">LeetCode 670 Maximum Swap</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-02-15 19:20:03 / Modified: 19:39:03" itemprop="dateCreated datePublished" datetime="2022-02-15T19:20:03-08:00">2022-02-15</time>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2022/02/15/leetcode-670-maximum-swap/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/02/15/leetcode-670-maximum-swap/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong><a href="https://leetcode.com/problems/maximum-swap/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>You are given an integer <code>num</code>. You can swap two digits at most once to get the maximum valued number.<br><br>Return <em>the maximum valued number you can get</em>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> num = 2736<br><strong>Output:</strong> 7236<br><strong>Explanation:</strong> Swap the number 2 and the number 7.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> num = 9973<br><strong>Output:</strong> 9973<br><strong>Explanation:</strong> No swap.<br></pre><br><br><strong>Constraints:</strong><br><br>*   <code>0 &lt;= num &lt;= 10&lt;sup&gt;8&lt;/sup&gt;</code><br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个数，最多交换一位，使得这个数尽可能最大</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>类似于LeetCode 854 K-Similar Strings, 如2736， 求2后面最大的数为7，和7交换即为所求。这里有两个问题：</p>
+<ol>
+<li>第一位可能已经是最大的数位，这样需要遍历每个数位，找到能交换的数位，若这个位在倒序排序后位置一样，表明此位不能交换。所以排序法的算法复杂度为n平方</li>
+<li>若要优化就要采用bucket sort，因为数位是有限的。若后续数位有一个数比自己大，表示可交换。所以只要记录每个数位的位置，贪心法从9(最大)遍历到自己，若该位位置在自己之后，可交换</li>
+<li>若不同数位上数值相同，应该记录其最后的位置，因为交换时候将小的尽量往后交换，越好越不重要，如2949, 2和最后的9交换得到最大的数</li>
+</ol>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>内循环从9遍历到该位数值(不包括)</li>
+<li>buckets的key为字符串，注意整数和字符串互换，如buckets[str(j)], int(digits[i])</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">maximumSwap</span><span class="params">(self, num: int)</span> -&gt; int:</span></span><br><span class="line">	digits, buckets = str(num), collections.defaultdict(int)</span><br><span class="line">	<span class="keyword">for</span> i, digit <span class="keyword">in</span> enumerate(digits):</span><br><span class="line">		buckets[digit] = i <span class="comment"># use last position for same char</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(digits)):</span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">9</span>, int(digits[i]), <span class="number">-1</span>): <span class="comment"># remember to use int(digits[i]) not i</span></span><br><span class="line">			<span class="keyword">if</span> buckets[str(j)] &gt; i: <span class="comment"># 2736, i = (2), j = (7) # remember to use str j</span></span><br><span class="line">				<span class="keyword">return</span> int(digits[:i] + digits[buckets[str(j)]] + digits[i + <span class="number">1</span>:buckets[str(j)]] + digits[i] + digits[buckets[str(j)] + <span class="number">1</span>:])</span><br><span class="line">	<span class="keyword">return</span> num</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(9n)</code>，空间复杂度<code>O(n)</code>  </p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/02/15/leetcode-567-permutation-in-string/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KK Shum">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KK's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/02/15/leetcode-567-permutation-in-string/" class="post-title-link" itemprop="url">LeetCode 567 Permutation in String</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-02-15 17:57:13 / Modified: 18:00:06" itemprop="dateCreated datePublished" datetime="2022-02-15T17:57:13-08:00">2022-02-15</time>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2022/02/15/leetcode-567-permutation-in-string/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/02/15/leetcode-567-permutation-in-string/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong><a href="https://leetcode.com/problems/permutation-in-string/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>Given two strings <code>s1</code> and <code>s2</code>, return <code>true</code> <em>if</em> <code>s2</code> <em>contains a permutation of</em> <code>s1</code><em>, or</em> <code>false</code> <em>otherwise</em>.<br><br>In other words, return <code>true</code> if one of <code>s1</code>‘s permutations is the substring of <code>s2</code>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> s1 = “ab”, s2 = “eidbaooo”<br><strong>Output:</strong> true<br><strong>Explanation:</strong> s2 contains one permutation of s1 (“ba”).<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> s1 = “ab”, s2 = “eidboaoo”<br><strong>Output:</strong> false<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= s1.length, s2.length &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code>
+</em>   <code>s1</code> and <code>s2</code> consist of lowercase English letters.<br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求字符串s2中是否含s1的anagram</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>类似于LeetCode 438 Find All Anagrams in a String, 唯一区别是substr_win == char_to_count_p时返回而不是加入到res</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li><h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">checkInclusion</span><span class="params">(self, s1: str, s2: str)</span> -&gt; bool:</span></span><br><span class="line">	char_to_count_p = collections.Counter(s1)</span><br><span class="line">	substr_win = collections.defaultdict(int)</span><br><span class="line">	<span class="keyword">for</span> i, char <span class="keyword">in</span> enumerate(s2):</span><br><span class="line">		substr_win[s2[i]] += <span class="number">1</span></span><br><span class="line">		<span class="comment"># window: [i - len(p) + 1, i]</span></span><br><span class="line">		<span class="keyword">if</span> i &gt;= len(s1):</span><br><span class="line">			substr_win[s2[i - len(s1)]] -= <span class="number">1</span></span><br><span class="line">			<span class="keyword">if</span> substr_win[s2[i - len(s1)]] == <span class="number">0</span>:</span><br><span class="line">				substr_win.pop(s2[i - len(s1)])</span><br><span class="line">		<span class="keyword">if</span> substr_win == char_to_count_p:</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">False</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/02/15/leetcode-438-find-all-anagrams-in-a-string/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -457,174 +630,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/02/15/leetcode-839-similar-string-groups/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="KK Shum">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="KK's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/02/15/leetcode-839-similar-string-groups/" class="post-title-link" itemprop="url">LeetCode 839 Similar String Groups</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2022-02-15 09:23:01 / Modified: 09:28:06" itemprop="dateCreated datePublished" datetime="2022-02-15T09:23:01-08:00">2022-02-15</time>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2022/02/15/leetcode-839-similar-string-groups/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/02/15/leetcode-839-similar-string-groups/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong><a href="https://leetcode.com/problems/similar-string-groups/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>Two strings <code>X</code> and <code>Y</code> are similar if we can swap two letters (in different positions) of <code>X</code>, so that it equals <code>Y</code>. Also two strings <code>X</code> and <code>Y</code> are similar if they are equal.<br><br>For example, <code>&quot;tars&quot;</code> and <code>&quot;rats&quot;</code> are similar (swapping at positions <code>0</code> and <code>2</code>), and <code>&quot;rats&quot;</code> and <code>&quot;arts&quot;</code> are similar, but <code>&quot;star&quot;</code> is not similar to <code>&quot;tars&quot;</code>, <code>&quot;rats&quot;</code>, or <code>&quot;arts&quot;</code>.<br><br>Together, these form two connected groups by similarity: <code>{&quot;tars&quot;, &quot;rats&quot;, &quot;arts&quot;}</code> and <code>{&quot;star&quot;}</code>.  Notice that <code>&quot;tars&quot;</code> and <code>&quot;arts&quot;</code> are in the same group even though they are not similar.  Formally, each group is such that a word is in the group if and only if it is similar to at least one other word in the group.<br><br>We are given a list <code>strs</code> of strings where every string in <code>strs</code> is an anagram of every other string in <code>strs</code>. How many groups are there?<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> strs = [“tars”,”rats”,”arts”,”star”]<br><strong>Output:</strong> 2<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> strs = [“omv”,”ovm”]<br><strong>Output:</strong> 1<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= strs.length &lt;= 300</code>
-</em>   <code>1 &lt;= strs[i].length &lt;= 300</code><br><em>   <code>strs[i]</code> consists of lowercase letters only.
-</em>   All words in <code>strs</code> have the same length and are anagrams of each other.<br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>单词列表中，可以分成多少组，每组里面的单词互相之间至少有一对可以通过交换一个位置变成另一个单词</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>典型求连通集个数，类似于Num of island，用BFS。难点在于怎么找到neighbor，用遍历每一个单词的方式</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>难点在于怎么找到neighbor，用遍历每一个单词的方式，判断是否buddyStrings Leetcode 0859</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">numSimilarGroups</span><span class="params">(self, strs: List[str])</span> -&gt; int:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> strs:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">	visited, groups, word_set = set(), <span class="number">0</span>, set(strs)</span><br><span class="line">	<span class="keyword">for</span> s <span class="keyword">in</span> strs:</span><br><span class="line">		<span class="keyword">if</span> s <span class="keyword">in</span> visited:</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		self.bfs(word_set, s, visited)</span><br><span class="line">		groups += <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> groups</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">bfs</span><span class="params">(self, word_set, start, visited)</span>:</span></span><br><span class="line">	queue = collections.deque([start])</span><br><span class="line">	visited.add(start)</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.popleft()</span><br><span class="line">		<span class="keyword">for</span> s <span class="keyword">in</span> word_set:</span><br><span class="line">			<span class="keyword">if</span> s <span class="keyword">in</span> visited:</span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			<span class="keyword">if</span> node == s <span class="keyword">or</span> <span class="keyword">not</span> self.buddyStrings(node, s):</span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			queue.append(s)</span><br><span class="line">			visited.add(s)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">buddyStrings</span><span class="params">(self, s: str, goal: str)</span> -&gt; bool:</span></span><br><span class="line">	<span class="keyword">if</span> len(s) != len(goal):</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">	<span class="keyword">if</span> s == goal <span class="keyword">and</span> len(set(s)) &lt; len(goal):  <span class="comment"># any dups</span></span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line">	diff = [(a, b) <span class="keyword">for</span> a, b <span class="keyword">in</span> zip(s, goal) <span class="keyword">if</span> a != b]</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">True</span> <span class="keyword">if</span> len(diff) == <span class="number">2</span> <span class="keyword">and</span> diff[<span class="number">0</span>] == diff[<span class="number">1</span>][::<span class="number">-1</span>] <span class="keyword">else</span> <span class="keyword">False</span></span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nL)</code>，空间复杂度<code>O(n)</code>  </p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/02/15/leetcode-1347-minimum-number-of-steps-to-make-two-strings-anagram/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="KK Shum">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="KK's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/02/15/leetcode-1347-minimum-number-of-steps-to-make-two-strings-anagram/" class="post-title-link" itemprop="url">LeetCode 1347 Minimum Number of Steps to Make Two Strings Anagram</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2022-02-15 08:48:02 / Modified: 08:51:30" itemprop="dateCreated datePublished" datetime="2022-02-15T08:48:02-08:00">2022-02-15</time>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2022/02/15/leetcode-1347-minimum-number-of-steps-to-make-two-strings-anagram/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/02/15/leetcode-1347-minimum-number-of-steps-to-make-two-strings-anagram/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong><a href="https://leetcode.com/problems/minimum-number-of-steps-to-make-two-strings-anagram/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>You are given two strings of the same length <code>s</code> and <code>t</code>. In one step you can choose <strong>any character</strong> of <code>t</code> and replace it with <strong>another character</strong>.<br><br>Return <em>the minimum number of steps</em> to make <code>t</code> an anagram of <code>s</code>.<br><br>An <strong>Anagram</strong> of a string is a string that contains the same characters with a different (or the same) ordering.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> s = “bab”, t = “aba”<br><strong>Output:</strong> 1<br><strong>Explanation:</strong> Replace the first ‘a’ in t with b, t = “bba” which is anagram of s.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> s = “leetcode”, t = “practice”<br><strong>Output:</strong> 5<br><strong>Explanation:</strong> Replace ‘p’, ‘r’, ‘a’, ‘i’ and ‘c’ from t with proper characters to make t anagram of s.<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> s = “anagram”, t = “mangaar”<br><strong>Output:</strong> 0<br><strong>Explanation:</strong> “anagram” and “mangaar” are anagrams.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   `1 &lt;= s.length &lt;= 5 </em> 10<sup>4</sup><code>*</code>s.length == t.length<code>*</code>s<code>and</code>t` consist of lowercase English letters only.<br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>通过替换字母使得两字符为同位词Anagram</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>统计某一个词的词频，遍历另一个单词，减去词频，若不够减(小于0)，就加步数</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li><h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">minSteps</span><span class="params">(self, s: str, t: str)</span> -&gt; int:</span></span><br><span class="line">	char_to_count_t = collections.Counter(t)</span><br><span class="line">	steps = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> char <span class="keyword">in</span> s:</span><br><span class="line">		<span class="keyword">if</span> char <span class="keyword">in</span> char_to_count_t <span class="keyword">and</span> char_to_count_t[char] &gt; <span class="number">0</span>:</span><br><span class="line">			char_to_count_t[char] -= <span class="number">1</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			steps += <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> steps</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>  </p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -699,7 +704,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">357</span>
+          <span class="site-state-item-count">359</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
