@@ -201,6 +201,304 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2018/03/17/lee-019/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KK Shum">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KK's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/03/17/lee-019/" class="post-title-link" itemprop="url">LeetCode 019 Remove Nth Node From End of List</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2018-03-17 20:35:41 / Modified: 21:06:12" itemprop="dateCreated datePublished" datetime="2018-03-17T20:35:41-07:00">2018-03-17</time>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2018/03/17/lee-019/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/03/17/lee-019/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong><a href="https://leetcode.com/problems/remove-nth-node-from-end-of-list" target="_blank" rel="noopener">LeetCode 019 Remove Nth Node From End of List</a></strong></p>
+<p>Given a linked list, remove the <em>n</em><sup>th</sup> node from the end of list and return its head.</p>
+<p>For example,</p>
+<pre>   Given linked list: 1->2->3->4->5, and n = 2.
+
+   After removing the second node from the end, the linked list becomes 1->2->3->5.
+</pre>
+
+<p><strong>Note:</strong><br>Given <em>n</em> will always be valid.<br>Try to do this in one pass.</p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>删除一个单链表末尾开始算起的第n个结点，然后返回该单链表。 例如：<br>输入: 1-&gt;2-&gt;3-&gt;4-&gt;5 其中n=2；<br>输出： 1-&gt;2-&gt;3-&gt;5;<br>n一定合法，只能遍历一次链表。  </p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是经典题。两指针法。距离为N的两指针，当前指针到末尾，后指针即是要删除的节点。头部插入fake节点，类似于mergeIntervals L56末尾插入一个空节点避免特别化处理。</p>
+<ol>
+<li>快指针从fake节点开始先走n步</li>
+<li>慢指针开始一起和快指针同步走，直到快指针到最后一个（next为空）</li>
+<li>此时慢指针是要删除指针的上一个，删除操作是可以的。</li>
+</ol>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><p>因为头指针也可能被删除，如只有一个节点的链表，n=1。删除操作在待删除节点的上一个节点上操作，所以引入假头节点prehead。 </p>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ListNode <span class="title">removeNthFromEnd</span><span class="params">(ListNode head, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">	ListNode prehead = <span class="keyword">new</span> ListNode(-<span class="number">1</span>);</span><br><span class="line">	prehead.next = head;</span><br><span class="line">	</span><br><span class="line">	ListNode slow = prehead, fast = prehead;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++)</span><br><span class="line">		fast = fast.next;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">while</span>(fast.next != <span class="keyword">null</span>)&#123;</span><br><span class="line">		fast = fast.next;</span><br><span class="line">		slow = slow.next;</span><br><span class="line">	&#125;</span><br><span class="line">	deleteNode(slow);</span><br><span class="line">	<span class="keyword">return</span> prehead.next;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">deleteNode</span><span class="params">(ListNode p)</span></span>&#123;</span><br><span class="line">	p.next = p.next.next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>。   </p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2018/03/13/lee-001/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KK Shum">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KK's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/03/13/lee-001/" class="post-title-link" itemprop="url">LeetCode 001 Two Sum</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2018-03-13 00:57:39" itemprop="dateCreated datePublished" datetime="2018-03-13T00:57:39-07:00">2018-03-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-11-20 21:17:31" itemprop="dateModified" datetime="2021-11-20T21:17:31-08:00">2021-11-20</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2018/03/13/lee-001/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/03/13/lee-001/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong><a href="https://leetcode.com/problems/two-sum/" target="_blank" rel="noopener">LeetCode 001 Two Sum</a></strong></p>
+<p>Given an array of integers, return <strong>indices</strong> of the two numbers such that they add up to a specific target.</p>
+<p>You may assume that each input would have <strong><em>exactly</em></strong> one solution, and you may not use the <em>same</em> element twice.</p>
+<p><strong>Example:</strong>  </p>
+<pre>Given nums = [2, 7, 11, 15], target = 9,
+
+Because nums[0] + nums[1] = 2 + 7 = 9,
+return [0, 1].
+</pre>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个整数数组，从中找出两个数的下标，使得它们的和等于一个特定的数字。可以假设题目有唯一解。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><ol>
+<li>最简单的思路是暴力法，两重循环试遍所有组合。</li>
+<li>先排序，再用两指针法，若指针指向的数和小于target则左指针右移，反之亦然。注意，为了保持原数组的下标，要预先保留下标及值对到Node中。</li>
+<li>遍历数组，同时查看target-该数是否在HashMap中，否则加入到HashMap中。</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">twoSum</span><span class="params">(self, nums: List[int], target: int)</span> -&gt; List[int]:</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(nums)):</span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> range(i + <span class="number">1</span>, len(nums)):</span><br><span class="line">			<span class="keyword">if</span> nums[i] + nums[j] == target:</span><br><span class="line">				<span class="keyword">return</span> [i, j]</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">twoSum</span><span class="params">(self, nums: List[int], target: int)</span> -&gt; List[int]:</span></span><br><span class="line">	temp = [(n, i) <span class="keyword">for</span> i, n <span class="keyword">in</span> enumerate(nums)]</span><br><span class="line">	temp.sort()</span><br><span class="line">	i, j = <span class="number">0</span>, len(temp) - <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> i &lt; j:</span><br><span class="line">		<span class="keyword">if</span> temp[i][<span class="number">0</span>] + temp[j][<span class="number">0</span>] &lt; target:</span><br><span class="line">			i += <span class="number">1</span></span><br><span class="line">		<span class="keyword">elif</span> temp[i][<span class="number">0</span>] + temp[j][<span class="number">0</span>] &gt; target:</span><br><span class="line">			j -= <span class="number">1</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			<span class="keyword">return</span> [temp[i][<span class="number">1</span>], temp[j][<span class="number">1</span>]]</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">twoSum</span><span class="params">(self, nums: List[int], target: int)</span> -&gt; List[int]:</span></span><br><span class="line">	nums_dict = &#123;&#125;</span><br><span class="line">	<span class="keyword">for</span> i, n <span class="keyword">in</span> enumerate(nums):</span><br><span class="line">		<span class="keyword">if</span> target - n <span class="keyword">in</span> nums_dict:</span><br><span class="line">             <span class="keyword">return</span> [nums_dict[target - n], i]</span><br><span class="line">		nums_dict[n] = i</span><br></pre></td></tr></table></figure>
+<p>第二种方法，Python的tuple相当于Java的自定义Node，但节省了很多代码。每种方法都大概节省了2/3的代码。  </p>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] twoSum0(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target) &#123;</span><br><span class="line">	<span class="keyword">int</span>[] re = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums.length;i++)</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j=i+<span class="number">1</span>;j&lt;nums.length;j++)&#123;</span><br><span class="line">			<span class="keyword">if</span>(nums[i]+nums[j]==target)&#123;</span><br><span class="line">				re[<span class="number">0</span>] = i;</span><br><span class="line">				re[<span class="number">1</span>] = j;</span><br><span class="line">				<span class="keyword">return</span> re;</span><br><span class="line">			&#125;</span><br><span class="line">				</span><br><span class="line">		&#125;</span><br><span class="line">	<span class="keyword">return</span> re;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] twoSum2(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target) &#123;</span><br><span class="line">	Node[] ary = <span class="keyword">new</span> Node[nums.length];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums.length;i++)&#123;</span><br><span class="line">		ary[i] = <span class="keyword">new</span> Node(i, nums[i]);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	Arrays.sort(ary, <span class="keyword">new</span> Comparator&lt;Node&gt;() &#123;</span><br><span class="line">		<span class="meta">@Override</span></span><br><span class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(Node o1, Node o2)</span> </span>&#123;</span><br><span class="line">			<span class="keyword">return</span> o1.value - o2.value;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;);</span><br><span class="line">	<span class="keyword">int</span>[] re = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>];</span><br><span class="line">	<span class="keyword">int</span> start=<span class="number">0</span>, end=nums.length-<span class="number">1</span>;</span><br><span class="line">	<span class="keyword">while</span>(start&lt;end)&#123;</span><br><span class="line">		<span class="keyword">if</span>(ary[start].value+ary[end].value==target)&#123;</span><br><span class="line">			re[<span class="number">0</span>] = ary[start].index;</span><br><span class="line">			re[<span class="number">1</span>] = ary[end].index;</span><br><span class="line">			<span class="keyword">return</span> re;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(ary[start].value+ary[end].value&lt;target)</span><br><span class="line">			start++;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			end--;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> re;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Node</span> </span>&#123;</span><br><span class="line">	Node(<span class="keyword">int</span> i, <span class="keyword">int</span> v)&#123;</span><br><span class="line">		<span class="keyword">this</span>.index = i;</span><br><span class="line">		<span class="keyword">this</span>.value = v;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">int</span> index;</span><br><span class="line">	<span class="keyword">int</span> value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] twoSum(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target) &#123;</span><br><span class="line">	HashMap&lt;Integer,Integer&gt; h  = <span class="keyword">new</span> HashMap&lt;Integer,Integer&gt;();</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">int</span>[] re = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums.length;i++)&#123;</span><br><span class="line">		Integer index = h.get(target-nums[i]);</span><br><span class="line">		<span class="keyword">if</span>(index!=<span class="keyword">null</span>)&#123;</span><br><span class="line">			re[<span class="number">0</span>]=index;</span><br><span class="line">			re[<span class="number">1</span>]=i;</span><br><span class="line">			<span class="keyword">return</span> re;</span><br><span class="line">		&#125;</span><br><span class="line">		h.put(nums[i],i);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> re;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><ol>
+<li>时间复杂度为<code>O(<em>n</em><sup>2</sup>)</code>，空间复杂度<code>O(1)</code>。</li>
+<li>时间复杂度为<code>O(nlogn)</code>，空间复杂度<code>O(n)</code>。</li>
+<li>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>。</li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2018/02/22/lee-054/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KK Shum">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KK's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/02/22/lee-054/" class="post-title-link" itemprop="url">LeetCode 054 Spiral Matrix</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2018-02-22 22:12:22" itemprop="dateCreated datePublished" datetime="2018-02-22T22:12:22-08:00">2018-02-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-12-11 18:18:24" itemprop="dateModified" datetime="2021-12-11T18:18:24-08:00">2021-12-11</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2018/02/22/lee-054/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/02/22/lee-054/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong><a href="https://leetcode.com/problems/spiral-matrix" target="_blank" rel="noopener">LeetCode 054 Spiral Matrix</a></strong></p>
+<p>Given a matrix of <em>m</em> x <em>n</em> elements (<em>m</em> rows, <em>n</em> columns), return all elements of the matrix in spiral order.</p>
+<p>For example,<br>Given the following matrix:</p>
+<pre>[
+ [ 1, 2, 3 ],
+ [ 4, 5, 6 ],
+ [ 7, 8, 9 ]
+]
+</pre>
+
+<p>You should return <code>[1,2,3,6,9,8,7,4,5]</code>.</p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个mxn的矩阵（m行 n列），以螺旋状返回矩阵中的所有元素。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>打印方法主要是以下两种：第一种四边对称打印，实现起来边际情况很多，不推荐。因为要不断向内遍历，所以对称打印不合适。第二种方法是每条边比上一条少一个，<br>用四个指针，top, bottom, left, right来记录四个边界，每打印完一条边该边界向内扩展。注意有些回路不是完整比如[1,2]或上面例子中5就不是完整回路，此情况，<br>注意判断top和bottom以及left和right关系即可。四指针法可以进一步升级到两指针法甚至一个指针法，其实都是大同小异。<br><img src="/images/L054.png" alt=""></p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>注意不是所有矩阵都有完整回路。所以后两个for循环要加if语句  </li>
+<li>右边和左边，遍历矩阵用matrix[i][right]，而不是matrix[right][i]</li>
+<li>Python中从后往前遍历要注意始点-1，range(right, left - 1, -1):</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">spiralOrder</span><span class="params">(self, matrix: List[List[int]])</span> -&gt; List[int]:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> matrix <span class="keyword">or</span> <span class="keyword">not</span> matrix[<span class="number">0</span>]:</span><br><span class="line">		<span class="keyword">return</span> []</span><br><span class="line">	res = []</span><br><span class="line">	top, bottom, left, right = <span class="number">0</span>, len(matrix) - <span class="number">1</span>, <span class="number">0</span>, len(matrix[<span class="number">0</span>]) - <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> top &lt;= bottom <span class="keyword">and</span> left &lt;= right:</span><br><span class="line">		<span class="keyword">for</span> i <span class="keyword">in</span> range(left, right + <span class="number">1</span>):</span><br><span class="line">			res.append(matrix[top][i])</span><br><span class="line">		top += <span class="number">1</span></span><br><span class="line">		<span class="keyword">for</span> i <span class="keyword">in</span> range(top, bottom + <span class="number">1</span>):</span><br><span class="line">			res.append(matrix[i][right])  <span class="comment"># remember [i[[right] not [right][i]</span></span><br><span class="line">		right -= <span class="number">1</span></span><br><span class="line">		<span class="keyword">if</span> top &lt;= bottom:</span><br><span class="line">			<span class="keyword">for</span> i <span class="keyword">in</span> range(right, left - <span class="number">1</span>, <span class="number">-1</span>):</span><br><span class="line">				res.append(matrix[bottom][i])</span><br><span class="line">			bottom -= <span class="number">1</span></span><br><span class="line">		<span class="keyword">if</span> left &lt;= right:</span><br><span class="line">			<span class="keyword">for</span> i <span class="keyword">in</span> range(bottom, top - <span class="number">1</span>, <span class="number">-1</span>):</span><br><span class="line">				res.append(matrix[i][left])</span><br><span class="line">			left += <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">spiral2</span><span class="params">(<span class="keyword">int</span>[][] a)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> rowTop = <span class="number">0</span>, rowBottom = a.length-<span class="number">1</span>, colLeft = <span class="number">0</span>, colRight = a[<span class="number">0</span>].length-<span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">while</span>(rowTop&lt;=rowBottom &amp;&amp; colLeft&lt;=colRight)&#123;</span><br><span class="line">		<span class="comment">//topRow</span></span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=colLeft;i&lt;=colRight;i++)</span><br><span class="line">			System.out.print(a[rowTop][i]+<span class="string">" "</span>);</span><br><span class="line">		rowTop++;</span><br><span class="line">		<span class="comment">//rightCol</span></span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=rowTop;i&lt;=rowBottom;i++)</span><br><span class="line">			System.out.print(a[i][colRight]+<span class="string">" "</span>);</span><br><span class="line">		colRight--;</span><br><span class="line">		<span class="keyword">if</span>(rowTop&lt;=rowBottom)&#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> i=colRight;i&gt;=colLeft;i--)</span><br><span class="line">				System.out.print(a[rowBottom][i]+<span class="string">" "</span>);</span><br><span class="line">			rowBottom--;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(colLeft&lt;=colRight)&#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> i=rowBottom;i&gt;=rowTop;i--)</span><br><span class="line">				System.out.print(a[i][colLeft]+<span class="string">" "</span>);</span><br><span class="line">			colLeft++;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">spiral3</span><span class="params">(<span class="keyword">int</span>[][] a)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> rowTop = <span class="number">0</span>, colLeft = <span class="number">0</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">while</span>(rowTop&lt;=a.length-rowTop-<span class="number">1</span> &amp;&amp; colLeft&lt;=a[<span class="number">0</span>].length-colLeft-<span class="number">1</span>)&#123;</span><br><span class="line">		<span class="comment">//topRow</span></span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=colLeft;i&lt;=a[<span class="number">0</span>].length-colLeft-<span class="number">1</span>;i++)</span><br><span class="line">			System.out.print(a[rowTop][i]+<span class="string">" "</span>);</span><br><span class="line">		rowTop++;</span><br><span class="line">		<span class="comment">//rightCol</span></span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=rowTop;i&lt;=a.length-rowTop;i++)</span><br><span class="line">			System.out.print(a[i][a[<span class="number">0</span>].length-colLeft-<span class="number">1</span>]+<span class="string">" "</span>);</span><br><span class="line">		<span class="comment">//colRight--;</span></span><br><span class="line">		<span class="keyword">if</span>(rowTop&lt;=a.length-rowTop)&#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> i=a[<span class="number">0</span>].length-colLeft-<span class="number">2</span>;i&gt;=colLeft;i--)</span><br><span class="line">				System.out.print(a[a.length-rowTop][i]+<span class="string">" "</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(colLeft&lt;=a[<span class="number">0</span>].length-colLeft-<span class="number">2</span>)&#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> i=a.length-rowTop-<span class="number">1</span>;i&gt;=rowTop;i--)</span><br><span class="line">				System.out.print(a[i][colLeft]+<span class="string">" "</span>);</span><br><span class="line">			colLeft++;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">spiral4</span><span class="params">(<span class="keyword">int</span>[][] a)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> num = Math.min(a.length, a[<span class="number">0</span>].length);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> st=<span class="number">0</span>;st&lt;(num+<span class="number">1</span>)/<span class="number">2</span>;st++)&#123;</span><br><span class="line">		<span class="comment">//complete edge(top)</span></span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=st;i&lt;a[<span class="number">0</span>].length-st;i++)</span><br><span class="line">			System.out.print(a[st][i]+<span class="string">" "</span>);</span><br><span class="line">		<span class="comment">//complete edge-top (right)</span></span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=st+<span class="number">1</span>;i&lt;a.length-st;i++)</span><br><span class="line">			System.out.print(a[i][a[<span class="number">0</span>].length-<span class="number">1</span>-st]+<span class="string">" "</span>);</span><br><span class="line">		<span class="keyword">if</span>(a[<span class="number">0</span>].length-<span class="number">2</span>-st&gt;st)</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> i=a[<span class="number">0</span>].length-<span class="number">2</span>-st;i&gt;=st;i--)</span><br><span class="line">				System.out.print(a[a.length-st-<span class="number">1</span>][i]+<span class="string">" "</span>);</span><br><span class="line">		<span class="keyword">if</span>(a.length-<span class="number">2</span>-st&gt;st+<span class="number">1</span>)</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> i=a.length-<span class="number">2</span>-st;i&gt;=st+<span class="number">1</span>;i--)</span><br><span class="line">				System.out.print(a[i][st]+<span class="string">" "</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(mn)</code>，空间复杂度<code>O(1)</code>。   </p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2018/01/31/lee-004/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -426,345 +724,10 @@ Y   I   R
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2018/01/29/lee-253/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="KK Shum">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="KK's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/01/29/lee-253/" class="post-title-link" itemprop="url">LeetCode 253 Meeting Rooms II</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2018-01-29 22:07:55" itemprop="dateCreated datePublished" datetime="2018-01-29T22:07:55-08:00">2018-01-29</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-02-08 13:33:35" itemprop="dateModified" datetime="2022-02-08T13:33:35-08:00">2022-02-08</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2018/01/29/lee-253/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/01/29/lee-253/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong><a href="https://leetcode.com/problems/meeting-rooms-ii/" target="_blank" rel="noopener">LeetCode 253 Meeting Rooms II</a></strong></p>
-<p>Given an array of meeting time intervals consisting of start and end times <code>[[s1,e1],[s2,e2],...]</code> (si &lt; ei), find the minimum number of conference rooms required.</p>
-<p>For example,<br>Given <code>[[0, 30],[5, 10],[15, 20]]</code>,<br>return <code>2</code>.</p>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>输入[[0, 30],[5, 10],[15, 20]]表示每个会议的开始结束时间，求最少需要多少会议室能够安排所有的会议。</p>
-<h3 id="最小堆解题思路："><a href="#最小堆解题思路：" class="headerlink" title="最小堆解题思路："></a><strong>最小堆解题思路：</strong></h3><p>基于merging interval题目，首先按start排序。并且merge条件是start小于上一个会议的end。</p>
-<ol>
-<li>写几个例子感受一下。<br><img src="/images/L253.png" alt=""><br>有两个重叠的会议，现在插入新的会议。是否再需要一个会议室取决于该新会议的开始时间小于这两个目前会议的终止时间的最小值。<br>所以思路是用End time min-heap维护目前会议End time。若新会议start time小于堆顶元素，入栈且activeMeeting++，否则循环地出栈且activeMeeting–直到<br>start time小于堆顶。<br>这过程activeMeeting的最大值即所求。<br>最坏情况是所有会议都重叠，复杂度为n* 2logn因为n个元素入堆出堆各一次，所以复杂度为nlogn，但会议一般不会集中，平均情况比排序法稍优。 </li>
-</ol>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>Heap为结束时间的heap。 </li>
-<li>类似于递减栈模板，用开始时间与堆顶的结束时间比较（表示这些会议均已结束），若大于堆顶，连续出堆。  </li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">minMeetingRooms</span><span class="params">(self, intervals: List[List[int]])</span> -&gt; int:</span></span><br><span class="line">	intervals.sort()</span><br><span class="line">	heap = [] <span class="comment"># heap for end time</span></span><br><span class="line">	max = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(intervals)):</span><br><span class="line">		<span class="comment"># start time of the new meeting is earlier than on-going endtime</span></span><br><span class="line">		<span class="keyword">while</span> heap <span class="keyword">and</span> intervals[i][<span class="number">0</span>] &gt;= heap[<span class="number">0</span>]:</span><br><span class="line">			heappop(heap)</span><br><span class="line">		heappush(heap, (intervals[i][<span class="number">1</span>]))</span><br><span class="line">		<span class="keyword">if</span> len(heap) &gt; max:</span><br><span class="line">			max = len(heap)</span><br><span class="line">	<span class="keyword">return</span> max</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>由于输入无序，所以先要排序O(nlogn), 而循环复杂度为O(nlogk), 所以总时间复杂度为<code>O(nlogn)</code>，空间复杂度<code>O(k)</code>, k为所求也就是需要的会议室数。     </p>
-<h3 id="排序法解题思路-推荐-："><a href="#排序法解题思路-推荐-：" class="headerlink" title="排序法解题思路(推荐)："></a><strong>排序法解题思路(推荐)：</strong></h3><ol>
-<li>证明解与具体间隔无关，只与end time的值有关。<br><img src="/images/L253-2.png" alt=""></li>
-<li>基于1和2，对end time进行排序，题解只与start-end的相对顺序有关。既然这样，我们可以把所有start，end一起排序，也就是按时间轴排列，排成一个2n大小的数组，<br>遇到start，activeMeeting++，遇到end，activeMeeting–。 这过程activeMeeting的最大值即所求。<br>当然，上述方法直观，但实现起来需要建立一个class Node{value, startOrEnd}。本质上等价于对排序后的start数组和排序后的end数组进行<strong>合并排序</strong>。<br>合并排序的结果等价于时间轴上两个数组的统一排序。当然，不需要剩余部分的合并排序，因为这部分不会增加activeMeeting的值。</li>
-</ol>
-<p>解题步骤：</p>
-<ol>
-<li>排序start</li>
-<li>排序end</li>
-<li>合并排序，start小就activeMeeting++，否则activeMeeting–。求activeMeeting的最大值。</li>
-</ol>
-<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>若endpoint值相同情况下，要确保第二个排序先结束点，再出发点，因为相同点不算有重复飞机</li>
-</ol>
-<h3 id="Python代码：-1"><a href="#Python代码：-1" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">minMeetingRooms</span><span class="params">(self, intervals: List[List[int]])</span> -&gt; int:</span></span><br><span class="line">	start = [(i[<span class="number">0</span>], <span class="number">1</span>) <span class="keyword">for</span> i <span class="keyword">in</span> intervals]</span><br><span class="line">	ends = [(i[<span class="number">1</span>], <span class="number">-1</span>) <span class="keyword">for</span> i <span class="keyword">in</span> intervals]</span><br><span class="line">	endpoints = start + ends</span><br><span class="line">	endpoints.sort()</span><br><span class="line">	active_meetings, max = <span class="number">0</span>, <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(endpoints)):</span><br><span class="line">		<span class="keyword">if</span> endpoints[i][<span class="number">1</span>] == <span class="number">1</span>:</span><br><span class="line">			active_meetings += <span class="number">1</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			active_meetings -= <span class="number">1</span></span><br><span class="line">		<span class="keyword">if</span> active_meetings &gt; max:</span><br><span class="line">			max = active_meetings</span><br><span class="line">	<span class="keyword">return</span> max</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nlogn)</code>，空间复杂度<code>O(n)</code>。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2018/01/29/lee-572/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="KK Shum">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="KK's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/01/29/lee-572/" class="post-title-link" itemprop="url">LeetCode 572 Subtree of Another Tree</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2018-01-29 01:33:24" itemprop="dateCreated datePublished" datetime="2018-01-29T01:33:24-08:00">2018-01-29</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-10-23 14:21:45" itemprop="dateModified" datetime="2021-10-23T14:21:45-07:00">2021-10-23</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2018/01/29/lee-572/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/01/29/lee-572/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong><a href="https://leetcode.com/problems/subtree-of-another-tree" target="_blank" rel="noopener">LeetCode 572 Subtree of Another Tree</a></strong></p>
-<p>Given two non-empty binary trees <strong>s</strong> and <strong>t</strong>, check whether tree <strong>t</strong> has exactly the same structure and node values with a subtree of <strong>s</strong>. A subtree of <strong>s</strong> is a tree consists of a node in <strong>s</strong> and all of this node’s descendants. The tree <strong>s</strong> could also be considered as a subtree of itself.</p>
-<p><strong>Example 1:</strong><br>Given tree s:</p>
-<pre>     3
-    / \
-   4   5
-  / \
- 1   2
-</pre>
-
-<p>Given tree t:</p>
-<pre>   4 
-  / \
- 1   2
-</pre>
-
-<p>Return <strong>true</strong>, because t has the same structure and node values with a subtree of s.</p>
-<p><strong>Example 2:</strong><br>Given tree s:</p>
-<pre>     3
-    / \
-   4   5
-  / \
- 1   2
-    /
-   0
-</pre>
-
-<p>Given tree t:</p>
-<pre>   4
-  / \
- 1   2
-</pre>
-
-<p>Return <strong>false</strong>.</p>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定两个非空二叉树s和t，判断t是否是s的子树。s的子树是指由s中某节点及该节点的所有子节点构成的二叉树。<br>特别的，s是其本身的子树。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是A公司的题目。DFS解题：</p>
-<ol>
-<li>s树的每一个节点与t树的根节点比较，若值相等进行下一步。</li>
-<li>s树的某节点为根的子树和t树进行结构+值比较。</li>
-</ol>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>s=null和t=null，是子树</li>
-<li>s和t任一为空，另一个不为空，不是子树。</li>
-</ol>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isSubtree</span><span class="params">(TreeNode s, TreeNode t)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(isSame(s, t))</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">	<span class="keyword">if</span>(t==<span class="keyword">null</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	<span class="keyword">return</span> s!=<span class="keyword">null</span> &amp;&amp; (isSubtree(s.left, t) || isSubtree(s.right, t));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isSame</span><span class="params">(TreeNode root, TreeNode root2)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(root==<span class="keyword">null</span> &amp;&amp; root2 == <span class="keyword">null</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">	<span class="keyword">if</span>(root==<span class="keyword">null</span> || root2 == <span class="keyword">null</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	<span class="keyword">return</span> root.val==root2.val &amp;&amp; isSame(root.left,root2.left) &amp;&amp; isSame(root.right, root2.right);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nm)</code>，空间复杂度<code>O(1)</code>，n和m分别为s数和t数大小。</p>
-<h3 id="Follow-up"><a href="#Follow-up" class="headerlink" title="Follow-up:"></a><strong>Follow-up:</strong></h3><p>如果s是BST，怎么改进算法？<br>二分法先找到s的节点值等于t根节点值的节点再比较。时间复杂度为<code>O(logn+m)</code>。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">contains</span><span class="params">(TreeNode t, TreeNode node)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (node == <span class="keyword">null</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	<span class="keyword">int</span> result = t.compareTo(node.val);</span><br><span class="line">	<span class="keyword">if</span> (result &gt; <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> contains(t, node.right);</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (result &lt; <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> contains(t, node.left);</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>若BST不是严格递增 (allow duplicates)，多比较几个相等节点即可。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2018/01/29/lee-057/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="KK Shum">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="KK's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/01/29/lee-057/" class="post-title-link" itemprop="url">LeetCode 057 Insert Interval</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2018-01-29 00:54:24" itemprop="dateCreated datePublished" datetime="2018-01-29T00:54:24-08:00">2018-01-29</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-12-29 00:01:46" itemprop="dateModified" datetime="2021-12-29T00:01:46-08:00">2021-12-29</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2018/01/29/lee-057/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/01/29/lee-057/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong><a href="https://leetcode.com/problems/insert-interval" target="_blank" rel="noopener">LeetCode 057 Insert Interval</a></strong></p>
-<p>Given a set of <em>non-overlapping</em> intervals, insert a new interval into the intervals (merge if necessary).</p>
-<p>You may assume that the intervals were initially sorted according to their start times.</p>
-<p><strong>Example 1:</strong><br>Given intervals <code>[1,3],[6,9]</code>, insert and merge <code>[2,5]</code> in as <code>[1,5],[6,9]</code>.</p>
-<p><strong>Example 2:</strong><br>Given <code>[1,2],[3,5],[6,7],[8,10],[12,16]</code>, insert and merge <code>[4,9]</code> in as <code>[1,2],[3,10],[12,16]</code>.</p>
-<p>This is because the new interval <code>[4,9]</code> overlaps with <code>[3,5],[6,7],[8,10]</code>.</p>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>对于给出的互不重叠且按照左端点排序的区间序列，将一个新的区间插入到这个序列当中（合并重叠的区间），使其仍然保持原本的性质。</p>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">insert</span><span class="params">(self, intervals: List[List[int]], newInterval: List[int])</span> -&gt; List[List[int]]:</span></span><br><span class="line">	intervals.append(newInterval)</span><br><span class="line">	intervals.sort(key=<span class="keyword">lambda</span> x: x[<span class="number">0</span>])</span><br><span class="line">	new_interval = [intervals[<span class="number">0</span>][<span class="number">0</span>], intervals[<span class="number">0</span>][<span class="number">0</span>]]</span><br><span class="line">	res = []</span><br><span class="line">	<span class="keyword">for</span> interval <span class="keyword">in</span> intervals:</span><br><span class="line">		<span class="keyword">if</span> self.can_merge(new_interval, interval):</span><br><span class="line">			new_interval = self.merge_two_intervals(new_interval, interval)</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			res.append(new_interval)</span><br><span class="line">			new_interval = interval</span><br><span class="line">	res.append(new_interval)</span><br><span class="line">	<span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">can_merge</span><span class="params">(self, interval, interval2)</span>:</span></span><br><span class="line">	<span class="keyword">return</span> interval[<span class="number">1</span>] &gt;= interval2[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">merge_two_intervals</span><span class="params">(self, interval, interval2)</span>:</span></span><br><span class="line">	<span class="keyword">return</span> [interval[<span class="number">0</span>], max(interval[<span class="number">1</span>], interval2[<span class="number">1</span>])]</span><br></pre></td></tr></table></figure>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>与L56题基本一致，但单元测试更加严格，加入含最大整数值的区间。</p>
-<ol>
-<li>先找到start大于等于待插入区间的区间，然后待插入区间插入其前。</li>
-<li>归结成L56题</li>
-</ol>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>先找到start大于等于待插入区间的区间，然后待插入区间插入其前。</li>
-</ol>
-<h3 id="Python代码：-1"><a href="#Python代码：-1" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">insert</span><span class="params">(self, intervals: List[List[int]], newInterval: List[int])</span> -&gt; List[List[int]]:</span></span><br><span class="line">	j = <span class="number">0</span></span><br><span class="line">	<span class="keyword">while</span> j &lt; len(intervals):</span><br><span class="line">		<span class="keyword">if</span> intervals[j][<span class="number">0</span>] &gt;= newInterval[<span class="number">0</span>]:</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		j += <span class="number">1</span></span><br><span class="line">	intervals.insert(j, newInterval)</span><br><span class="line"></span><br><span class="line">	new_interval = [intervals[<span class="number">0</span>][<span class="number">0</span>], intervals[<span class="number">0</span>][<span class="number">0</span>]]</span><br><span class="line">	res = []</span><br><span class="line">	<span class="keyword">for</span> interval <span class="keyword">in</span> intervals:</span><br><span class="line">		<span class="keyword">if</span> self.can_merge(new_interval, interval):</span><br><span class="line">			new_interval = self.merge_two_intervals(new_interval, interval)</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			res.append(new_interval)</span><br><span class="line">			new_interval = interval</span><br><span class="line">	res.append(new_interval)</span><br><span class="line">	<span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">can_merge</span><span class="params">(self, interval, interval2)</span>:</span></span><br><span class="line">	<span class="keyword">return</span> interval[<span class="number">1</span>] &gt;= interval2[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">merge_two_intervals</span><span class="params">(self, interval, interval2)</span>:</span></span><br><span class="line">	<span class="keyword">return</span> [interval[<span class="number">0</span>], max(interval[<span class="number">1</span>], interval2[<span class="number">1</span>])]</span><br></pre></td></tr></table></figure>
-<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><p>判断是否合并的API中，加入in2.start == Integer.MAX_VALUE返回false。</p>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;Interval&gt; <span class="title">insert</span><span class="params">(List&lt;Interval&gt; intervals, Interval newInterval)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> st = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(;st&lt;intervals.size();st++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(intervals.get(st).start&gt;=newInterval.start)&#123;</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	intervals.add(st, newInterval);</span><br><span class="line">	</span><br><span class="line">	intervals.add(<span class="keyword">new</span> Interval(Integer.MAX_VALUE, Integer.MAX_VALUE));</span><br><span class="line">	List&lt;Interval&gt; re = <span class="keyword">new</span> ArrayList&lt;Interval&gt;();</span><br><span class="line">	Interval newInterval2 = <span class="keyword">null</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;intervals.size();i++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(newInterval2==<span class="keyword">null</span>)</span><br><span class="line">			newInterval2 = intervals.get(i-<span class="number">1</span>);</span><br><span class="line">		<span class="keyword">if</span>(canMerge(newInterval2,intervals.get(i)))&#123;</span><br><span class="line">			newInterval2 = mergeIntervals(newInterval2,intervals.get(i));</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span>&#123;</span><br><span class="line">			re.add(newInterval2);</span><br><span class="line">			newInterval2 = <span class="keyword">null</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> re;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>，因为不用排序。</p>
-<h3 id="Follow-up"><a href="#Follow-up" class="headerlink" title="Follow-up:"></a><strong>Follow-up:</strong></h3><ol>
-<li>先解出L56</li>
-<li>再解此题</li>
-</ol>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/65/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/65/">65</a><span class="page-number current">66</span><a class="page-number" href="/page/67/">67</a><span class="space">&hellip;</span><a class="page-number" href="/page/72/">72</a><a class="extend next" rel="next" href="/page/67/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+    <a class="extend prev" rel="prev" href="/page/65/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/65/">65</a><span class="page-number current">66</span><a class="page-number" href="/page/67/">67</a><span class="space">&hellip;</span><a class="page-number" href="/page/73/">73</a><a class="extend next" rel="next" href="/page/67/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 
@@ -835,7 +798,7 @@ Y   I   R
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">359</span>
+          <span class="site-state-item-count">362</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

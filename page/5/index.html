@@ -201,6 +201,276 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/02/16/leetcode-1146-snapshot-array/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KK Shum">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KK's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/02/16/leetcode-1146-snapshot-array/" class="post-title-link" itemprop="url">LeetCode 1146 Snapshot Array</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-02-16 11:20:59 / Modified: 11:55:55" itemprop="dateCreated datePublished" datetime="2022-02-16T11:20:59-08:00">2022-02-16</time>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2022/02/16/leetcode-1146-snapshot-array/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/02/16/leetcode-1146-snapshot-array/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong><a href="https://leetcode.com/problems/snapshot-array/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>Implement a SnapshotArray that supports the following interface:<br><br><em>   <code>SnapshotArray(int length)</code> initializes an array-like data structure with the given length.  <strong>Initially, each element equals 0</strong>.
+</em>   <code>void set(index, val)</code> sets the element at the given <code>index</code> to be equal to <code>val</code>.<br><em>   <code>int snap()</code> takes a snapshot of the array and returns the <code>snap_id</code>: the total number of times we called <code>snap()</code> minus <code>1</code>.
+</em>   <code>int get(index, snap_id)</code> returns the value at the given <code>index</code>, at the time we took the snapshot with the given <code>snap_id</code><br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> [“SnapshotArray”,”set”,”snap”,”set”,”get”]<br>[[3],[0,5],[],[0,6],[0,0]]<br><strong>Output:</strong> [null,null,0,null,5]<br><strong>Explanation:</strong><br>SnapshotArray snapshotArr = new SnapshotArray(3); // set the length to be 3<br>snapshotArr.set(0,5);  // Set array[0] = 5<br>snapshotArr.snap();  // Take a snapshot, return snap_id = 0<br>snapshotArr.set(0,6);<br>snapshotArr.get(0,0);  // Get the value of array[0] with snap_id = 0, return 5</pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= length &lt;= 50000</code>
+</em>   At most <code>50000</code> calls will be made to <code>set</code>, <code>snap</code>, and <code>get</code>.<br><em>   <code>0 &lt;= index &lt; length</code>
+</em>   <code>0 &lt;= snap_id &lt;</code>(the total number of times we call <code>snap()</code>)<br>*   <code>0 &lt;= val &lt;= 10^9</code><br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>设计一个数据结构支持数组的快照</p>
+<h3 id="Binary-Search解题思路-推荐-："><a href="#Binary-Search解题思路-推荐-：" class="headerlink" title="Binary Search解题思路(推荐)："></a><strong>Binary Search解题思路(推荐)：</strong></h3><p>暴力法是每次快照时候，将当时的数组的所有值存入dict中，key为(snap_id, index), value为数组值，得到MLE<br>后来考虑用二分法优化snap，将数值跟前值不同才存入历史记录，但得到TLE，应该是因为snap时间太长，因为要遍历整个数组<br>所以应该将存入历史这一步放在set中，每次值改变才存入历史记录，虽然一个snap_id可能会存入多值，大部分是不需要，因为同一个snap_id应该取最新值，但这样设计费了空间，省了时间。</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>历史记录为3d数组，第一维为数组index, 第二维为所有历史记录，第三维为每一个记录为[snap_id, value]。由于数组初始值为0，所以初始历史记录为[-1, 0]</li>
+<li>snap_id和题目要求的id差1，比如第一次call snap为0，但是之前的snap应该为-1</li>
+<li>最容易错的在于二分法，要先将snap_id + 1，比如[-1, 0], [0, 5], [0, 6], [0, 2], [1, 1], [1, 4]…找snap_id = 0的值也就是要找最后的，所以先加1，找到[1, 1]再下标减1</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SnapshotArray</span><span class="params">(TestCases)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, length: int)</span>:</span></span><br><span class="line">        self.snap_id = <span class="number">0</span></span><br><span class="line">        self.history = [[[<span class="number">-1</span>, <span class="number">0</span>]] <span class="keyword">for</span> _ <span class="keyword">in</span> range(length)]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">set</span><span class="params">(self, index: int, val: int)</span> -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        self.history[index].append([self.snap_id, val])</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">snap</span><span class="params">(self)</span> -&gt; int:</span></span><br><span class="line">        self.snap_id += <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> self.snap_id - <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span><span class="params">(self, index: int, snap_id: int)</span> -&gt; int:</span></span><br><span class="line">        last_snap_id = bisect.bisect(self.history[index], [snap_id + <span class="number">1</span>]) - <span class="number">1</span> <span class="comment"># remember snap + 1</span></span><br><span class="line">        <span class="keyword">return</span> self.history[index][last_snap_id][<span class="number">1</span>]</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>get时间复杂度为<code>O(logn)</code>，空间复杂度<code>O(n)</code>, 数组某值n更改次数  </p>
+<hr>
+<h3 id="暴力法算法II解题思路-不推荐-："><a href="#暴力法算法II解题思路-不推荐-：" class="headerlink" title="暴力法算法II解题思路(不推荐)："></a><strong>暴力法算法II解题思路(不推荐)：</strong></h3><h3 id="Python代码：-1"><a href="#Python代码：-1" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, length: int)</span>:</span></span><br><span class="line">	self.ary = [<span class="number">0</span>] * length</span><br><span class="line">	self.snap_id = <span class="number">-1</span></span><br><span class="line">	self.idx_snap_to_val = &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">set</span><span class="params">(self, index: int, val: int)</span> -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">	self.ary[index] = val</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">snap</span><span class="params">(self)</span> -&gt; int:</span></span><br><span class="line">	self.snap_id += <span class="number">1</span></span><br><span class="line">	<span class="keyword">for</span> i, n <span class="keyword">in</span> enumerate(self.ary):</span><br><span class="line">		self.idx_snap_to_val[(i, self.snap_id)] = self.ary[i]</span><br><span class="line">	<span class="keyword">return</span> self.snap_id</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get</span><span class="params">(self, index: int, snap_id: int)</span> -&gt; int:</span></span><br><span class="line">	<span class="keyword">return</span> self.idx_snap_to_val[(index, snap_id)]</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/02/16/leetcode-1937-maximum-number-of-points-with-cost/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KK Shum">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KK's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/02/16/leetcode-1937-maximum-number-of-points-with-cost/" class="post-title-link" itemprop="url">LeetCode 1937 Maximum Number of Points with Cost</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-02-16 10:08:59 / Modified: 10:23:03" itemprop="dateCreated datePublished" datetime="2022-02-16T10:08:59-08:00">2022-02-16</time>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2022/02/16/leetcode-1937-maximum-number-of-points-with-cost/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/02/16/leetcode-1937-maximum-number-of-points-with-cost/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong><a href="https://leetcode.com/problems/maximum-number-of-points-with-cost/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>You are given an <code>m x n</code> integer matrix <code>points</code> (<strong>0-indexed</strong>). Starting with <code>0</code> points, you want to <strong>maximize</strong> the number of points you can get from the matrix.<br><br>To gain points, you must pick one cell in <strong>each row</strong>. Picking the cell at coordinates <code>(r, c)</code> will <strong>add</strong> <code>points[r][c]</code> to your score.<br><br>However, you will lose points if you pick a cell too far from the cell that you picked in the previous row. For every two adjacent rows <code>r</code> and <code>r + 1</code> (where <code>0 &lt;= r &lt; m - 1</code>), picking cells at coordinates <code>(r, c&lt;sub&gt;1&lt;/sub&gt;)</code> and <code>(r + 1, c&lt;sub&gt;2&lt;/sub&gt;)</code> will <strong>subtract</strong> <code>abs(c&lt;sub&gt;1&lt;/sub&gt; - c&lt;sub&gt;2&lt;/sub&gt;)</code> from your score.<br><br>Return <em>the <strong>maximum</strong> number of points you can achieve</em>.<br><br><code>abs(x)</code> is defined as:<br><br><em>   <code>x</code> for <code>x &gt;= 0</code>.
+</em>   <code>-x</code> for <code>x &lt; 0</code>.<br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/07/12/screenshot-2021-07-12-at-13-40-26-diagram-drawio-diagrams-net.png" alt=""><br><br><pre><strong>Input:</strong> points = [[1,2,3],[1,5,1],[3,1,1]]<br><strong>Output:</strong> 9<br><strong>Explanation:</strong><br>The blue cells denote the optimal cells to pick, which have coordinates (0, 2), (1, 1), and (2, 0).<br>You add 3 + 5 + 3 = 11 to your score.<br>However, you must subtract abs(2 - 1) + abs(1 - 0) = 2 from your score.<br>Your final score is 11 - 2 = 9.<br></pre><br><br><strong>Example 2:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/07/12/screenshot-2021-07-12-at-13-42-14-diagram-drawio-diagrams-net.png" alt=""><br><br><pre><strong>Input:</strong> points = [[1,5],[2,3],[4,2]]<br><strong>Output:</strong> 11<br><strong>Explanation:</strong><br>The blue cells denote the optimal cells to pick, which have coordinates (0, 1), (1, 1), and (2, 0).<br>You add 5 + 3 + 4 = 12 to your score.<br>However, you must subtract abs(1 - 1) + abs(1 - 0) = 1 from your score.<br>Your final score is 12 - 1 = 11.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>m == points.length</code>
+</em>   <code>n == points[r].length</code><br><em>   <code>1 &lt;= m, n &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code>
+</em>   <code>1 &lt;= m * n &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code><br>*   <code>0 &lt;= points[r][c] &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code><br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>矩阵中含点数，每行取一个cell上的点数，但若两行之间的cell的列不同，要扣去列下标差，求最大点数</p>
+<h3 id="优化DP解题思路-推荐-："><a href="#优化DP解题思路-推荐-：" class="headerlink" title="优化DP解题思路(推荐)："></a><strong>优化DP解题思路(推荐)：</strong></h3><p>求数值的最大值，容易想到用DP，dp[i][j]定义为每个cell的累计最大点数，递归式为<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dp[i][j] = max(dp[i - 1][k] - abs(j - k)) + points[i][j], k = 0..len(dp[0])</span><br></pre></td></tr></table></figure></p>
+<p>复杂度为n立方。</p>
+<p>如果没有扣除的规则，其实就是找上一行的最大值，但要考虑下标，考虑怎么移除这个限制，若将上一个某个cell搬到跟目前列，就是dp[i - 1][k] - (j - k), 所以可以提前计算，<br>而且有绝对值，所以类似于LeetCode 042 Trapping Rain Water拆分为向左向右最大值：<br>left[i]是该行第i个cell，上一行在该列左边的cell的累计最大点数(已扣除)，同理<br>right[i]是该行第i个cell，上一行在该列右边的cell的累计最大点数(已扣除)</p>
+<p>最后，上一行的最大值只能在左边或右边<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dp[i][j] = max(left[j], right[j]) + points[i][j], k = 0..len(dp[0])</span><br></pre></td></tr></table></figure></p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>left[j], right[j]的引入</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">maxPoints</span><span class="params">(self, points: List[List[int]])</span> -&gt; int:</span></span><br><span class="line">	m, n = len(points), len(points[<span class="number">0</span>])</span><br><span class="line">	dp = [[<span class="number">0</span> <span class="keyword">for</span> _ <span class="keyword">in</span> range(n)] <span class="keyword">for</span> _ <span class="keyword">in</span> range(m)]</span><br><span class="line">	<span class="keyword">for</span> j <span class="keyword">in</span> range(n):</span><br><span class="line">		dp[<span class="number">0</span>][j] = points[<span class="number">0</span>][j]</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, m):</span><br><span class="line">		left, right = [<span class="number">0</span>] * n, [<span class="number">0</span>] * n</span><br><span class="line">		left[<span class="number">0</span>], right[<span class="number">-1</span>] = dp[i - <span class="number">1</span>][<span class="number">0</span>], dp[i - <span class="number">1</span>][<span class="number">-1</span>]</span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">1</span>, n):</span><br><span class="line">			left[j] = max(dp[i - <span class="number">1</span>][j], left[j - <span class="number">1</span>] - <span class="number">1</span>)</span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> range(n - <span class="number">2</span>, <span class="number">-1</span>, <span class="number">-1</span>):</span><br><span class="line">			right[j] = max(dp[i - <span class="number">1</span>][j], right[j + <span class="number">1</span>] - <span class="number">1</span>)</span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> range(n):</span><br><span class="line">			dp[i][j] = points[i][j] + max(left[j], right[j])</span><br><span class="line">	<span class="keyword">return</span> max(dp[<span class="number">-1</span>])</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n<sup>2</sup>)</code>，空间复杂度<code>O(n<sup>2</sup>)</code>  </p>
+<hr>
+<h3 id="暴力DP算法II解题思路-不推荐-："><a href="#暴力DP算法II解题思路-不推荐-：" class="headerlink" title="暴力DP算法II解题思路(不推荐)："></a><strong>暴力DP算法II解题思路(不推荐)：</strong></h3><h3 id="Python代码：-1"><a href="#Python代码：-1" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">maxPoints2</span><span class="params">(self, points: List[List[int]])</span> -&gt; int:</span></span><br><span class="line">	dp = [[<span class="number">0</span> <span class="keyword">for</span> _ <span class="keyword">in</span> range(len(points[<span class="number">0</span>]))] <span class="keyword">for</span> _ <span class="keyword">in</span> range(len(points))]</span><br><span class="line">	<span class="keyword">for</span> j <span class="keyword">in</span> range(len(dp[<span class="number">0</span>])):</span><br><span class="line">		dp[<span class="number">0</span>][j] = points[<span class="number">0</span>][j]</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, len(dp)):</span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> range(len(dp[<span class="number">0</span>])):</span><br><span class="line">			<span class="keyword">for</span> k <span class="keyword">in</span> range(len(dp[<span class="number">0</span>])):</span><br><span class="line">				dp[i][j] = max(dp[i][j], dp[i - <span class="number">1</span>][k] + points[i][j] - abs(j - k))</span><br><span class="line">	<span class="keyword">return</span> max(dp[<span class="number">-1</span>])</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n<sup>3</sup>)</code>，空间复杂度<code>O(n<sup>2</sup>)</code>  </p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/02/16/leetcode-1293-shortest-path-in-a-grid-with-obstacles-elimination/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KK Shum">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KK's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/02/16/leetcode-1293-shortest-path-in-a-grid-with-obstacles-elimination/" class="post-title-link" itemprop="url">LeetCode 1293 Shortest Path in a Grid with Obstacles Elimination</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-02-16 01:26:58 / Modified: 01:40:07" itemprop="dateCreated datePublished" datetime="2022-02-16T01:26:58-08:00">2022-02-16</time>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2022/02/16/leetcode-1293-shortest-path-in-a-grid-with-obstacles-elimination/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/02/16/leetcode-1293-shortest-path-in-a-grid-with-obstacles-elimination/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong><a href="https://leetcode.com/problems/shortest-path-in-a-grid-with-obstacles-elimination/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>You are given an <code>m x n</code> integer matrix <code>grid</code> where each cell is either <code>0</code> (empty) or <code>1</code> (obstacle). You can move up, down, left, or right from and to an empty cell in <strong>one step</strong>.<br><br>Return <em>the minimum number of <strong>steps</strong> to walk from the upper left corner</em> <code>(0, 0)</code> <em>to the lower right corner</em> <code>(m - 1, n - 1)</code> <em>given that you can eliminate <strong>at most</strong></em> <code>k</code> <em>obstacles</em>. If it is not possible to find such walk return <code>-1</code>.<br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/09/30/short1-grid.jpg" alt=""><br><br><pre><strong>Input:</strong> grid = [[0,0,0],[1,1,0],[0,0,0],[0,1,1],[0,0,0]], k = 1<br><strong>Output:</strong> 6<br><strong>Explanation:</strong><br>The shortest path without eliminating any obstacle is 10.<br>The shortest path with one obstacle elimination at position (3,2) is 6. Such path is (0,0) -&gt; (0,1) -&gt; (0,2) -&gt; (1,2) -&gt; (2,2) -&gt; <strong>(3,2)</strong> -&gt; (4,2).<br></pre><br><br><strong>Example 2:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/09/30/short2-grid.jpg" alt=""><br><br><pre><strong>Input:</strong> grid = [[0,1,1],[1,1,1],[1,0,0]], k = 1<br><strong>Output:</strong> -1<br><strong>Explanation:</strong> We need to eliminate at least two obstacles to find such a walk.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>m == grid.length</code>
+</em>   <code>n == grid[i].length</code><br><em>   <code>1 &lt;= m, n &lt;= 40</code>
+</em>   <code>1 &lt;= k &lt;= m * n</code><br><em>   <code>grid[i][j]</code> is either <code>0</code> <strong>or</strong> <code>1</code>.
+</em>   <code>grid[0][0] == grid[m - 1][n - 1] == 0</code><br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>矩阵从左上走到右下，但含障碍，现在可以移除k个，使得路径最短，求最短路径</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>求最短路径用BFS，但此题难点在于distance跟路径有关，比如某一格可能属于不同的路径，此时它的distance会不同，所以distance不能global，必须作为state传到下一个迭代<br>同样的情况也在visited中存在，visited跟路径相关，而这一格跟k相关，这一格可以被属于不同的k的路径访问，所以visited应该加入k</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>visited是(x, y, k), queue是(x, y, k, dis)</li>
+<li>(x, y, k - 1)跟visited比较，而不是(x, y, k)。下一个节点的条件为eleminatios &gt;= 0</li>
+<li>若k过多会LTE, 因为广度会过大。这是用曼哈顿距离来剪枝。左上到右下距离为m - n + 2这肯定是最短距离，若k大于等于这个数，也就是可以移除曼哈顿路径上的所有障碍。</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">shortestPath</span><span class="params">(self, grid: List[List[int]], k: int)</span> -&gt; int:</span></span><br><span class="line">	m, n = len(grid), len(grid[<span class="number">0</span>])</span><br><span class="line">	<span class="keyword">if</span> k &gt;= m + n - <span class="number">2</span>: <span class="comment"># TLE</span></span><br><span class="line">		<span class="keyword">return</span> m + n - <span class="number">2</span></span><br><span class="line"></span><br><span class="line">	queue = collections.deque([(<span class="number">0</span>, <span class="number">0</span>, k, <span class="number">0</span>)]) <span class="comment"># x, y, k, distance</span></span><br><span class="line">	visited = set([(<span class="number">0</span>, <span class="number">0</span>, k)]) <span class="comment"># include k</span></span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		_x, _y, _k, _dis = queue.popleft()</span><br><span class="line">		<span class="keyword">if</span> _x == m - <span class="number">1</span> <span class="keyword">and</span> _y == n - <span class="number">1</span>:</span><br><span class="line">			<span class="keyword">return</span> _dis</span><br><span class="line">		<span class="keyword">for</span> _dx, _dy <span class="keyword">in</span> OFFSET:</span><br><span class="line">			x, y = _x + _dx, _y + _dy</span><br><span class="line">			<span class="keyword">if</span> x &lt; <span class="number">0</span> <span class="keyword">or</span> x &gt;= m <span class="keyword">or</span> y &lt; <span class="number">0</span> <span class="keyword">or</span> y &gt;= n:</span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			eliminations = _k - <span class="number">1</span> <span class="keyword">if</span> grid[x][y] == <span class="number">1</span> <span class="keyword">else</span> _k</span><br><span class="line">			<span class="keyword">if</span> (x, y, eliminations) <span class="keyword">not</span> <span class="keyword">in</span> visited <span class="keyword">and</span> eliminations &gt;= <span class="number">0</span>:</span><br><span class="line">				queue.append((x, y, eliminations, _dis + <span class="number">1</span>))</span><br><span class="line">				visited.add((x, y, eliminations))</span><br><span class="line">	<span class="keyword">return</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nmk)</code>，空间复杂度<code>O(mnk)</code>, 某个cell都可能被访问k次，因为最多有k条路径  </p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/02/15/leetcode-670-maximum-swap/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -370,270 +640,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/02/15/leetcode-438-find-all-anagrams-in-a-string/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="KK Shum">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="KK's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/02/15/leetcode-438-find-all-anagrams-in-a-string/" class="post-title-link" itemprop="url">LeetCode 438 Find All Anagrams in a String</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2022-02-15 17:52:25 / Modified: 17:57:00" itemprop="dateCreated datePublished" datetime="2022-02-15T17:52:25-08:00">2022-02-15</time>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2022/02/15/leetcode-438-find-all-anagrams-in-a-string/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/02/15/leetcode-438-find-all-anagrams-in-a-string/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong><a href="https://leetcode.com/problems/find-all-anagrams-in-a-string/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>Given two strings <code>s</code> and <code>p</code>, return <em>an array of all the start indices of</em> <code>p</code><em>‘s anagrams in</em> <code>s</code>. You may return the answer in <strong>any order</strong>.<br><br>An <strong>Anagram</strong> is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> s = “cbaebabacd”, p = “abc”<br><strong>Output:</strong> [0,6]<br><strong>Explanation:</strong><br>The substring with start index = 0 is “cba”, which is an anagram of “abc”.<br>The substring with start index = 6 is “bac”, which is an anagram of “abc”.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> s = “abab”, p = “ab”<br><strong>Output:</strong> [0,1,2]<br><strong>Explanation:</strong><br>The substring with start index = 0 is “ab”, which is an anagram of “ab”.<br>The substring with start index = 1 is “ba”, which is an anagram of “ab”.<br>The substring with start index = 2 is “ab”, which is an anagram of “ab”.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   `1 &lt;= s.length, p.length &lt;= 3 </em> 10<sup>4</sup><code>*</code>s<code>and</code>p` consist of lowercase English letters.<br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求字符串s中含p的anagram的所有初始下标</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>求某子串的频率统计，第一时间想到滑动窗口。此题较特殊，属于固定大小窗口的滑动窗口，因为p的大小是固定的，窗口大小必须和p长度一样。</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li><h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">findAnagrams</span><span class="params">(self, s: str, p: str)</span> -&gt; List[int]:</span></span><br><span class="line">	char_to_count_p = collections.Counter(p)</span><br><span class="line">	substr_win = collections.defaultdict(int)</span><br><span class="line">	res = []</span><br><span class="line">	<span class="keyword">for</span> i, char <span class="keyword">in</span> enumerate(s):</span><br><span class="line">		substr_win[s[i]] += <span class="number">1</span></span><br><span class="line">		<span class="comment"># window: [i - len(p) + 1, i]</span></span><br><span class="line">		<span class="keyword">if</span> i &gt;= len(p):</span><br><span class="line">			substr_win[s[i - len(p)]] -= <span class="number">1</span></span><br><span class="line">			<span class="keyword">if</span> substr_win[s[i - len(p)]] == <span class="number">0</span>:</span><br><span class="line">				substr_win.pop(s[i - len(p)])</span><br><span class="line">		<span class="keyword">if</span> substr_win == char_to_count_p:</span><br><span class="line">			res.append(i - len(p) + <span class="number">1</span>)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>  </p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/02/15/mock-001/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="KK Shum">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="KK's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/02/15/mock-001/" class="post-title-link" itemprop="url">Mock 001 Count changes for two N-trees</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2022-02-15 13:10:39 / Modified: 13:15:38" itemprop="dateCreated datePublished" datetime="2022-02-15T13:10:39-08:00">2022-02-15</time>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2022/02/15/mock-001/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/02/15/mock-001/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>A change for two N-children tree contains:</p>
-<ol>
-<li>key is different</li>
-<li>value is different</li>
-<li>delete a node</li>
-<li>add a node</li>
-</ol>
-<p>Problem: how many changes to convert tree A to tree B</p>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>DD的面经题，多少个改动可以使得existingTree变成newTree</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>DFS, 比较children，三种情况。若其中一方没有节点，就是计算节点数</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>比较children，三种情况。若其中一方没有节点，就是计算节点数</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">changeNodes</span><span class="params">(self, existingTree, newTree)</span> -&gt; int:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> existingTree <span class="keyword">and</span> <span class="keyword">not</span> newTree:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> existingTree <span class="keyword">or</span> <span class="keyword">not</span> newTree:</span><br><span class="line">		<span class="keyword">return</span> self.count(existingTree) + self.count(newTree)</span><br><span class="line">	res = <span class="number">0</span> <span class="keyword">if</span> existingTree.key == newTree.key <span class="keyword">and</span> existingTree.val == newTree.val <span class="keyword">else</span> <span class="number">1</span></span><br><span class="line">	existing_children_dict = self.get_children_dict(existingTree.children)</span><br><span class="line">	new_tree_children_dict = self.get_children_dict(newTree.children)</span><br><span class="line">	<span class="keyword">for</span> key <span class="keyword">in</span> existing_children_dict.keys() &amp; new_tree_children_dict.keys(): <span class="comment"># in both</span></span><br><span class="line">		res += self.changeNodes(existing_children_dict[key], new_tree_children_dict[key])</span><br><span class="line">	<span class="keyword">for</span> key <span class="keyword">in</span> existing_children_dict.keys() - new_tree_children_dict.keys(): <span class="comment"># in existing tree not in new tree</span></span><br><span class="line">		res += self.count(existing_children_dict[key])</span><br><span class="line">	<span class="keyword">for</span> key <span class="keyword">in</span> new_tree_children_dict.keys() - existing_children_dict.keys():  <span class="comment"># in new tree not in existing tree</span></span><br><span class="line">		res += self.count(new_tree_children_dict[key])</span><br><span class="line">	<span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">count</span><span class="params">(self, root)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> root:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">	res = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> child <span class="keyword">in</span> root.children:</span><br><span class="line">		res += self.count(child)</span><br><span class="line">	<span class="keyword">return</span> <span class="number">1</span> + res</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_children_dict</span><span class="params">(self, children)</span>:</span></span><br><span class="line">	key_to_node = &#123;&#125;</span><br><span class="line">	<span class="keyword">for</span> child <span class="keyword">in</span> children:</span><br><span class="line">		key_to_node[child.key] = child</span><br><span class="line">	<span class="keyword">return</span> key_to_node</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/02/15/leetcode-1166-design-file-system/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="KK Shum">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="KK's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/02/15/leetcode-1166-design-file-system/" class="post-title-link" itemprop="url">LeetCode 1166 Design File System</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2022-02-15 10:13:22 / Modified: 10:21:19" itemprop="dateCreated datePublished" datetime="2022-02-15T10:13:22-08:00">2022-02-15</time>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2022/02/15/leetcode-1166-design-file-system/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/02/15/leetcode-1166-design-file-system/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong><a href="https://leetcode.com/problems/design-file-system/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>You are asked to design a file system that allows you to create new paths and associate them with different values.<br><br>The format of a path is one or more concatenated strings of the form: <code>/</code> followed by one or more lowercase English letters. For example, “<code>/leetcode&quot;</code> and “<code>/leetcode/problems&quot;</code> are valid paths while an empty string <code>&quot;&quot;</code> and <code>&quot;/&quot;</code> are not.<br><br>Implement the <code>FileSystem</code> class:<br><br><em>   <code>bool createPath(string path, int value)</code> Creates a new <code>path</code> and associates a <code>value</code> to it if possible and returns <code>true</code>. Returns <code>false</code> if the path <strong>already exists</strong> or its parent path <strong>doesn’t exist</strong>.
-</em>   <code>int get(string path)</code> Returns the value associated with <code>path</code> or returns <code>-1</code> if the path doesn’t exist.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong><br>[“FileSystem”,”createPath”,”get”]<br>[[],[“/a”,1],[“/a”]]<br><strong>Output:</strong><br>[null,true,1]<br><strong>Explanation:</strong><br>FileSystem fileSystem = new FileSystem();<br><br>fileSystem.createPath(“/a”, 1); // return true<br>fileSystem.get(“/a”); // return 1<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong><br>[“FileSystem”,”createPath”,”createPath”,”get”,”createPath”,”get”]<br>[[],[“/leet”,1],[“/leet/code”,2],[“/leet/code”],[“/c/d”,1],[“/c”]]<br><strong>Output:</strong><br>[null,true,true,2,false,-1]<br><strong>Explanation:</strong><br>FileSystem fileSystem = new FileSystem();<br><br>fileSystem.createPath(“/leet”, 1); // return true<br>fileSystem.createPath(“/leet/code”, 2); // return true<br>fileSystem.get(“/leet/code”); // return 2<br>fileSystem.createPath(“/c/d”, 1); // return false because the parent path “/c” doesn’t exist.<br>fileSystem.get(“/c”); // return -1 because this path doesn’t exist.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   The number of calls to the two functions is less than or equal to <code>10&lt;sup&gt;4&lt;/sup&gt;</code> in total.
-</em>   <code>2 &lt;= path.length &lt;= 100</code><br>*   <code>1 &lt;= value &lt;= 10&lt;sup&gt;9&lt;/sup&gt;</code><br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>设计文件系统，支持创建路径，路径含key, value</p>
-<h3 id="Trie解题思路："><a href="#Trie解题思路：" class="headerlink" title="Trie解题思路："></a><strong>Trie解题思路：</strong></h3><p>用Trie, is_end变成key, value</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>遍历用1开始，因为首个/前面是空字符串</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FileSystem</span><span class="params">(TestCases)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.head = TrieNode(<span class="string">''</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">createPath</span><span class="params">(self, path: str, value: int)</span> -&gt; bool:</span></span><br><span class="line">        segments = path.split(<span class="string">'/'</span>)</span><br><span class="line"></span><br><span class="line">        it = self.head</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, len(segments)):</span><br><span class="line">            segment = segments[i]</span><br><span class="line">            <span class="keyword">if</span> segment <span class="keyword">not</span> <span class="keyword">in</span> it.children:</span><br><span class="line">                <span class="keyword">if</span> i == len(segments) - <span class="number">1</span>: <span class="comment"># match all the previous segments</span></span><br><span class="line">                    it.children[segment] = TrieNode(segment)</span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">            it = it.children[segment]</span><br><span class="line">        <span class="keyword">if</span> it.value != <span class="number">-1</span>: <span class="comment"># exists</span></span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">        it.value = value</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span><span class="params">(self, path: str)</span> -&gt; int:</span></span><br><span class="line">        segments = path.split(<span class="string">'/'</span>)</span><br><span class="line"></span><br><span class="line">        it = self.head</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, len(segments)):</span><br><span class="line">            segment = segments[i]</span><br><span class="line">            <span class="keyword">if</span> segment <span class="keyword">not</span> <span class="keyword">in</span> it.children:</span><br><span class="line">                <span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line">            it = it.children[segment]</span><br><span class="line">        <span class="keyword">return</span> it.value</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TrieNode</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, name)</span>:</span></span><br><span class="line">        self.children = collections.defaultdict(TrieNode)  <span class="comment"># &#123;&#125;</span></span><br><span class="line">        self.name = name</span><br><span class="line">        self.value = <span class="number">-1</span></span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
-<hr>
-<h3 id="算法II-HashMap解题思路："><a href="#算法II-HashMap解题思路：" class="headerlink" title="算法II HashMap解题思路："></a><strong>算法II HashMap解题思路：</strong></h3><p>用前缀法</p>
-<h3 id="Python代码：-1"><a href="#Python代码：-1" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FileSystem2</span><span class="params">(TestCases)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.path_to_val = defaultdict()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">createPath</span><span class="params">(self, path: str, value: int)</span> -&gt; bool:</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> path == <span class="string">"/"</span> <span class="keyword">or</span> len(path) == <span class="number">0</span> <span class="keyword">or</span> path <span class="keyword">in</span> self.path_to_val:</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># search from the right</span></span><br><span class="line">        parent = path[:path.rfind(<span class="string">'/'</span>)]</span><br><span class="line">        <span class="keyword">if</span> len(parent) &gt; <span class="number">1</span> <span class="keyword">and</span> parent <span class="keyword">not</span> <span class="keyword">in</span> self.path_to_val:</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line"></span><br><span class="line">        self.path_to_val[path] = value</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span><span class="params">(self, path: str)</span> -&gt; int:</span></span><br><span class="line">        <span class="keyword">return</span> self.path_to_val.get(path, <span class="number">-1</span>)</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/4/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/72/">72</a><a class="extend next" rel="next" href="/page/6/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+    <a class="extend prev" rel="prev" href="/page/4/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/73/">73</a><a class="extend next" rel="next" href="/page/6/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 
@@ -704,7 +714,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">359</span>
+          <span class="site-state-item-count">362</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

@@ -201,6 +201,266 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/02/15/leetcode-438-find-all-anagrams-in-a-string/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KK Shum">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KK's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/02/15/leetcode-438-find-all-anagrams-in-a-string/" class="post-title-link" itemprop="url">LeetCode 438 Find All Anagrams in a String</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-02-15 17:52:25 / Modified: 17:57:00" itemprop="dateCreated datePublished" datetime="2022-02-15T17:52:25-08:00">2022-02-15</time>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2022/02/15/leetcode-438-find-all-anagrams-in-a-string/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/02/15/leetcode-438-find-all-anagrams-in-a-string/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong><a href="https://leetcode.com/problems/find-all-anagrams-in-a-string/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>Given two strings <code>s</code> and <code>p</code>, return <em>an array of all the start indices of</em> <code>p</code><em>‘s anagrams in</em> <code>s</code>. You may return the answer in <strong>any order</strong>.<br><br>An <strong>Anagram</strong> is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> s = “cbaebabacd”, p = “abc”<br><strong>Output:</strong> [0,6]<br><strong>Explanation:</strong><br>The substring with start index = 0 is “cba”, which is an anagram of “abc”.<br>The substring with start index = 6 is “bac”, which is an anagram of “abc”.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> s = “abab”, p = “ab”<br><strong>Output:</strong> [0,1,2]<br><strong>Explanation:</strong><br>The substring with start index = 0 is “ab”, which is an anagram of “ab”.<br>The substring with start index = 1 is “ba”, which is an anagram of “ab”.<br>The substring with start index = 2 is “ab”, which is an anagram of “ab”.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   `1 &lt;= s.length, p.length &lt;= 3 </em> 10<sup>4</sup><code>*</code>s<code>and</code>p` consist of lowercase English letters.<br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求字符串s中含p的anagram的所有初始下标</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>求某子串的频率统计，第一时间想到滑动窗口。此题较特殊，属于固定大小窗口的滑动窗口，因为p的大小是固定的，窗口大小必须和p长度一样。</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li><h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">findAnagrams</span><span class="params">(self, s: str, p: str)</span> -&gt; List[int]:</span></span><br><span class="line">	char_to_count_p = collections.Counter(p)</span><br><span class="line">	substr_win = collections.defaultdict(int)</span><br><span class="line">	res = []</span><br><span class="line">	<span class="keyword">for</span> i, char <span class="keyword">in</span> enumerate(s):</span><br><span class="line">		substr_win[s[i]] += <span class="number">1</span></span><br><span class="line">		<span class="comment"># window: [i - len(p) + 1, i]</span></span><br><span class="line">		<span class="keyword">if</span> i &gt;= len(p):</span><br><span class="line">			substr_win[s[i - len(p)]] -= <span class="number">1</span></span><br><span class="line">			<span class="keyword">if</span> substr_win[s[i - len(p)]] == <span class="number">0</span>:</span><br><span class="line">				substr_win.pop(s[i - len(p)])</span><br><span class="line">		<span class="keyword">if</span> substr_win == char_to_count_p:</span><br><span class="line">			res.append(i - len(p) + <span class="number">1</span>)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>  </p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/02/15/mock-001/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KK Shum">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KK's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/02/15/mock-001/" class="post-title-link" itemprop="url">Mock 001 Count changes for two N-trees</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-02-15 13:10:39 / Modified: 13:15:38" itemprop="dateCreated datePublished" datetime="2022-02-15T13:10:39-08:00">2022-02-15</time>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2022/02/15/mock-001/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/02/15/mock-001/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>A change for two N-children tree contains:</p>
+<ol>
+<li>key is different</li>
+<li>value is different</li>
+<li>delete a node</li>
+<li>add a node</li>
+</ol>
+<p>Problem: how many changes to convert tree A to tree B</p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>DD的面经题，多少个改动可以使得existingTree变成newTree</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>DFS, 比较children，三种情况。若其中一方没有节点，就是计算节点数</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>比较children，三种情况。若其中一方没有节点，就是计算节点数</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">changeNodes</span><span class="params">(self, existingTree, newTree)</span> -&gt; int:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> existingTree <span class="keyword">and</span> <span class="keyword">not</span> newTree:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> existingTree <span class="keyword">or</span> <span class="keyword">not</span> newTree:</span><br><span class="line">		<span class="keyword">return</span> self.count(existingTree) + self.count(newTree)</span><br><span class="line">	res = <span class="number">0</span> <span class="keyword">if</span> existingTree.key == newTree.key <span class="keyword">and</span> existingTree.val == newTree.val <span class="keyword">else</span> <span class="number">1</span></span><br><span class="line">	existing_children_dict = self.get_children_dict(existingTree.children)</span><br><span class="line">	new_tree_children_dict = self.get_children_dict(newTree.children)</span><br><span class="line">	<span class="keyword">for</span> key <span class="keyword">in</span> existing_children_dict.keys() &amp; new_tree_children_dict.keys(): <span class="comment"># in both</span></span><br><span class="line">		res += self.changeNodes(existing_children_dict[key], new_tree_children_dict[key])</span><br><span class="line">	<span class="keyword">for</span> key <span class="keyword">in</span> existing_children_dict.keys() - new_tree_children_dict.keys(): <span class="comment"># in existing tree not in new tree</span></span><br><span class="line">		res += self.count(existing_children_dict[key])</span><br><span class="line">	<span class="keyword">for</span> key <span class="keyword">in</span> new_tree_children_dict.keys() - existing_children_dict.keys():  <span class="comment"># in new tree not in existing tree</span></span><br><span class="line">		res += self.count(new_tree_children_dict[key])</span><br><span class="line">	<span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">count</span><span class="params">(self, root)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> root:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">	res = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> child <span class="keyword">in</span> root.children:</span><br><span class="line">		res += self.count(child)</span><br><span class="line">	<span class="keyword">return</span> <span class="number">1</span> + res</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_children_dict</span><span class="params">(self, children)</span>:</span></span><br><span class="line">	key_to_node = &#123;&#125;</span><br><span class="line">	<span class="keyword">for</span> child <span class="keyword">in</span> children:</span><br><span class="line">		key_to_node[child.key] = child</span><br><span class="line">	<span class="keyword">return</span> key_to_node</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/02/15/leetcode-1166-design-file-system/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KK Shum">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KK's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/02/15/leetcode-1166-design-file-system/" class="post-title-link" itemprop="url">LeetCode 1166 Design File System</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-02-15 10:13:22 / Modified: 10:21:19" itemprop="dateCreated datePublished" datetime="2022-02-15T10:13:22-08:00">2022-02-15</time>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2022/02/15/leetcode-1166-design-file-system/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/02/15/leetcode-1166-design-file-system/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong><a href="https://leetcode.com/problems/design-file-system/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>You are asked to design a file system that allows you to create new paths and associate them with different values.<br><br>The format of a path is one or more concatenated strings of the form: <code>/</code> followed by one or more lowercase English letters. For example, “<code>/leetcode&quot;</code> and “<code>/leetcode/problems&quot;</code> are valid paths while an empty string <code>&quot;&quot;</code> and <code>&quot;/&quot;</code> are not.<br><br>Implement the <code>FileSystem</code> class:<br><br><em>   <code>bool createPath(string path, int value)</code> Creates a new <code>path</code> and associates a <code>value</code> to it if possible and returns <code>true</code>. Returns <code>false</code> if the path <strong>already exists</strong> or its parent path <strong>doesn’t exist</strong>.
+</em>   <code>int get(string path)</code> Returns the value associated with <code>path</code> or returns <code>-1</code> if the path doesn’t exist.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong><br>[“FileSystem”,”createPath”,”get”]<br>[[],[“/a”,1],[“/a”]]<br><strong>Output:</strong><br>[null,true,1]<br><strong>Explanation:</strong><br>FileSystem fileSystem = new FileSystem();<br><br>fileSystem.createPath(“/a”, 1); // return true<br>fileSystem.get(“/a”); // return 1<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong><br>[“FileSystem”,”createPath”,”createPath”,”get”,”createPath”,”get”]<br>[[],[“/leet”,1],[“/leet/code”,2],[“/leet/code”],[“/c/d”,1],[“/c”]]<br><strong>Output:</strong><br>[null,true,true,2,false,-1]<br><strong>Explanation:</strong><br>FileSystem fileSystem = new FileSystem();<br><br>fileSystem.createPath(“/leet”, 1); // return true<br>fileSystem.createPath(“/leet/code”, 2); // return true<br>fileSystem.get(“/leet/code”); // return 2<br>fileSystem.createPath(“/c/d”, 1); // return false because the parent path “/c” doesn’t exist.<br>fileSystem.get(“/c”); // return -1 because this path doesn’t exist.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   The number of calls to the two functions is less than or equal to <code>10&lt;sup&gt;4&lt;/sup&gt;</code> in total.
+</em>   <code>2 &lt;= path.length &lt;= 100</code><br>*   <code>1 &lt;= value &lt;= 10&lt;sup&gt;9&lt;/sup&gt;</code><br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>设计文件系统，支持创建路径，路径含key, value</p>
+<h3 id="Trie解题思路："><a href="#Trie解题思路：" class="headerlink" title="Trie解题思路："></a><strong>Trie解题思路：</strong></h3><p>用Trie, is_end变成key, value</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>遍历用1开始，因为首个/前面是空字符串</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FileSystem</span><span class="params">(TestCases)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.head = TrieNode(<span class="string">''</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">createPath</span><span class="params">(self, path: str, value: int)</span> -&gt; bool:</span></span><br><span class="line">        segments = path.split(<span class="string">'/'</span>)</span><br><span class="line"></span><br><span class="line">        it = self.head</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, len(segments)):</span><br><span class="line">            segment = segments[i]</span><br><span class="line">            <span class="keyword">if</span> segment <span class="keyword">not</span> <span class="keyword">in</span> it.children:</span><br><span class="line">                <span class="keyword">if</span> i == len(segments) - <span class="number">1</span>: <span class="comment"># match all the previous segments</span></span><br><span class="line">                    it.children[segment] = TrieNode(segment)</span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">            it = it.children[segment]</span><br><span class="line">        <span class="keyword">if</span> it.value != <span class="number">-1</span>: <span class="comment"># exists</span></span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">        it.value = value</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span><span class="params">(self, path: str)</span> -&gt; int:</span></span><br><span class="line">        segments = path.split(<span class="string">'/'</span>)</span><br><span class="line"></span><br><span class="line">        it = self.head</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, len(segments)):</span><br><span class="line">            segment = segments[i]</span><br><span class="line">            <span class="keyword">if</span> segment <span class="keyword">not</span> <span class="keyword">in</span> it.children:</span><br><span class="line">                <span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line">            it = it.children[segment]</span><br><span class="line">        <span class="keyword">return</span> it.value</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TrieNode</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, name)</span>:</span></span><br><span class="line">        self.children = collections.defaultdict(TrieNode)  <span class="comment"># &#123;&#125;</span></span><br><span class="line">        self.name = name</span><br><span class="line">        self.value = <span class="number">-1</span></span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
+<hr>
+<h3 id="算法II-HashMap解题思路："><a href="#算法II-HashMap解题思路：" class="headerlink" title="算法II HashMap解题思路："></a><strong>算法II HashMap解题思路：</strong></h3><p>用前缀法</p>
+<h3 id="Python代码：-1"><a href="#Python代码：-1" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FileSystem2</span><span class="params">(TestCases)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.path_to_val = defaultdict()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">createPath</span><span class="params">(self, path: str, value: int)</span> -&gt; bool:</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> path == <span class="string">"/"</span> <span class="keyword">or</span> len(path) == <span class="number">0</span> <span class="keyword">or</span> path <span class="keyword">in</span> self.path_to_val:</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># search from the right</span></span><br><span class="line">        parent = path[:path.rfind(<span class="string">'/'</span>)]</span><br><span class="line">        <span class="keyword">if</span> len(parent) &gt; <span class="number">1</span> <span class="keyword">and</span> parent <span class="keyword">not</span> <span class="keyword">in</span> self.path_to_val:</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line"></span><br><span class="line">        self.path_to_val[path] = value</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span><span class="params">(self, path: str)</span> -&gt; int:</span></span><br><span class="line">        <span class="keyword">return</span> self.path_to_val.get(path, <span class="number">-1</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/02/15/leetcode-839-similar-string-groups/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -365,268 +625,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/02/15/leetcode-854-k-similar-strings/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="KK Shum">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="KK's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/02/15/leetcode-854-k-similar-strings/" class="post-title-link" itemprop="url">LeetCode 854 K-Similar Strings</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2022-02-15 02:00:31 / Modified: 02:07:52" itemprop="dateCreated datePublished" datetime="2022-02-15T02:00:31-08:00">2022-02-15</time>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2022/02/15/leetcode-854-k-similar-strings/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/02/15/leetcode-854-k-similar-strings/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong><a href="https://leetcode.com/problems/k-similar-strings/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>Strings <code>s1</code> and <code>s2</code> are <code>k</code><strong>-similar</strong> (for some non-negative integer <code>k</code>) if we can swap the positions of two letters in <code>s1</code> exactly <code>k</code> times so that the resulting string equals <code>s2</code>.<br><br>Given two anagrams <code>s1</code> and <code>s2</code>, return the smallest <code>k</code> for which <code>s1</code> and <code>s2</code> are <code>k</code><strong>-similar</strong>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> s1 = “ab”, s2 = “ba”<br><strong>Output:</strong> 1<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> s1 = “abc”, s2 = “bca”<br><strong>Output:</strong> 2<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= s1.length &lt;= 20</code>
-</em>   <code>s2.length == s1.length</code><br><em>   <code>s1</code> and <code>s2</code> contain only lowercase letters from the set <code>{&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;d&#39;, &#39;e&#39;, &#39;f&#39;}</code>.
-</em>   <code>s2</code> is an anagram of <code>s1</code>.<br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>两字符，交换两个位置，使得他们相等，求最小交换次数</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>最值考虑用BFS，难点在于生成neighbor，见注意事项</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>用例子写程序node = abc s2 = cba, 先找到第一个不同位i，然后找下一个不同位j，这个不同位node[j]需要与目标s2[i]相同，贪心法</li>
-<li>倒数第二行要break，否则TLE，因为只要找到一位可以交换这一层的BFS算是结束</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">kSimilarity</span><span class="params">(self, s1: str, s2: str)</span> -&gt; int:</span></span><br><span class="line">	queue = collections.deque([s1])</span><br><span class="line">	visited = set([s1])</span><br><span class="line">	distance = &#123;s1: <span class="number">0</span>&#125;</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.popleft()</span><br><span class="line">		<span class="keyword">if</span> node == s2:</span><br><span class="line">			<span class="keyword">return</span> distance[node]</span><br><span class="line">		<span class="keyword">for</span> i <span class="keyword">in</span> range(len(node)): <span class="comment"># abc, cba</span></span><br><span class="line">			<span class="keyword">if</span> node[i] == s2[i]:</span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			<span class="keyword">for</span> j <span class="keyword">in</span> range(i + <span class="number">1</span>, len(node)):</span><br><span class="line">				<span class="keyword">if</span> node[j] == s2[j]:</span><br><span class="line">					<span class="keyword">continue</span></span><br><span class="line">				<span class="keyword">if</span> node[j] == s2[i]:</span><br><span class="line">					ss = node[:i] + node[j] + node[i + <span class="number">1</span>:j] + node[i] + node[j + <span class="number">1</span>:]</span><br><span class="line">					<span class="keyword">if</span> ss <span class="keyword">in</span> visited:</span><br><span class="line">						<span class="keyword">continue</span></span><br><span class="line">					queue.append(ss)</span><br><span class="line">					visited.add(ss)</span><br><span class="line">					distance[ss] = distance[node] + <span class="number">1</span></span><br><span class="line">			<span class="keyword">break</span> <span class="comment"># remember</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(解大小)</code>，空间复杂度<code>O(解大小)</code>  </p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/02/15/leetcode-859-buddy-strings/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="KK Shum">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="KK's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/02/15/leetcode-859-buddy-strings/" class="post-title-link" itemprop="url">LeetCode Buddy Strings</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2022-02-15 01:35:36 / Modified: 01:38:45" itemprop="dateCreated datePublished" datetime="2022-02-15T01:35:36-08:00">2022-02-15</time>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2022/02/15/leetcode-859-buddy-strings/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/02/15/leetcode-859-buddy-strings/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong><a href="https://leetcode.com/problems/buddy-strings/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>Given two strings <code>s</code> and <code>goal</code>, return <code>true</code> <em>if you can swap two letters in</em> <code>s</code> <em>so the result is equal to</em> <code>goal</code><em>, otherwise, return</em> <code>false</code><em>.</em><br><br>Swapping letters is defined as taking two indices <code>i</code> and <code>j</code> (0-indexed) such that <code>i != j</code> and swapping the characters at <code>s[i]</code> and <code>s[j]</code>.<br><br><em>   For example, swapping at indices <code>0</code> and <code>2</code> in <code>&quot;abcd&quot;</code> results in <code>&quot;cbad&quot;</code>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> s = “ab”, goal = “ba”<br><strong>Output:</strong> true<br><strong>Explanation:</strong> You can swap s[0] = ‘a’ and s[1] = ‘b’ to get “ba”, which is equal to goal.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> s = “ab”, goal = “ab”<br><strong>Output:</strong> false<br><strong>Explanation:</strong> The only letters you can swap are s[0] = ‘a’ and s[1] = ‘b’, which results in “ba” != goal.<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> s = “aa”, goal = “aa”<br><strong>Output:</strong> true<br><strong>Explanation:</strong> You can swap s[0] = ‘a’ and s[1] = ‘a’ to get “aa”, which is equal to goal.<br></pre><br><br><strong>Constraints:</strong>
-
-</em>   <code>1 &lt;= s.length, goal.length &lt;= 2 * 10&lt;sup&gt;4&lt;/sup&gt;</code><br>*   <code>s</code> and <code>goal</code> consist of lowercase letters.<br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定两字符串，交换一次使得他们相等</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>三种情况： 长度不等，完全相等（若至少有一个重复，即满足题意），两次不同</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>三种情况： 长度不等，完全相等，两次不同</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">buddyStrings</span><span class="params">(self, s: str, goal: str)</span> -&gt; bool:</span></span><br><span class="line">	<span class="keyword">if</span> len(s) != len(goal):</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">	<span class="keyword">if</span> s == goal <span class="keyword">and</span> len(set(s)) &lt; len(goal): <span class="comment"># any dups</span></span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line">	diff = [(a, b) <span class="keyword">for</span> a, b <span class="keyword">in</span> zip(s, goal) <span class="keyword">if</span> a != b]</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">True</span> <span class="keyword">if</span> len(diff) == <span class="number">2</span> <span class="keyword">and</span> diff[<span class="number">0</span>] == diff[<span class="number">1</span>][::<span class="number">-1</span>] <span class="keyword">else</span> <span class="keyword">False</span></span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/02/13/leetcode-351-android-unlock-patterns/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="KK Shum">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="KK's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/02/13/leetcode-351-android-unlock-patterns/" class="post-title-link" itemprop="url">LeetCode 351 Android Unlock Patterns</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2022-02-13 19:49:42 / Modified: 20:07:52" itemprop="dateCreated datePublished" datetime="2022-02-13T19:49:42-08:00">2022-02-13</time>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2022/02/13/leetcode-351-android-unlock-patterns/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/02/13/leetcode-351-android-unlock-patterns/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong><a href="https://leetcode.com/problems/android-unlock-patterns" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>Android devices have a special lock screen with a <code>3 x 3</code> grid of dots. Users can set an “unlock pattern” by connecting the dots in a specific sequence, forming a series of joined line segments where each segment’s endpoints are two consecutive dots in the sequence. A sequence of <code>k</code> dots is a <strong>valid</strong> unlock pattern if both of the following are true:<br><br><em>   All the dots in the sequence are <strong>distinct</strong>.
-</em>   If the line segment connecting two consecutive dots in the sequence passes through the <strong>center</strong> of any other dot, the other dot <strong>must have previously appeared</strong> in the sequence. No jumps through the center non-selected dots are allowed.<br>    <em>   For example, connecting dots <code>2</code> and <code>9</code> without dots <code>5</code> or <code>6</code> appearing beforehand is valid because the line from dot <code>2</code> to dot <code>9</code> does not pass through the center of either dot <code>5</code> or <code>6</code>.
-    </em>   However, connecting dots <code>1</code> and <code>3</code> without dot <code>2</code> appearing beforehand is invalid because the line from dot <code>1</code> to dot <code>3</code> passes through the center of dot <code>2</code>.<br><br>Here are some example valid and invalid unlock patterns:<br><br><img src="https://assets.leetcode.com/uploads/2018/10/12/android-unlock.png" alt=""><br><br><em>   The 1st pattern <code>[4,1,3,6]</code> is invalid because the line connecting dots <code>1</code> and <code>3</code> pass through dot <code>2</code>, but dot <code>2</code> did not previously appear in the sequence.
-</em>   The 2nd pattern <code>[4,1,9,2]</code> is invalid because the line connecting dots <code>1</code> and <code>9</code> pass through dot <code>5</code>, but dot <code>5</code> did not previously appear in the sequence.<br><em>   The 3rd pattern <code>[2,4,1,3,6]</code> is valid because it follows the conditions. The line connecting dots <code>1</code> and <code>3</code> meets the condition because dot <code>2</code> previously appeared in the sequence.
-</em>   The 4th pattern <code>[6,5,4,1,9,2]</code> is valid because it follows the conditions. The line connecting dots <code>1</code> and <code>9</code> meets the condition because dot <code>5</code> previously appeared in the sequence.<br><br>Given two integers <code>m</code> and <code>n</code>, return <em>the <strong>number of unique and valid unlock patterns</strong> of the Android grid lock screen that consist of <strong>at least</strong></em> <code>m</code> <em>keys and <strong>at most</strong></em> <code>n</code> <em>keys.</em><br><br>Two unlock patterns are considered <strong>unique</strong> if there is a dot in one sequence that is not in the other, or the order of the dots is different.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> m = 1, n = 1<br><strong>Output:</strong> 9<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> m = 1, n = 2<br><strong>Output:</strong> 65<br></pre><br><br><strong>Constraints:</strong><br><br>*   <code>1 &lt;= m, n &lt;= 9</code><br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>安卓开屏密码解锁种数。给定m, n是安卓的密码长度范围，求这个范围内的解码种数。1可以跳到2和4, 5, 6, 8(斜线没有通过其他数字)，但不能跳到3, 7, 9因为前提条件是这条线通过的数如2, 4, 5必须已经用过了。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>此题属于填位法，带条件的，条件在于map中，类似于LeetCode 248 Strobogrammatic Number III<br>难点是理解jump keys，有16种<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">skip[1][3] = skip[3][1] = 2;</span><br><span class="line">skip[1][7] = skip[7][1] = 4;</span><br><span class="line">skip[3][9] = skip[9][3] = 6;</span><br><span class="line">skip[7][9] = skip[9][7] = 8;</span><br><span class="line">skip[1][9] = skip[9][1] = skip[2][8] = skip[8][2] = skip[3][7] = skip[7][3] = skip[4][6] = skip[6][4] = 5;</span><br></pre></td></tr></table></figure></p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>用DFS模板: def dfs(self, graph, start, visited, res), start = num</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>Line 9有return，所以要去掉刚加入的visited的num</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">JUMP_KEYS = &#123;(<span class="number">1</span>,<span class="number">3</span>):<span class="number">2</span>, (<span class="number">1</span>,<span class="number">7</span>):<span class="number">4</span>, (<span class="number">1</span>,<span class="number">9</span>):<span class="number">5</span>, (<span class="number">2</span>,<span class="number">8</span>):<span class="number">5</span>, (<span class="number">3</span>,<span class="number">7</span>):<span class="number">5</span>, (<span class="number">3</span>,<span class="number">1</span>):<span class="number">2</span>, (<span class="number">3</span>,<span class="number">9</span>):<span class="number">6</span>, (<span class="number">4</span>,<span class="number">6</span>):<span class="number">5</span>, (<span class="number">6</span>,<span class="number">4</span>):<span class="number">5</span>, (<span class="number">7</span>,<span class="number">1</span>):<span class="number">4</span>, (<span class="number">7</span>,<span class="number">3</span>):<span class="number">5</span>, (<span class="number">7</span>,<span class="number">9</span>):<span class="number">8</span>, (<span class="number">8</span>,<span class="number">2</span>):<span class="number">5</span>, (<span class="number">9</span>,<span class="number">7</span>):<span class="number">8</span>, (<span class="number">9</span>,<span class="number">3</span>):<span class="number">6</span>, (<span class="number">9</span>,<span class="number">1</span>):<span class="number">5</span>&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span><span class="params">(TestCases)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">dfs</span><span class="params">(self, num, m, n, visited)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> num <span class="keyword">in</span> visited:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        visited.add(num)</span><br><span class="line">        <span class="keyword">if</span> len(visited) == n:</span><br><span class="line">            visited.remove(num) <span class="comment"># remember</span></span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">        res = <span class="number">0</span></span><br><span class="line">        <span class="keyword">if</span> len(visited) &gt;= m:</span><br><span class="line">            res += <span class="number">1</span></span><br><span class="line">        <span class="keyword">for</span> next_num <span class="keyword">in</span> range(<span class="number">1</span>, <span class="number">10</span>):</span><br><span class="line">            <span class="keyword">if</span> (num, next_num) <span class="keyword">in</span> JUMP_KEYS <span class="keyword">and</span> JUMP_KEYS[(num, next_num)] <span class="keyword">not</span> <span class="keyword">in</span> visited:</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">            res += self.dfs(next_num, m, n, visited)</span><br><span class="line">        visited.remove(num)</span><br><span class="line">        <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(1)</code>，空间复杂度<code>O(1)</code>, 因为最多是9乘以8乘以7…  </p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/5/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/72/">72</a><a class="extend next" rel="next" href="/page/7/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+    <a class="extend prev" rel="prev" href="/page/5/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/73/">73</a><a class="extend next" rel="next" href="/page/7/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 
@@ -697,7 +699,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">359</span>
+          <span class="site-state-item-count">362</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

@@ -201,6 +201,280 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/01/16/lee-091/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KK Shum">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KK's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/01/16/lee-091/" class="post-title-link" itemprop="url">LeetCode 091 Decode Ways</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-01-16 11:56:46 / Modified: 13:00:35" itemprop="dateCreated datePublished" datetime="2022-01-16T11:56:46-08:00">2022-01-16</time>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2022/01/16/lee-091/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/01/16/lee-091/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong><a href="https://leetcode.com/problems/decode-ways/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>A message containing letters from <code>A-Z</code> can be <strong>encoded</strong> into numbers using the following mapping:<br><br><pre>‘A’ -&gt; “1”<br>‘B’ -&gt; “2”<br>…<br>‘Z’ -&gt; “26”<br></pre><br><br>To <strong>decode</strong> an encoded message, all the digits must be grouped then mapped back into letters using the reverse of the mapping above (there may be multiple ways). For example, <code>&quot;11106&quot;</code> can be mapped into:<br><br><em>   <code>&quot;AAJF&quot;</code> with the grouping <code>(1 1 10 6)</code>
+</em>   <code>&quot;KJF&quot;</code> with the grouping <code>(11 10 6)</code><br><br>Note that the grouping <code>(1 11 06)</code> is invalid because <code>&quot;06&quot;</code> cannot be mapped into <code>&#39;F&#39;</code> since <code>&quot;6&quot;</code> is different from <code>&quot;06&quot;</code>.<br><br>Given a string <code>s</code> containing only digits, return <em>the <strong>number</strong> of ways to <strong>decode</strong> it</em>.<br><br>The test cases are generated so that the answer fits in a <strong>32-bit</strong> integer.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> s = “12”<br><strong>Output:</strong> 2<br><strong>Explanation:</strong> “12” could be decoded as “AB” (1 2) or “L” (12).<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> s = “226”<br><strong>Output:</strong> 3<br><strong>Explanation:</strong> “226” could be decoded as “BZ” (2 26), “VF” (22 6), or “BBF” (2 2 6).<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> s = “06”<br><strong>Output:</strong> 0<br><strong>Explanation:</strong> “06” cannot be mapped to “F” because of the leading zero (“6” is different from “06”).<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= s.length &lt;= 100</code>
+</em>   <code>s</code> contains only digits and may contain leading zero(s).<br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>数字1-26可以解码成A-Z字母。给定一串数字，求解码方法数。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>求种数是DP和DFS，这题有递归关系，所以考虑用DP。类似于Fibonacci数列和LeetCode 070 Climbing Stairs，但此题带限制条件</p>
+<p>递归式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dp[i] = dp[i-1] + dp[i-2] if 0 &lt; s[i-1] &lt;= 9, 10 &lt;= s[i-2:i] &lt;= 26</span><br></pre></td></tr></table></figure></p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>利用DP五点注意事项</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>不合法的情况为空字符和含0. 这是求个数，根据DP知识点(数值到个数DP模板)，dp[0] = 1, 但这与题目空字符要求不同，所以特别处理。至于单个含0在循环中处理’0’ &lt; s[i - 1] &lt;= ‘9’</li>
+<li>验证单位范围[1, 9], 双位范围[10, 26]才加入到结果中。由于dp长度只多了一位而递归式含两个前状态，所以要验证i &gt;= 2</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># dp[i] = dp[i-1] + dp[i-2] if 0 &lt; s[i-1] &lt;= 9, 10 &lt;= s[i-2:i] &lt;= 26</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">numDecodings</span><span class="params">(self, s: str)</span> -&gt; int:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> s:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">	dp = [<span class="number">0</span>] * (len(s) + <span class="number">1</span>)</span><br><span class="line">	dp[<span class="number">0</span>] = <span class="number">1</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, len(dp)):</span><br><span class="line">		<span class="keyword">if</span> <span class="string">'0'</span> &lt; s[i - <span class="number">1</span>] &lt;= <span class="string">'9'</span>:</span><br><span class="line">			dp[i] = dp[i - <span class="number">1</span>]</span><br><span class="line">		<span class="keyword">if</span> i &gt;= <span class="number">2</span> <span class="keyword">and</span> <span class="string">'10'</span> &lt;= s[i - <span class="number">2</span>: i] &lt;= <span class="string">'26'</span>:</span><br><span class="line">			dp[i] += dp[i - <span class="number">2</span>]</span><br><span class="line">	<span class="keyword">return</span> dp[<span class="number">-1</span>]</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>  </p>
+<hr>
+<h3 id="O-1-空间算法II解题思路："><a href="#O-1-空间算法II解题思路：" class="headerlink" title="O(1)空间算法II解题思路："></a><strong>O(1)空间算法II解题思路：</strong></h3><p>类似于Fibonacci数列和LeetCode 070 Climbing Stairs，由于涉及到两个前状态，所以用两个变量来节省空间</p>
+<h3 id="Python代码：-1"><a href="#Python代码：-1" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># dp[i] = dp[i-1] + dp[i-2] if 0 &lt; s[i-1] &lt;= 9, 10 &lt;= s[i-2:i] &lt;= 26</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">numDecodings2</span><span class="params">(self, s: str)</span> -&gt; int:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> s:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">	first, second = <span class="number">1</span>, <span class="number">1</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, len(s) + <span class="number">1</span>):</span><br><span class="line">		res = <span class="number">0</span></span><br><span class="line">		<span class="keyword">if</span> <span class="string">'0'</span> &lt; s[i - <span class="number">1</span>] &lt;= <span class="string">'9'</span>:</span><br><span class="line">			res = second</span><br><span class="line">		<span class="keyword">if</span> i &gt;= <span class="number">2</span> <span class="keyword">and</span> <span class="string">'10'</span> &lt;= s[i - <span class="number">2</span>: i] &lt;= <span class="string">'26'</span>:</span><br><span class="line">			res += first</span><br><span class="line">		first, second = second, res</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/01/15/lee-092/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KK Shum">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KK's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/01/15/lee-092/" class="post-title-link" itemprop="url">LeetCode 092 Reverse Linked List II</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-01-15 23:57:48" itemprop="dateCreated datePublished" datetime="2022-01-15T23:57:48-08:00">2022-01-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-02-02 20:20:53" itemprop="dateModified" datetime="2022-02-02T20:20:53-08:00">2022-02-02</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2022/01/15/lee-092/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/01/15/lee-092/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong><a href="https://leetcode.com/problems/reverse-linked-list-ii/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>Given the <code>head</code> of a singly linked list and two integers <code>left</code> and <code>right</code> where <code>left &lt;= right</code>, reverse the nodes of the list from position <code>left</code> to position <code>right</code>, and return <em>the reversed list</em>.<br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/02/19/rev2ex2.jpg" alt=""><br><br><pre><strong>Input:</strong> head = [1,2,3,4,5], left = 2, right = 4<br><strong>Output:</strong> [1,4,3,2,5]<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> head = [5], left = 1, right = 1<br><strong>Output:</strong> [5]<br></pre><br><br><strong>Constraints:</strong><br><br><em>   The number of nodes in the list is <code>n</code>.
+</em>   <code>1 &lt;= n &lt;= 500</code><br><em>   <code>-500 &lt;= Node.val &lt;= 500</code>
+</em>   <code>1 &lt;= left &lt;= right &lt;= n</code><br><br><strong>Follow up:</strong> Could you do it in one pass?</div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>反转链表中的子链表[left, right]，start和end是1-index位置, inclusive</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>锁定start和end节点，将end的后续节点一个个加到start直接后续</p>
+<p>LeetCode 206 Reverse Linked List 反转整个LL<br>LeetCode 092 Reverse Linked List II 反转部分LL，此题更加一般化</p>
+<p>模板：<br>不断将end<strong>直接</strong>后面的节点加到start<strong>直接</strong>后面<br>start(group n) -&gt; NodeA （新状态） -&gt; … -&gt; end(group n+1)  -&gt; NodeA （前状态） -&gt; …  </p>
+<ol>
+<li>找出start和end，start为反转部分的前一个，end为反转部分的首个节点</li>
+<li>循环删除end<strong>直接</strong>后，再加入到start<strong>直接</strong>后<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">start, end = fake_head, head</span><br><span class="line"><span class="keyword">while</span> &lt;反转链表长度&gt;:</span><br><span class="line">	<span class="comment"># delete the node</span></span><br><span class="line">	moved_node, end.next = end.next, end.next.next</span><br><span class="line">	<span class="comment"># insert the moved_node</span></span><br><span class="line">	start.next, moved_node.next = moved_node, start.next</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>经典题，见LeetCode 2074 Reverse Nodes in Even Length Groups。 思路是<strong>锁定start和end节点，将end的后续节点一个个加到start直接后续</strong></li>
+<li>第二个循环中，right要记得减一，否则死循环</li>
+</ol>
+<h3 id="Python代码：-1"><a href="#Python代码：-1" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">reverseBetween</span><span class="params">(self, head: ListNode, left: int, right: int)</span> -&gt; ListNode:</span></span><br><span class="line">	left, right = left - <span class="number">1</span>, right - <span class="number">1</span></span><br><span class="line">	fake_head = ListNode(<span class="number">0</span>)</span><br><span class="line">	fake_head.next = head</span><br><span class="line">	it = fake_head</span><br><span class="line">	<span class="keyword">while</span> left &gt; <span class="number">0</span>:</span><br><span class="line">		it = it.next</span><br><span class="line">		left -= <span class="number">1</span></span><br><span class="line">		right -= <span class="number">1</span></span><br><span class="line">	start, end = it, it.next</span><br><span class="line">	<span class="keyword">while</span> right &gt; <span class="number">0</span>:</span><br><span class="line">		moved_node, end.next = end.next, end.next.next <span class="comment"># delete a node</span></span><br><span class="line">		start.next, moved_node.next = moved_node, start.next <span class="comment"># insert a node</span></span><br><span class="line">		right -= <span class="number">1</span> <span class="comment"># remember</span></span><br><span class="line">	<span class="keyword">return</span> fake_head.next</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/01/15/lee-090/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KK Shum">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KK's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/01/15/lee-090/" class="post-title-link" itemprop="url">LeetCode 090 Subsets II</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-01-15 23:29:34 / Modified: 23:32:35" itemprop="dateCreated datePublished" datetime="2022-01-15T23:29:34-08:00">2022-01-15</time>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2022/01/15/lee-090/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/01/15/lee-090/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong><a href="https://leetcode.com/problems/subsets-ii/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>Given an integer array <code>nums</code> that may contain duplicates, return <em>all possible subsets (the power set)</em>.<br><br>The solution set <strong>must not</strong> contain duplicate subsets. Return the solution in <strong>any order</strong>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> nums = [1,2,2]<br><strong>Output:</strong> [[],[1],[1,2],[1,2,2],[2],[2,2]]<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> nums = [0]<br><strong>Output:</strong> [[],[0]]<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= nums.length &lt;= 10</code>
+</em>   <code>-10 &lt;= nums[i] &lt;= 10</code><br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求所有子集，元素可能相同，不能含相同子集</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>类似于L078 Subsets，但元素可能相同，所以排序且比较相邻元素，若相等就跳过</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>元素可能相同，所以排序且比较相邻元素，若相等就跳过</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">subsetsWithDup</span><span class="params">(self, nums: List[int])</span> -&gt; List[List[int]]:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> nums:</span><br><span class="line">		<span class="keyword">return</span> []</span><br><span class="line">	nums.sort()</span><br><span class="line">	res = [[]]</span><br><span class="line">	self.dfs(nums, <span class="number">0</span>, [], res)</span><br><span class="line">	<span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dfs</span><span class="params">(self, nums, st, path, res)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> st == len(nums):</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(st, len(nums)):</span><br><span class="line">		<span class="keyword">if</span> i &gt; st <span class="keyword">and</span> nums[i] == nums[i - <span class="number">1</span>]:</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		path.append(nums[i])</span><br><span class="line">		res.append(list(path))</span><br><span class="line">		self.dfs(nums, i + <span class="number">1</span>, path, res)</span><br><span class="line">		path.pop()</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nx2<sup>n</sup>)</code>，空间复杂度<code>O(n)</code>   </p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/01/15/lee-2139/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -385,274 +659,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/01/15/lee-085/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="KK Shum">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="KK's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/01/15/lee-085/" class="post-title-link" itemprop="url">LeetCode 085 Maximal Rectangle</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2022-01-15 18:25:25 / Modified: 18:32:50" itemprop="dateCreated datePublished" datetime="2022-01-15T18:25:25-08:00">2022-01-15</time>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2022/01/15/lee-085/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/01/15/lee-085/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong><a href="https://leetcode.com/problems/maximal-rectangle" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>Given a <code>rows x cols</code> binary <code>matrix</code> filled with <code>0</code>‘s and <code>1</code>‘s, find the largest rectangle containing only <code>1</code>‘s and return <em>its area</em>.<br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2020/09/14/maximal.jpg" alt=""><br><br><pre><strong>Input:</strong> matrix = [[“1”,”0”,”1”,”0”,”0”],[“1”,”0”,”1”,”1”,”1”],[“1”,”1”,”1”,”1”,”1”],[“1”,”0”,”0”,”1”,”0”]]<br><strong>Output:</strong> 6<br><strong>Explanation:</strong> The maximal rectangle is shown in the above picture.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> matrix = [[“0”]]<br><strong>Output:</strong> 0<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> matrix = [[“1”]]<br><strong>Output:</strong> 1<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>rows == matrix.length</code>
-</em>   <code>cols == matrix[i].length</code><br><em>   <code>1 &lt;= row, cols &lt;= 200</code>
-</em>   <code>matrix[i][j]</code> is <code>&#39;0&#39;</code> or <code>&#39;1&#39;</code>.<br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>0-1矩阵求全部都是1的最大的子矩阵</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>类似于LeetCode 084 Largest Rectangle in Histogram，按每行生成连续1的直方图，求最大矩形面积。然后逐行调用L084的方法。 </p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>由于L084的方案是修改原数组，所以不能直接调用，必须修改L084的方法，copy一份数组再往首尾插入0. </li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">maximalRectangle</span><span class="params">(self, matrix: List[List[str]])</span> -&gt; int:</span></span><br><span class="line">	heights, res = [<span class="number">0</span>] * len(matrix[<span class="number">0</span>]), <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(matrix)):</span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> range(len(matrix[<span class="number">0</span>])):</span><br><span class="line">			<span class="keyword">if</span> matrix[i][j] == <span class="string">'0'</span>:</span><br><span class="line">				heights[j] = <span class="number">0</span></span><br><span class="line">			<span class="keyword">else</span>:</span><br><span class="line">				heights[j] += <span class="number">1</span></span><br><span class="line">		area = self.largestRectangleArea(heights)</span><br><span class="line">		res = max(res, area)</span><br><span class="line">	<span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">largestRectangleArea</span><span class="params">(self, height_list: List[int])</span> -&gt; int:</span></span><br><span class="line">	stack, res = [], <span class="number">0</span></span><br><span class="line">	heights = list(height_list)</span><br><span class="line">	heights.insert(<span class="number">0</span>, <span class="number">0</span>) <span class="comment"># remember</span></span><br><span class="line">	heights.append(<span class="number">0</span>)</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(heights)):</span><br><span class="line">		<span class="keyword">while</span> stack <span class="keyword">and</span> heights[i] &lt; heights[stack[<span class="number">-1</span>]]:</span><br><span class="line">			index = stack.pop()</span><br><span class="line">			res = max(res, (i - stack[<span class="number">-1</span>] - <span class="number">1</span>) * heights[index]) <span class="comment"># remember i - stack[-1] - 1 not i - index</span></span><br><span class="line">		stack.append(i)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nm)</code>，空间复杂度<code>O(m)</code>, n, m分别为行数和列数  </p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/01/15/lee-084/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="KK Shum">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="KK's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/01/15/lee-084/" class="post-title-link" itemprop="url">LeetCode 084 Largest Rectangle in Histogram</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2022-01-15 16:53:35" itemprop="dateCreated datePublished" datetime="2022-01-15T16:53:35-08:00">2022-01-15</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-02-02 21:32:49" itemprop="dateModified" datetime="2022-02-02T21:32:49-08:00">2022-02-02</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2022/01/15/lee-084/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/01/15/lee-084/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong><a href="https://leetcode.com/problems/largest-rectangle-in-histogram/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>Given an array of integers <code>heights</code> representing the histogram’s bar height where the width of each bar is <code>1</code>, return <em>the area of the largest rectangle in the histogram</em>.<br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/01/04/histogram.jpg" alt=""><br><br><pre><strong>Input:</strong> heights = [2,1,5,6,2,3]<br><strong>Output:</strong> 10<br><strong>Explanation:</strong> The above is a histogram where width of each bar is 1.<br>The largest rectangle is shown in the red area, which has an area = 10 units.<br></pre><br><br><strong>Example 2:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/01/04/histogram-1.jpg" alt=""><br><br><pre><strong>Input:</strong> heights = [2,4]<br><strong>Output:</strong> 4<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= heights.length &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code>
-</em>   <code>0 &lt;= heights[i] &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code><br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求直方图中最大的矩形面积</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>类似于L042 Trapping Rain Water的stack法，但此题水量是反的。所以仍然用Stack，但用递增栈 </p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>比L042稍简单，不用处理最后一个bar高度和宽度计算，但是用递增栈且公式中宽度计算仍然<strong>采用i - stack[-1] - 1</strong>，因为bar并不一定连续，如212, 最后一个2入栈，栈中剩下[_, 1]第一个2已经出栈了，但是可以有水量的。</li>
-<li>原数组头尾加入0，头0是因为公式有stack[-1]避免越界， 尾0是因为让所有留在栈中的bar出栈且计算。</li>
-</ol>
-<p>大厦题，<strong>首尾加入节点</strong>：<br>LeetCode 084 Largest Rectangle in Histogram<br>LeetCode 218 The Skyline Problem</p>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">largestRectangleArea</span><span class="params">(self, heights: List[int])</span> -&gt; int:</span></span><br><span class="line">	stack, res = [], <span class="number">0</span></span><br><span class="line">	heights.insert(<span class="number">0</span>, <span class="number">0</span>) <span class="comment"># remember</span></span><br><span class="line">	heights.append(<span class="number">0</span>)</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(heights)):</span><br><span class="line">		<span class="keyword">while</span> stack <span class="keyword">and</span> heights[i] &lt; heights[stack[<span class="number">-1</span>]]:</span><br><span class="line">			index = stack.pop()</span><br><span class="line">			res = max(res, (i - stack[<span class="number">-1</span>] - <span class="number">1</span>) * heights[index]) <span class="comment"># remember i - stack[-1] - 1 not i - index</span></span><br><span class="line">		stack.append(i)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>  </p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/01/15/lee-072/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="KK Shum">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="KK's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/01/15/lee-072/" class="post-title-link" itemprop="url">LeetCode 072 Edit Distance</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2022-01-15 15:25:41 / Modified: 15:29:57" itemprop="dateCreated datePublished" datetime="2022-01-15T15:25:41-08:00">2022-01-15</time>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2022/01/15/lee-072/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/01/15/lee-072/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong><a href="https://leetcode.com/problems/edit-distance/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>Given two strings <code>word1</code> and <code>word2</code>, return <em>the minimum number of operations required to convert <code>word1</code> to <code>word2</code></em>.<br><br>You have the following three operations permitted on a word:<br><br><em>   Insert a character
-</em>   Delete a character<br><em>   Replace a character<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> word1 = “horse”, word2 = “ros”<br><strong>Output:</strong> 3<br><strong>Explanation:</strong><br>horse -&gt; rorse (replace ‘h’ with ‘r’)<br>rorse -&gt; rose (remove ‘r’)<br>rose -&gt; ros (remove ‘e’)<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> word1 = “intention”, word2 = “execution”<br><strong>Output:</strong> 5<br><strong>Explanation:</strong><br>intention -&gt; inention (remove ‘t’)<br>inention -&gt; enention (replace ‘i’ with ‘e’)<br>enention -&gt; exention (replace ‘n’ with ‘x’)<br>exention -&gt; exection (replace ‘n’ with ‘c’)<br>exection -&gt; execution (insert ‘u’)<br></pre><br><br><strong>Constraints:</strong>
-
-</em>   <code>0 &lt;= word1.length, word2.length &lt;= 500</code><br>*   <code>word1</code> and <code>word2</code> consist of lowercase English letters.<br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求编辑两个字符串的最短距离。编辑操作含加删一个字符，替换一个字符。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>求最值且涉及到字符串考虑用DP。递归式为<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dp[i][j] = dp[i-1][j-1]                                   if word1[i-1] == word[j-1]  </span><br><span class="line">         = min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]) + 1, otherwise</span><br></pre></td></tr></table></figure></p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>初始值先word2长度再word1.</li>
-<li><strong>初始化上和左边界，表示当一个字符串为空时，另一个字符串的编辑距离是其长度。</strong></li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># dp[i][j] = dp[i-1][j-1] if word1[i-1] == word[j-1]</span></span><br><span class="line"><span class="comment">#          = min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]) + 1, otherwise</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">minDistance</span><span class="params">(self, word1: str, word2: str)</span> -&gt; int:</span></span><br><span class="line">	dp = [[<span class="number">0</span> <span class="keyword">for</span> _ <span class="keyword">in</span> range(len(word2) + <span class="number">1</span>)] <span class="keyword">for</span> _ <span class="keyword">in</span> range(len(word1) + <span class="number">1</span>)]</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, len(dp)):</span><br><span class="line">		dp[i][<span class="number">0</span>] = i</span><br><span class="line">	<span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">1</span>, len(dp[<span class="number">0</span>])):</span><br><span class="line">		dp[<span class="number">0</span>][j] = j</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, len(dp)):</span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">1</span>, len(dp[<span class="number">0</span>])):</span><br><span class="line">			<span class="keyword">if</span> word1[i - <span class="number">1</span>] == word2[j - <span class="number">1</span>]:</span><br><span class="line">				dp[i][j] = dp[i - <span class="number">1</span>][j - <span class="number">1</span>]</span><br><span class="line">			<span class="keyword">else</span>:</span><br><span class="line">				dp[i][j] = min(dp[i - <span class="number">1</span>][j], dp[i][j - <span class="number">1</span>], dp[i - <span class="number">1</span>][j - <span class="number">1</span>]) + <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> dp[<span class="number">-1</span>][<span class="number">-1</span>]</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nm)</code>，空间复杂度<code>O(nm)</code>  </p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/23/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/23/">23</a><span class="page-number current">24</span><a class="page-number" href="/page/25/">25</a><span class="space">&hellip;</span><a class="page-number" href="/page/72/">72</a><a class="extend next" rel="next" href="/page/25/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+    <a class="extend prev" rel="prev" href="/page/23/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/23/">23</a><span class="page-number current">24</span><a class="page-number" href="/page/25/">25</a><span class="space">&hellip;</span><a class="page-number" href="/page/73/">73</a><a class="extend next" rel="next" href="/page/25/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 
@@ -723,7 +733,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">359</span>
+          <span class="site-state-item-count">362</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

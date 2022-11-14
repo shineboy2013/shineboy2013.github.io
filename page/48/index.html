@@ -201,6 +201,279 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2021/12/06/lee-322/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KK Shum">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KK's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/12/06/lee-322/" class="post-title-link" itemprop="url">LeetCode 322 Coin Change</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-12-06 18:58:45" itemprop="dateCreated datePublished" datetime="2021-12-06T18:58:45-08:00">2021-12-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-01-30 00:47:55" itemprop="dateModified" datetime="2022-01-30T00:47:55-08:00">2022-01-30</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2021/12/06/lee-322/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2021/12/06/lee-322/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong><a href="https://leetcode.com/problems/coin-change/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>You are given an integer array <code>coins</code> representing coins of different denominations and an integer <code>amount</code> representing a total amount of money.<br><br>Return <em>the fewest number of coins that you need to make up that amount</em>. If that amount of money cannot be made up by any combination of the coins, return <code>-1</code>.<br><br>You may assume that you have an infinite number of each kind of coin.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> coins = [1,2,5], amount = 11<br><strong>Output:</strong> 3<br><strong>Explanation:</strong> 11 = 5 + 5 + 1<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> coins = [2], amount = 3<br><strong>Output:</strong> -1<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> coins = [1], amount = 0<br><strong>Output:</strong> 0<br></pre><br><br><strong>Example 4:</strong><br><br><pre><strong>Input:</strong> coins = [1], amount = 1<br><strong>Output:</strong> 1<br></pre><br><br><strong>Example 5:</strong><br><br><pre><strong>Input:</strong> coins = [1], amount = 2<br><strong>Output:</strong> 2<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= coins.length &lt;= 12</code>
+</em>   <code>1 &lt;= coins[i] &lt;= 2&lt;sup&gt;31&lt;/sup&gt; - 1</code><br>*   <code>0 &lt;= amount &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code><br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求兑换硬币的最小个数</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>用数值-&gt;个数DP模板</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>amount为0时候，返回0，表示不用coin也能满足，属于合法情况, dp[0] = 0(第二步)  </li>
+<li>返回值，若dp[-1]为初始值，表示无解，返回-1(第5步)  </li>
+<li>实现中dp[i] = min(dp[i], dp[i - j] + 1), +1在min内而不是min外。  </li>
+<li>此题内外循环顺序不重要，跟LeetCode 518 Coin Change 2有区别</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">coinChange</span><span class="params">(self, coins: List[int], amount: int)</span> -&gt; int:</span></span><br><span class="line">	coins.sort()</span><br><span class="line">	dp = [float(<span class="string">'inf'</span>)] * (amount + <span class="number">1</span>)</span><br><span class="line">	dp[<span class="number">0</span>] = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> coin <span class="keyword">in</span> coins:</span><br><span class="line">		<span class="keyword">for</span> i <span class="keyword">in</span> range(len(dp)):</span><br><span class="line">			<span class="keyword">if</span> i + coin &lt;= amount:</span><br><span class="line">				dp[i + coin] = min(dp[i + coin], dp[i] + <span class="number">1</span>)</span><br><span class="line">	<span class="keyword">return</span> dp[<span class="number">-1</span>] <span class="keyword">if</span> dp[<span class="number">-1</span>] &lt; float(<span class="string">'inf'</span>) <span class="keyword">else</span> <span class="number">-1</span>  <span class="comment"># remember</span></span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n*amount)</code>，空间复杂度<code>O(amount)</code>。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2021/12/06/lee-239/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KK Shum">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KK's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/12/06/lee-239/" class="post-title-link" itemprop="url">LeetCode 239 Sliding Window Maximum</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-12-06 11:57:45" itemprop="dateCreated datePublished" datetime="2021-12-06T11:57:45-08:00">2021-12-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-12-16 18:51:27" itemprop="dateModified" datetime="2021-12-16T18:51:27-08:00">2021-12-16</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2021/12/06/lee-239/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2021/12/06/lee-239/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong><a href="https://leetcode.com/problems/sliding-window-maximum/" target="_blank" rel="noopener">LeetCode 239 Sliding Window Maximum</a></strong></p>
+<div><br><br>You are given an array of integers <code>nums</code>, there is a sliding window of size <code>k</code> which is moving from the very left of the array to the very right. You can only see the <code>k</code> numbers in the window. Each time the sliding window moves right by one position.<br><br>Return <em>the max sliding window</em>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> nums = [1,3,-1,-3,5,3,6,7], k = 3<br><strong>Output:</strong> [3,3,5,5,6,7]<br><strong>Explanation:</strong><br>Window position                Max<br>—————               —–<br>[1  3  -1] -3  5  3  6  7       <strong>3</strong><br> 1 [3  -1  -3] 5  3  6  7       <strong>3</strong><br> 1  3 [-1  -3  5] 3  6  7      <strong> 5</strong><br> 1  3  -1 [-3  5  3] 6  7       <strong>5</strong><br> 1  3  -1  -3 [5  3  6] 7       <strong>6</strong><br> 1  3  -1  -3  5 [3  6  7]      <strong>7</strong><br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> nums = [1], k = 1<br><strong>Output:</strong> [1]<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= nums.length &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code>
+</em>   <code>-10&lt;sup&gt;4&lt;/sup&gt; &lt;= nums[i] &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code><br>*   <code>1 &lt;= k &lt;= nums.length</code><br><br></div>
+
+<h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>LL + 递减栈<br>难点是什么时候输出结果，并不是出栈时候，而是每轮遍历时，就可以计算当轮的最大值，也就是当前的队首  </p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>每轮遍历时，计算<strong>当轮的最大值就是当前的队首</strong>      </li>
+<li>注意程序顺序，先递减栈模板，在计算结果，最后移出越界元素。如例子[876], i = 2, 窗口大小满足了，计算结果为8,8在下一轮会越界，所以移除。  </li>
+<li>结果数小于数组大小，注意line 8的条件</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">maxSlidingWindow</span><span class="params">(self, nums: List[int], k: int)</span> -&gt; List[int]:</span></span><br><span class="line">	queue, res = collections.deque(), []</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(nums)):</span><br><span class="line">		<span class="keyword">while</span> queue <span class="keyword">and</span> nums[i] &gt; nums[queue[<span class="number">-1</span>]]:</span><br><span class="line">			queue.pop()</span><br><span class="line">		queue.append(i)</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> i + <span class="number">1</span> &gt;= k:</span><br><span class="line">			res.append(nums[queue[<span class="number">0</span>]])</span><br><span class="line">		<span class="keyword">if</span> i - queue[<span class="number">0</span>] + <span class="number">1</span> &gt;= k:</span><br><span class="line">			queue.popleft()</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>  </p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2021/12/06/lee-863/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KK Shum">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KK's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/12/06/lee-863/" class="post-title-link" itemprop="url">LeetCode 863 All Nodes Distance K in Binary Tree</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-12-06 11:49:23" itemprop="dateCreated datePublished" datetime="2021-12-06T11:49:23-08:00">2021-12-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-12-27 20:05:36" itemprop="dateModified" datetime="2021-12-27T20:05:36-08:00">2021-12-27</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2021/12/06/lee-863/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2021/12/06/lee-863/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong><a href="https://leetcode.com/problems/all-nodes-distance-k-in-binary-tree/" target="_blank" rel="noopener">LeetCode</a></strong></p>
+<div><br><br>Given the <code>root</code> of a binary tree, the value of a target node <code>target</code>, and an integer <code>k</code>, return <em>an array of the values of all nodes that have a distance</em> <code>k</code> <em>from the target node.</em><br><br>You can return the answer in <strong>any order</strong>.<br><br><strong>Example 1:</strong><br><br><img src="https://s3-lc-upload.s3.amazonaws.com/uploads/2018/06/28/sketch0.png" alt=""><br><br><pre><strong>Input:</strong> root = [3,5,1,6,2,0,8,null,null,7,4], target = 5, k = 2<br><strong>Output:</strong> [7,4,1]<br>Explanation: The nodes that are a distance 2 from the target node (with value 5) have values 7, 4, and 1.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> root = [1], target = 1, k = 3<br><strong>Output:</strong> []<br></pre><br><br><strong>Constraints:</strong><br><br><em>   The number of nodes in the tree is in the range <code>[1, 500]</code>.
+</em>   <code>0 &lt;= Node.val &lt;= 500</code><br><em>   All the values <code>Node.val</code> are <strong>unique</strong>.
+</em>   <code>target</code> is the value of one of the nodes in the tree.<br>*   <code>0 &lt;= k &lt;= 1000</code><br><br></div>
+
+<h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>有三种情况，都容易忽略： 1. 儿子节点 2. 所有父节点路劲上 3. 兄弟节点路径上。而第三种情况要搜另一边的儿子节点（左右不确定）要用visited记录，而且不一定是父亲的兄弟节点，可能爷爷的非父亲的儿子节点。<br>既然不是单向搜索，不妨转换为图，然后用计算距离BFS模板，只要用map来记录某节点的父亲节点或者增加一个域。BFS中for neighbor in [node.left, node, right, node.parent]  </p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>root的parent是None，所以从root去赋值parent，而不是从parent root给儿子赋parent  </li>
+<li>Line 13 node.left, node.right, node.parent都可能为None，所以Line14要加not neighbor      </li>
+<li>BFS从target开始而不是root</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">distanceK</span><span class="params">(self, root: TreeNode, target: TreeNode, k: int)</span> -&gt; List[int]:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> root:</span><br><span class="line">		<span class="keyword">return</span> []</span><br><span class="line">	self.dfs(root, <span class="keyword">None</span>)</span><br><span class="line">	queue, visited, distance_to_tgt,  = collections.deque([target]), set([target]), collections.defaultdict(int)</span><br><span class="line">	distance_to_tgt[target], res = <span class="number">0</span>, []</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.popleft()</span><br><span class="line">		<span class="keyword">if</span> distance_to_tgt[node] == k:</span><br><span class="line">			res.append(node.val)</span><br><span class="line">		<span class="keyword">if</span> distance_to_tgt[node] &gt; k:</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		<span class="keyword">for</span> neighbor <span class="keyword">in</span> [node.left, node.right, node.parent]:</span><br><span class="line">			<span class="keyword">if</span> <span class="keyword">not</span> neighbor <span class="keyword">or</span> neighbor <span class="keyword">in</span> visited:  <span class="comment"># remember not neighbor</span></span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			queue.append(neighbor)</span><br><span class="line">			visited.add(neighbor)</span><br><span class="line">			distance_to_tgt[neighbor] = distance_to_tgt[node] + <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dfs</span><span class="params">(self, root, parent)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> root:</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">None</span></span><br><span class="line">	root.parent = parent</span><br><span class="line">	<span class="string">'''if root.left:</span></span><br><span class="line"><span class="string">		root.left.parent = root</span></span><br><span class="line"><span class="string">	if root.right:</span></span><br><span class="line"><span class="string">		root.right.parent = root'''</span></span><br><span class="line">	self.dfs(root.left, root)  <span class="comment"># remember to pass parent</span></span><br><span class="line">	self.dfs(root.right, root)</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>  </p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2021/12/06/lee-295/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -389,290 +662,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2021/12/06/lee-301/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="KK Shum">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="KK's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/12/06/lee-301/" class="post-title-link" itemprop="url">LeetCode 301 Remove Invalid Parentheses</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-12-06 00:01:52" itemprop="dateCreated datePublished" datetime="2021-12-06T00:01:52-08:00">2021-12-06</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-03-16 09:57:21" itemprop="dateModified" datetime="2022-03-16T09:57:21-07:00">2022-03-16</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2021/12/06/lee-301/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2021/12/06/lee-301/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong><a href="https://leetcode.com/problems/remove-invalid-parentheses/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>Given a string <code>s</code> that contains parentheses and letters, remove the minimum number of invalid parentheses to make the input string valid.<br><br>Return <em>all the possible results</em>. You may return the answer in <strong>any order</strong>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> s = “()())()”<br><strong>Output:</strong> [“(())()”,”()()()”]<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> s = “(a)())()”<br><strong>Output:</strong> [“(a())()”,”(a)()()”]<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> s = “)(“<br><strong>Output:</strong> [“”]<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= s.length &lt;= 25</code>
-</em>   <code>s</code> consists of lowercase English letters and parentheses <code>&#39;(&#39;</code> and <code>&#39;)&#39;</code>.<br>*   There will be at most <code>20</code> parentheses in <code>s</code>.<br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求最小去掉不合法括号数之后的所有结果</p>
-<h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>最值问题考虑用DP和BFS，DP难以拆分子问题。所以考虑用BFS + 括号是否合法  </p>
-<p>LeetCode 1249 Minimum Remove to Make Valid Parentheses 求一个最优解 Medium, Stack<br>LeetCode 921 Minimum Add to Make Parentheses Valid 求一个最优解 Medium, Stack<br>LeetCode 301 Remove Invalid Parentheses 求所有最优解 Hard，此题 答案包含上题, BFS</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>由于()())() -&gt; (())()，所以去掉的括号不一定都不合法，所以<strong>BFS要尝试删除每一个括号</strong>。若节点合法，加入结果且记录最小删除数，因为要求同一距离下的所有结果，所以<strong>用这个最小数来剪枝</strong>。</li>
-<li>输入含小写字母，所以<strong>无论是判断括号是否合法还是生成儿子节点都要跳过</strong></li>
-<li>模板中含if neighbor in visited，不能忘记写</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">removeInvalidParentheses</span><span class="params">(self, s: str)</span> -&gt; List[str]:</span></span><br><span class="line">	queue = collections.deque([s])</span><br><span class="line">	visited = set([s])</span><br><span class="line">	res, min_dis = [], float(<span class="string">'inf'</span>)</span><br><span class="line">	distance = collections.defaultdict(int)</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.popleft()</span><br><span class="line">		<span class="keyword">if</span> self.is_valid(node):</span><br><span class="line">			res.append(node)</span><br><span class="line">			min_dis = min(min_dis, distance[node])</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		<span class="keyword">if</span> distance[node] &gt; min_dis:</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		<span class="keyword">for</span> i <span class="keyword">in</span> range(len(node)):</span><br><span class="line">			<span class="keyword">if</span> node[i] <span class="keyword">not</span> <span class="keyword">in</span> [<span class="string">'('</span>, <span class="string">')'</span>]:  <span class="comment"># remember</span></span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			child = node[:i] + node[i + <span class="number">1</span>:]</span><br><span class="line">			<span class="keyword">if</span> child <span class="keyword">in</span> visited: <span class="comment"># remember</span></span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			queue.append(child)</span><br><span class="line">			visited.add(child)</span><br><span class="line">			distance[child] = distance[node] + <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">is_valid</span><span class="params">(self, s)</span>:</span> <span class="comment"># remember not to use get_invalid_index ()())() -&gt; (())()</span></span><br><span class="line">	stack = []</span><br><span class="line">	<span class="keyword">for</span> i, char <span class="keyword">in</span> enumerate(s):</span><br><span class="line">		<span class="keyword">if</span> char <span class="keyword">not</span> <span class="keyword">in</span> [<span class="string">'('</span>, <span class="string">')'</span>]: <span class="comment"># remember</span></span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		<span class="keyword">if</span> char == <span class="string">')'</span> <span class="keyword">and</span> stack <span class="keyword">and</span> s[stack[<span class="number">-1</span>]] == <span class="string">'('</span>:</span><br><span class="line">			stack.pop()</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			stack.append(i)</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">False</span> <span class="keyword">if</span> stack <span class="keyword">else</span> <span class="keyword">True</span></span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(2<sup>n</sup>)</code>，空间复杂度<code>O(n)</code>  </p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2021/12/05/lee-516/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="KK Shum">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="KK's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/12/05/lee-516/" class="post-title-link" itemprop="url">LeetCode 516 Longest Palindromic Subsequence</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-12-05 23:27:35" itemprop="dateCreated datePublished" datetime="2021-12-05T23:27:35-08:00">2021-12-05</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-01-02 20:41:20" itemprop="dateModified" datetime="2022-01-02T20:41:20-08:00">2022-01-02</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2021/12/05/lee-516/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2021/12/05/lee-516/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong><a href="https://leetcode.com/problems/longest-palindromic-subsequence/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>Given a string <code>s</code>, find <em>the longest palindromic <strong>subsequence</strong>‘s length in</em> <code>s</code>.<br><br>A <strong>subsequence</strong> is a sequence that can be derived from another sequence by deleting some or no elements without changing the order of the remaining elements.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> s = “bbbab”<br><strong>Output:</strong> 4<br><strong>Explanation:</strong> One possible longest palindromic subsequence is “bbbb”.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> s = “cbbd”<br><strong>Output:</strong> 2<br><strong>Explanation:</strong> One possible longest palindromic subsequence is “bb”.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= s.length &lt;= 1000</code>
-</em>   <code>s</code> consists only of lowercase English letters.<br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求字符串中最长回文序列</p>
-<h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>一开始看到子序列如LIS就想用DP，dp[i]表示以s[i]为结尾的最长回文子序列。但不容易推导公式，难点是没有限制左边界<br>所以应该扩展到二维dp[i][j]表示[i, j]之间的最长回文子序列。公式就简单多了<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dp[i][j] = dp[i+1][j-1] + 2,             s[i] == s[j]</span><br><span class="line">         = max(dp[i+1][j], dp[i][j-1]),  s[i] != s[j]</span><br></pre></td></tr></table></figure></p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>难点是想到用二维DP(区间型DP)。用区间型递归模板，注意dp[i + 1][j]并不是i - 1</li>
-<li>初始值为dp[i][i] = 1</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">longestPalindromeSubseq</span><span class="params">(self, s: str)</span> -&gt; int:</span></span><br><span class="line">	dp = [[<span class="number">0</span> <span class="keyword">for</span> _ <span class="keyword">in</span> range(len(s))] <span class="keyword">for</span> _ <span class="keyword">in</span> range(len(s))]</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(s)):</span><br><span class="line">		dp[i][i] = <span class="number">1</span></span><br><span class="line">	<span class="keyword">for</span> k <span class="keyword">in</span> range(<span class="number">1</span>, len(s)):</span><br><span class="line">		<span class="keyword">for</span> i <span class="keyword">in</span> range(len(s) - k):</span><br><span class="line">			j = i + k</span><br><span class="line">			<span class="keyword">if</span> s[i] == s[j]:</span><br><span class="line">				dp[i][j] = dp[i + <span class="number">1</span>][j - <span class="number">1</span>] + <span class="number">2</span></span><br><span class="line">			<span class="keyword">else</span>:</span><br><span class="line">				dp[i][j] = max(dp[i + <span class="number">1</span>][j], dp[i][j - <span class="number">1</span>])</span><br><span class="line">	<span class="keyword">return</span> dp[<span class="number">0</span>][<span class="number">-1</span>]</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n*n)</code>，空间复杂度<code>O(n*n)</code>  </p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2021/12/05/lee-731/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="KK Shum">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="KK's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/12/05/lee-731/" class="post-title-link" itemprop="url">LeetCode 731 My Calendar II</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-12-05 22:41:18" itemprop="dateCreated datePublished" datetime="2021-12-05T22:41:18-08:00">2021-12-05</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-12-31 19:10:59" itemprop="dateModified" datetime="2021-12-31T19:10:59-08:00">2021-12-31</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2021/12/05/lee-731/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2021/12/05/lee-731/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong><a href="https://leetcode.com/problems/my-calendar-ii/" target="_blank" rel="noopener">LeetCode</a></strong></p>
-<div><br><br>You are implementing a program to use as your calendar. We can add a new event if adding the event will not cause a <strong>triple booking</strong>.<br><br>A <strong>triple booking</strong> happens when three events have some non-empty intersection (i.e., some moment is common to all the three events.).<br><br>The event can be represented as a pair of integers <code>start</code> and <code>end</code> that represents a booking on the half-open interval <code>[start, end)</code>, the range of real numbers <code>x</code> such that <code>start &lt;= x &lt; end</code>.<br><br>Implement the <code>MyCalendarTwo</code> class:<br><br><em>   <code>MyCalendarTwo()</code> Initializes the calendar object.
-</em>   <code>boolean book(int start, int end)</code> Returns <code>true</code> if the event can be added to the calendar successfully without causing a <strong>triple booking</strong>. Otherwise, return <code>false</code> and do not add the event to the calendar.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input</strong><br>[“MyCalendarTwo”, “book”, “book”, “book”, “book”, “book”, “book”]<br>[[], [10, 20], [50, 60], [10, 40], [5, 15], [5, 10], [25, 55]]<br><strong>Output</strong><br>[null, true, true, true, false, true, true]<br><br><strong>Explanation</strong><br>MyCalendarTwo myCalendarTwo = new MyCalendarTwo();<br>myCalendarTwo.book(10, 20); // return True, The event can be booked.<br>myCalendarTwo.book(50, 60); // return True, The event can be booked.<br>myCalendarTwo.book(10, 40); // return True, The event can be double booked.<br>myCalendarTwo.book(5, 15);  // return False, The event ca not be booked, because it would result in a triple booking.<br>myCalendarTwo.book(5, 10); // return True, The event can be booked, as it does not use time 10 which is already double booked.<br>myCalendarTwo.book(25, 55); // return True, The event can be booked, as the time in [25, 40) will be double booked with the third event, the time [40, 50) will be single booked, and the time [50, 55) will be double booked with the second event.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>0 &lt;= start &lt; end &lt;= 10&lt;sup&gt;9&lt;/sup&gt;</code>
-</em>   At most <code>1000</code> calls will be made to <code>book</code>.<br><br></div>
-
-
-<h3 id="暴力法算法思路-推荐-："><a href="#暴力法算法思路-推荐-：" class="headerlink" title="暴力法算法思路(推荐)："></a><strong>暴力法算法思路(推荐)：</strong></h3><p>存储所有区间和重合区间</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>区间比较难写，用符合加入会议条件的相反来写，not (start &gt;= root.end or end &lt;= root.start)      </li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyCalendar</span><span class="params">(TestCases)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.calendar = []</span><br><span class="line">        self.overlaps = []</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">book</span><span class="params">(self, start: int, end: int)</span> -&gt; bool:</span></span><br><span class="line">        <span class="keyword">for</span> s, e <span class="keyword">in</span> self.overlaps:</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> (start &gt;= e <span class="keyword">or</span> end &lt;= s):</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> s, e <span class="keyword">in</span> self.calendar:</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> (start &gt;= e <span class="keyword">or</span> end &lt;= s):</span><br><span class="line">                self.overlaps.append((max(start, s), min(end, e)))</span><br><span class="line">        self.calendar.append((start, end))</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">True</span></span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n<sup>2</sup>)</code>, 空间复杂度<code>O(n)</code> </p>
-<hr>
-<h3 id="算法II解题思路："><a href="#算法II解题思路：" class="headerlink" title="算法II解题思路："></a><strong>算法II解题思路：</strong></h3><p>有重复区间，考虑用meeting rooms的方法二。用一个map来存储endpoint包括start和end的频率，若遇到start，map[start]++, 若遇到end, map[end]–，插入一个区间后，遍历所有endpoints，若超过3就返回False<br>虽然复杂度稍差，系数更大。但此法更有推广性，如果允许重复会议更多，此法可扩展  </p>
-<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>先插入有序区间，然后统计看是否有重复区间超过2. </li>
-<li>若是False，用remove这个函数要删除刚插入的。  </li>
-</ol>
-<h3 id="Python代码：-1"><a href="#Python代码：-1" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyCalendar</span><span class="params">(TestCases)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.calendar = []</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">book</span><span class="params">(self, start: int, end: int)</span> -&gt; bool:</span></span><br><span class="line">        bisect.insort(self.calendar, (start, <span class="number">1</span>))</span><br><span class="line">        bisect.insort(self.calendar, (end, <span class="number">-1</span>))</span><br><span class="line">        active_meeting = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> endpoint, _type <span class="keyword">in</span> self.calendar:</span><br><span class="line">            <span class="keyword">if</span> _type == <span class="number">1</span>:</span><br><span class="line">                active_meeting += <span class="number">1</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                active_meeting -= <span class="number">1</span></span><br><span class="line">            <span class="keyword">if</span> active_meeting &gt;= <span class="number">3</span>:</span><br><span class="line">                self.calendar.remove((start, <span class="number">1</span>))</span><br><span class="line">                self.calendar.remove((end, <span class="number">-1</span>))</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">True</span></span><br></pre></td></tr></table></figure>
-<h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n<sup>2</sup>)</code>, 空间复杂度<code>O(n)</code> </p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/47/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/47/">47</a><span class="page-number current">48</span><a class="page-number" href="/page/49/">49</a><span class="space">&hellip;</span><a class="page-number" href="/page/72/">72</a><a class="extend next" rel="next" href="/page/49/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+    <a class="extend prev" rel="prev" href="/page/47/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/47/">47</a><span class="page-number current">48</span><a class="page-number" href="/page/49/">49</a><span class="space">&hellip;</span><a class="page-number" href="/page/73/">73</a><a class="extend next" rel="next" href="/page/49/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 
@@ -743,7 +736,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">359</span>
+          <span class="site-state-item-count">362</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
