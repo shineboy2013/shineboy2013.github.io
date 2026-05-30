@@ -201,6 +201,126 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2026/05/27/lee-2080/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KK Shum">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KK's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2026/05/27/lee-2080/" class="post-title-link" itemprop="url">LeetCode 2080 Range Frequency Queries</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2026-05-27 19:58:49" itemprop="dateCreated datePublished" datetime="2026-05-27T19:58:49-07:00">2026-05-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-11-21 00:42:09" itemprop="dateModified" datetime="2021-11-21T00:42:09-08:00">2021-11-21</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2026/05/27/lee-2080/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2026/05/27/lee-2080/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong><a href="https://leetcode.com/problems/range-frequency-queries/">LeetCode 2080 Range Frequency Queries</a></strong></p>
+<p>Design a data structure to find the <strong>frequency</strong> of a given value in a given subarray.</p>
+<p>The <strong>frequency</strong> of a value in a subarray is the number of occurrences of that value in the subarray.</p>
+<p>Implement the <code>RangeFreqQuery</code> class:</p>
+<ul>
+<li><code>RangeFreqQuery(int[] arr)</code> Constructs an instance of the class with the given <strong>0-indexed</strong> integer array <code>arr</code>.</li>
+<li><code>int query(int left, int right, int value)</code> Returns the <strong>frequency</strong> of <code>value</code> in the subarray <code>arr[left...right]</code>.</li>
+</ul>
+<p>A <strong>subarray</strong> is a contiguous sequence of elements within an array. <code>arr[left...right]</code> denotes the subarray that contains the elements of <code>nums</code> between indices <code>left</code> and <code>right</code> (<strong>inclusive</strong>).</p>
+<p><strong>Example 1:</strong></p>
+<pre>**Input**
+["RangeFreqQuery", "query", "query"]
+[[[12, 33, 4, 56, 22, 2, 34, 33, 22, 12, 34, 56]], [1, 2, 4], [0, 11, 33]]
+**Output**
+[null, 1, 2]
+
+**Explanation**
+RangeFreqQuery rangeFreqQuery = new RangeFreqQuery([12, 33, 4, 56, 22, 2, 34, 33, 22, 12, 34, 56]);
+rangeFreqQuery.query(1, 2, 4); // return 1\. The value 4 occurs 1 time in the subarray [33, 4]
+rangeFreqQuery.query(0, 11, 33); // return 2\. The value 33 occurs 2 times in the whole array.
+</pre>
+
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= arr.length &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code></li>
+<li><code>1 &lt;= arr[i], value &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code></li>
+<li><code>0 &lt;= left &lt;= right &lt; arr.length</code></li>
+<li>At most <code>10&lt;sup&gt;5&lt;/sup&gt;</code> calls will be made to <code>query</code></li>
+</ul>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>设计数据结构，支持在指定的子数组中某target的频数。    </p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这题有意思，有望成为经典题。第一种方法写用以每个字母为结尾的frequency_dict作为数据结构，query只需要用frequency_dict[right]-frequency_dict[left-1]，<br>空间复杂度为<code>O(n<sup>2</sup>)</code>得到TLE。第二种方法用bucket sort，就是将值作为key存到dict中，而value是下标List，query时候得到对应List，遍历<br>一次即可，但仍然得到TLE。第三种方法改进用Binary search得到下标List的左右界。二分法用greater_or_equal_position以及small_or_equal_position.<br>所以最终方案采取bucket sort + binary search</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><ol>
+<li>dict记录值到下标列表的映射  </li>
+<li>二分法找left和right的index从而求个数  </li>
+</ol>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>Binary search用greater_or_equal_position以及small_or_equal_position. </li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">RangeFreqQuery</span>:</span><br><span class="line">	</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, arr: <span class="type">List</span>[<span class="built_in">int</span>]</span>):</span><br><span class="line">        <span class="variable language_">self</span>.frequency_dict = &#123;&#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i, n <span class="keyword">in</span> <span class="built_in">enumerate</span>(arr):</span><br><span class="line">            <span class="keyword">if</span> n <span class="keyword">not</span> <span class="keyword">in</span> <span class="variable language_">self</span>.frequency_dict:</span><br><span class="line">                <span class="variable language_">self</span>.frequency_dict[n] = [i]</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="variable language_">self</span>.frequency_dict[n].append(i)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">query</span>(<span class="params">self, left: <span class="built_in">int</span>, right: <span class="built_in">int</span>, value: <span class="built_in">int</span></span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">        <span class="keyword">if</span> value <span class="keyword">not</span> <span class="keyword">in</span> <span class="variable language_">self</span>.frequency_dict:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        index_list = <span class="variable language_">self</span>.frequency_dict[value]</span><br><span class="line">        <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">        count = 0</span></span><br><span class="line"><span class="string">        for index in index_list:</span></span><br><span class="line"><span class="string">            if left &lt;= index &lt;= right:</span></span><br><span class="line"><span class="string">                count += 1</span></span><br><span class="line"><span class="string">        &#x27;&#x27;&#x27;</span></span><br><span class="line">        left_pos = <span class="variable language_">self</span>.greater_or_equal_position(index_list, left)</span><br><span class="line">        right_pos = <span class="variable language_">self</span>.smaller_or_equal_position(index_list, right)</span><br><span class="line">        <span class="keyword">if</span> left_pos == -<span class="number">1</span> <span class="keyword">or</span> right_pos == -<span class="number">1</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        <span class="keyword">return</span> right_pos - left_pos + <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">greater_or_equal_position</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>], target: <span class="built_in">int</span></span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> nums:</span><br><span class="line">            <span class="keyword">return</span> -<span class="number">1</span></span><br><span class="line">        start, end = <span class="number">0</span>, <span class="built_in">len</span>(nums) - <span class="number">1</span></span><br><span class="line">        <span class="keyword">while</span> start + <span class="number">1</span> &lt; end:</span><br><span class="line">            mid = start + (end - start) // <span class="number">2</span></span><br><span class="line">            <span class="keyword">if</span> target &gt; nums[mid]:</span><br><span class="line">                start = mid</span><br><span class="line">            <span class="keyword">elif</span> target &lt; nums[mid]:</span><br><span class="line">                end = mid</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                start = mid</span><br><span class="line">        <span class="keyword">if</span> nums[start] &gt;= target:</span><br><span class="line">            <span class="keyword">return</span> start</span><br><span class="line">        <span class="keyword">if</span> nums[end] &gt;= target:</span><br><span class="line">            <span class="keyword">return</span> end</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">smaller_or_equal_position</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>], target: <span class="built_in">int</span></span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> nums:</span><br><span class="line">            <span class="keyword">return</span> -<span class="number">1</span></span><br><span class="line">        start, end = <span class="number">0</span>, <span class="built_in">len</span>(nums) - <span class="number">1</span></span><br><span class="line">        <span class="keyword">while</span> start + <span class="number">1</span> &lt; end:</span><br><span class="line">            mid = start + (end - start) // <span class="number">2</span></span><br><span class="line">            <span class="keyword">if</span> target &gt; nums[mid]:</span><br><span class="line">                start = mid</span><br><span class="line">            <span class="keyword">elif</span> target &lt; nums[mid]:</span><br><span class="line">                end = mid</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                end = mid</span><br><span class="line">        <span class="keyword">if</span> nums[end] &lt;= target:</span><br><span class="line">            <span class="keyword">return</span> end</span><br><span class="line">        <span class="keyword">if</span> nums[start] &lt;= target:</span><br><span class="line">            <span class="keyword">return</span> start</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span></span><br></pre></td></tr></table></figure>
+<p>用defaultdict(list)和bisect来优化程序  </p>
+<h3 id="Python代码：-1"><a href="#Python代码：-1" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, arr: <span class="type">List</span>[<span class="built_in">int</span>]</span>):</span><br><span class="line">	<span class="variable language_">self</span>.frequency_dict = collections.defaultdict(<span class="built_in">list</span>)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> i, n <span class="keyword">in</span> <span class="built_in">enumerate</span>(arr):</span><br><span class="line">		<span class="variable language_">self</span>.frequency_dict[n].append(i)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">query</span>(<span class="params">self, left: <span class="built_in">int</span>, right: <span class="built_in">int</span>, value: <span class="built_in">int</span></span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	index_list = <span class="variable language_">self</span>.frequency_dict[value]</span><br><span class="line">	left_pos = bisect.bisect(index_list, left - <span class="number">1</span>)</span><br><span class="line">	right_pos = bisect.bisect(index_list, right)</span><br><span class="line">	<span class="keyword">return</span> right_pos - left_pos</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(logn)</code>，空间复杂度<code>O(n)</code>。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2026/05/27/lee-2079/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -646,94 +766,6 @@ Steps needed = 1 + 1 + 2 + 2 + 3 + 3 + 4 + 4 + 5 + 5 + 6 + 6 + 7 = 49.
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2026/05/27/lee-198/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="KK Shum">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="KK's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2026/05/27/lee-198/" class="post-title-link" itemprop="url">LeetCode 198 House Robber</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2026-05-27 19:58:49" itemprop="dateCreated datePublished" datetime="2026-05-27T19:58:49-07:00">2026-05-27</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-12-13 11:18:52" itemprop="dateModified" datetime="2021-12-13T11:18:52-08:00">2021-12-13</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2026/05/27/lee-198/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2026/05/27/lee-198/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong><a href="https://leetcode.com/problems/house-robber/">LeetCode</a></strong></p>
-<div><br><br>You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed, the only constraint stopping you from robbing each of them is that adjacent houses have security systems connected and <strong>it will automatically contact the police if two adjacent houses were broken into on the same night</strong>.<br><br>Given an integer array <code>nums</code> representing the amount of money of each house, return <em>the maximum amount of money you can rob tonight <strong>without alerting the police</strong></em>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> nums = [1,2,3,1]<br><strong>Output:</strong> 4<br><strong>Explanation:</strong> Rob house 1 (money = 1) and then rob house 3 (money = 3).<br>Total amount you can rob = 1 + 3 = 4.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> nums = [2,7,9,3,1]<br><strong>Output:</strong> 12<br><strong>Explanation:</strong> Rob house 1 (money = 2), rob house 3 (money = 9) and rob house 5 (money = 1).<br>Total amount you can rob = 2 + 9 + 1 = 12.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= nums.length &lt;= 100</code>
-</em>   <code>0 &lt;= nums[i] &lt;= 400</code><br><br></div>
-
-<h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>N/A  </p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>循环不是模板中的1开始，而是从2开始，因为i-2&gt;=0     </li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">rob</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	dp = [<span class="number">0</span>] * (<span class="built_in">len</span>(nums) + <span class="number">1</span>)</span><br><span class="line">	dp[<span class="number">1</span>] = nums[<span class="number">0</span>]</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>, <span class="built_in">len</span>(dp)):</span><br><span class="line">		dp[i] = <span class="built_in">max</span>(dp[i-<span class="number">1</span>], dp[i-<span class="number">2</span>] + nums[i - <span class="number">1</span>])</span><br><span class="line">	<span class="keyword">return</span> dp[-<span class="number">1</span>]</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -808,14 +840,14 @@ Steps needed = 1 + 1 + 2 + 2 + 3 + 3 + 4 + 4 + 5 + 5 + 6 + 6 + 7 = 49.
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">362</span>
+          <span class="site-state-item-count">363</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-count">57</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
