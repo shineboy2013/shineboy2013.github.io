@@ -3,55 +3,93 @@
   <entry>
     <title>BFS</title>
     <url>/2026/05/27/bfs/</url>
-    <content><![CDATA[<h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>图用邻接表为输入，思路用Queue实现, 还要一个机制记录节点访问过没有，可以用HashSet，同时它作为结果存储BFS访问结果。<br><strong>BFS多用于找最短路径</strong><br><strong>DFS多用于快速发现底部节点和具体路劲问题（如路径和或打印路径）。</strong></p>
-<p>BFS优缺点：<br>同一层的所有节点都会加入队列，所以耗用大量空间<br>仅能非递归实现<br>相比DFS较快，空间换时间<br>适合广度大的图<br>找环的话需要用拓扑排序</p>
-<p>DFS优缺点：<br>无论是系统栈还是用户栈保存的节点数都只是树的深度，所以空间耗用小<br>有递归和非递归实现<br>由于有大量栈操作（特别是递归实现时候的系统调用），执行速度较BFS慢<br>适合深度大的图<br>找环的话比较容易实现</p>
-<p><strong>如果BFS和DFS都可以用，建议用BFS</strong>，因为工业应用中，BFS不用有限的栈空间，可以利用到所有内存。<br><strong>BFS题目问自己是否需要按层遍历，是否需要visited</strong></p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>坐标型BFS，注意输入为(i, j)时候，x = node[0] + _dx[0], <strong>用x不要用输入的i</strong>  </li>
+    <content><![CDATA[<h3><strong>算法思路：</strong></h3>
+<p>图用邻接表为输入，思路用Queue实现, 还要一个机制记录节点访问过没有，可以用HashSet，同时它作为结果存储BFS访问结果。<br>
+<strong>BFS多用于找最短路径</strong>
+<strong>DFS多用于快速发现底部节点和具体路劲问题（如路径和或打印路径）。</strong></p>
+<p>BFS优缺点：
+同一层的所有节点都会加入队列，所以耗用大量空间
+仅能非递归实现
+相比DFS较快，空间换时间
+适合广度大的图
+找环的话需要用拓扑排序</p>
+<p>DFS优缺点：
+无论是系统栈还是用户栈保存的节点数都只是树的深度，所以空间耗用小
+有递归和非递归实现
+由于有大量栈操作（特别是递归实现时候的系统调用），执行速度较BFS慢
+适合深度大的图
+找环的话比较容易实现</p>
+<p><strong>如果BFS和DFS都可以用，建议用BFS</strong>，因为工业应用中，BFS不用有限的栈空间，可以利用到所有内存。<br>
+<strong>BFS题目问自己是否需要按层遍历，是否需要visited</strong></p>
+<h3><strong>注意事项：</strong></h3>
+<ol>
+<li>坐标型BFS，注意输入为(i, j)时候，x = node[0] + _dx[0], <strong>用x不要用输入的i</strong></li>
 <li>deque([(start[0], start[1])]), set([(startx, starty)])</li>
-<li>board[x][y] == ‘+’ 注意矩阵的其他不能遍历的元素，如L200中的0</li>
+<li>board[x][y] == '+' 注意矩阵的其他不能遍历的元素，如L200中的0</li>
 </ol>
 <p>其他:</p>
 <ol>
-<li>只要把节点放入队列立即标记其为访问，不要在出列的时候才标记。否则同一个节点会入列多次。<br>比如下图, 入列顺序为1,2,3,4,4。4入列了两次。</li>
+<li>只要把节点放入队列立即标记其为访问，不要在出列的时候才标记。否则同一个节点会入列多次。<br>
+比如下图, 入列顺序为1,2,3,4,4。4入列了两次。</li>
 <li>矩阵的遍历用方向List: OFFSETS = [(1, 0), (-1, 0), (0, 1), (0, -1)]</li>
 </ol>
-<h2 id="图遍历"><a href="#图遍历" class="headerlink" title="图遍历"></a>图遍历</h2><p>只有是对所有节点BFS题型才需要将visited作为参数传入  </p>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">bfs</span>(<span class="params">self, graph, start</span>) -&gt; <span class="type">List</span>[<span class="built_in">int</span>]:</span><br><span class="line">	queue, res = deque([start]), []</span><br><span class="line">	visited = &#123;start&#125;</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.popleft()</span><br><span class="line">		res.append(node)</span><br><span class="line">		<span class="keyword">for</span> neighbor <span class="keyword">in</span> graph[node]:</span><br><span class="line">			<span class="keyword">if</span> neighbor <span class="keyword">in</span> visited:</span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			queue.append(neighbor)</span><br><span class="line">			visited.add(neighbor)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-<p>树模板只要把visited去掉，neighbor改成left和right  </p>
-<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<h2>图遍历</h2>
+<p>只有是对所有节点BFS题型才需要将visited作为参数传入</p>
+<h3><strong>Python代码：</strong></h3>
+<p><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">bfs</span>(<span class="params">self, graph, start</span>) -&gt; <span class="type">List</span>[<span class="built_in">int</span>]:</span><br><span class="line">	queue, res = deque([start]), []</span><br><span class="line">	visited = &#123;start&#125;</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.popleft()</span><br><span class="line">		res.append(node)</span><br><span class="line">		<span class="keyword">for</span> neighbor <span class="keyword">in</span> graph[node]:</span><br><span class="line">			<span class="keyword">if</span> neighbor <span class="keyword">in</span> visited:</span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			queue.append(neighbor)</span><br><span class="line">			visited.add(neighbor)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+树模板只要把visited去掉，neighbor改成left和right</p>
+<h3><strong>注意事项：</strong></h3>
+<ol>
 <li>visited = {start}不写set([start])</li>
 <li>if neighbor in visited在循环里，不是if node in visited</li>
 <li>在bfs_layer2，res.append(level)</li>
 </ol>
-<h2 id="计算最短距离的图遍历-最常考的模板"><a href="#计算最短距离的图遍历-最常考的模板" class="headerlink" title="计算最短距离的图遍历(最常考的模板)"></a>计算最短距离的图遍历(最常考的模板)</h2><ul>
+<h2>计算最短距离的图遍历(最常考的模板)</h2>
+<ul>
 <li>只要加line 4和14</li>
-<li>visited在函数内定义  </li>
+<li>visited在函数内定义</li>
 <li>遇到target就返回最短距离，若离开循环返回-1，<strong>问清楚是否存在路径不存在的情况</strong></li>
-<li>求距离公式不需要用min，因为这个遍历保证了最短距离了。    </li>
+<li>求距离公式不需要用min，因为这个遍历保证了最短距离了。</li>
 </ul>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">bfs_layer</span>(<span class="params">self, graph, start, target</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	queue = deque([start])</span><br><span class="line">	visited = &#123;start&#125;</span><br><span class="line">	distance = &#123;start: <span class="number">1</span>&#125;</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.popleft()</span><br><span class="line">		<span class="keyword">if</span> node == target:</span><br><span class="line">			<span class="keyword">return</span> distance[node]</span><br><span class="line">		<span class="keyword">for</span> neighbor <span class="keyword">in</span> graph[node]:</span><br><span class="line">			<span class="keyword">if</span> neighbor <span class="keyword">in</span> visited:</span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			queue.append(neighbor)</span><br><span class="line">			visited.add(neighbor)</span><br><span class="line">			distance[neighbor] = distance[node] + <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> -<span class="number">1</span></span><br></pre></td></tr></table></figure>
-<h2 id="按层遍历"><a href="#按层遍历" class="headerlink" title="按层遍历"></a>按层遍历</h2><p>核心是加这一行for _ in range(len(queue))<br>具体还要加line 5, 6和14, 15. 二叉树不需要visited。能用distance dict就尽量不用此法，因为多了一个循环。  </p>
-<h3 id="注意事项：-2"><a href="#注意事项：-2" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>关键行： 多这一行for循环 </li>
+<p><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">bfs_layer</span>(<span class="params">self, graph, start, target</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	queue = deque([start])</span><br><span class="line">	visited = &#123;start&#125;</span><br><span class="line">	distance = &#123;start: <span class="number">1</span>&#125;</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.popleft()</span><br><span class="line">		<span class="keyword">if</span> node == target:</span><br><span class="line">			<span class="keyword">return</span> distance[node]</span><br><span class="line">		<span class="keyword">for</span> neighbor <span class="keyword">in</span> graph[node]:</span><br><span class="line">			<span class="keyword">if</span> neighbor <span class="keyword">in</span> visited:</span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			queue.append(neighbor)</span><br><span class="line">			visited.add(neighbor)</span><br><span class="line">			distance[neighbor] = distance[node] + <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> -<span class="number">1</span></span><br></pre></td></tr></table></figure></p>
+<p>写法2
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">bfs_layer_v2</span>(<span class="params">self, graph, start, target</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	queue = deque([(start, <span class="number">1</span>)])</span><br><span class="line">	visited = &#123;start&#125;</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node, distance = queue.popleft()</span><br><span class="line">		<span class="keyword">if</span> node == target:</span><br><span class="line">			<span class="keyword">return</span> distance</span><br><span class="line">		<span class="keyword">for</span> neighbor <span class="keyword">in</span> graph[node]:</span><br><span class="line">			<span class="keyword">if</span> neighbor <span class="keyword">in</span> visited:</span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			queue.append((neighbor, distance + <span class="number">1</span>))</span><br><span class="line">			visited.add(neighbor)</span><br><span class="line">	<span class="keyword">return</span> -<span class="number">1</span></span><br></pre></td></tr></table></figure></p>
+<h2>按层遍历</h2>
+<p>核心是加这一行for _ in range(len(queue))
+具体还要加line 5, 6和14, 15. 二叉树不需要visited。能用distance dict就尽量不用此法，因为多了一个循环。</p>
+<h3><strong>注意事项：</strong></h3>
+<ol>
+<li>关键行： 多这一行for循环</li>
 </ol>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">bfs_layer2</span>(<span class="params">self, graph, start</span>) -&gt; <span class="type">List</span>[<span class="type">List</span>[<span class="built_in">int</span>]]:</span><br><span class="line">	queue, res, layer = deque([start]), [], <span class="number">0</span></span><br><span class="line">	visited = <span class="built_in">set</span>([start])</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">        level = []</span><br><span class="line">		<span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(queue)):</span><br><span class="line">			node = queue.popleft()</span><br><span class="line">			<span class="keyword">for</span> neighbor <span class="keyword">in</span> graph[node]:</span><br><span class="line">				<span class="keyword">if</span> neighbor <span class="keyword">in</span> visited:</span><br><span class="line">					<span class="keyword">continue</span></span><br><span class="line">				queue.append(neighbor)</span><br><span class="line">				visited.add(neighbor)</span><br><span class="line">        res.append(level)</span><br><span class="line">		layer += <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * graph: 邻接表</span></span><br><span class="line"><span class="comment"> * visited: 记录已访问节点，避免重复访问</span></span><br><span class="line"><span class="comment"> * start: BFS的根节点</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">bfs</span><span class="params">(HashMap&lt;Integer, LinkedList&lt;Integer&gt;&gt; graph, HashSet&lt;Integer&gt; visited, <span class="type">int</span> start)</span>&#123;</span><br><span class="line">	<span class="type">int</span> num=<span class="number">0</span>;</span><br><span class="line">	Queue&lt;Integer&gt; q=<span class="keyword">new</span> <span class="title class_">LinkedList</span>&lt;&gt;();</span><br><span class="line">	q.offer(start);</span><br><span class="line">	visited.add(start);</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty())&#123;</span><br><span class="line">		<span class="type">int</span> <span class="variable">node</span> <span class="operator">=</span> q.poll();</span><br><span class="line">		LinkedList&lt;Integer&gt; children = graph.get(node);</span><br><span class="line">		<span class="keyword">for</span>(<span class="type">int</span> child : children)&#123;</span><br><span class="line">			<span class="keyword">if</span> (!visited.contains(child))&#123;</span><br><span class="line">				q.offer(child);</span><br><span class="line">				visited.add(child);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="错误算法："><a href="#错误算法：" class="headerlink" title="错误算法："></a><strong>错误算法：</strong></h3><p>问题是加入到queue里面的child没有去重，这样容易queue爆炸式增长。<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">bfs</span><span class="params">(HashMap&lt;Integer, LinkedList&lt;Integer&gt;&gt; graph, HashSet&lt;Integer&gt; visited, <span class="type">int</span> start)</span>&#123;</span><br><span class="line">	Queue&lt;Integer&gt; q=<span class="keyword">new</span> <span class="title class_">LinkedList</span>&lt;&gt;();</span><br><span class="line">	q.offer(start);</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty())&#123;</span><br><span class="line">		<span class="type">int</span> <span class="variable">node</span> <span class="operator">=</span> q.poll();</span><br><span class="line">		visited.add(node);</span><br><span class="line">		LinkedList&lt;Integer&gt; children = graph.get(node);</span><br><span class="line">		<span class="keyword">for</span>(<span class="type">int</span> child : children)&#123;</span><br><span class="line">			<span class="keyword">if</span> (!visited.contains(child))</span><br><span class="line">				q.offer(child);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3 id="按层次遍历："><a href="#按层次遍历：" class="headerlink" title="按层次遍历："></a><strong>按层次遍历：</strong></h3><p>第一个思路是三重循环，先queue，然后该层所有节点，最后该层每一个节点的儿子。关键在于size = q.size();</p>
-<h3 id="Java代码：-1"><a href="#Java代码：-1" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">bfsByLayer3</span><span class="params">(HashMap&lt;Integer, LinkedList&lt;Integer&gt;&gt; graph, <span class="type">int</span> start)</span>&#123;</span><br><span class="line">	Queue&lt;Integer&gt; q=<span class="keyword">new</span> <span class="title class_">LinkedList</span>&lt;&gt;();</span><br><span class="line">	<span class="type">int</span> <span class="variable">layer</span> <span class="operator">=</span> <span class="number">1</span>;</span><br><span class="line">	q.offer(start);</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty())&#123;</span><br><span class="line">		<span class="type">int</span> <span class="variable">size</span> <span class="operator">=</span> q.size();</span><br><span class="line">		<span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; size; i++) &#123;<span class="comment">// loop this layer</span></span><br><span class="line">			<span class="type">int</span> <span class="variable">node</span> <span class="operator">=</span> q.poll();</span><br><span class="line">			System.out.println(<span class="string">&quot;node:&quot;</span>+node+<span class="string">&quot; in layer &quot;</span>+ layer);</span><br><span class="line">			LinkedList&lt;Integer&gt; children = graph.get(node);</span><br><span class="line">			<span class="keyword">for</span>(<span class="type">int</span> child : children)&#123;<span class="comment">// loop its children</span></span><br><span class="line">				q.add(child);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		layer++;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>上述代码三重循环看似可读性不够好，所有可以用hashMap来记录每个点的距离从而减少第二重循环。<br>nodeToHeight.put(start, 1);<br>nodeToHeight.put(child, nodeToHeight.get(node) + 1);  </p>
-<h3 id="Java代码：-2"><a href="#Java代码：-2" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">bfsByLayer4</span><span class="params">(HashMap&lt;Integer, LinkedList&lt;Integer&gt;&gt; graph, <span class="type">int</span> start)</span>&#123;</span><br><span class="line">	Queue&lt;Integer&gt; q = <span class="keyword">new</span> <span class="title class_">LinkedList</span>&lt;&gt;();</span><br><span class="line">	q.offer(start);</span><br><span class="line">	Map&lt;Integer, Integer&gt; nodeToHeight = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line">	nodeToHeight.put(start, <span class="number">1</span>);</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty())&#123;</span><br><span class="line"></span><br><span class="line">		<span class="type">int</span> <span class="variable">node</span> <span class="operator">=</span> q.poll();</span><br><span class="line">		System.out.println(<span class="string">&quot;node:&quot;</span>+node+<span class="string">&quot; in layer &quot;</span>+ nodeToHeight.get(node));</span><br><span class="line">		LinkedList&lt;Integer&gt; children = graph.get(node);</span><br><span class="line">		<span class="keyword">for</span>(<span class="type">int</span> child : children)&#123;<span class="comment">// loop its children</span></span><br><span class="line">			q.add(child);</span><br><span class="line">			nodeToHeight.put(child, nodeToHeight.get(node) + <span class="number">1</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><img src="/images/bfs.png" alt=""></p>
+<p><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">bfs_layer2</span>(<span class="params">self, graph, start</span>) -&gt; <span class="type">List</span>[<span class="type">List</span>[<span class="built_in">int</span>]]:</span><br><span class="line">	queue, res, layer = deque([start]), [], <span class="number">0</span></span><br><span class="line">	visited = <span class="built_in">set</span>([start])</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">        level = []</span><br><span class="line">		<span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(queue)):</span><br><span class="line">			node = queue.popleft()</span><br><span class="line">			<span class="keyword">for</span> neighbor <span class="keyword">in</span> graph[node]:</span><br><span class="line">				<span class="keyword">if</span> neighbor <span class="keyword">in</span> visited:</span><br><span class="line">					<span class="keyword">continue</span></span><br><span class="line">				queue.append(neighbor)</span><br><span class="line">				visited.add(neighbor)</span><br><span class="line">        res.append(level)</span><br><span class="line">		layer += <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure></p>
+<h3><strong>Java代码：</strong></h3>
+<p><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * graph: 邻接表</span></span><br><span class="line"><span class="comment"> * visited: 记录已访问节点，避免重复访问</span></span><br><span class="line"><span class="comment"> * start: BFS的根节点</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">bfs</span><span class="params">(HashMap&lt;Integer, LinkedList&lt;Integer&gt;&gt; graph, HashSet&lt;Integer&gt; visited, <span class="type">int</span> start)</span>&#123;</span><br><span class="line">	<span class="type">int</span> num=<span class="number">0</span>;</span><br><span class="line">	Queue&lt;Integer&gt; q=<span class="keyword">new</span> <span class="title class_">LinkedList</span>&lt;&gt;();</span><br><span class="line">	q.offer(start);</span><br><span class="line">	visited.add(start);</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty())&#123;</span><br><span class="line">		<span class="type">int</span> <span class="variable">node</span> <span class="operator">=</span> q.poll();</span><br><span class="line">		LinkedList&lt;Integer&gt; children = graph.get(node);</span><br><span class="line">		<span class="keyword">for</span>(<span class="type">int</span> child : children)&#123;</span><br><span class="line">			<span class="keyword">if</span> (!visited.contains(child))&#123;</span><br><span class="line">				q.offer(child);</span><br><span class="line">				visited.add(child);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3><strong>错误算法：</strong></h3>
+<p>问题是加入到queue里面的child没有去重，这样容易queue爆炸式增长。
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">bfs</span><span class="params">(HashMap&lt;Integer, LinkedList&lt;Integer&gt;&gt; graph, HashSet&lt;Integer&gt; visited, <span class="type">int</span> start)</span>&#123;</span><br><span class="line">	Queue&lt;Integer&gt; q=<span class="keyword">new</span> <span class="title class_">LinkedList</span>&lt;&gt;();</span><br><span class="line">	q.offer(start);</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty())&#123;</span><br><span class="line">		<span class="type">int</span> <span class="variable">node</span> <span class="operator">=</span> q.poll();</span><br><span class="line">		visited.add(node);</span><br><span class="line">		LinkedList&lt;Integer&gt; children = graph.get(node);</span><br><span class="line">		<span class="keyword">for</span>(<span class="type">int</span> child : children)&#123;</span><br><span class="line">			<span class="keyword">if</span> (!visited.contains(child))</span><br><span class="line">				q.offer(child);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3><strong>按层次遍历：</strong></h3>
+<p>第一个思路是三重循环，先queue，然后该层所有节点，最后该层每一个节点的儿子。关键在于size = q.size();</p>
+<h3><strong>Java代码：</strong></h3>
+<p><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">bfsByLayer3</span><span class="params">(HashMap&lt;Integer, LinkedList&lt;Integer&gt;&gt; graph, <span class="type">int</span> start)</span>&#123;</span><br><span class="line">	Queue&lt;Integer&gt; q=<span class="keyword">new</span> <span class="title class_">LinkedList</span>&lt;&gt;();</span><br><span class="line">	<span class="type">int</span> <span class="variable">layer</span> <span class="operator">=</span> <span class="number">1</span>;</span><br><span class="line">	q.offer(start);</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty())&#123;</span><br><span class="line">		<span class="type">int</span> <span class="variable">size</span> <span class="operator">=</span> q.size();</span><br><span class="line">		<span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; size; i++) &#123;<span class="comment">// loop this layer</span></span><br><span class="line">			<span class="type">int</span> <span class="variable">node</span> <span class="operator">=</span> q.poll();</span><br><span class="line">			System.out.println(<span class="string">&quot;node:&quot;</span>+node+<span class="string">&quot; in layer &quot;</span>+ layer);</span><br><span class="line">			LinkedList&lt;Integer&gt; children = graph.get(node);</span><br><span class="line">			<span class="keyword">for</span>(<span class="type">int</span> child : children)&#123;<span class="comment">// loop its children</span></span><br><span class="line">				q.add(child);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		layer++;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>上述代码三重循环看似可读性不够好，所有可以用hashMap来记录每个点的距离从而减少第二重循环。
+nodeToHeight.put(start, 1);  		
+nodeToHeight.put(child, nodeToHeight.get(node) + 1);</p>
+<h3><strong>Java代码：</strong></h3>
+<p><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">bfsByLayer4</span><span class="params">(HashMap&lt;Integer, LinkedList&lt;Integer&gt;&gt; graph, <span class="type">int</span> start)</span>&#123;</span><br><span class="line">	Queue&lt;Integer&gt; q = <span class="keyword">new</span> <span class="title class_">LinkedList</span>&lt;&gt;();</span><br><span class="line">	q.offer(start);</span><br><span class="line">	Map&lt;Integer, Integer&gt; nodeToHeight = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line">	nodeToHeight.put(start, <span class="number">1</span>);</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty())&#123;</span><br><span class="line"></span><br><span class="line">		<span class="type">int</span> <span class="variable">node</span> <span class="operator">=</span> q.poll();</span><br><span class="line">		System.out.println(<span class="string">&quot;node:&quot;</span>+node+<span class="string">&quot; in layer &quot;</span>+ nodeToHeight.get(node));</span><br><span class="line">		LinkedList&lt;Integer&gt; children = graph.get(node);</span><br><span class="line">		<span class="keyword">for</span>(<span class="type">int</span> child : children)&#123;<span class="comment">// loop its children</span></span><br><span class="line">			q.add(child);</span><br><span class="line">			nodeToHeight.put(child, nodeToHeight.get(node) + <span class="number">1</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<img src="/images/bfs.png" alt=""></p>
 <ol>
 <li>q.isEmpty() &amp;&amp; !q2.isEmpty()</li>
 </ol>
-<p>第三思路是用两个队列来实现：用第一个队列存储该层的节点，第二个队列存储第一个队列中节点的儿子节点，<br>也就是下一次的节点。此思路比较容易实现。</p>
-<h3 id="Java代码：-3"><a href="#Java代码：-3" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* 假设不循环</span></span><br><span class="line"><span class="comment"> * graph: 邻接表</span></span><br><span class="line"><span class="comment"> * start: BFS的根节点</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">bfsByLayer</span><span class="params">(HashMap&lt;Integer, LinkedList&lt;Integer&gt;&gt; graph, <span class="type">int</span> start)</span>&#123;</span><br><span class="line">	Queue&lt;Integer&gt; q=<span class="keyword">new</span> <span class="title class_">LinkedList</span>&lt;&gt;();</span><br><span class="line">	Queue&lt;Integer&gt; q2=<span class="keyword">new</span> <span class="title class_">LinkedList</span>&lt;&gt;();</span><br><span class="line">	<span class="type">int</span> <span class="variable">layer</span> <span class="operator">=</span> <span class="number">1</span>;</span><br><span class="line">	q.offer(start);</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty())&#123;</span><br><span class="line">		<span class="type">int</span> <span class="variable">node</span> <span class="operator">=</span> q.poll();</span><br><span class="line">		System.out.println(<span class="string">&quot;node:&quot;</span>+node+<span class="string">&quot; in layer &quot;</span>+ layer);</span><br><span class="line">		LinkedList&lt;Integer&gt; children = graph.get(node);</span><br><span class="line">		<span class="keyword">for</span>(<span class="type">int</span> child : children)&#123;</span><br><span class="line">			q2.offer(child);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(q.isEmpty() &amp;&amp; !q2.isEmpty())&#123;</span><br><span class="line">			q = q2;</span><br><span class="line">			q2 = <span class="keyword">new</span> <span class="title class_">LinkedList</span>&lt;&gt;(); </span><br><span class="line">			layer++;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>第四思路是只用一个队列来实现：层与层之间用结束符间隔，每遇到结束符，表示该层访问结束，下一层的节点也准备好<br>（不会再有新的节点加入到这一层），此时再往队列加入新的结束符。此思路对数据有一定限制，实现起来注意事项较多。</p>
-<h3 id="Java代码：-4"><a href="#Java代码：-4" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">bfsByLayer2</span><span class="params">(HashMap&lt;Integer, LinkedList&lt;Integer&gt;&gt; graph, <span class="type">int</span> start)</span>&#123;</span><br><span class="line">	Queue&lt;Integer&gt; q=<span class="keyword">new</span> <span class="title class_">LinkedList</span>&lt;&gt;();</span><br><span class="line">	<span class="type">int</span> <span class="variable">layer</span> <span class="operator">=</span> <span class="number">1</span>;</span><br><span class="line">	q.offer(start);</span><br><span class="line">	q.offer(-<span class="number">1</span>);</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty())&#123;</span><br><span class="line">		<span class="type">int</span> <span class="variable">node</span> <span class="operator">=</span> q.poll();</span><br><span class="line">		<span class="keyword">if</span>(node == -<span class="number">1</span>)&#123;</span><br><span class="line">			<span class="comment">//确保有非结束符节点</span></span><br><span class="line">			<span class="keyword">if</span>(q.size()&gt;<span class="number">0</span>)&#123;</span><br><span class="line">				q.offer(-<span class="number">1</span>);</span><br><span class="line">				layer++;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">continue</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		System.out.println(<span class="string">&quot;node:&quot;</span>+node+<span class="string">&quot; in layer &quot;</span>+ layer);</span><br><span class="line">		LinkedList&lt;Integer&gt; children = graph.get(node);</span><br><span class="line">		<span class="keyword">for</span>(<span class="type">int</span> child : children)&#123;</span><br><span class="line">			q.offer(child);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，w为树的所有层里面的最大长度，空间复杂度<code>O(w)</code>。</p>
+<p>第三思路是用两个队列来实现：用第一个队列存储该层的节点，第二个队列存储第一个队列中节点的儿子节点，<br>
+也就是下一次的节点。此思路比较容易实现。</p>
+<h3><strong>Java代码：</strong></h3>
+<p><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* 假设不循环</span></span><br><span class="line"><span class="comment"> * graph: 邻接表</span></span><br><span class="line"><span class="comment"> * start: BFS的根节点</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">bfsByLayer</span><span class="params">(HashMap&lt;Integer, LinkedList&lt;Integer&gt;&gt; graph, <span class="type">int</span> start)</span>&#123;</span><br><span class="line">	Queue&lt;Integer&gt; q=<span class="keyword">new</span> <span class="title class_">LinkedList</span>&lt;&gt;();</span><br><span class="line">	Queue&lt;Integer&gt; q2=<span class="keyword">new</span> <span class="title class_">LinkedList</span>&lt;&gt;();</span><br><span class="line">	<span class="type">int</span> <span class="variable">layer</span> <span class="operator">=</span> <span class="number">1</span>;</span><br><span class="line">	q.offer(start);</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty())&#123;</span><br><span class="line">		<span class="type">int</span> <span class="variable">node</span> <span class="operator">=</span> q.poll();</span><br><span class="line">		System.out.println(<span class="string">&quot;node:&quot;</span>+node+<span class="string">&quot; in layer &quot;</span>+ layer);</span><br><span class="line">		LinkedList&lt;Integer&gt; children = graph.get(node);</span><br><span class="line">		<span class="keyword">for</span>(<span class="type">int</span> child : children)&#123;</span><br><span class="line">			q2.offer(child);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(q.isEmpty() &amp;&amp; !q2.isEmpty())&#123;</span><br><span class="line">			q = q2;</span><br><span class="line">			q2 = <span class="keyword">new</span> <span class="title class_">LinkedList</span>&lt;&gt;(); </span><br><span class="line">			layer++;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>第四思路是只用一个队列来实现：层与层之间用结束符间隔，每遇到结束符，表示该层访问结束，下一层的节点也准备好<br>
+（不会再有新的节点加入到这一层），此时再往队列加入新的结束符。此思路对数据有一定限制，实现起来注意事项较多。</p>
+<h3><strong>Java代码：</strong></h3>
+<p><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">bfsByLayer2</span><span class="params">(HashMap&lt;Integer, LinkedList&lt;Integer&gt;&gt; graph, <span class="type">int</span> start)</span>&#123;</span><br><span class="line">	Queue&lt;Integer&gt; q=<span class="keyword">new</span> <span class="title class_">LinkedList</span>&lt;&gt;();</span><br><span class="line">	<span class="type">int</span> <span class="variable">layer</span> <span class="operator">=</span> <span class="number">1</span>;</span><br><span class="line">	q.offer(start);</span><br><span class="line">	q.offer(-<span class="number">1</span>);</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty())&#123;</span><br><span class="line">		<span class="type">int</span> <span class="variable">node</span> <span class="operator">=</span> q.poll();</span><br><span class="line">		<span class="keyword">if</span>(node == -<span class="number">1</span>)&#123;</span><br><span class="line">			<span class="comment">//确保有非结束符节点</span></span><br><span class="line">			<span class="keyword">if</span>(q.size()&gt;<span class="number">0</span>)&#123;</span><br><span class="line">				q.offer(-<span class="number">1</span>);</span><br><span class="line">				layer++;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">continue</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		System.out.println(<span class="string">&quot;node:&quot;</span>+node+<span class="string">&quot; in layer &quot;</span>+ layer);</span><br><span class="line">		LinkedList&lt;Integer&gt; children = graph.get(node);</span><br><span class="line">		<span class="keyword">for</span>(<span class="type">int</span> child : children)&#123;</span><br><span class="line">			q.offer(child);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3><strong>算法分析：</strong></h3>
+<p>时间复杂度为<code>O(n)</code>，w为树的所有层里面的最大长度，空间复杂度<code>O(w)</code>。</p>
 ]]></content>
       <tags>
         <tag>Knowledge Base</tag>
@@ -172,7 +210,7 @@
 <h3 id="应用："><a href="#应用：" class="headerlink" title="应用："></a><strong>应用：</strong></h3><ol>
 <li>找所有可能性</li>
 </ol>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">combine</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="type">List</span>[<span class="type">List</span>[<span class="built_in">int</span>]]:</span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> nums:</span><br><span class="line">		<span class="keyword">return</span> [[]]</span><br><span class="line">	path, result = [], []</span><br><span class="line">	<span class="variable language_">self</span>.dfs(nums, <span class="number">0</span>, path, result)</span><br><span class="line">	<span class="keyword">return</span> result</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">dfs</span>(<span class="params">self, nums, st, path, result</span>):</span><br><span class="line">	<span class="keyword">if</span> st == <span class="built_in">len</span>(nums):</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(st, <span class="built_in">len</span>(nums)):</span><br><span class="line">		path.append(nums[i])</span><br><span class="line">		result.append(<span class="built_in">list</span>(path))</span><br><span class="line">		<span class="variable language_">self</span>.dfs(nums, i + <span class="number">1</span>, path, result)</span><br><span class="line">		path.pop()</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">combine</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="type">List</span>[<span class="type">List</span>[<span class="built_in">int</span>]]:</span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> nums:</span><br><span class="line">		<span class="keyword">return</span> [[]]</span><br><span class="line">	path, result = [], []</span><br><span class="line">	<span class="variable language_">self</span>.dfs(nums, <span class="number">0</span>, path, result)</span><br><span class="line">	<span class="keyword">return</span> result</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">dfs</span>(<span class="params">self, nums, st, path, result</span>):</span><br><span class="line">	<span class="keyword">if</span> <span class="built_in">len</span>(path) == <span class="built_in">len</span>(nums):</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(st, <span class="built_in">len</span>(nums)):</span><br><span class="line">		path.append(nums[i])</span><br><span class="line">		result.append(<span class="built_in">list</span>(path))</span><br><span class="line">		<span class="variable language_">self</span>.dfs(nums, i + <span class="number">1</span>, path, result)</span><br><span class="line">		path.pop()</span><br></pre></td></tr></table></figure>
 <h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> List&lt;List&lt;Integer&gt;&gt; <span class="title function_">subsets</span><span class="params">(<span class="type">int</span>[] nums)</span> &#123;</span><br><span class="line">	List&lt;Integer&gt; path = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">	List&lt;List&lt;Integer&gt;&gt; res = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">	res.add(<span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;(path)); <span class="comment">//empty set</span></span><br><span class="line">	<span class="keyword">if</span>(nums == <span class="literal">null</span> || nums.length == <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> res;</span><br><span class="line">	dfs(nums, <span class="number">0</span>, path, res);</span><br><span class="line">	<span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> <span class="title function_">dfs</span><span class="params">(<span class="type">int</span>[] nums, <span class="type">int</span> st, List&lt;Integer&gt; path, List&lt;List&lt;Integer&gt;&gt; res)</span> &#123;</span><br><span class="line">	<span class="keyword">if</span>(st == nums.length)</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> st; i &lt; nums.length; i++) &#123;</span><br><span class="line">		path.add(nums[i]);</span><br><span class="line">		res.add(<span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;(path));</span><br><span class="line">		dfs(nums, i + <span class="number">1</span>, path, res);</span><br><span class="line">		path.remove(path.size() - <span class="number">1</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(<em>2</em><sup>n</sup>)</code> ，空间复杂度<code>O(1)</code>。</p>
 ]]></content>
@@ -355,8 +393,16 @@
 </ol>
 <h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> heapq <span class="keyword">import</span> heapreplace, heappush</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">min_heap</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>], k: <span class="built_in">int</span></span>) -&gt; <span class="type">List</span>[<span class="built_in">int</span>]:</span><br><span class="line">	res = []</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(nums)):</span><br><span class="line">		<span class="keyword">if</span> i &lt; k:</span><br><span class="line">			heappush(res, nums[i])</span><br><span class="line">		<span class="keyword">elif</span> nums[i] &gt; res[<span class="number">0</span>]:</span><br><span class="line">			heapreplace(res, nums[i])</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
 <p>max heap的话，入堆的数转负数，<strong>跟堆顶比较的大于号不变</strong>，出堆后转为整数<br>注意第6行res[0]并没有负号，因为res已经是负数<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">max_heap</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>], k: <span class="built_in">int</span></span>) -&gt; <span class="type">List</span>[<span class="built_in">int</span>]:</span><br><span class="line">	res = []</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(nums)):</span><br><span class="line">		<span class="keyword">if</span> i &lt; k:</span><br><span class="line">			heappush(res, -nums[i])</span><br><span class="line">		<span class="keyword">elif</span> -nums[i] &gt; res[<span class="number">0</span>]:</span><br><span class="line">			heapreplace(res, -nums[i])</span><br><span class="line">	res = [-n <span class="keyword">for</span> n <span class="keyword">in</span> res]</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure></p>
-<h2 id="BFS-Heap"><a href="#BFS-Heap" class="headerlink" title="BFS + Heap"></a><strong>BFS + Heap</strong></h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">bfs</span>(<span class="params">self, nums, start, k</span>) -&gt; <span class="type">List</span>[<span class="built_in">int</span>]:</span><br><span class="line">	heap, res = ([start])), []</span><br><span class="line">	visited.add(start)</span><br><span class="line">	<span class="keyword">while</span> heap:</span><br><span class="line">		node = heapq.heappop(heap)</span><br><span class="line">		res.append(node)</span><br><span class="line">		<span class="keyword">if</span> <span class="built_in">len</span>(res) == k:</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		<span class="keyword">for</span> neighbor <span class="keyword">in</span> graph[node]:</span><br><span class="line">			<span class="keyword">if</span> neighbor <span class="keyword">in</span> visited:</span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			heap.append(neighbor)</span><br><span class="line">			visited.add(neighbor)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h2 id="BFS-Heap"><a href="#BFS-Heap" class="headerlink" title="BFS + Heap"></a><strong>BFS + Heap</strong></h2><p>这是单源最短路径Dijkstra的典型应用。Dijkstra是每条边的权重(距离), 而不是节点个数最短(BFS模板)。<br>区别是</p>
+<ol>
+<li>用BFS distance模板。queue变成heap</li>
+<li>遍历时候每个元素多一个weight</li>
+<li>visited不再是记录这个节点访问过没有，因为节点可以多次访问，目标是找到这个节点权重最小的路径。visited记录每个节点的最小权重(路径). visited的处理不再是在neighbor的for循环中，而是在循环外，比较权重是否最小，如果不是就跳过。<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">bfs</span>(<span class="params">self, graph, start, target</span>) -&gt; <span class="type">List</span>[<span class="built_in">int</span>]:</span><br><span class="line">	heap, res = ([(weight, start, distance)])), []</span><br><span class="line">	visited = &#123;&#125;</span><br><span class="line">	<span class="keyword">while</span> heap:</span><br><span class="line">		weight, node, distance = heapq.heappop(heap)</span><br><span class="line">		<span class="keyword">if</span> node == target <span class="keyword">and</span> distance &lt;= K:</span><br><span class="line">			<span class="keyword">return</span> weight</span><br><span class="line">		<span class="keyword">if</span> node <span class="keyword">in</span> visited <span class="keyword">and</span> distance &gt;= visited[node]:</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		visited[node] = distance</span><br><span class="line">		<span class="keyword">for</span> neighbor, _weight <span class="keyword">in</span> graph[node]:</span><br><span class="line">			heapq.heappush(heap, (weigth + _weight, neighbor, distance + <span class="number">1</span>))</span><br><span class="line">	<span class="keyword">return</span> -<span class="number">1</span></span><br></pre></td></tr></table></figure>
+BFS的distance模板<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">bfs_layer_v2</span>(<span class="params">self, graph, start, target</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	queue = deque([(start, <span class="number">1</span>)])</span><br><span class="line">	visited = &#123;start&#125;</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node, distance = queue.popleft()</span><br><span class="line">		<span class="keyword">if</span> node == target:</span><br><span class="line">			<span class="keyword">return</span> distance</span><br><span class="line">		<span class="keyword">for</span> neighbor <span class="keyword">in</span> graph[node]:</span><br><span class="line">			<span class="keyword">if</span> neighbor <span class="keyword">in</span> visited:</span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			queue.append((neighbor, distance + <span class="number">1</span>))</span><br><span class="line">			visited.add(neighbor)</span><br><span class="line">	<span class="keyword">return</span> -<span class="number">1</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
 <h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nlogk)</code>，空间复杂度<code>O(1)</code>。</p>
+<h3 id="例子："><a href="#例子：" class="headerlink" title="例子："></a><strong>例子：</strong></h3><p>LeetCode 787 Cheapest Flights Within K Stops<br>求只允许停k个站情况下，最便宜机票价格<br>weight在这里是每条边的价格<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">findCheapestPrice</span>(<span class="params">self, n: <span class="built_in">int</span>, flights: <span class="type">List</span>[<span class="type">List</span>[<span class="built_in">int</span>]], src: <span class="built_in">int</span>, dst: <span class="built_in">int</span>, k: <span class="built_in">int</span></span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	graph = collections.defaultdict(<span class="built_in">list</span>)</span><br><span class="line">	<span class="keyword">for</span> pair <span class="keyword">in</span> flights:</span><br><span class="line">		graph[pair[<span class="number">0</span>]].append((pair[<span class="number">1</span>], pair[<span class="number">2</span>]))</span><br><span class="line">	heap = ([(<span class="number">0</span>, src, <span class="number">0</span>)]) <span class="comment"># price, node_id, distance</span></span><br><span class="line">	visited = &#123;&#125;</span><br><span class="line">	<span class="keyword">while</span> heap:</span><br><span class="line">		p, node, dist = heapq.heappop(heap)</span><br><span class="line">		<span class="keyword">if</span> node == dst <span class="keyword">and</span> dist &lt;= k + <span class="number">1</span>:</span><br><span class="line">			<span class="keyword">return</span> p</span><br><span class="line">		<span class="keyword">if</span> node <span class="keyword">in</span> visited <span class="keyword">and</span> dist &gt;= visited[node]:</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		visited[node] = dist</span><br><span class="line">		<span class="keyword">for</span> neighbor, _price <span class="keyword">in</span> graph[node]:</span><br><span class="line">			heapq.heappush(heap, (p + _price, neighbor, dist + <span class="number">1</span>))</span><br><span class="line">	<span class="keyword">return</span> -<span class="number">1</span></span><br></pre></td></tr></table></figure></p>
 ]]></content>
       <tags>
         <tag>Knowledge Base</tag>
@@ -385,6 +431,13 @@
 <li>next中取值后<strong>指针要后移</strong>。</li>
 </ol>
 <h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>):</span><br><span class="line">	<span class="variable language_">self</span>.stack = []</span><br><span class="line">	&lt;add to stack&gt;</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">next</span>(<span class="params">self</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	<span class="keyword">if</span> <span class="variable language_">self</span>.hasNext():</span><br><span class="line">		<span class="keyword">return</span> <span class="variable language_">self</span>.stack.pop()</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">hasNext</span>(<span class="params">self</span>) -&gt; <span class="built_in">bool</span>:</span><br><span class="line">	<span class="keyword">while</span> &lt;until find the <span class="built_in">next</span> element&gt;:</span><br><span class="line">	   &lt;calculate&gt;</span><br><span class="line">	<span class="keyword">return</span> &lt;<span class="built_in">next</span> element&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="例子："><a href="#例子：" class="headerlink" title="例子："></a><strong>例子：</strong></h3><p>LeetCode 341 Flatten Nested List Iterator<br>实现Nested List的Iterator。Nested List是NestedInteger的数组，NestedInteger可以是int，也可以是Nested List<br>nestedList = [NestedInteger]<br>NestedInteger 用isInteger()来判断<br>-&gt; 2 by getInteger()<br>-&gt; [2, 3] by getList()  </p>
+<ol>
+<li>Iterator题目都是用Stack，比如BST Iterator</li>
+<li>init和next都可以假设是用int来完成，用reversed加入</li>
+<li>next则要考虑两种情况</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">NestedIterator</span>(<span class="title class_ inherited__">TestCases</span>):</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, nestedList</span>):</span><br><span class="line">        <span class="variable language_">self</span>.stack = []</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">reversed</span>(<span class="built_in">range</span>(<span class="built_in">len</span>(nestedList))):</span><br><span class="line">            <span class="variable language_">self</span>.stack.append(nestedList[i])</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">next</span>(<span class="params">self</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>.hasNext():</span><br><span class="line">            <span class="keyword">return</span> <span class="variable language_">self</span>.stack.pop().getInteger()</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">hasNext</span>(<span class="params">self</span>) -&gt; <span class="built_in">bool</span>:</span><br><span class="line">        <span class="keyword">while</span> <span class="variable language_">self</span>.stack <span class="keyword">and</span> <span class="keyword">not</span> <span class="variable language_">self</span>.stack[-<span class="number">1</span>].isInteger():</span><br><span class="line">            nestedList = <span class="variable language_">self</span>.stack.pop().getList()</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">reversed</span>(<span class="built_in">range</span>(<span class="built_in">len</span>(nestedList))):</span><br><span class="line">                <span class="variable language_">self</span>.stack.append(nestedList[i])</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span> <span class="keyword">if</span> <span class="variable language_">self</span>.stack <span class="keyword">else</span> <span class="literal">False</span></span><br></pre></td></tr></table></figure>
 <h3 id="应用题型："><a href="#应用题型：" class="headerlink" title="应用题型："></a><strong>应用题型：</strong></h3><p><a href="https://shineboy2013.github.io/2022/01/03/lee-251/">LeetCode 251 Flatten 2D Vector</a><br><a href="https://shineboy2013.github.io/2022/01/03/lee-281/">LeetCode 281 Zigzag Iterator</a><br><a href="https://shineboy2013.github.io/2022/01/03/lee-341/">LeetCode 341 Flatten Nested List Iterator</a><br><a href="https://shineboy2013.github.io/2020/04/26/lee-173/">LeetCode 173 Binary Search Tree Iterator</a></p>
 <h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>next操作时间复杂度为<code>O(N + V)/N</code>或<code>O(1)</code>，N为所有数，V为复合结构数 </p>
 ]]></content>
@@ -463,7 +516,9 @@
 </ol>
 <h3 id="Python代码：-3"><a href="#Python代码：-3" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">dfs</span>(<span class="params">self, <span class="built_in">input</span></span>):</span><br><span class="line">    <span class="keyword">if</span> &lt;终止条件&gt;:</span><br><span class="line">		<span class="keyword">return</span> [] <span class="comment"># remember to use list</span></span><br><span class="line">    res = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(<span class="built_in">input</span>)):</span><br><span class="line">        left_res = <span class="variable language_">self</span>.dfs(<span class="built_in">input</span>[:i])</span><br><span class="line">        right_res = <span class="variable language_">self</span>.dfs(<span class="built_in">input</span>[i + <span class="number">1</span>:])</span><br><span class="line">        res += [&lt;calculate results&gt; <span class="keyword">for</span> _l <span class="keyword">in</span> left_res <span class="keyword">for</span> _r <span class="keyword">in</span> right_res]</span><br><span class="line">    <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
 <p>时间复杂度Catalan数为<code>O(C[n] += C[i-1]*C[n-i])</code>，空间复杂度<code>O(1)</code>  </p>
-<h3 id="例子：-2"><a href="#例子：-2" class="headerlink" title="例子："></a><strong>例子：</strong></h3><p>返回结果是解的集合，所以<strong>终止条件返回也需要是一个[None]</strong><br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># catelan dfs (type 4) LeetCode 095 Unique Binary Search Trees II</span></span><br><span class="line"><span class="comment"># return the root of all the possible trees</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">generateTrees</span>(<span class="params">self, n: <span class="built_in">int</span></span>) -&gt; <span class="type">List</span>[TreeNode]:</span><br><span class="line">	nums = [_ + <span class="number">1</span> <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(n)]</span><br><span class="line">	<span class="keyword">return</span> <span class="variable language_">self</span>.dfs4(nums, <span class="number">0</span>, n)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">dfs4</span>(<span class="params">self, nums, start, end</span>): <span class="comment"># [start, end)</span></span><br><span class="line">	<span class="keyword">if</span> start &gt;= end:</span><br><span class="line">		<span class="keyword">return</span> [<span class="literal">None</span>] <span class="comment"># remember becaues we want the 2 for-loop happen</span></span><br><span class="line">	res = []</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(start, end):</span><br><span class="line">		left_root_nodes = <span class="variable language_">self</span>.dfs4(nums, start, i) <span class="comment"># 0, 0</span></span><br><span class="line">		right_root_nodes = <span class="variable language_">self</span>.dfs4(nums, i + <span class="number">1</span>, end) <span class="comment"># 1, 1</span></span><br><span class="line">		<span class="keyword">for</span> left_root_node <span class="keyword">in</span> left_root_nodes:</span><br><span class="line">			<span class="keyword">for</span> right_root_node <span class="keyword">in</span> right_root_nodes:</span><br><span class="line">				node = TreeNode(nums[i])</span><br><span class="line">				node.left = left_root_node</span><br><span class="line">				node.right = right_root_node</span><br><span class="line">				res.append(node)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure></p>
+<h2 id="记忆性搜索-单边Catalan"><a href="#记忆性搜索-单边Catalan" class="headerlink" title="记忆性搜索(单边Catalan)"></a>记忆性搜索(单边Catalan)</h2><p>见记忆性搜索</p>
+<h3 id="例子：-2"><a href="#例子：-2" class="headerlink" title="例子："></a><strong>例子：</strong></h3><p>LeetCode 140 Word Break II<br>这是单边catalan<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">wordBreak</span>(<span class="params">self, s: <span class="built_in">str</span>, wordDict: <span class="type">List</span>[<span class="built_in">str</span>]</span>) -&gt; <span class="type">List</span>[<span class="built_in">str</span>]:</span><br><span class="line">	wordSet = <span class="built_in">set</span>()</span><br><span class="line">	<span class="keyword">for</span> word <span class="keyword">in</span> wordDict:</span><br><span class="line">		wordSet.add(word)</span><br><span class="line">	cache = &#123;&#125;</span><br><span class="line">	res = <span class="variable language_">self</span>.dfs(s, wordSet, cache)</span><br><span class="line">	<span class="keyword">return</span> [] <span class="keyword">if</span> <span class="built_in">len</span>(res) == <span class="number">1</span> <span class="keyword">and</span> <span class="keyword">not</span> res[<span class="number">0</span>] <span class="keyword">else</span> res</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">dfs</span>(<span class="params">self, s, wordSet, cache</span>):</span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> s:</span><br><span class="line">		<span class="keyword">return</span> [<span class="string">&#x27;&#x27;</span>]</span><br><span class="line">	<span class="keyword">if</span> s <span class="keyword">in</span> cache:</span><br><span class="line">		<span class="keyword">return</span> cache[s]</span><br><span class="line">	res = []</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(s)):</span><br><span class="line">		<span class="keyword">if</span> s[:i + <span class="number">1</span>] <span class="keyword">not</span> <span class="keyword">in</span> wordSet:</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		li = <span class="variable language_">self</span>.dfs(s[i + <span class="number">1</span>:], wordSet, cache)</span><br><span class="line">		<span class="keyword">for</span> ss <span class="keyword">in</span> li:</span><br><span class="line">			res.append((s[:i + <span class="number">1</span>] + <span class="string">&#x27; &#x27;</span> + ss).strip())</span><br><span class="line"></span><br><span class="line">	cache[s] = res</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure></p>
+<h3 id="例子：-3"><a href="#例子：-3" class="headerlink" title="例子："></a><strong>例子：</strong></h3><p>返回结果是解的集合，所以<strong>终止条件返回也需要是一个[None]</strong><br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># catelan dfs (type 4) LeetCode 095 Unique Binary Search Trees II</span></span><br><span class="line"><span class="comment"># return the root of all the possible trees</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">generateTrees</span>(<span class="params">self, n: <span class="built_in">int</span></span>) -&gt; <span class="type">List</span>[TreeNode]:</span><br><span class="line">	nums = [_ + <span class="number">1</span> <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(n)]</span><br><span class="line">	<span class="keyword">return</span> <span class="variable language_">self</span>.dfs4(nums, <span class="number">0</span>, n)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">dfs4</span>(<span class="params">self, nums, start, end</span>): <span class="comment"># [start, end)</span></span><br><span class="line">	<span class="keyword">if</span> start &gt;= end:</span><br><span class="line">		<span class="keyword">return</span> [<span class="literal">None</span>] <span class="comment"># remember becaues we want the 2 for-loop happen</span></span><br><span class="line">	res = []</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(start, end):</span><br><span class="line">		left_root_nodes = <span class="variable language_">self</span>.dfs4(nums, start, i) <span class="comment"># 0, 0</span></span><br><span class="line">		right_root_nodes = <span class="variable language_">self</span>.dfs4(nums, i + <span class="number">1</span>, end) <span class="comment"># 1, 1</span></span><br><span class="line">		<span class="keyword">for</span> left_root_node <span class="keyword">in</span> left_root_nodes:</span><br><span class="line">			<span class="keyword">for</span> right_root_node <span class="keyword">in</span> right_root_nodes:</span><br><span class="line">				node = TreeNode(nums[i])</span><br><span class="line">				node.left = left_root_node</span><br><span class="line">				node.right = right_root_node</span><br><span class="line">				res.append(node)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure></p>
 <h3 id="应用题型："><a href="#应用题型：" class="headerlink" title="应用题型："></a><strong>应用题型：</strong></h3><p><a href="https://shineboy2013.github.io/2022/01/18/leetcode-095-unique-binary-search-trees-ii/">LeetCode 095 Unique Binary Search Trees II</a><br><a href="https://shineboy2013.github.io/2022/01/18/leetcode-241-different-ways-to-add-parentheses/">LeetCode 241 Different Ways to Add Parentheses</a> </p>
 <h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * graph: 邻接表</span></span><br><span class="line"><span class="comment"> * visited: 记录已访问节点，避免重复访问</span></span><br><span class="line"><span class="comment"> * start: DFS的根节点</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">dfs</span><span class="params">(HashMap&lt;Integer, LinkedList&lt;Integer&gt;&gt; graph, HashSet&lt;Integer&gt; visited, <span class="type">int</span> start)</span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(visited.contains(start))&#123;</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	visited.add(start);</span><br><span class="line">	System.out.print(start+<span class="string">&quot;,&quot;</span>);</span><br><span class="line">	<span class="keyword">for</span>(Integer child : graph.get(start))&#123;</span><br><span class="line">		dfs(graph, visited, child);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，h为树的高度，空间复杂度<code>O(h)</code>，如果用系统栈，可理解其为O(1)。</p>
@@ -1207,7 +1262,7 @@ all_user_ips = [
 <td style="text-align:left">和len结合使用相当于取某范围List下标,第三个参数为步长</td>
 <td style="text-align:left">N/A</td>
 <td style="text-align:left">N/A</td>
-<td style="text-align:left"><strong>for i in range(len(nums))</strong>前闭后开,用逗号</td>
+<td style="text-align:left">**for i in range(len(nums))**前闭后开,用逗号</td>
 </tr>
 <tr>
 <td>for</td>
@@ -1255,7 +1310,7 @@ all_user_ips = [
 <td style="text-align:left">str转int或将float变成int</td>
 <td style="text-align:left">String</td>
 <td style="text-align:left">Num</td>
-<td style="text-align:left">val = int(‘123’), val = int(2.6) -&gt; 2</td>
+<td style="text-align:left">val = int('123'), val = int(2.6) -&gt; 2</td>
 </tr>
 <tr>
 <td>Math</td>
@@ -1267,11 +1322,11 @@ all_user_ips = [
 </tr>
 <tr>
 <td>Math</td>
-<td style="text-align:left">float(‘inf’)</td>
+<td style="text-align:left">float('inf')</td>
 <td style="text-align:left">无穷大值</td>
 <td style="text-align:left">N/A</td>
 <td style="text-align:left">Num</td>
-<td style="text-align:left">val = <strong>float(‘inf’)</strong> or float(‘-inf’)</td>
+<td style="text-align:left">val = <strong>float('inf')</strong> or float('-inf')</td>
 </tr>
 <tr>
 <td>Math</td>
@@ -1311,7 +1366,7 @@ all_user_ips = [
 <td style="text-align:left">求整数值</td>
 <td style="text-align:left">Num</td>
 <td style="text-align:left">Num</td>
-<td style="text-align:left">//是比它小的整数如-2.8就是-3，只在负数是有区别。写程序用的更多是<strong>int(num / a)</strong>结果是-2，这和Java一致</td>
+<td style="text-align:left">//是比它小的整数如-2.8就是-3，只在负数是有区别。写程序用的更多是**int(num / a)**结果是-2，这和Java一致</td>
 </tr>
 <tr>
 <td>String</td>
@@ -1327,7 +1382,7 @@ all_user_ips = [
 <td style="text-align:left">替换</td>
 <td style="text-align:left">String</td>
 <td style="text-align:left">String</td>
-<td style="text-align:left">‘abc’.replace(‘c’, ‘d’)</td>
+<td style="text-align:left">'abc'.replace('c', 'd')</td>
 </tr>
 <tr>
 <td>String</td>
@@ -1335,7 +1390,7 @@ all_user_ips = [
 <td style="text-align:left">格式化字符串</td>
 <td style="text-align:left">Any</td>
 <td style="text-align:left">String</td>
-<td style="text-align:left">f”{a} of {b}” 或者 ‘{} of {}’.format(a, b)</td>
+<td style="text-align:left">f&quot;{a} of {b}&quot; 或者 '{} of {}'.format(a, b)</td>
 </tr>
 <tr>
 <td>String</td>
@@ -1351,7 +1406,7 @@ all_user_ips = [
 <td style="text-align:left">得到子串(前闭后开)</td>
 <td style="text-align:left">N/A</td>
 <td style="text-align:left">string</td>
-<td style="text-align:left">s = ‘abc’, s[:2] -&gt; ‘ab’, s[2:] -&gt; ‘c’</td>
+<td style="text-align:left">s = 'abc', s[:2] -&gt; 'ab', s[2:] -&gt; 'c'</td>
 </tr>
 <tr>
 <td>String</td>
@@ -1391,7 +1446,7 @@ all_user_ips = [
 <td style="text-align:left">比较两个字符串</td>
 <td style="text-align:left">N/A</td>
 <td style="text-align:left">boolean</td>
-<td style="text-align:left">‘111’ &gt; ‘21’ -&gt; False, ‘21’ == ‘21’ -&gt; True</td>
+<td style="text-align:left">'111' &gt; '21' -&gt; False, '21' == '21' -&gt; True</td>
 </tr>
 <tr>
 <td>String</td>
@@ -1399,7 +1454,7 @@ all_user_ips = [
 <td style="text-align:left">查找返回下标</td>
 <td style="text-align:left">str</td>
 <td style="text-align:left">str</td>
-<td style="text-align:left">‘word’.index(‘w’, 2).从下标2开始找. ‘word’.find(‘w’) 若找不到返回-1. </td>
+<td style="text-align:left">'word'.index('w', 2).从下标2开始找. 'word'.find('w') 若找不到返回-1.</td>
 </tr>
 <tr>
 <td>String</td>
@@ -1407,7 +1462,7 @@ all_user_ips = [
 <td style="text-align:left">变成全部大写</td>
 <td style="text-align:left">str</td>
 <td style="text-align:left">str</td>
-<td style="text-align:left">‘word’.upper()</td>
+<td style="text-align:left">'word'.upper()</td>
 </tr>
 <tr>
 <td>String</td>
@@ -1415,7 +1470,7 @@ all_user_ips = [
 <td style="text-align:left">变成全部大写</td>
 <td style="text-align:left">str</td>
 <td style="text-align:left">str</td>
-<td style="text-align:left">‘WORD’.lower()</td>
+<td style="text-align:left">'WORD'.lower()</td>
 </tr>
 <tr>
 <td>String</td>
@@ -1423,7 +1478,7 @@ all_user_ips = [
 <td style="text-align:left">是否以某个字母开头</td>
 <td style="text-align:left">str</td>
 <td style="text-align:left">Boolean</td>
-<td style="text-align:left">‘word’.startswith(‘w’)</td>
+<td style="text-align:left">'word'.startswith('w')</td>
 </tr>
 <tr>
 <td>String</td>
@@ -1431,7 +1486,7 @@ all_user_ips = [
 <td style="text-align:left">是否以某个字母结尾</td>
 <td style="text-align:left">str</td>
 <td style="text-align:left">Boolean</td>
-<td style="text-align:left">‘word’.endswith(‘d’)</td>
+<td style="text-align:left">'word'.endswith('d')</td>
 </tr>
 <tr>
 <td>String</td>
@@ -1439,7 +1494,7 @@ all_user_ips = [
 <td style="text-align:left">去掉空格</td>
 <td style="text-align:left">N/A</td>
 <td style="text-align:left">str</td>
-<td style="text-align:left">‘word ‘.strip(), ‘word ‘.lstrip(), ‘word ‘.rstrip()</td>
+<td style="text-align:left">'word '.strip(), 'word '.lstrip(), 'word '.rstrip()</td>
 </tr>
 <tr>
 <td>String</td>
@@ -1447,7 +1502,7 @@ all_user_ips = [
 <td style="text-align:left">用分隔符变成List</td>
 <td style="text-align:left">str</td>
 <td style="text-align:left">List</td>
-<td style="text-align:left">‘a,b’.split(‘,’)</td>
+<td style="text-align:left">'a,b'.split(',')</td>
 </tr>
 <tr>
 <td>String</td>
@@ -1455,7 +1510,7 @@ all_user_ips = [
 <td style="text-align:left">一个个字符加到字符串末</td>
 <td style="text-align:left">N/A</td>
 <td style="text-align:left">N/A</td>
-<td style="text-align:left">res += ‘g’  </td>
+<td style="text-align:left">res += 'g'</td>
 </tr>
 <tr>
 <td>String</td>
@@ -1463,7 +1518,7 @@ all_user_ips = [
 <td style="text-align:left">查看某个字符是否属于一个字符集合里</td>
 <td style="text-align:left">N/A</td>
 <td style="text-align:left">bool</td>
-<td style="text-align:left">if char in ‘([{‘ 可以避免用list</td>
+<td style="text-align:left">if char in '([{' 可以避免用list</td>
 </tr>
 <tr>
 <td>String</td>
@@ -1471,7 +1526,7 @@ all_user_ips = [
 <td style="text-align:left">是否字母</td>
 <td style="text-align:left">N/A</td>
 <td style="text-align:left">bool</td>
-<td style="text-align:left">‘ab’.isalpha()</td>
+<td style="text-align:left">'ab'.isalpha()</td>
 </tr>
 <tr>
 <td>String</td>
@@ -1479,7 +1534,7 @@ all_user_ips = [
 <td style="text-align:left">是否数字</td>
 <td style="text-align:left">N/A</td>
 <td style="text-align:left">bool</td>
-<td style="text-align:left">‘23’.isdigit()</td>
+<td style="text-align:left">'23'.isdigit()</td>
 </tr>
 <tr>
 <td>String</td>
@@ -1487,7 +1542,7 @@ all_user_ips = [
 <td style="text-align:left">a-z的所有字母</td>
 <td style="text-align:left">str</td>
 <td style="text-align:left">str</td>
-<td style="text-align:left">import string <br>string.ascii_lowercase</td>
+<td style="text-align:left">import string &lt;br&gt;string.ascii_lowercase</td>
 </tr>
 <tr>
 <td>String</td>
@@ -1495,7 +1550,7 @@ all_user_ips = [
 <td style="text-align:left">一个字母的ASCII</td>
 <td style="text-align:left">str</td>
 <td style="text-align:left">str</td>
-<td style="text-align:left">ord(‘A’) = 65</td>
+<td style="text-align:left">ord('A') = 65</td>
 </tr>
 <tr>
 <td>String</td>
@@ -1503,7 +1558,7 @@ all_user_ips = [
 <td style="text-align:left">计算字符串的数值，变量，函数运算结果，返回数字</td>
 <td style="text-align:left">str</td>
 <td style="text-align:left">Num</td>
-<td style="text-align:left">eval(‘5+ 6’) = 11, num = 1, eval(num + 1) = 2, eval(‘f(2)’)</td>
+<td style="text-align:left">eval('5+ 6') = 11, num = 1, eval(num + 1) = 2, eval('f(2)')</td>
 </tr>
 <tr>
 <td>String</td>
@@ -1511,7 +1566,7 @@ all_user_ips = [
 <td style="text-align:left">靠左右边补空格</td>
 <td style="text-align:left">str</td>
 <td style="text-align:left">str</td>
-<td style="text-align:left">line.ljust(maxWidth), line.ljust(maxWidth, ‘#’)</td>
+<td style="text-align:left">line.ljust(maxWidth), line.ljust(maxWidth, '#')</td>
 </tr>
 <tr>
 <td>List</td>
@@ -1519,7 +1574,7 @@ all_user_ips = [
 <td style="text-align:left">初始化列表</td>
 <td style="text-align:left">N/A</td>
 <td style="text-align:left">N/A</td>
-<td style="text-align:left">li = []，这是空列表，不能通过索引取值  </td>
+<td style="text-align:left">li = []，这是空列表，不能通过索引取值</td>
 </tr>
 <tr>
 <td>List</td>
@@ -1527,7 +1582,7 @@ all_user_ips = [
 <td style="text-align:left">初始化固定大小的列表</td>
 <td style="text-align:left">N/A</td>
 <td style="text-align:left">N/A</td>
-<td style="text-align:left">li = [0] * 10, [None] * 10 -&gt; 创建一个list, * 是复制只能用于标量，若矢量是复制ref如[[]] * 10, 要用<strong>[[] for _ in range(10)]</strong></td>
+<td style="text-align:left">li = [0] * 10, [None] * 10 -&gt; 创建一个list, * 是复制只能用于标量，若矢量是复制ref如[[]] * 10, 要用**[[] for _ in range(10)]**</td>
 </tr>
 <tr>
 <td>List</td>
@@ -1543,7 +1598,7 @@ all_user_ips = [
 <td style="text-align:left">尾部加入</td>
 <td style="text-align:left">Any</td>
 <td style="text-align:left">N/A</td>
-<td style="text-align:left">li.append(‘apple’)</td>
+<td style="text-align:left">li.append('apple')</td>
 </tr>
 <tr>
 <td>List</td>
@@ -1551,7 +1606,7 @@ all_user_ips = [
 <td style="text-align:left">头部加入</td>
 <td style="text-align:left">Any</td>
 <td style="text-align:left">N/A</td>
-<td style="text-align:left">li.insert(0, ‘apple’)</td>
+<td style="text-align:left">li.insert(0, 'apple')</td>
 </tr>
 <tr>
 <td>List</td>
@@ -1583,7 +1638,7 @@ all_user_ips = [
 <td style="text-align:left">两个list合并到第一个</td>
 <td style="text-align:left">Any</td>
 <td style="text-align:left">N/A</td>
-<td style="text-align:left">li.extend([‘apple’, ‘banana’])</td>
+<td style="text-align:left">li.extend(['apple', 'banana'])</td>
 </tr>
 <tr>
 <td>List</td>
@@ -1591,7 +1646,7 @@ all_user_ips = [
 <td style="text-align:left">加入分隔符</td>
 <td style="text-align:left">List</td>
 <td style="text-align:left">String</td>
-<td style="text-align:left">‘,’.join(li), <strong>将字符列表变成字符串’’.join(char_list)</strong>  </td>
+<td style="text-align:left">','.join(li), <strong>将字符列表变成字符串''.join(char_list)</strong></td>
 </tr>
 <tr>
 <td>List</td>
@@ -1607,7 +1662,7 @@ all_user_ips = [
 <td style="text-align:left">按字符串长度降序排列</td>
 <td style="text-align:left">List</td>
 <td style="text-align:left">N/A</td>
-<td style="text-align:left">words.sort(key=len, reverse=True), intervals.sort(key=lambda x: x[0]), 按两个key来排序li.sort(key=lambda x: (x[0], x[1]))先顺序再逆序li.sort(key=lambda x: (x[0], -x[1]))  </td>
+<td style="text-align:left">words.sort(key=len, reverse=True), intervals.sort(key=lambda x: x[0]), 按两个key来排序li.sort(key=lambda x: (x[0], x[1]))先顺序再逆序li.sort(key=lambda x: (x[0], -x[1]))</td>
 </tr>
 <tr>
 <td>List</td>
@@ -1615,7 +1670,7 @@ all_user_ips = [
 <td style="text-align:left">非原地排序</td>
 <td style="text-align:left">List</td>
 <td style="text-align:left">N/A</td>
-<td style="text-align:left">nums[idx+1:] = sorted(nums[idx+1:])  </td>
+<td style="text-align:left">nums[idx+1:] = sorted(nums[idx+1:])</td>
 </tr>
 <tr>
 <td>List</td>
@@ -1663,7 +1718,7 @@ all_user_ips = [
 <td style="text-align:left">list中计算某个元素值的个数</td>
 <td style="text-align:left">T</td>
 <td style="text-align:left">int</td>
-<td style="text-align:left">li.count(‘a’)</td>
+<td style="text-align:left">li.count('a')</td>
 </tr>
 <tr>
 <td>List</td>
@@ -1687,7 +1742,7 @@ all_user_ips = [
 <td style="text-align:left">初始化队列</td>
 <td style="text-align:left">N/A</td>
 <td style="text-align:left">N/A</td>
-<td style="text-align:left">from collections import deque<br> queue = deque()<br> queue = <strong>deque([node])</strong></td>
+<td style="text-align:left">from collections import deque&lt;br&gt; queue = deque()&lt;br&gt; queue = <strong>deque([node])</strong></td>
 </tr>
 <tr>
 <td>deque</td>
@@ -1703,7 +1758,7 @@ all_user_ips = [
 <td style="text-align:left">出列</td>
 <td style="text-align:left">Num</td>
 <td style="text-align:left">T</td>
-<td style="text-align:left">s = <strong>queue.popleft()</strong> </td>
+<td style="text-align:left">s = <strong>queue.popleft()</strong></td>
 </tr>
 <tr>
 <td>deque</td>
@@ -1719,7 +1774,7 @@ all_user_ips = [
 <td style="text-align:left">看列首元素</td>
 <td style="text-align:left">N/A</td>
 <td style="text-align:left">T</td>
-<td style="text-align:left">queue = [], s = queue[0] </td>
+<td style="text-align:left">queue = [], s = queue[0]</td>
 </tr>
 <tr>
 <td>List(Heap)</td>
@@ -1735,7 +1790,7 @@ all_user_ips = [
 <td style="text-align:left">入堆</td>
 <td style="text-align:left">List, T</td>
 <td style="text-align:left">N/A</td>
-<td style="text-align:left">from heapq import heappush<br> heappush(pq, 4) </td>
+<td style="text-align:left">from heapq import heappush&lt;br&gt; heappush(pq, 4)</td>
 </tr>
 <tr>
 <td>List(Heap)</td>
@@ -1743,7 +1798,7 @@ all_user_ips = [
 <td style="text-align:left">出堆</td>
 <td style="text-align:left">List</td>
 <td style="text-align:left">T</td>
-<td style="text-align:left">from heapq import heappop<br> heappop(pq)</td>
+<td style="text-align:left">from heapq import heappop&lt;br&gt; heappop(pq)</td>
 </tr>
 <tr>
 <td>List(Heap)</td>
@@ -1759,7 +1814,7 @@ all_user_ips = [
 <td style="text-align:left">看堆顶元素</td>
 <td style="text-align:left">N/A</td>
 <td style="text-align:left">T</td>
-<td style="text-align:left">pq[0]  </td>
+<td style="text-align:left">pq[0]</td>
 </tr>
 <tr>
 <td>List(Stack)</td>
@@ -1775,7 +1830,7 @@ all_user_ips = [
 <td style="text-align:left">出栈</td>
 <td style="text-align:left">N/A</td>
 <td style="text-align:left">T</td>
-<td style="text-align:left">stack = [], s = stack.pop() </td>
+<td style="text-align:left">stack = [], s = stack.pop()</td>
 </tr>
 <tr>
 <td>List(Stack)</td>
@@ -1783,7 +1838,7 @@ all_user_ips = [
 <td style="text-align:left">看栈顶元素</td>
 <td style="text-align:left">N/A</td>
 <td style="text-align:left">T</td>
-<td style="text-align:left">stack = [], s = stack[-1] </td>
+<td style="text-align:left">stack = [], s = stack[-1]</td>
 </tr>
 <tr>
 <td>Dictionary</td>
@@ -1791,7 +1846,7 @@ all_user_ips = [
 <td style="text-align:left">初始化字典</td>
 <td style="text-align:left">N/A</td>
 <td style="text-align:left">N/A</td>
-<td style="text-align:left">di = {}, di = {1: ‘a’, 2: ‘b’}</td>
+<td style="text-align:left">di = {}, di = {1: 'a', 2: 'b'}</td>
 </tr>
 <tr>
 <td>Dictionary</td>
@@ -1799,7 +1854,7 @@ all_user_ips = [
 <td style="text-align:left">初始化字典带初始key</td>
 <td style="text-align:left">N/A</td>
 <td style="text-align:left">N/A</td>
-<td style="text-align:left">di = collections.defaultdict(int), <strong>defaultdict(list)</strong>避免第一次赋值时需要写if语句，一定用。只有用下标di[2]才会产生key和value,其他2 in di, di.keys()都不会产生key. collections.defaultdict(lambda: [0, 0])用于value是pair, 默认返回1： collections.defaultdict(lambda: 1)       </td>
+<td style="text-align:left">di = collections.defaultdict(int), **defaultdict(list)**避免第一次赋值时需要写if语句，一定用。只有用下标di[2]才会产生key和value,其他2 in di, di.keys()都不会产生key. collections.defaultdict(lambda: [0, 0])用于value是pair, 默认返回1： collections.defaultdict(lambda: 1)</td>
 </tr>
 <tr>
 <td>Dictionary</td>
@@ -1855,7 +1910,7 @@ all_user_ips = [
 <td style="text-align:left">产生一个Set</td>
 <td style="text-align:left">N/A</td>
 <td style="text-align:left">Set</td>
-<td style="text-align:left">b = set(), b = <strong>set([‘a’, ‘b’])</strong></td>
+<td style="text-align:left">b = set(), b = <strong>set(['a', 'b'])</strong></td>
 </tr>
 <tr>
 <td>Set</td>
@@ -1863,7 +1918,7 @@ all_user_ips = [
 <td style="text-align:left">set增加一个元素</td>
 <td style="text-align:left">T</td>
 <td style="text-align:left">N/A</td>
-<td style="text-align:left">b.add(‘c’)</td>
+<td style="text-align:left">b.add('c')</td>
 </tr>
 <tr>
 <td>Set</td>
@@ -1871,7 +1926,7 @@ all_user_ips = [
 <td style="text-align:left">set删除一个元素</td>
 <td style="text-align:left">T</td>
 <td style="text-align:left">N/A</td>
-<td style="text-align:left">b.remove(‘c’)</td>
+<td style="text-align:left">b.remove('c')</td>
 </tr>
 <tr>
 <td>Set</td>
@@ -1915,7 +1970,7 @@ all_user_ips = [
 </tr>
 <tr>
 <td>Lambda</td>
-<td style="text-align:left">func/expr…for…in</td>
+<td style="text-align:left">func/expr...for...in</td>
 <td style="text-align:left">整型数组变字符串数组</td>
 <td style="text-align:left">List</td>
 <td style="text-align:left">List</td>
@@ -1931,11 +1986,11 @@ all_user_ips = [
 </tr>
 <tr>
 <td>Others</td>
-<td style="text-align:left">@dataclass</td>
+<td style="text-align:left"><strong>@dataclass</strong></td>
 <td style="text-align:left">N/A</td>
 <td style="text-align:left">N/A</td>
 <td style="text-align:left">N/A</td>
-<td style="text-align:left">省略<strong>init</strong>,<strong>eq</strong>等函数。<br>from dataclasses import dataclass <br>@dataclass <br>class Product: <br>&nbsp;&nbsp;name: str</td>
+<td style="text-align:left">省略__init__,__eq__等函数。&lt;br&gt;from dataclasses import dataclass &lt;br&gt;@dataclass &lt;br&gt;class Product: &lt;br&gt;  name: str</td>
 </tr>
 <tr>
 <td>Others</td>
@@ -1959,7 +2014,7 @@ all_user_ips = [
 <td style="text-align:left">计算List和字符串频率</td>
 <td style="text-align:left">List</td>
 <td style="text-align:left">dict</td>
-<td style="text-align:left">from collections import Counter<br> di = Counter(nums)<br> di = Counter(‘apple’)<br> graph = Counter(c for word in words for c in word)<br> Counter({c: [] for word in words for c in word})</td>
+<td style="text-align:left">from collections import Counter&lt;br&gt; di = Counter(nums)&lt;br&gt; di = Counter('apple')&lt;br&gt; graph = Counter(c for word in words for c in word)&lt;br&gt; Counter({c: [] for word in words for c in word})</td>
 </tr>
 <tr>
 <td>Others</td>
@@ -1967,7 +2022,7 @@ all_user_ips = [
 <td style="text-align:left">初始化NxM矩阵为0</td>
 <td style="text-align:left">N/A</td>
 <td style="text-align:left">N/A</td>
-<td style="text-align:left">a = <del>[[1] * M] * N</del>不能复制矢量。[[0 for _ in range(M)] for _ in range(N)] <strong>先col再row</strong></td>
+<td style="text-align:left">a = <s>[[1] * M] * N</s>不能复制矢量。[[0 for _ in range(M)] for _ in range(N)] <strong>先col再row</strong></td>
 </tr>
 <tr>
 <td>Others</td>
@@ -1975,7 +2030,7 @@ all_user_ips = [
 <td style="text-align:left">求[start, end]之间随机值</td>
 <td style="text-align:left">Num</td>
 <td style="text-align:left">Num</td>
-<td style="text-align:left">import random<br> random.randint(0, 1) -&gt; 0/1</td>
+<td style="text-align:left">import random&lt;br&gt; random.randint(0, 1) -&gt; 0/1</td>
 </tr>
 <tr>
 <td>Others</td>
@@ -2007,7 +2062,7 @@ all_user_ips = [
 <td style="text-align:left">类似于LinkedHashMap，dict的key的插入顺序排序</td>
 <td style="text-align:left">N/A</td>
 <td style="text-align:left">N/A</td>
-<td style="text-align:left">di = collections.OrderedDict()<br> di[‘a’] = 2</td>
+<td style="text-align:left">di = collections.OrderedDict()&lt;br&gt; di['a'] = 2</td>
 </tr>
 <tr>
 <td>re</td>
@@ -2015,7 +2070,7 @@ all_user_ips = [
 <td style="text-align:left">search只match一次</td>
 <td style="text-align:left">str</td>
 <td style="text-align:left">str</td>
-<td style="text-align:left">re.search(r’(\+&#124;\-)?\d+’, ‘-23.1e2’).group() -&gt; -23</td>
+<td style="text-align:left">re.search(r'(\+|\-)?\d+', '-23.1e2').group() -&gt; -23</td>
 </tr>
 <tr>
 <td>re</td>
@@ -2023,7 +2078,7 @@ all_user_ips = [
 <td style="text-align:left">全部用regex替代类似Java中的replaceAll</td>
 <td style="text-align:left">str</td>
 <td style="text-align:left">str</td>
-<td style="text-align:left">re.sub(r’\s+’, ‘’, ‘a 6 7’) -&gt; a67</td>
+<td style="text-align:left">re.sub(r'\s+', '', 'a 6 7') -&gt; a67</td>
 </tr>
 <tr>
 <td>Exception</td>
@@ -2031,23 +2086,60 @@ all_user_ips = [
 <td style="text-align:left">抛出异常</td>
 <td style="text-align:left">N/A</td>
 <td style="text-align:left">N/A</td>
-<td style="text-align:left">raise Exception(‘abc’)</td>
+<td style="text-align:left">raise Exception('abc')</td>
 </tr>
 </tbody>
 </table>
-<p>总结：<br>除了deque, Stack, List的实现都是List<br>插入append, insert<br>删除pop, popleft(deque)  </p>
-<p>初始化列表：<br>创建一个list： li = [0] * 10, [False] * 10 而不是[False * 10], [0 * 10]这是乘法<br>创建一个list of list不用乘号： [[0 for _ in range(M)] for _ in range(N)], [[] for _ in range(10)]</p>
-<p>if left_val可能为整数或None，要写成<strong>if left_val is not None</strong>，否则若left_val = 0, 会False<br>i += 1没有i++<br>if 0 &lt; i &lt; len(nums) 不像Java一样，Python可以连续比较范围<br>所有int都是long<br>22//5 = 4<br>22/5 = 4.4 </p>
-<p>def myFunc(e):<br>  return e[‘year’]<br>cars.sort(reverse=True, key=myFunc)  </p>
-<p>由于Python的数字类型都是Numeric（自动识别为Integer, Float, Complex Numbers）,所以自动变成小数，不像Java是int<br><a href="https://www.geeksforgeeks.org/python-data-types/">数据类型</a></p>
-<p>True/False<br>and/or/not<br>pass什么都不做 if a: pass</p>
+<p>总结：<br>
+除了deque, Stack, List的实现都是List<br>
+插入append, insert<br>
+删除pop, popleft(deque)</p>
+<p>初始化列表：<br>
+创建一个list： li = [0] * 10, [False] * 10 而不是[False * 10], [0 * 10]这是乘法<br>
+创建一个list of list不用乘号： [[0 for _ in range(M)] for _ in range(N)], [[] for _ in range(10)]</p>
+<p>if left_val可能为整数或None，要写成<strong>if left_val is not None</strong>，否则若left_val = 0, 会False
+i += 1没有i++<br>
+if 0 &lt; i &lt; len(nums) 不像Java一样，Python可以连续比较范围<br>
+所有int都是long<br>
+22//5 = 4<br>
+22/5 = 4.4</p>
+<p>def myFunc(e):<br>
+return e['year']<br>
+cars.sort(reverse=True, key=myFunc)</p>
+<p>由于Python的数字类型都是Numeric（自动识别为Integer, Float, Complex Numbers）,所以自动变成小数，不像Java是int<br>
+<a href="https://www.geeksforgeeks.org/python-data-types/">数据类型</a></p>
+<p>True/False<br>
+and/or/not<br>
+pass什么都不做 if a: pass</p>
 <p>&amp;, ^异或, ~取反(~3), |, &lt;&lt;, &gt;&gt;</p>
-<p>lo = hi = 0<br>swap: a, b = b, a<br>elif<br>return -res if is_negative else res<br>if root / if not root<br><strong>if not nums</strong> 包含(None以及len(nums) == 0<br>Node(0)没有new<br>zip是将两个list的元素同步合成tuple，以短的为终结点。例如[i + j for i, j in zip(li, li2)] -&gt; [5, 7], li = [1, 2], li2 = [4, 5, 6]<br>函数中更改输入list如f(list) -&gt; list = [‘’]，不会改变原list，必须更改任意元素： list[:] = [‘’]<br>匿名函数和重载： ListNode.__lt__ = lambda x, y: (x.val &lt; y.val)<br>Python中自定义obj可以任意定义属性，所以若要给某属性赋值如node.value，一定要match类定义里边的，不是node.val = 5。  </p>
-<p>补集：<br>list(set(li) - set(li2))<br>[n for n in self.all if n not in set(li)]<br>并集：<br>list(set(li) | set(li2))<br>list(set(li + li2))<br>交集：<br>list(set(li) &amp; set(li2))<br>[n for n in li if n in set(li2)]</p>
-<p>10的6次方，不能用10^6，这是异或，用1e6或pow(10, 6)<br>self.maxDepth  </p>
+<p>lo = hi = 0
+swap: a, b = b, a
+elif<br>
+return -res if is_negative else res<br>
+if root / if not root<br>
+<strong>if not nums</strong> 包含(None以及len(nums) == 0<br>
+Node(0)没有new<br>
+zip是将两个list的元素同步合成tuple，以短的为终结点。例如[i + j for i, j in zip(li, li2)] -&gt; [5, 7], li = [1, 2], li2 = [4, 5, 6]<br>
+函数中更改输入list如f(list) -&gt; list = ['']，不会改变原list，必须更改任意元素： list[:] = ['']
+匿名函数和重载： ListNode.__lt__ = lambda x, y: (x.val &lt; y.val)<br>
+Python中自定义obj可以任意定义属性，所以若要给某属性赋值如node.value，一定要match类定义里边的，不是node.val = 5。</p>
+<p>补集：<br>
+list(set(li) - set(li2))<br>
+[n for n in self.all if n not in set(li)]
+并集：<br>
+list(set(li) | set(li2))<br>
+list(set(li + li2))
+交集：<br>
+list(set(li) &amp; set(li2))<br>
+[n for n in li if n in set(li2)]</p>
+<p>10的6次方，不能用10^6，这是异或，用1e6或pow(10, 6)
+self.maxDepth</p>
 <p>用_i来表示内部使用，dict_表示与关键字不重复</p>
-<p>三个引号就是多行comment，#是一行comment<br>换行用 \ </p>
-<p><a href="https://www.runoob.com/python3/python3-basic-syntax.html">Python基础</a><br><a href="https://visualgit.readthedocs.io/en/latest/pages/naming_convention.html">Python命名规则</a><br><a href="https://zhuanlan.zhihu.com/p/36173202">Python下划线</a></p>
+<p>三个引号就是多行comment，#是一行comment<br>
+换行用 \</p>
+<p><a href="https://www.runoob.com/python3/python3-basic-syntax.html">Python基础</a><br>
+<a href="https://visualgit.readthedocs.io/en/latest/pages/naming_convention.html">Python命名规则</a>
+<a href="https://zhuanlan.zhihu.com/p/36173202">Python下划线</a></p>
 ]]></content>
       <tags>
         <tag>Knowledge Base</tag>
@@ -4937,12 +5029,12 @@ In this case, no transaction is done, i.e. max profit = 0.
 <h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是经典题。求所有可能性想到DFS，前面Lintcode 683提到可能会有重复解。所以用Cache。    </p>
 <p><strong>Cache模板：</strong>  </p>
 <ol>
-<li>key为子问题索引st，value为子问题的解。不含path和res因为类似于Catalan，用子问题返回结果来组成此轮结果。f(input, st, endIndex, cache)  </li>
+<li>key为子问题索引st，value为子问题的解。不含path和res因为类似于Catalan(属于单边Catalan)，用子问题返回结果来组成此轮结果。f(input, st, endIndex, cache)  </li>
 <li>紧跟终结条件，若在cache中，返回子问题的解。  </li>
 <li>循环结束，将子问题的结果存于cache。  </li>
 </ol>
 <h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>终止条件返回[‘’]而不是[]，正如L017，空字符串作为初始结果。返回到上层要strip()    </li>
+<li>终止条件返回[‘’]而不是[]，正如L017，空字符串作为初始结果。返回到上层要strip(), 因为ss可能为空    </li>
 <li>子问题用f=word + f并不是f=f + word, 这样最后结果避免反转。</li>
 <li>s[:i + 1]判断是否在字典中，而不是s[:i]，单词包括整个字符串。  </li>
 </ol>
@@ -5863,14 +5955,18 @@ rangeFreqQuery.query(0, 11, 33); // return 2\. The value 33 occurs 2 times in th
     <title>LeetCode 227 Basic Calculator II</title>
     <url>/2026/05/27/lee-227/</url>
     <content><![CDATA[<p><strong><a href="https://leetcode.com/problems/basic-calculator-ii/">LeetCode</a></strong></p>
-<div><br><br>Given a string <code>s</code> which represents an expression, <em>evaluate this expression and return its value</em>.<br><br>The integer division should truncate toward zero.<br><br>You may assume that the given expression is always valid. All intermediate results will be in the range of <code>[-2&lt;sup&gt;31&lt;/sup&gt;, 2&lt;sup&gt;31&lt;/sup&gt; - 1]</code>.<br><br><strong>Note:</strong> You are not allowed to use any built-in function which evaluates strings as mathematical expressions, such as <code>eval()</code>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> s = “3+2<em>2”<br><strong>Output:</strong> 7<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> s = “ 3/2 “<br><strong>Output:</strong> 1<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> s = “ 3+5 / 2 “<br><strong>Output:</strong> 5<br></pre><br><br><strong>Constraints:</strong>
-
-</em>   <code>1 &lt;= s.length &lt;= 3 * 10&lt;sup&gt;5&lt;/sup&gt;</code><br><em>   <code>s</code> consists of integers and operators `(‘+’, ‘-‘, ‘</em>‘, ‘/‘)<code>separated by some number of spaces.
-*</code>s<code>represents **a valid expression**.
-*   All the integers in the expression are non-negative integers in the range</code>[0, 2<sup>31</sup> - 1]`.<br><em>   The answer is <strong>guaranteed</strong> to fit in a <em>*32-bit integer</em></em>.<br><br></div>
+<div><br><br>Given a string <code>s</code> which represents an expression, <em>evaluate this expression and return its value</em>.<br><br>The integer division should truncate toward zero.<br><br>You may assume that the given expression is always valid. All intermediate results will be in the range of <code>[-2&lt;sup&gt;31&lt;/sup&gt;, 2&lt;sup&gt;31&lt;/sup&gt; - 1]</code>.<br><br><strong>Note:</strong> You are not allowed to use any built-in function which evaluates strings as mathematical expressions, such as <code>eval()</code>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> s = “3+2*2”<br><strong>Output:</strong> 7<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> s = “ 3/2 “<br><strong>Output:</strong> 1<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> s = “ 3+5 / 2 “<br><strong>Output:</strong> 5<br></pre><br><br><strong>Constraints:</strong><br><br><em>   `1 &lt;= s.length &lt;= 3 </em> 10<sup>5</sup><code>*</code>s<code>consists of integers and operators</code>(‘+’, ‘-‘, ‘<em>‘, ‘/‘)` separated by some number of spaces.
+</em>   <code>s</code> represents <strong>a valid expression</strong>.<br><em>   All the integers in the expression are non-negative integers in the range <code>[0, 2&lt;sup&gt;31&lt;/sup&gt; - 1]</code>.
+</em>   The answer is <strong>guaranteed</strong> to fit in a <strong>32-bit integer</strong>.<br><br></div>
 
 <h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>实现字符串加减乘除，但无括号。</p>
 <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>逆波兰式的实现用Stack。Stack只存数，而且<strong>只存加号操作符</strong>的数，也就是说，<br>如果是减，就将-num入栈，<br>如果是乘除，立刻计算stack[-1]乘除num的结果再压入栈，因为乘除是最高优先级可以直接计算，而加减不可以。<br>所以用<strong>一个stack</strong>  </p>
+<p>举一个例子: 2+3  </p>
+<ol>
+<li>2-3+</li>
+<li>char=”-“的时候, op = “+”, num=”2”. op和num是一对的。<br>char=”+”的时候, op = “-“, num=”3”. op和num是一对的。  </li>
+</ol>
+<p>若5*6+, char=”+”的时候, prev = “5”, op = “*“, num=”6”.<br>[prev][op][num][char]<br>stack=<strong>只存加号操作符</strong></p>
 <p>代码中含三种情况：空格，运算符，数字</p>
 <p><a href="https://shineboy2013.github.io/2021/12/08/lee-224/">LeetCode 224 Basic Calculator</a> 括号加减法, 同一层括号内求和遇括号入栈<br><a href="https://shineboy2013.github.io/2021/12/06/lee-227/">LeetCode 227 Basic Calculator II</a> 加减乘除, 和的每一项入栈，方便出栈计乘除<br><a href="https://shineboy2013.github.io/2022/03/01/leetcode-772-basic-calculator-iii/">LeetCode 772 Basic Calculator III</a> 加减乘除括号, L227的递归版</p>
 <h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><p>此题没有括号，不能用模板，要借用op来记录前一个操作符  </p>
@@ -7004,10 +7100,14 @@ transactions = [buy, sell, cooldown, buy, sell]
 
 </em>   <code>1 &lt;= nestedList.length &lt;= 500</code><br>*   The values of the integers in the nested list is in the range <code>[-10&lt;sup&gt;6&lt;/sup&gt;, 10&lt;sup&gt;6&lt;/sup&gt;]</code>.<br><br></div>
 
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>实现Nested List的Iterator。Nested List是NestedInteger的数组，NestedInteger可以是int，也可以是Nested List</p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>实现Nested List的Iterator。Nested List是NestedInteger的数组，NestedInteger可以是int，也可以是Nested List<br>nestedList = [NestedInteger]<br>NestedInteger 用isInteger()来判断<br>-&gt; 2 by getInteger()<br>-&gt; [2, 3] by getList()  </p>
 <h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>有点似括号题但区别是从前往后读取。用Queue或Stack都可以，插入或删除其一需要反序，删除nestedinteger(=list)后要将它里面所有nestedinteger加入。Queue要从队首加入和删除，Stack要从栈顶加入和删除，用Stack比较方便。</p>
 <p>Nested List题目：<br>LeetCode 341 Flatten Nested List Iterator Iterator - Stack<br>LeetCode 339 Nested List Weight Sum - BFS<br>LeetCode 364 Nested List Weight Sum II - BFS</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><ol>
+<li>Iterator题目都是用Stack，比如BST Iterator</li>
+<li>init和next都可以假设是用int来完成，用reversed加入</li>
+<li>next则要考虑两种情况</li>
+</ol>
 <h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
 <li>用Stack，<strong>逆序将nestedList中nestedinteger加入到stack，直到栈顶元素为int，hasNext才算结束</strong></li>
 </ol>
@@ -7391,7 +7491,7 @@ transactions = [buy, sell, cooldown, buy, sell]
 <h3 id="Stack解题思路-推荐-："><a href="#Stack解题思路-推荐-：" class="headerlink" title="Stack解题思路(推荐)："></a><strong>Stack解题思路(推荐)：</strong></h3><p>见到括号就考虑用Stack，此题有字符和数字，所以考虑用<strong>两个Stack</strong>  </p>
 <h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>运用模板</p>
 <h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>同级为括号外（包括括号以左，以右），但数字和字符分别存于<strong>两个stack</strong>。括号内为另一级，入栈。</li>
+<li>同级为括号外（包括括号以左，以右），但数字和字符分别存于<strong>两个stack</strong>。括号内为另一级，入栈。<br>prev_res+prev_num*[res]<br>两个stack存储优先级较低的字符以及数字，类似于多重括号2*(3*(4))</li>
 </ol>
 <h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">decodeString</span>(<span class="params">self, s: <span class="built_in">str</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">	res, num, stack_num, stack_str = <span class="string">&#x27;&#x27;</span>, <span class="number">0</span>, [], []</span><br><span class="line">	<span class="keyword">for</span> char <span class="keyword">in</span> s:</span><br><span class="line">		<span class="keyword">if</span> char.isdigit():</span><br><span class="line">			num = num * <span class="number">10</span> + <span class="built_in">int</span>(char)</span><br><span class="line">		<span class="keyword">if</span> char.isalpha():</span><br><span class="line">			res += char</span><br><span class="line">		<span class="keyword">if</span> char == <span class="string">&#x27;[&#x27;</span>:</span><br><span class="line">			stack_num.append(num) <span class="comment"># [3]</span></span><br><span class="line">			stack_str.append(res) <span class="comment"># 2c</span></span><br><span class="line">			num = <span class="number">0</span></span><br><span class="line">			res = <span class="string">&#x27;&#x27;</span></span><br><span class="line">		<span class="keyword">if</span> char == <span class="string">&#x27;]&#x27;</span>:</span><br><span class="line">			tmp = stack_str.pop() <span class="comment"># &#x27;2c&#x27;</span></span><br><span class="line">			n = stack_num.pop() <span class="comment"># 3</span></span><br><span class="line">			res = tmp + n * res <span class="comment"># 2c + 3*d=ccddd</span></span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
 <h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>  </p>
@@ -8336,21 +8436,52 @@ Output: "s'teL ekat edoCteeL tsetnoc"
     <title>LeetCode 787 Cheapest Flights Within K Stops</title>
     <url>/2026/05/27/lee-787/</url>
     <content><![CDATA[<p><strong><a href="https://leetcode.com/problems/cheapest-flights-within-k-stops">LeetCode</a></strong></p>
-<div><br><br>There are <code>n</code> cities connected by some number of flights. You are given an array <code>flights</code> where <code>flights[i] = [from&lt;sub&gt;i&lt;/sub&gt;, to&lt;sub&gt;i&lt;/sub&gt;, price&lt;sub&gt;i&lt;/sub&gt;]</code> indicates that there is a flight from city <code>from&lt;sub&gt;i&lt;/sub&gt;</code> to city <code>to&lt;sub&gt;i&lt;/sub&gt;</code> with cost <code>price&lt;sub&gt;i&lt;/sub&gt;</code>.<br><br>You are also given three integers <code>src</code>, <code>dst</code>, and <code>k</code>, return <em><strong>the cheapest price</strong> from</em> <code>src</code> <em>to</em> <code>dst</code> <em>with at most</em> <code>k</code> <em>stops.</em> If there is no such route, return<code>-1</code>.<br><br><strong>Example 1:</strong><br><br><img src="https://s3-lc-upload.s3.amazonaws.com/uploads/2018/02/16/995.png" alt=""><br><br><pre><strong>Input:</strong> n = 3, flights = [[0,1,100],[1,2,100],[0,2,500]], src = 0, dst = 2, k = 1<br><strong>Output:</strong> 200<br><strong>Explanation:</strong> The graph is shown.<br>The cheapest price from city <code>0</code> to city <code>2</code> with at most 1 stop costs 200, as marked red in the picture.<br></pre><br><br><strong>Example 2:</strong><br><br><img src="https://s3-lc-upload.s3.amazonaws.com/uploads/2018/02/16/995.png" alt=""><br><br><pre><strong>Input:</strong> n = 3, flights = [[0,1,100],[1,2,100],[0,2,500]], src = 0, dst = 2, k = 0<br><strong>Output:</strong> 500<br><strong>Explanation:</strong> The graph is shown.<br>The cheapest price from city <code>0</code> to city <code>2</code> with at most 0 stop costs 500, as marked blue in the picture.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= n &lt;= 100</code>
-</em>   <code>0 &lt;= flights.length &lt;= (n * (n - 1) / 2)</code><br><em>   <code>flights[i].length == 3</code>
-</em>   <code>0 &lt;= from&lt;sub&gt;i&lt;/sub&gt;, to&lt;sub&gt;i&lt;/sub&gt; &lt; n</code><br><em>   <code>from&lt;sub&gt;i&lt;/sub&gt; != to&lt;sub&gt;i&lt;/sub&gt;</code>
-</em>   <code>1 &lt;= price&lt;sub&gt;i&lt;/sub&gt; &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code><br><em>   There will not be any multiple flights between two cities.
-</em>   <code>0 &lt;= src, dst, k &lt; n</code><br>*   <code>src != dst</code><br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求只允许停k个站情况下，最便宜机票价格</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>BFS + Heap<br>这是单源最短路径的典型应用。可以用Dijkstra，机票价格相当于单源最短路径问题中的路径大小。一开始我用BFS，但得到TLE，因为存在循环，导致节点被重复访问(同一路径)。但一个节点的确可以被用不同路径访问。所以引入visited[node] = dis </p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<p>&lt;div&gt;</p>
+<p>There are <code>n</code> cities connected by some number of flights. You are given an array <code>flights</code> where <code>flights[i] = [from&lt;sub&gt;i&lt;/sub&gt;, to&lt;sub&gt;i&lt;/sub&gt;, price&lt;sub&gt;i&lt;/sub&gt;]</code> indicates that there is a flight from city <code>from&lt;sub&gt;i&lt;/sub&gt;</code> to city <code>to&lt;sub&gt;i&lt;/sub&gt;</code> with cost <code>price&lt;sub&gt;i&lt;/sub&gt;</code>.</p>
+<p>You are also given three integers <code>src</code>, <code>dst</code>, and <code>k</code>, return <em><strong>the cheapest price</strong> from</em> <code>src</code> <em>to</em> <code>dst</code> <em>with at most</em> <code>k</code> <em>stops.</em> If there is no such route, return<code>-1</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><img src="https://s3-lc-upload.s3.amazonaws.com/uploads/2018/02/16/995.png" alt=""></p>
+<p>&lt;pre&gt;<strong>Input:</strong> n = 3, flights = [[0,1,100],[1,2,100],[0,2,500]], src = 0, dst = 2, k = 1
+<strong>Output:</strong> 200
+<strong>Explanation:</strong> The graph is shown.
+The cheapest price from city <code>0</code> to city <code>2</code> with at most 1 stop costs 200, as marked red in the picture.
+&lt;/pre&gt;</p>
+<p><strong>Example 2:</strong></p>
+<p><img src="https://s3-lc-upload.s3.amazonaws.com/uploads/2018/02/16/995.png" alt=""></p>
+<p>&lt;pre&gt;<strong>Input:</strong> n = 3, flights = [[0,1,100],[1,2,100],[0,2,500]], src = 0, dst = 2, k = 0
+<strong>Output:</strong> 500
+<strong>Explanation:</strong> The graph is shown.
+The cheapest price from city <code>0</code> to city <code>2</code> with at most 0 stop costs 500, as marked blue in the picture.
+&lt;/pre&gt;</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= n &lt;= 100</code></li>
+<li><code>0 &lt;= flights.length &lt;= (n * (n - 1) / 2)</code></li>
+<li><code>flights[i].length == 3</code></li>
+<li><code>0 &lt;= from&lt;sub&gt;i&lt;/sub&gt;, to&lt;sub&gt;i&lt;/sub&gt; &lt; n</code></li>
+<li><code>from&lt;sub&gt;i&lt;/sub&gt; != to&lt;sub&gt;i&lt;/sub&gt;</code></li>
+<li><code>1 &lt;= price&lt;sub&gt;i&lt;/sub&gt; &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code></li>
+<li>There will not be any multiple flights between two cities.</li>
+<li><code>0 &lt;= src, dst, k &lt; n</code></li>
+<li><code>src != dst</code></li>
+</ul>
+<p>&lt;/div&gt;</p>
+<h3><strong>题目大意：</strong></h3>
+<p>求只允许停k个站情况下，最便宜机票价格</p>
+<h3><strong>解题思路：</strong></h3>
+<p>BFS + Heap<br>
+这是单源最短路径的典型应用。可以用Dijkstra，机票价格相当于单源最短路径问题中的路径大小。一开始我用BFS，但得到TLE，因为存在循环，导致节点被重复访问(同一路径)。但一个节点的确可以被用不同路径访问。所以引入visited[node] = dis</p>
+<h3><strong>解题步骤：</strong></h3>
+<p>N/A</p>
+<h3><strong>注意事项：</strong></h3>
+<ol>
 <li>node需要被多次访问，所以跟模板不同，visited的检测要放在neighbor循环之外且用node且初始化为空。visited不再是set，它需要记录node离src的距离。一方面用于循环检测，因为如果存在循环，会出现dist &gt;= visited[node]。若该节点的当前距离小于之前的最小距离，此时也要加入到heap，因为贪婪法，虽然此路径费用较高，但它距离更近，当k限制比较小时，此路径可能满足要求。这就是为什么一个节点会被多次访问的原因。</li>
 <li><strong>若路径不存在返回-1</strong></li>
 </ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">findCheapestPrice</span>(<span class="params">self, n: <span class="built_in">int</span>, flights: <span class="type">List</span>[<span class="type">List</span>[<span class="built_in">int</span>]], src: <span class="built_in">int</span>, dst: <span class="built_in">int</span>, k: <span class="built_in">int</span></span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	graph = collections.defaultdict(<span class="built_in">list</span>)</span><br><span class="line">	<span class="keyword">for</span> pair <span class="keyword">in</span> flights:</span><br><span class="line">		graph[pair[<span class="number">0</span>]].append((pair[<span class="number">1</span>], pair[<span class="number">2</span>]))</span><br><span class="line">    heap = ([(<span class="number">0</span>, src, <span class="number">0</span>)]) <span class="comment"># price, node_id, distance</span></span><br><span class="line">	visited = &#123;&#125;</span><br><span class="line">	<span class="keyword">while</span> heap:</span><br><span class="line">		p, node, dist = heapq.heappop(heap)</span><br><span class="line">		<span class="keyword">if</span> node == dst <span class="keyword">and</span> dist &lt;= k + <span class="number">1</span>:</span><br><span class="line">			<span class="keyword">return</span> p</span><br><span class="line">		<span class="keyword">if</span> node <span class="keyword">in</span> visited <span class="keyword">and</span> dist &gt;= visited[node]:</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		visited[node] = dist</span><br><span class="line">		<span class="keyword">for</span> neighbor, _price <span class="keyword">in</span> graph[node]:</span><br><span class="line">			heapq.heappush(heap, (p + _price, neighbor, dist + <span class="number">1</span>))</span><br><span class="line">	<span class="keyword">return</span> -<span class="number">1</span></span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(VlogV)</code>，空间复杂度<code>O(V)</code>  </p>
+<h3><strong>Python代码：</strong></h3>
+<p><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">findCheapestPrice</span>(<span class="params">self, n: <span class="built_in">int</span>, flights: <span class="type">List</span>[<span class="type">List</span>[<span class="built_in">int</span>]], src: <span class="built_in">int</span>, dst: <span class="built_in">int</span>, k: <span class="built_in">int</span></span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	graph = collections.defaultdict(<span class="built_in">list</span>)</span><br><span class="line">	<span class="keyword">for</span> pair <span class="keyword">in</span> flights:</span><br><span class="line">		graph[pair[<span class="number">0</span>]].append((pair[<span class="number">1</span>], pair[<span class="number">2</span>]))</span><br><span class="line">	heap = ([(<span class="number">0</span>, src, <span class="number">0</span>)]) <span class="comment"># price, node_id, distance</span></span><br><span class="line">	visited = &#123;&#125;</span><br><span class="line">	<span class="keyword">while</span> heap:</span><br><span class="line">		p, node, dist = heapq.heappop(heap)</span><br><span class="line">		<span class="keyword">if</span> node == dst <span class="keyword">and</span> dist &lt;= k + <span class="number">1</span>:</span><br><span class="line">			<span class="keyword">return</span> p</span><br><span class="line">		<span class="keyword">if</span> node <span class="keyword">in</span> visited <span class="keyword">and</span> dist &gt;= visited[node]:</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		visited[node] = dist</span><br><span class="line">		<span class="keyword">for</span> neighbor, _price <span class="keyword">in</span> graph[node]:</span><br><span class="line">			heapq.heappush(heap, (p + _price, neighbor, dist + <span class="number">1</span>))</span><br><span class="line">	<span class="keyword">return</span> -<span class="number">1</span></span><br></pre></td></tr></table></figure></p>
+<h3><strong>算法分析：</strong></h3>
+<p>时间复杂度为<code>O(VlogV)</code>，空间复杂度<code>O(V)</code></p>
 ]]></content>
       <tags>
         <tag>Array</tag>
@@ -14899,6 +15030,12 @@ read4(buf4); // read4 returns 0\. Now buf4 = &quot;&quot;, fp points to end of f
 </ol>
 <h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">dfs</span>(<span class="params">self, <span class="built_in">input</span>, cache</span>) -&gt; <span class="type">List</span>[<span class="built_in">int</span>]:</span><br><span class="line">	<span class="keyword">if</span> &lt;终止条件&gt;:</span><br><span class="line">		<span class="keyword">return</span> [] <span class="comment"># remember to use list</span></span><br><span class="line">	<span class="keyword">if</span> <span class="built_in">input</span> <span class="keyword">in</span> cache:</span><br><span class="line">		<span class="keyword">return</span> cache[<span class="built_in">input</span>]</span><br><span class="line">	res = []</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(<span class="built_in">input</span>)):</span><br><span class="line">		anwser = <span class="variable language_">self</span>.dfs(<span class="built_in">input</span>[:i], cache)</span><br><span class="line">		res.append(anwser)</span><br><span class="line">	cache[<span class="built_in">input</span>] = res</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
 <h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(解大小)</code>，空间复杂度<code>O(解大小)</code>.</p>
+<h3 id="例子："><a href="#例子：" class="headerlink" title="例子："></a><strong>例子：</strong></h3><p>LeetCode 140 Word Break II<br>这是单边catalan<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">wordBreak</span>(<span class="params">self, s: <span class="built_in">str</span>, wordDict: <span class="type">List</span>[<span class="built_in">str</span>]</span>) -&gt; <span class="type">List</span>[<span class="built_in">str</span>]:</span><br><span class="line">	wordSet = <span class="built_in">set</span>()</span><br><span class="line">	<span class="keyword">for</span> word <span class="keyword">in</span> wordDict:</span><br><span class="line">		wordSet.add(word)</span><br><span class="line">	cache = &#123;&#125;</span><br><span class="line">	res = <span class="variable language_">self</span>.dfs(s, wordSet, cache)</span><br><span class="line">	<span class="keyword">return</span> [] <span class="keyword">if</span> <span class="built_in">len</span>(res) == <span class="number">1</span> <span class="keyword">and</span> <span class="keyword">not</span> res[<span class="number">0</span>] <span class="keyword">else</span> res</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">dfs</span>(<span class="params">self, s, wordSet, cache</span>):</span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> s:</span><br><span class="line">		<span class="keyword">return</span> [<span class="string">&#x27;&#x27;</span>]</span><br><span class="line">	<span class="keyword">if</span> s <span class="keyword">in</span> cache:</span><br><span class="line">		<span class="keyword">return</span> cache[s]</span><br><span class="line">	res = []</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(s)):</span><br><span class="line">		<span class="keyword">if</span> s[:i + <span class="number">1</span>] <span class="keyword">not</span> <span class="keyword">in</span> wordSet:</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		li = <span class="variable language_">self</span>.dfs(s[i + <span class="number">1</span>:], wordSet, cache)</span><br><span class="line">		<span class="keyword">for</span> ss <span class="keyword">in</span> li:</span><br><span class="line">			res.append((s[:i + <span class="number">1</span>] + <span class="string">&#x27; &#x27;</span> + ss).strip())</span><br><span class="line"></span><br><span class="line">	cache[s] = res</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure></p>
+<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>终止条件返回[‘’]而不是[]，正如L017，空字符串作为初始结果。返回到上层要strip(), 因为ss可能为空    </li>
+<li>子问题用f=word + f并不是f=f + word, 这样最后结果避免反转。</li>
+<li>s[:i + 1]判断是否在字典中，而不是s[:i]，单词包括整个字符串。  </li>
+</ol>
 ]]></content>
       <tags>
         <tag>Knowledge Base</tag>
@@ -15001,7 +15138,8 @@ read4(buf4); // read4 returns 0\. Now buf4 = &quot;&quot;, fp points to end of f
 <li>括号题</li>
 <li>字符串运算题如, 3+4, (3+4)*5</li>
 </ol>
-<h2 id="括号运算题"><a href="#括号运算题" class="headerlink" title="括号运算题"></a>括号运算题</h2><p>res是作为同一层的临时计算结果，若遇到左括号，res保留在stack中且reset，若遇到右括号，stack的结果还原到res<br>num也是临时变量负责储存整数   </p>
+<h2 id="括号运算题"><a href="#括号运算题" class="headerlink" title="括号运算题"></a>括号运算题</h2><p>stack的作用是存储优先级较低的操作数(暂时不能计算)<br>定义公式</p>
+<p>res是作为同一层的临时计算结果，若遇到左括号，res保留在stack中且reset，若遇到右括号，stack的结果还原到res<br>num也是临时变量负责储存整数   </p>
 <h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
 <li>char.isdigit()的计算  </li>
 <li>左括号：入栈和reset res和num。    </li>
@@ -15009,6 +15147,10 @@ read4(buf4); // read4 returns 0\. Now buf4 = &quot;&quot;, fp points to end of f
 </ol>
 <h3 id="括号运算题模板："><a href="#括号运算题模板：" class="headerlink" title="括号运算题模板："></a><strong>括号运算题模板：</strong></h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">parenthesis</span>(<span class="params">self, s: <span class="built_in">str</span></span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">    (<span class="type">Optional</span>) s边界处理如s += <span class="string">&#x27;+&#x27;</span> </span><br><span class="line">	res, num, stack = <span class="string">&#x27;&#x27;</span>, <span class="number">0</span>, []</span><br><span class="line">	<span class="keyword">for</span> char <span class="keyword">in</span> s:</span><br><span class="line">        <span class="keyword">if</span> char == <span class="string">&#x27; &#x27;</span>:</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">		<span class="keyword">if</span> char.isdigit(): </span><br><span class="line">			num = num * <span class="number">10</span> + <span class="built_in">int</span>(char)</span><br><span class="line">		<span class="keyword">if</span> char.isalpha():</span><br><span class="line">			res += char</span><br><span class="line">		<span class="keyword">if</span> char == <span class="string">&#x27;+&#x27;</span> <span class="comment"># 或其他操作符</span></span><br><span class="line">			res = 同层计算</span><br><span class="line">			num = <span class="number">0</span>  <span class="comment"># reset 不能reset res，因为res是这一层的临时结果</span></span><br><span class="line">		<span class="keyword">if</span> char == <span class="string">&#x27;[&#x27;</span>:</span><br><span class="line">			多个入栈(res) </span><br><span class="line">			res = <span class="string">&#x27;&#x27;</span> <span class="comment"># reset</span></span><br><span class="line">			num = <span class="number">0</span>  <span class="comment"># reset </span></span><br><span class="line">		<span class="keyword">if</span> char == <span class="string">&#x27;]&#x27;</span>:</span><br><span class="line">			(<span class="type">Optional</span>) res = 同层计算, 这两步同+运算符</span><br><span class="line">			tmp = 多个出栈</span><br><span class="line">			res = tmp + f(res) <span class="comment"># 还原上层结果</span></span><br><span class="line">			(<span class="type">Optional</span>) num = <span class="number">0</span></span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
 <h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>.</p>
+<h3 id="LeetCode-394-Decode-String"><a href="#LeetCode-394-Decode-String" class="headerlink" title="LeetCode 394 Decode String"></a>LeetCode 394 Decode String</h3><p>两个stack存储优先级较低的字符以及数字，类似于多重括号2*(3*(4))<br>公式：prev_res+prev_num*[res]  </p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">decodeString</span>(<span class="params">self, s: <span class="built_in">str</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">	res, num, stack_num, stack_str = <span class="string">&#x27;&#x27;</span>, <span class="number">0</span>, [], []</span><br><span class="line">	<span class="keyword">for</span> char <span class="keyword">in</span> s:</span><br><span class="line">		<span class="keyword">if</span> char.isdigit():</span><br><span class="line">			num = num * <span class="number">10</span> + <span class="built_in">int</span>(char)</span><br><span class="line">		<span class="keyword">if</span> char.isalpha():</span><br><span class="line">			res += char</span><br><span class="line">		<span class="keyword">if</span> char == <span class="string">&#x27;[&#x27;</span>:</span><br><span class="line">			stack_num.append(num) <span class="comment"># [3]</span></span><br><span class="line">			stack_str.append(res) <span class="comment"># 2c</span></span><br><span class="line">			num = <span class="number">0</span></span><br><span class="line">			res = <span class="string">&#x27;&#x27;</span></span><br><span class="line">		<span class="keyword">if</span> char == <span class="string">&#x27;]&#x27;</span>:</span><br><span class="line">			tmp = stack_str.pop() <span class="comment"># &#x27;2c&#x27;</span></span><br><span class="line">			n = stack_num.pop() <span class="comment"># 3</span></span><br><span class="line">			res = tmp + n * res <span class="comment"># 2c + 3*d=ccddd</span></span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h3 id="LeetCode-227-Basic-Calculator-II"><a href="#LeetCode-227-Basic-Calculator-II" class="headerlink" title="LeetCode 227 Basic Calculator II"></a>LeetCode 227 Basic Calculator II</h3><p>stack=<strong>只存加号操作符</strong><br>若5*6+, char=”+”的时候, prev = “5”, op = “*“, num=”6”.<br>公式： [prev][op][num][char]  </p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">calculate</span>(<span class="params">self, s: <span class="built_in">str</span></span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	s += <span class="string">&#x27;+&#x27;</span></span><br><span class="line">	res, num, stack, op = <span class="number">0</span>, <span class="number">0</span>, [], <span class="string">&#x27;+&#x27;</span></span><br><span class="line">	<span class="keyword">for</span> char <span class="keyword">in</span> s:</span><br><span class="line">		<span class="keyword">if</span> char == <span class="string">&#x27; &#x27;</span>:</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		<span class="keyword">elif</span> char.isdigit():</span><br><span class="line">			num = num * <span class="number">10</span> + <span class="built_in">int</span>(char)</span><br><span class="line">		<span class="keyword">elif</span> op == <span class="string">&#x27;-&#x27;</span>:</span><br><span class="line">			stack.append(-num)</span><br><span class="line">		<span class="keyword">elif</span> op == <span class="string">&#x27;+&#x27;</span>:</span><br><span class="line">			stack.append(num) <span class="comment"># [4+2*1]</span></span><br><span class="line">		<span class="keyword">elif</span> op == <span class="string">&#x27;*&#x27;</span>:</span><br><span class="line">			prev = stack.pop()</span><br><span class="line">			stack.append(prev * num)</span><br><span class="line">		<span class="keyword">elif</span> op == <span class="string">&#x27;/&#x27;</span>:</span><br><span class="line">			prev = stack.pop()</span><br><span class="line">			stack.append(<span class="built_in">int</span>(prev / num))  <span class="comment"># remember</span></span><br><span class="line">		<span class="keyword">if</span> char <span class="keyword">in</span> <span class="string">&#x27;+-*/&#x27;</span>:</span><br><span class="line">			num = <span class="number">0</span></span><br><span class="line">			op = char</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">sum</span>(stack)</span><br></pre></td></tr></table></figure>
 ]]></content>
       <tags>
         <tag>Knowledge Base</tag>
@@ -15099,6 +15241,8 @@ read4(buf4); // read4 returns 0\. Now buf4 = &quot;&quot;, fp points to end of f
 <li>跟最小堆一样，当元素大于栈顶元素的时候才倒逼栈内元素出栈。    </li>
 </ol>
 <h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">stack = []</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(li)):</span><br><span class="line">	<span class="keyword">while</span> stack <span class="keyword">and</span> li[i] &gt; li[stack[-<span class="number">1</span>]]:</span><br><span class="line">		index = stack.pop()</span><br><span class="line"></span><br><span class="line">	stack.append(i)</span><br></pre></td></tr></table></figure>
+<p>LeetCode 503 Next Greater Element II</p>
+<h3 id="例子："><a href="#例子：" class="headerlink" title="例子："></a><strong>例子：</strong></h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">nextGreaterElements</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="type">List</span>[<span class="built_in">int</span>]:</span><br><span class="line">	num_list = nums * <span class="number">2</span></span><br><span class="line">	result, stack = [<span class="number">0</span>] * <span class="built_in">len</span>(num_list), []</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(num_list)):</span><br><span class="line">		<span class="keyword">while</span> stack <span class="keyword">and</span> num_list[i] &gt; num_list[stack[-<span class="number">1</span>]]:</span><br><span class="line">			index = stack.pop()</span><br><span class="line">			result[index] = num_list[i]</span><br><span class="line">		stack.append(i)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> stack:</span><br><span class="line">		index = stack.pop()</span><br><span class="line">		result[index] = -<span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> result[:<span class="built_in">len</span>(nums)]</span><br></pre></td></tr></table></figure>
 <h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>。</p>
 ]]></content>
       <tags>
