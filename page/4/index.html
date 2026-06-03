@@ -201,6 +201,105 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2026/05/27/lin-683/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KK Shum">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KK's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2026/05/27/lin-683/" class="post-title-link" itemprop="url">LintCode 683 Word Break III</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2026-05-27 19:58:51" itemprop="dateCreated datePublished" datetime="2026-05-27T19:58:51-07:00">2026-05-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2026-06-03 01:22:53" itemprop="dateModified" datetime="2026-06-03T01:22:53-07:00">2026-06-03</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2026/05/27/lin-683/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2026/05/27/lin-683/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong><a href="https://www.lintcode.com/problem/word-break-iii/">LintCode 683 Word Break III</a></strong></p>
+<div><br><br>Give a dictionary of words and a sentence with all whitespace removed, return the number of sentences you can form by inserting whitespaces to the sentence so that each word can be found in the dictionary.<br><br><strong>Example 1:</strong><br><br><pre><br>Input:<br>“CatMat”<br>[“Cat”, “Mat”, “Ca”, “tM”, “at”, “C”, “Dog”, “og”, “Do”]<br>Output: 3<br>Explanation:<br>we can form 3 sentences, as follows:<br>“CatMat” = “Cat” + “Mat”<br>“CatMat” = “Ca” + “tM” + “at”<br>“CatMat” = “C” + “at” + “Mat”<br></pre><br><br><strong>Example 2:</strong><br><br><pre><br>Input:<br>“a”<br>[]<br>Output: 0<br></pre><br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>一个字符串s，被“字典集合”（wordDict）中的单词拼接而成的可能性种数。  </p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是经典题。如果知道s[0:n-1)很容易知道s[0:n)是否有解，既然和子问题有关，就用DP。  </p>
+<ol>
+<li>定义dp[i]为字符串s[0,i)是合法分解种数。</li>
+<li>判断一个字符串是否可以合法分解，方案是尝试在每一位进行分解，若其中一个可分解，即有解，加入到dp[i]中。<br>递归式为dp[i] += dp[k] * isWord(s[k:i)), 0 &lt;= k &lt; i. </li>
+<li>方向为从左到右i=0..n, 初始值为dp[0] = 1. </li>
+</ol>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>将两个输入都转换成小写。 </li>
+<li>dp[n+1]而不是dp[n]，而for循环从1开始。  </li>
+<li>递归中dp[i]用+操作符。  </li>
+</ol>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">int</span> <span class="title function_">wordBreak3</span><span class="params">(String s, Set&lt;String&gt; dict)</span> &#123;</span><br><span class="line">	<span class="keyword">if</span>(s == <span class="literal">null</span> || <span class="string">&quot;&quot;</span>.equals(s))</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	</span><br><span class="line">	Set&lt;String&gt; lowerDict = <span class="keyword">new</span> <span class="title class_">HashSet</span>&lt;&gt;();</span><br><span class="line">	<span class="keyword">for</span>(String c : dict)</span><br><span class="line">		lowerDict.add(c.toLowerCase());</span><br><span class="line">	dict = lowerDict;</span><br><span class="line">	s = s.toLowerCase();</span><br><span class="line">	</span><br><span class="line">	<span class="type">int</span>[] dp = <span class="keyword">new</span> <span class="title class_">int</span>[s.length() + <span class="number">1</span>];</span><br><span class="line">	dp[<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// dp[i][j] = sum(dp[i][k] * isWord(s[k,j])), i=0..n-1, j=i..n-1</span></span><br><span class="line">	<span class="comment">// dp[0][n-1] = sum(dp[0][k] * isWord(s[k,n-1]))</span></span><br><span class="line">	<span class="comment">// dp[n] = sum(dp[k] * isWord(s[k,n]))</span></span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">1</span>; i &lt;= s.length(); i++) &#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="type">int</span> <span class="variable">k</span> <span class="operator">=</span> <span class="number">0</span>; k &lt; i; k++) &#123;</span><br><span class="line">			dp[i] += dp[k] * (dict.contains(s.substring(k, i)) ? <span class="number">1</span> : <span class="number">0</span>); </span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> dp[s.length()];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n<sup>2</sup>)</code>，空间复杂度为<code>O(n)</code>。  </p>
+<p>这道题一开始走过一些弯路，首先我觉得类似于Catalan算法，左右半部都是子问题，但其实这属于单边问题。所以写了以下算法：  </p>
+<h3 id="Java代码：-1"><a href="#Java代码：-1" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">int</span> <span class="title function_">wordBreak3_wrong</span><span class="params">(String s, Set&lt;String&gt; dict)</span> &#123;</span><br><span class="line">	<span class="keyword">if</span>(s == <span class="literal">null</span> || <span class="string">&quot;&quot;</span>.equals(s))</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// dp[i][j] = sum(dp[i][k] * dp[k][j])</span></span><br><span class="line">	<span class="type">int</span>[][] dp = <span class="keyword">new</span> <span class="title class_">int</span>[s.length() + <span class="number">1</span>][s.length() + <span class="number">1</span>];</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// use &quot;ab&quot; as an example</span></span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> <span class="variable">len</span> <span class="operator">=</span> <span class="number">1</span>; len &lt;= s.length(); len++) &#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; s.length() - len + <span class="number">1</span>; i++) &#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="type">int</span> <span class="variable">j</span> <span class="operator">=</span> i + <span class="number">1</span>; j &lt; i + len; j++) &#123;</span><br><span class="line">				<span class="comment">//&quot;a&quot;,&quot;b&quot;</span></span><br><span class="line">				dp[i][i+len] += dp[i][j] * dp[j][i+len];    		</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="comment">//&quot;ab&quot;</span></span><br><span class="line">			<span class="keyword">if</span>(dict.contains(s.substring(i, i+len)))</span><br><span class="line">				dp[i][i+len]++;</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> dp[<span class="number">0</span>][s.length()];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>但这个方法会有重复解，比如<br>“abc”, “a”,”b”,”c”<br>-&gt; <code>dp[&quot;ab&quot;] * dp[&quot;c&quot;] = 1</code><br>-&gt; <code>dp[&quot;a&quot;] * dp[&quot;bc&quot;] = 1</code><br>所以解重复，因为这问题是单边子问题而不是Catalan问题。<br>更改版本为单边子问题，一开始用dp[n]导致初始化稍复杂，其实初始化可以并入到递归式，只要用dp[n+1]即可。  </p>
+<h3 id="Java代码：-2"><a href="#Java代码：-2" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">int</span> <span class="title function_">wordBreak32</span><span class="params">(String s, Set&lt;String&gt; dict)</span> &#123;</span><br><span class="line">	<span class="keyword">if</span>(s == <span class="literal">null</span> || <span class="string">&quot;&quot;</span>.equals(s))</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="type">int</span>[] dp = <span class="keyword">new</span> <span class="title class_">int</span>[s.length()];</span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; s.length(); i++)</span><br><span class="line">		dp[i] = dict.contains(s.substring(<span class="number">0</span>, i + <span class="number">1</span>)) ? <span class="number">1</span> : <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; s.length(); i++) &#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="type">int</span> <span class="variable">k</span> <span class="operator">=</span> <span class="number">0</span>; k &lt; i; k++) &#123;</span><br><span class="line">			dp[i] += dp[k] * (dict.contains(s.substring(k + <span class="number">1</span>, i + <span class="number">1</span>)) ? <span class="number">1</span> : <span class="number">0</span>); </span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> dp[s.length() - <span class="number">1</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2026/05/27/leetcode-984-string-without-aaa-or-bbb/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -232,7 +331,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-02-07 22:45:10" itemprop="dateModified" datetime="2022-02-07T22:45:10-08:00">2022-02-07</time>
+                <time title="Modified: 2026-06-03 01:22:53" itemprop="dateModified" datetime="2026-06-03T01:22:53-07:00">2026-06-03</time>
               </span>
 
           
@@ -324,7 +423,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-02-08 00:53:25" itemprop="dateModified" datetime="2022-02-08T00:53:25-08:00">2022-02-08</time>
+                <time title="Modified: 2026-06-03 01:22:53" itemprop="dateModified" datetime="2026-06-03T01:22:53-07:00">2026-06-03</time>
               </span>
 
           
@@ -415,7 +514,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-03-16 00:37:42" itemprop="dateModified" datetime="2022-03-16T00:37:42-07:00">2022-03-16</time>
+                <time title="Modified: 2026-06-03 01:22:53" itemprop="dateModified" datetime="2026-06-03T01:22:53-07:00">2026-06-03</time>
               </span>
 
           
@@ -505,7 +604,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-03-16 09:55:18" itemprop="dateModified" datetime="2022-03-16T09:55:18-07:00">2022-03-16</time>
+                <time title="Modified: 2026-06-03 01:22:53" itemprop="dateModified" datetime="2026-06-03T01:22:53-07:00">2026-06-03</time>
               </span>
 
           
@@ -552,97 +651,6 @@
 <h3 id="统计算法II解题思路："><a href="#统计算法II解题思路：" class="headerlink" title="统计算法II解题思路："></a><strong>统计算法II解题思路：</strong></h3><p>类似于Leetcode 032 Longest Valid Parentheses的统计算法。用这两种情况来写即可： ()), )(. 若左括号数left出现负数，根据第一个规律，重设left，计入res</p>
 <h3 id="Python代码：-1"><a href="#Python代码：-1" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">minAddToMakeValid2</span>(<span class="params">self, s: <span class="built_in">str</span></span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	left, res = <span class="number">0</span>, <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> char <span class="keyword">in</span> s:</span><br><span class="line">		<span class="keyword">if</span> char == <span class="string">&#x27;(&#x27;</span>:</span><br><span class="line">			left += <span class="number">1</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			left -= <span class="number">1</span></span><br><span class="line">			<span class="keyword">if</span> left &lt; <span class="number">0</span>:</span><br><span class="line">				res += <span class="number">1</span></span><br><span class="line">				left = <span class="number">0</span></span><br><span class="line">	<span class="keyword">return</span> res + <span class="built_in">abs</span>(left)</span><br></pre></td></tr></table></figure>
 <h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2026/05/27/leetcode-859-buddy-strings/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="KK Shum">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="KK's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2026/05/27/leetcode-859-buddy-strings/" class="post-title-link" itemprop="url">LeetCode Buddy Strings</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2026-05-27 19:58:51" itemprop="dateCreated datePublished" datetime="2026-05-27T19:58:51-07:00">2026-05-27</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-02-15 01:38:45" itemprop="dateModified" datetime="2022-02-15T01:38:45-08:00">2022-02-15</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2026/05/27/leetcode-859-buddy-strings/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2026/05/27/leetcode-859-buddy-strings/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong><a href="https://leetcode.com/problems/buddy-strings/">LeetCode</a></strong></p>
-<div><br><br>Given two strings <code>s</code> and <code>goal</code>, return <code>true</code> <em>if you can swap two letters in</em> <code>s</code> <em>so the result is equal to</em> <code>goal</code><em>, otherwise, return</em> <code>false</code><em>.</em><br><br>Swapping letters is defined as taking two indices <code>i</code> and <code>j</code> (0-indexed) such that <code>i != j</code> and swapping the characters at <code>s[i]</code> and <code>s[j]</code>.<br><br><em>   For example, swapping at indices <code>0</code> and <code>2</code> in <code>&quot;abcd&quot;</code> results in <code>&quot;cbad&quot;</code>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> s = “ab”, goal = “ba”<br><strong>Output:</strong> true<br><strong>Explanation:</strong> You can swap s[0] = ‘a’ and s[1] = ‘b’ to get “ba”, which is equal to goal.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> s = “ab”, goal = “ab”<br><strong>Output:</strong> false<br><strong>Explanation:</strong> The only letters you can swap are s[0] = ‘a’ and s[1] = ‘b’, which results in “ba” != goal.<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> s = “aa”, goal = “aa”<br><strong>Output:</strong> true<br><strong>Explanation:</strong> You can swap s[0] = ‘a’ and s[1] = ‘a’ to get “aa”, which is equal to goal.<br></pre><br><br><strong>Constraints:</strong>
-
-</em>   <code>1 &lt;= s.length, goal.length &lt;= 2 * 10&lt;sup&gt;4&lt;/sup&gt;</code><br>*   <code>s</code> and <code>goal</code> consist of lowercase letters.<br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定两字符串，交换一次使得他们相等</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>三种情况： 长度不等，完全相等（若至少有一个重复，即满足题意），两次不同</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>三种情况： 长度不等，完全相等，两次不同</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">buddyStrings</span>(<span class="params">self, s: <span class="built_in">str</span>, goal: <span class="built_in">str</span></span>) -&gt; <span class="built_in">bool</span>:</span><br><span class="line">	<span class="keyword">if</span> <span class="built_in">len</span>(s) != <span class="built_in">len</span>(goal):</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">	<span class="keyword">if</span> s == goal <span class="keyword">and</span> <span class="built_in">len</span>(<span class="built_in">set</span>(s)) &lt; <span class="built_in">len</span>(goal): <span class="comment"># any dups</span></span><br><span class="line">		<span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">	diff = [(a, b) <span class="keyword">for</span> a, b <span class="keyword">in</span> <span class="built_in">zip</span>(s, goal) <span class="keyword">if</span> a != b]</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">True</span> <span class="keyword">if</span> <span class="built_in">len</span>(diff) == <span class="number">2</span> <span class="keyword">and</span> diff[<span class="number">0</span>] == diff[<span class="number">1</span>][::-<span class="number">1</span>] <span class="keyword">else</span> <span class="literal">False</span></span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
 
       
     </div>

@@ -201,6 +201,101 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2026/05/27/leetcode-670-maximum-swap/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KK Shum">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KK's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2026/05/27/leetcode-670-maximum-swap/" class="post-title-link" itemprop="url">LeetCode 670 Maximum Swap</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2026-05-27 19:58:51" itemprop="dateCreated datePublished" datetime="2026-05-27T19:58:51-07:00">2026-05-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2026-06-03 01:22:53" itemprop="dateModified" datetime="2026-06-03T01:22:53-07:00">2026-06-03</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2026/05/27/leetcode-670-maximum-swap/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2026/05/27/leetcode-670-maximum-swap/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong><a href="https://leetcode.com/problems/maximum-swap/">LeetCode</a></strong></p>
+<div><br><br>You are given an integer <code>num</code>. You can swap two digits at most once to get the maximum valued number.<br><br>Return <em>the maximum valued number you can get</em>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> num = 2736<br><strong>Output:</strong> 7236<br><strong>Explanation:</strong> Swap the number 2 and the number 7.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> num = 9973<br><strong>Output:</strong> 9973<br><strong>Explanation:</strong> No swap.<br></pre><br><br><strong>Constraints:</strong><br><br>*   <code>0 &lt;= num &lt;= 10&lt;sup&gt;8&lt;/sup&gt;</code><br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个数，最多交换一位，使得这个数尽可能最大</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>类似于LeetCode 854 K-Similar Strings, 如2736， 求2后面最大的数为7，和7交换即为所求。这里有两个问题：</p>
+<ol>
+<li>第一位可能已经是最大的数位，这样需要遍历每个数位，找到能交换的数位，若这个位在倒序排序后位置一样，表明此位不能交换。所以排序法的算法复杂度为n平方</li>
+<li>若要优化就要采用bucket sort，因为数位是有限的。若后续数位有一个数比自己大，表示可交换。所以只要记录每个数位的位置，贪心法从9(最大)遍历到自己，若该位位置在自己之后，可交换</li>
+<li>若不同数位上数值相同，应该记录其最后的位置，因为交换时候将小的尽量往后交换，越好越不重要，如2949, 2和最后的9交换得到最大的数</li>
+</ol>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>内循环从9遍历到该位数值(不包括)</li>
+<li>buckets的key为字符串，注意整数和字符串互换，如buckets[str(j)], int(digits[i])</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">maximumSwap</span>(<span class="params">self, num: <span class="built_in">int</span></span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	digits, buckets = <span class="built_in">str</span>(num), collections.defaultdict(<span class="built_in">int</span>)</span><br><span class="line">	<span class="keyword">for</span> i, digit <span class="keyword">in</span> <span class="built_in">enumerate</span>(digits):</span><br><span class="line">		buckets[digit] = i <span class="comment"># use last position for same char</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(digits)):</span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">9</span>, <span class="built_in">int</span>(digits[i]), -<span class="number">1</span>): <span class="comment"># remember to use int(digits[i]) not i</span></span><br><span class="line">			<span class="keyword">if</span> buckets[<span class="built_in">str</span>(j)] &gt; i: <span class="comment"># 2736, i = (2), j = (7) # remember to use str j</span></span><br><span class="line">				<span class="keyword">return</span> <span class="built_in">int</span>(digits[:i] + digits[buckets[<span class="built_in">str</span>(j)]] + digits[i + <span class="number">1</span>:buckets[<span class="built_in">str</span>(j)]] + digits[i] + digits[buckets[<span class="built_in">str</span>(j)] + <span class="number">1</span>:])</span><br><span class="line">	<span class="keyword">return</span> num</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(9n)</code>，空间复杂度<code>O(n)</code>  </p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2026/05/27/leetcode-628-maximum-product-of-three-numbers/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -232,7 +327,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-01-29 19:34:17" itemprop="dateModified" datetime="2022-01-29T19:34:17-08:00">2022-01-29</time>
+                <time title="Modified: 2026-06-03 01:22:53" itemprop="dateModified" datetime="2026-06-03T01:22:53-07:00">2026-06-03</time>
               </span>
 
           
@@ -326,7 +421,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-02-15 18:00:06" itemprop="dateModified" datetime="2022-02-15T18:00:06-08:00">2022-02-15</time>
+                <time title="Modified: 2026-06-03 01:22:53" itemprop="dateModified" datetime="2026-06-03T01:22:53-07:00">2026-06-03</time>
               </span>
 
           
@@ -416,7 +511,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-02-07 00:33:53" itemprop="dateModified" datetime="2022-02-07T00:33:53-08:00">2022-02-07</time>
+                <time title="Modified: 2026-06-03 01:22:53" itemprop="dateModified" datetime="2026-06-03T01:22:53-07:00">2026-06-03</time>
               </span>
 
           
@@ -510,7 +605,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-02-07 00:29:16" itemprop="dateModified" datetime="2022-02-07T00:29:16-08:00">2022-02-07</time>
+                <time title="Modified: 2026-06-03 01:22:53" itemprop="dateModified" datetime="2026-06-03T01:22:53-07:00">2026-06-03</time>
               </span>
 
           
@@ -551,98 +646,6 @@
 </ol>
 <h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">diameterOfBinaryTree</span>(<span class="params">self, root: TreeNode</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	max_len = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">def</span> <span class="title function_">dfs</span>(<span class="params">root</span>):</span><br><span class="line">		<span class="keyword">if</span> <span class="keyword">not</span> root:</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">		<span class="keyword">nonlocal</span> max_len</span><br><span class="line">		left = dfs(root.left) + <span class="number">1</span></span><br><span class="line">		right = dfs(root.right) + <span class="number">1</span></span><br><span class="line">		res = <span class="built_in">max</span>(left, right)</span><br><span class="line">		total = left + right - <span class="number">1</span></span><br><span class="line">		max_len = <span class="built_in">max</span>(res, total, max_len)</span><br><span class="line">		<span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line">	dfs(root)</span><br><span class="line">	<span class="keyword">return</span> max_len - <span class="number">1</span></span><br></pre></td></tr></table></figure>
 <h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2026/05/27/leetcode-518-coin-change-2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="KK Shum">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="KK's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2026/05/27/leetcode-518-coin-change-2/" class="post-title-link" itemprop="url">LeetCode 518 Coin Change 2</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2026-05-27 19:58:51" itemprop="dateCreated datePublished" datetime="2026-05-27T19:58:51-07:00">2026-05-27</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-02-02 13:07:55" itemprop="dateModified" datetime="2022-02-02T13:07:55-08:00">2022-02-02</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2026/05/27/leetcode-518-coin-change-2/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2026/05/27/leetcode-518-coin-change-2/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong><a href="https://leetcode.com/problems/coin-change-2/">LeetCode</a></strong></p>
-<div><br><br>You are given an integer array <code>coins</code> representing coins of different denominations and an integer <code>amount</code> representing a total amount of money.<br><br>Return <em>the number of combinations that make up that amount</em>. If that amount of money cannot be made up by any combination of the coins, return <code>0</code>.<br><br>You may assume that you have an infinite number of each kind of coin.<br><br>The answer is <strong>guaranteed</strong> to fit into a signed <strong>32-bit</strong> integer.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> amount = 5, coins = [1,2,5]<br><strong>Output:</strong> 4<br><strong>Explanation:</strong> there are four ways to make up the amount:<br>5=5<br>5=2+2+1<br>5=2+1+1+1<br>5=1+1+1+1+1<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> amount = 3, coins = [2]<br><strong>Output:</strong> 0<br><strong>Explanation:</strong> the amount of 3 cannot be made up just with coins of 2.<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> amount = 10, coins = [10]<br><strong>Output:</strong> 1<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= coins.length &lt;= 300</code>
-</em>   <code>1 &lt;= coins[i] &lt;= 5000</code><br><em>   All the values of <code>coins</code> are <strong>unique</strong>.
-</em>   <code>0 &lt;= amount &lt;= 5000</code><br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求兑换硬币的种数</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>类似于LeetCode 322 Coin Change，那题求最小个数，此题求总数，也是用DP。<br>递归式：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dp[i] = sum(dp[j]), i = j + coins[i]</span><br></pre></td></tr></table></figure></p>
-<p>LeetCode 377 Combination Sum IV 题目基本一样，唯一区别是结果元素有序，属于排列<br>LeetCode 518 Coin Change 2 题目基本一样，唯一区别是结果元素无序，属于组合</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>递归5部曲</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li><strong>for循环顺序不能错，先coin再dp</strong>，否则会有重复计算，如dp[3] = 2 + 1和1 + 2. 字面上理解也是可以知道重复。但如果coin先的话，就只能用1的硬币，第二轮是只能用2的硬币，如此类推，显然不会重复，dp[3] = dp[2] + 1(只用硬币1), dp[1] + 2(只用硬币2) </li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># dp[i] = dp[j], i = j + coins[i]</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">change</span>(<span class="params">self, amount: <span class="built_in">int</span>, coins: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	dp = [<span class="number">0</span>] * (amount + <span class="number">1</span>)</span><br><span class="line">	dp[<span class="number">0</span>] = <span class="number">1</span></span><br><span class="line">	<span class="keyword">for</span> coin <span class="keyword">in</span> coins:</span><br><span class="line">		<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(dp)): <span class="comment"># [0, 0]</span></span><br><span class="line">			<span class="keyword">if</span> i + coin &lt;= amount:</span><br><span class="line">				dp[i + coin] += dp[i]</span><br><span class="line">	<span class="keyword">return</span> dp[-<span class="number">1</span>]</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n*amount)</code>，空间复杂度<code>O(amount)</code>  </p>
 
       
     </div>
