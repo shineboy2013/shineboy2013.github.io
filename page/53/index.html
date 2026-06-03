@@ -201,6 +201,97 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2026/05/27/lee-1235/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KK Shum">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KK's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2026/05/27/lee-1235/" class="post-title-link" itemprop="url">LeetCode 1235 Maximum Profit in Job Scheduling</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2026-05-27 19:58:49" itemprop="dateCreated datePublished" datetime="2026-05-27T19:58:49-07:00">2026-05-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-12-20 00:55:51" itemprop="dateModified" datetime="2021-12-20T00:55:51-08:00">2021-12-20</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2026/05/27/lee-1235/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2026/05/27/lee-1235/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong><a href="https://leetcode.com/problems/maximum-profit-in-job-scheduling/">LeetCode</a></strong></p>
+<div><br><br>We have <code>n</code> jobs, where every job is scheduled to be done from <code>startTime[i]</code> to <code>endTime[i]</code>, obtaining a profit of <code>profit[i]</code>.<br><br>You’re given the <code>startTime</code>, <code>endTime</code> and <code>profit</code> arrays, return the maximum profit you can take such that there are no two jobs in the subset with overlapping time range.<br><br>If you choose a job that ends at time <code>X</code> you will be able to start another job that starts at time <code>X</code>.<br><br><strong>Example 1:</strong><br><br><strong><img src="https://assets.leetcode.com/uploads/2019/10/10/sample1_1584.png" alt=""></strong><br><br><pre><strong>Input:</strong> startTime = [1,2,3,3], endTime = [3,4,5,6], profit = [50,10,40,70]<br><strong>Output:</strong> 120<br><strong>Explanation:</strong> The subset chosen is the first and fourth job.<br>Time range [1-3]+[3-6] , we get profit of 120 = 50 + 70.<br></pre><br><br><strong>Example 2:</strong><br><br><strong><img src="https://assets.leetcode.com/uploads/2019/10/10/sample22_1584.png" alt=""></strong><br><br><pre><strong>Input:</strong> startTime = [1,2,3,4,6], endTime = [3,5,10,6,9], profit = [20,20,100,70,60]<br><strong>Output:</strong> 150<br><strong>Explanation:</strong> The subset chosen is the first, fourth and fifth job.<br>Profit obtained 150 = 20 + 70 + 60.<br></pre><br><br><strong>Example 3:</strong><br><br><strong><img src="https://assets.leetcode.com/uploads/2019/10/10/sample3_1584.png" alt=""></strong><br><br><pre><strong>Input:</strong> startTime = [1,1,1], endTime = [2,3,4], profit = [5,6,4]<br><strong>Output:</strong> 6<br></pre><br><br><strong>Constraints:</strong><br><br><em>   `1 &lt;= startTime.length == endTime.length == profit.length &lt;= 5 </em> 10<sup>4</sup><code>*</code>1 &lt;= startTime[i] &lt; endTime[i] &lt;= 10<sup>9</sup><code>*</code>1 &lt;= profit[i] &lt;= 10<sup>4</sup>`<br><br></div>
+
+<h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>DP + 排序<br>一开始以为类似于meeting rooms II，所以用heap，但只能计算conflicts不能计算profits，但排序思想有用。<br>求最值问题第一时间考虑用DP，所以考虑以第i-1个job为结尾的最大利润：  </p>
+<p><pre><br>dp[i] = max -&gt; dp[j] + profits[i-1]), 第i个job的startTime[i-1] &gt;= endTime[j], 第j个job与第i个job没有conflicts<br>            -&gt; dp[j]                                                          第j个job与第i个job有conflicts<br></pre><br>复杂度为O(n^2)  </p>
+<p>写出递归式后，求startTime &gt;= endTime其实就是按endTime排序，这样有助于搜索这个条件. 这里有个难点是要加强命题至累计利润，因为正如Cooldown股票题一样，dp[j]不应该是以job j为结尾的最大利润，而应该是前j个job的最大利润，这些job不一定都是相邻<br>加强命题dp[i]是累计利润，也就是并不需要计算所有dp[j…i]的值（第一式子），公式变成  </p>
+<p><pre><br>dp[i] = max -&gt; dp[j] + profits[i-1]), j = start[i-1]对应的Endtime下标, 第j个job与第i个job没有conflicts<br>            -&gt; dp[j]                                                   第j个job与第i个job有conflicts<br></pre><br>要找出这个j，就对刚才排序了的endtime数组用bisect找下标。类似于LIS, 复杂度为O(nlogn)  </p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>bisect的使用求大于startTime的endTime下标，此下标j减一正是所求，但dp和数组中下标转换是差1，所以dp[j - 1 + 1]是前值的DP值。      </li>
+<li><strong>加强命题至累计利润</strong>dp[i], 见line 9 - 10 </li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">jobScheduling</span>(<span class="params">self, startTime: <span class="type">List</span>[<span class="built_in">int</span>], endTime: <span class="type">List</span>[<span class="built_in">int</span>], profit: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	job_by_endtime, dp, max_profit = [], [<span class="number">0</span>] * (<span class="built_in">len</span>(startTime) + <span class="number">1</span>), <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(startTime)):</span><br><span class="line">		job_by_endtime.append((endTime[i], startTime[i], profit[i]))</span><br><span class="line">	job_by_endtime.sort()</span><br><span class="line">	end_time_sorted = [pair[<span class="number">0</span>] <span class="keyword">for</span> pair <span class="keyword">in</span> job_by_endtime]</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="built_in">len</span>(dp)):</span><br><span class="line">		j = bisect.bisect(end_time_sorted, job_by_endtime[i - <span class="number">1</span>][<span class="number">1</span>]) <span class="comment"># previous end time &lt;= current start time</span></span><br><span class="line">		dp[i] = <span class="built_in">max</span>(max_profit, dp[j] + job_by_endtime[i - <span class="number">1</span>][<span class="number">2</span>]) <span class="comment"># remember</span></span><br><span class="line">		max_profit = <span class="built_in">max</span>(max_profit, dp[i]) <span class="comment"># remember</span></span><br><span class="line">	<span class="keyword">return</span> dp[-<span class="number">1</span>]</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nlogn)</code>，空间复杂度<code>O(n)</code>  </p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2026/05/27/lee-123/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -579,128 +670,6 @@ In this case, no transaction is done, i.e. max profit = 0.
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2026/05/27/lee-1197/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="KK Shum">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="KK's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2026/05/27/lee-1197/" class="post-title-link" itemprop="url">LeetCode 1197 Minimum Knight Moves</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2026-05-27 19:58:49" itemprop="dateCreated datePublished" datetime="2026-05-27T19:58:49-07:00">2026-05-27</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-12-06 19:00:54" itemprop="dateModified" datetime="2021-12-06T19:00:54-08:00">2021-12-06</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2026/05/27/lee-1197/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2026/05/27/lee-1197/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong><a href="https://leetcode.com/problems/minimum-knight-moves/">LeetCode 1197 Minimum Knight Moves</a></strong></p>
-<p>In an infinite chess board with coordinates from <code>-infinity</code> to <code>+infinity</code>, you have a knight at square <code>[0, 0]</code>.</p>
-<p>A knight has 8 possible moves it can make, as illustrated below. Each move is two squares in a cardinal direction, then one square in an orthogonal direction.</p>
-<p><img src="https://assets.leetcode.com/uploads/2018/10/12/knight.png" alt=""></p>
-<p>Return the minimum number of steps needed to move the knight to the square <code>[x, y]</code>.  It is guaranteed the answer exists.</p>
-<p>Example 1:</p>
-<pre>Input: x = 2, y = 1
-Output: 1
-Explanation: [0, 0] → [2, 1]
-</pre>
-
-<p>Example 2:</p>
-<pre>Input: x = 5, y = 5
-Output: 4
-Explanation: [0, 0] → [2, 1] → [4, 2] → [3, 4] → [5, 5]
-</pre>
-
-<p>Constraints:</p>
-<ul>
-<li><code>|x| + |y| &lt;= 300</code></li>
-</ul>
-<p>Because x and y are constrained to be in range[-300, 300], we can use BFS to find the minimum steps needed to reach target(x, y). Furthermore, we can only consider the case that x &gt;=0 &amp;&amp; y &gt;=0 since the chess board is symmetric.  The bfs implementation is pretty straightforward. There are two important points you need to be careful with.</p>
-<ol>
-<li>Pruning. We can limit the search dimension within 310 * 310. Any moves that lead to a position that is outside this box will not yield an optimal result.</li>
-</ol>
-<p>2. Initially, you used a Set of type int[] to track visited positions. This caused TLE because you didn’t overwrite the hashCode and equals methods for int[]. As a result, Set uses the default hashCode and equals method when checking if an element is already in the set. For equals(), The default implementation provided by the JDK is based on memory location — two objects are equal if and only if they are stored in the same memory address. For a comprehensive reading, refer to <a href="https://dzone.com/articles/working-with-hashcode-and-equals-in-java">https://dzone.com/articles/working-with-hashcode-and-equals-in-java</a></p>
-<p>O(x * y) runtime and space</p>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>象棋一样，走日字到达目标点的最小次数。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这题是最短路径题，第一时间想到BFS。</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>这题是最短路径题，第一时间想到BFS。这是一条典型的单源最短路径问题。用Distance BFS模板</p>
-<ol>
-<li>建距离map。  </li>
-<li>BFS访问。  </li>
-</ol>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>有边界限制</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">minKnightMoves</span>(<span class="params">self, x: <span class="built_in">int</span>, y: <span class="built_in">int</span></span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	<span class="keyword">return</span> <span class="variable language_">self</span>.bfs(<span class="number">0</span>, <span class="number">0</span>, x, y)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">bfs</span>(<span class="params">self, start_x, start_y, target_x, target_y</span>):</span><br><span class="line">	directions = &#123;(<span class="number">2</span>, <span class="number">1</span>), (<span class="number">1</span>, <span class="number">2</span>), (-<span class="number">1</span>, <span class="number">2</span>), (-<span class="number">2</span>, <span class="number">1</span>), (-<span class="number">2</span>, -<span class="number">1</span>), (-<span class="number">1</span>, -<span class="number">2</span>), (<span class="number">1</span>, -<span class="number">2</span>), (<span class="number">2</span>, -<span class="number">1</span>)&#125;</span><br><span class="line">	queue = deque([(start_x, start_y)])</span><br><span class="line">	visited = &#123;(start_x, start_y)&#125;</span><br><span class="line">	distance = &#123;(start_x, start_y): <span class="number">0</span>&#125;</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.popleft()</span><br><span class="line">		<span class="keyword">if</span> node == (target_x, target_y):</span><br><span class="line">			<span class="keyword">return</span> distance[node]</span><br><span class="line"></span><br><span class="line">		<span class="keyword">for</span> direction <span class="keyword">in</span> directions:</span><br><span class="line">			neighbor = (node[<span class="number">0</span>] + direction[<span class="number">0</span>], node[<span class="number">1</span>] + direction[<span class="number">1</span>])</span><br><span class="line">			<span class="keyword">if</span> neighbor <span class="keyword">in</span> visited:</span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			queue.append(neighbor)</span><br><span class="line">			visited.add(neighbor)</span><br><span class="line">			distance[neighbor] = distance[node] + <span class="number">1</span></span><br></pre></td></tr></table></figure>
-<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li><strong>用map记录距离一定要将首节点加入到map中，否则求距离时候会NPE。</strong>  </li>
-<li>visited我一开始实现用HashSet但因为没有实现equals导致LTE，改成矩阵即可。  </li>
-</ol>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span>[] directX = <span class="keyword">new</span> <span class="title class_">int</span>[]&#123;<span class="number">1</span>, <span class="number">1</span>,-<span class="number">1</span>,-<span class="number">1</span>,<span class="number">2</span>,<span class="number">2</span>,-<span class="number">2</span>,-<span class="number">2</span>&#125;;</span><br><span class="line"><span class="type">int</span>[] directY = <span class="keyword">new</span> <span class="title class_">int</span>[]&#123;<span class="number">2</span>,-<span class="number">2</span>,<span class="number">2</span>,-<span class="number">2</span>,<span class="number">1</span>,-<span class="number">1</span>,<span class="number">1</span>,-<span class="number">1</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="type">int</span> <span class="title function_">shortestPath</span><span class="params">(<span class="type">boolean</span>[][] grid, Point source, Point destination)</span> &#123;</span><br><span class="line">	<span class="keyword">if</span>(grid == <span class="literal">null</span> || grid.length == <span class="number">0</span> || grid[<span class="number">0</span>].length == <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	Queue&lt;Point&gt; q = <span class="keyword">new</span> <span class="title class_">LinkedList</span>&lt;&gt;();</span><br><span class="line">	Map&lt;Point, Integer&gt; map = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line">	map.put(source, <span class="number">0</span>); <span class="comment">// remember</span></span><br><span class="line">	<span class="type">boolean</span>[][] visited = <span class="keyword">new</span> <span class="title class_">boolean</span>[grid.length][grid[<span class="number">0</span>].length];</span><br><span class="line">	q.offer(source);</span><br><span class="line">	visited[source.x][source.y] = <span class="literal">true</span>; <span class="comment">// use hashSet is wrong.</span></span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty()) &#123;</span><br><span class="line">		<span class="type">Point</span> <span class="variable">p</span> <span class="operator">=</span> q.poll();</span><br><span class="line">		<span class="keyword">if</span>(p.x == destination.x &amp;&amp; p.y == destination.y)</span><br><span class="line">			<span class="keyword">return</span> map.get(p);</span><br><span class="line">		<span class="keyword">for</span>(Point neighbor : getNeighbors(p)) &#123;</span><br><span class="line">			<span class="keyword">if</span>(!isValid(grid, neighbor) || visited[neighbor.x][neighbor.y])</span><br><span class="line">				<span class="keyword">continue</span>;</span><br><span class="line">			q.offer(neighbor);</span><br><span class="line">			visited[neighbor.x][neighbor.y] = <span class="literal">true</span>;</span><br><span class="line">			map.put(neighbor, map.get(p) + <span class="number">1</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">List&lt;Point&gt; <span class="title function_">getNeighbors</span><span class="params">(Point point)</span> &#123;</span><br><span class="line">	List&lt;Point&gt; result = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; <span class="number">8</span>; i++) &#123;</span><br><span class="line">		result.add(<span class="keyword">new</span> <span class="title class_">Point</span>(point.x + directX[i], point.y + directY[i]));</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">boolean</span> <span class="title function_">isValid</span><span class="params">(<span class="type">boolean</span>[][] grid, Point point)</span> &#123;</span><br><span class="line">	<span class="keyword">if</span>(point.x &gt;= <span class="number">0</span> &amp;&amp; point.x &lt; grid.length &amp;&amp; point.y &gt;= <span class="number">0</span> &amp;&amp; point.y &lt; grid[<span class="number">0</span>].length </span><br><span class="line">			&amp;&amp; !grid[point.x][point.y])</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为棋盘大小<code>O(n*m</sup>)</code>，空间复杂度<code>O(n)</code>。  </p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -775,7 +744,7 @@ Explanation: [0, 0] → [2, 1] → [4, 2] → [3, 4] → [5, 5]
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">363</span>
+          <span class="site-state-item-count">364</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
