@@ -20,12 +20,12 @@
     var CONFIG = {"hostname":"shineboy2013.github.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="LeetCode &lt;div&gt; We have n jobs, where every job is scheduled to be done from startTime[i] to endTime[i], obtaining a profit of profit[i]. You&#39;re given the startTime, endTime and profit arrays, re">
+  <meta name="description" content="LeetCode We have n jobs, where every job is scheduled to be done from startTime[i] to endTime[i], obtaining a profit of profit[i].You’re given the startTime, endTime and profit arrays, return the maxi">
 <meta property="og:type" content="article">
 <meta property="og:title" content="LeetCode 1235 Maximum Profit in Job Scheduling">
 <meta property="og:url" content="https://shineboy2013.github.com/2021/12/20/lee-1235/index.html">
 <meta property="og:site_name" content="KK&#39;s blog">
-<meta property="og:description" content="LeetCode &lt;div&gt; We have n jobs, where every job is scheduled to be done from startTime[i] to endTime[i], obtaining a profit of profit[i]. You&#39;re given the startTime, endTime and profit arrays, re">
+<meta property="og:description" content="LeetCode We have n jobs, where every job is scheduled to be done from startTime[i] to endTime[i], obtaining a profit of profit[i].You’re given the startTime, endTime and profit arrays, return the maxi">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://assets.leetcode.com/uploads/2019/10/10/sample1_1584.png">
 <meta property="og:image" content="https://assets.leetcode.com/uploads/2019/10/10/sample22_1584.png">
@@ -272,61 +272,18 @@
 
       
         <p><strong><a href="https://leetcode.com/problems/maximum-profit-in-job-scheduling/">LeetCode</a></strong></p>
-<p>&lt;div&gt;</p>
-<p>We have <code>n</code> jobs, where every job is scheduled to be done from <code>startTime[i]</code> to <code>endTime[i]</code>, obtaining a profit of <code>profit[i]</code>.</p>
-<p>You're given the <code>startTime</code>, <code>endTime</code> and <code>profit</code> arrays, return the maximum profit you can take such that there are no two jobs in the subset with overlapping time range.</p>
-<p>If you choose a job that ends at time <code>X</code> you will be able to start another job that starts at time <code>X</code>.</p>
-<p><strong>Example 1:</strong></p>
-<p><strong><img src="https://assets.leetcode.com/uploads/2019/10/10/sample1_1584.png" alt=""></strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> startTime = [1,2,3,3], endTime = [3,4,5,6], profit = [50,10,40,70]
-<strong>Output:</strong> 120
-<strong>Explanation:</strong> The subset chosen is the first and fourth job.
-Time range [1-3]+[3-6] , we get profit of 120 = 50 + 70.
-&lt;/pre&gt;</p>
-<p><strong>Example 2:</strong></p>
-<p><strong><img src="https://assets.leetcode.com/uploads/2019/10/10/sample22_1584.png" alt=""></strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> startTime = [1,2,3,4,6], endTime = [3,5,10,6,9], profit = [20,20,100,70,60]
-<strong>Output:</strong> 150
-<strong>Explanation:</strong> The subset chosen is the first, fourth and fifth job.
-Profit obtained 150 = 20 + 70 + 60.
-&lt;/pre&gt;</p>
-<p><strong>Example 3:</strong></p>
-<p><strong><img src="https://assets.leetcode.com/uploads/2019/10/10/sample3_1584.png" alt=""></strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> startTime = [1,1,1], endTime = [2,3,4], profit = [5,6,4]
-<strong>Output:</strong> 6
-&lt;/pre&gt;</p>
-<p><strong>Constraints:</strong></p>
-<ul>
-<li><code>1 &lt;= startTime.length == endTime.length == profit.length &lt;= 5 * 10&lt;sup&gt;4&lt;/sup&gt;</code></li>
-<li><code>1 &lt;= startTime[i] &lt; endTime[i] &lt;= 10&lt;sup&gt;9&lt;/sup&gt;</code></li>
-<li><code>1 &lt;= profit[i] &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code></li>
-</ul>
-<p>&lt;/div&gt;</p>
-<h3><strong>算法思路：</strong></h3>
-<p>DP + 排序<br>
-一开始以为类似于meeting rooms II，所以用heap，但只能计算conflicts不能计算profits，但排序思想有用。<br>
-求最值问题第一时间考虑用DP，所以考虑以第i-1个job为结尾的最大利润：<br>
-&lt;pre&gt;
-dp[i] = max -&gt; dp[j] + profits[i-1]), 第i个job的startTime[i-1] &gt;= endTime[j], 第j个job与第i个job没有conflicts<br>
-		    -&gt; dp[j]				                                          第j个job与第i个job有conflicts<br>
-&lt;/pre&gt;
-复杂度为O(n^2)</p>
-<p>写出递归式后，求startTime &gt;= endTime其实就是按endTime排序，这样有助于搜索这个条件. 这里有个难点是要加强命题至累计利润，因为正如Cooldown股票题一样，dp[j]不应该是以job j为结尾的最大利润，而应该是前j个job的最大利润，这些job不一定都是相邻<br>
-加强命题dp[i]是累计利润，也就是并不需要计算所有dp[j...i]的值（第一式子），公式变成<br>
-&lt;pre&gt;
-dp[i] = max -&gt; dp[j] + profits[i-1]), j = start[i-1]对应的Endtime下标, 第j个job与第i个job没有conflicts<br>
-		    -&gt; dp[j]				                                   第j个job与第i个job有conflicts<br>
-&lt;/pre&gt;
-要找出这个j，就对刚才排序了的endtime数组用bisect找下标。类似于LIS, 复杂度为O(nlogn)</p>
-<h3><strong>注意事项：</strong></h3>
-<ol>
-<li>bisect的使用求大于startTime的endTime下标，此下标j减一正是所求，但dp和数组中下标转换是差1，所以dp[j - 1 + 1]是前值的DP值。</li>
-<li><strong>加强命题至累计利润</strong>dp[i], 见line 9 - 10</li>
+<div><br><br>We have <code>n</code> jobs, where every job is scheduled to be done from <code>startTime[i]</code> to <code>endTime[i]</code>, obtaining a profit of <code>profit[i]</code>.<br><br>You’re given the <code>startTime</code>, <code>endTime</code> and <code>profit</code> arrays, return the maximum profit you can take such that there are no two jobs in the subset with overlapping time range.<br><br>If you choose a job that ends at time <code>X</code> you will be able to start another job that starts at time <code>X</code>.<br><br><strong>Example 1:</strong><br><br><strong><img src="https://assets.leetcode.com/uploads/2019/10/10/sample1_1584.png" alt=""></strong><br><br><pre><strong>Input:</strong> startTime = [1,2,3,3], endTime = [3,4,5,6], profit = [50,10,40,70]<br><strong>Output:</strong> 120<br><strong>Explanation:</strong> The subset chosen is the first and fourth job.<br>Time range [1-3]+[3-6] , we get profit of 120 = 50 + 70.<br></pre><br><br><strong>Example 2:</strong><br><br><strong><img src="https://assets.leetcode.com/uploads/2019/10/10/sample22_1584.png" alt=""></strong><br><br><pre><strong>Input:</strong> startTime = [1,2,3,4,6], endTime = [3,5,10,6,9], profit = [20,20,100,70,60]<br><strong>Output:</strong> 150<br><strong>Explanation:</strong> The subset chosen is the first, fourth and fifth job.<br>Profit obtained 150 = 20 + 70 + 60.<br></pre><br><br><strong>Example 3:</strong><br><br><strong><img src="https://assets.leetcode.com/uploads/2019/10/10/sample3_1584.png" alt=""></strong><br><br><pre><strong>Input:</strong> startTime = [1,1,1], endTime = [2,3,4], profit = [5,6,4]<br><strong>Output:</strong> 6<br></pre><br><br><strong>Constraints:</strong><br><br><em>   `1 &lt;= startTime.length == endTime.length == profit.length &lt;= 5 </em> 10<sup>4</sup><code>*</code>1 &lt;= startTime[i] &lt; endTime[i] &lt;= 10<sup>9</sup><code>*</code>1 &lt;= profit[i] &lt;= 10<sup>4</sup>`<br><br></div>
+
+<h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>DP + 排序<br>一开始以为类似于meeting rooms II，所以用heap，但只能计算conflicts不能计算profits，但排序思想有用。<br>求最值问题第一时间考虑用DP，所以考虑以第i-1个job为结尾的最大利润：  </p>
+<p><pre><br>dp[i] = max -&gt; dp[j] + profits[i-1]), 第i个job的startTime[i-1] &gt;= endTime[j], 第j个job与第i个job没有conflicts<br>            -&gt; dp[j]                                                          第j个job与第i个job有conflicts<br></pre><br>复杂度为O(n^2)  </p>
+<p>写出递归式后，求startTime &gt;= endTime其实就是按endTime排序，这样有助于搜索这个条件. 这里有个难点是要加强命题至累计利润，因为正如Cooldown股票题一样，dp[j]不应该是以job j为结尾的最大利润，而应该是前j个job的最大利润，这些job不一定都是相邻<br>加强命题dp[i]是累计利润，也就是并不需要计算所有dp[j…i]的值（第一式子），公式变成  </p>
+<p><pre><br>dp[i] = max -&gt; dp[j] + profits[i-1]), j = start[i-1]对应的Endtime下标, 第j个job与第i个job没有conflicts<br>            -&gt; dp[j]                                                   第j个job与第i个job有conflicts<br></pre><br>要找出这个j，就对刚才排序了的endtime数组用bisect找下标。类似于LIS, 复杂度为O(nlogn)  </p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>bisect的使用求大于startTime的endTime下标，此下标j减一正是所求，但dp和数组中下标转换是差1，所以dp[j - 1 + 1]是前值的DP值。      </li>
+<li><strong>加强命题至累计利润</strong>dp[i], 见line 9 - 10 </li>
 </ol>
-<h3><strong>Python代码：</strong></h3>
-<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">jobScheduling</span>(<span class="params">self, startTime: <span class="type">List</span>[<span class="built_in">int</span>], endTime: <span class="type">List</span>[<span class="built_in">int</span>], profit: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	job_by_endtime, dp, max_profit = [], [<span class="number">0</span>] * (<span class="built_in">len</span>(startTime) + <span class="number">1</span>), <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(startTime)):</span><br><span class="line">		job_by_endtime.append((endTime[i], startTime[i], profit[i]))</span><br><span class="line">	job_by_endtime.sort()</span><br><span class="line">	end_time_sorted = [pair[<span class="number">0</span>] <span class="keyword">for</span> pair <span class="keyword">in</span> job_by_endtime]</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="built_in">len</span>(dp)):</span><br><span class="line">		j = bisect.bisect(end_time_sorted, job_by_endtime[i - <span class="number">1</span>][<span class="number">1</span>]) <span class="comment"># previous end time &lt;= current start time</span></span><br><span class="line">		dp[i] = <span class="built_in">max</span>(max_profit, dp[j] + job_by_endtime[i - <span class="number">1</span>][<span class="number">2</span>]) <span class="comment"># remember</span></span><br><span class="line">		max_profit = <span class="built_in">max</span>(max_profit, dp[i]) <span class="comment"># remember</span></span><br><span class="line">	<span class="keyword">return</span> dp[-<span class="number">1</span>]</span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>时间复杂度为<code>O(nlogn)</code>，空间复杂度<code>O(n)</code></p>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">jobScheduling</span>(<span class="params">self, startTime: <span class="type">List</span>[<span class="built_in">int</span>], endTime: <span class="type">List</span>[<span class="built_in">int</span>], profit: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	job_by_endtime, dp, max_profit = [], [<span class="number">0</span>] * (<span class="built_in">len</span>(startTime) + <span class="number">1</span>), <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(startTime)):</span><br><span class="line">		job_by_endtime.append((endTime[i], startTime[i], profit[i]))</span><br><span class="line">	job_by_endtime.sort()</span><br><span class="line">	end_time_sorted = [pair[<span class="number">0</span>] <span class="keyword">for</span> pair <span class="keyword">in</span> job_by_endtime]</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="built_in">len</span>(dp)):</span><br><span class="line">		j = bisect.bisect(end_time_sorted, job_by_endtime[i - <span class="number">1</span>][<span class="number">1</span>]) <span class="comment"># previous end time &lt;= current start time</span></span><br><span class="line">		dp[i] = <span class="built_in">max</span>(max_profit, dp[j] + job_by_endtime[i - <span class="number">1</span>][<span class="number">2</span>]) <span class="comment"># remember</span></span><br><span class="line">		max_profit = <span class="built_in">max</span>(max_profit, dp[i]) <span class="comment"># remember</span></span><br><span class="line">	<span class="keyword">return</span> dp[-<span class="number">1</span>]</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nlogn)</code>，空间复杂度<code>O(n)</code>  </p>
 
     </div>
 
@@ -414,7 +371,7 @@ dp[i] = max -&gt; dp[j] + profits[i-1]), j = start[i-1]对应的Endtime下标, �
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">算法思路：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">注意事项：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">Python代码：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">算法分析：</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%97%E6%B3%95%E6%80%9D%E8%B7%AF%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">算法思路：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9%EF%BC%9A"><span class="nav-number">2.</span> <span class="nav-text">注意事项：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Python%E4%BB%A3%E7%A0%81%EF%BC%9A"><span class="nav-number">3.</span> <span class="nav-text">Python代码：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%97%E6%B3%95%E5%88%86%E6%9E%90%EF%BC%9A"><span class="nav-number">4.</span> <span class="nav-text">算法分析：</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

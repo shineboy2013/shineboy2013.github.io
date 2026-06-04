@@ -263,90 +263,55 @@
           <p><strong><a href="https://leetcode.com/problems/min-stack">LeetCode 155 Min Stack</a></strong></p>
 <p>Design a stack that supports push, pop, top, and retrieving the minimum element in constant time.</p>
 <ul>
-<li>push(x) -- Push element x onto stack.</li>
-<li>pop() -- Removes the element on top of the stack.</li>
-<li>top() -- Get the top element.</li>
-<li>getMin() -- Retrieve the minimum element in the stack.</li>
+<li>push(x) – Push element x onto stack.</li>
+<li>pop() – Removes the element on top of the stack.</li>
+<li>top() – Get the top element.</li>
+<li>getMin() – Retrieve the minimum element in the stack.</li>
 </ul>
-<p><strong>Example:</strong></p>
-<p>&lt;pre&gt;MinStack minStack = new MinStack();
+<p><strong>Example:</strong>  </p>
+<pre>MinStack minStack = new MinStack();
 minStack.push(-2);
 minStack.push(0);
 minStack.push(-3);
-minStack.getMin();   --&gt; Returns -3.
+minStack.getMin();   --> Returns -3.
 minStack.pop();
-minStack.top();      --&gt; Returns 0.
-minStack.getMin();   --&gt; Returns -2.
-&lt;/pre&gt;</p>
-<h3><strong>题目大意：</strong></h3>
-<p>设计一个栈，支持在常数时间内push，pop，top，和取最小值。</p>
-<p>push(x) -- 元素x压入栈
-pop() -- 弹出栈顶元素
-top() -- 获取栈顶元素
-getMin() -- 获取栈中的最小值</p>
-<h3><strong>解题思路：</strong></h3>
-<p>这是考察Algorithm和data structure的经典问题。用stack即可实现push，top，pop。难点在于O(1)内实现getMin。看一个例子，<br>
-按以下顺序加入stack     5, 3, 6, 8, 2<br>
-最小值                 5, 3, 3, 3, 2<br>
-可以看出来，最小值是动态变化的，所以需要动态处理，由于存储的方式与stack一致，所以可以考虑再用一个stack来存最小值。
-如果不用额外stack改用Node，将make_pair(x, curMin)一起压入栈stack&lt;Node&lt;int,int&gt;&gt;中，额外空间复杂度O(n)。 见算法2。<br>
-稍改进空间复杂度，最小值只存变化的值，也就是5,3,2，当最小值变化时再存入最小栈。出栈时候，若出栈元素等于最小栈中的元素，<br>
-最小栈的元素也要出栈。</p>
-<h3><strong>注意事项：</strong></h3>
-<ol>
+minStack.top();      --> Returns 0.
+minStack.getMin();   --> Returns -2.
+</pre>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>设计一个栈，支持在常数时间内push，pop，top，和取最小值。</p>
+<p>push(x) – 元素x压入栈<br>pop() – 弹出栈顶元素<br>top() – 获取栈顶元素<br>getMin() – 获取栈中的最小值</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是考察Algorithm和data structure的经典问题。用stack即可实现push，top，pop。难点在于O(1)内实现getMin。看一个例子，<br>按以下顺序加入stack     5, 3, 6, 8, 2<br>最小值                 5, 3, 3, 3, 2<br>可以看出来，最小值是动态变化的，所以需要动态处理，由于存储的方式与stack一致，所以可以考虑再用一个stack来存最小值。<br>如果不用额外stack改用Node，将make_pair(x, curMin)一起压入栈stack<Node<int,int>&gt;中，额外空间复杂度O(n)。 见算法2。<br>稍改进空间复杂度，最小值只存变化的值，也就是5,3,2，当最小值变化时再存入最小栈。出栈时候，若出栈元素等于最小栈中的元素，<br>最小栈的元素也要出栈。</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
 <li>当前最小元素可能相等。相等元素也要入最小栈，如5,3,6,3，最小栈为5,3,3。val &lt;= self.min_stack[-1]一定要取等于。</li>
 <li>考虑栈为空时，执行pop和peek的操作。这里存在一个decision point，设计原则与stack的操作一致，也就是暴露出exception。</li>
 </ol>
-<h3><strong>Python代码：</strong></h3>
-<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">MinStack</span>(<span class="title class_ inherited__">TestCases</span>):</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="variable language_">self</span>.stack = []</span><br><span class="line">        <span class="variable language_">self</span>.min_stack = []</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">push</span>(<span class="params">self, val: <span class="built_in">int</span></span>) -&gt; <span class="literal">None</span>:</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> <span class="variable language_">self</span>.min_stack <span class="keyword">or</span> val &lt;= <span class="variable language_">self</span>.min_stack[-<span class="number">1</span>]:</span><br><span class="line">            <span class="variable language_">self</span>.min_stack.append(val)</span><br><span class="line">        <span class="variable language_">self</span>.stack.append(val)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">pop</span>(<span class="params">self</span>) -&gt; <span class="literal">None</span>:</span><br><span class="line">        val = <span class="variable language_">self</span>.stack.pop()</span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>.min_stack <span class="keyword">and</span> val == <span class="variable language_">self</span>.min_stack[-<span class="number">1</span>]:</span><br><span class="line">            <span class="variable language_">self</span>.min_stack.pop()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">top</span>(<span class="params">self</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.stack[-<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">getMin</span>(<span class="params">self</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.min_stack[-<span class="number">1</span>]</span><br></pre></td></tr></table></figure></p>
-<h3><strong>注意事项：</strong></h3>
-<ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">MinStack</span>(<span class="title class_ inherited__">TestCases</span>):</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="variable language_">self</span>.stack = []</span><br><span class="line">        <span class="variable language_">self</span>.min_stack = []</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">push</span>(<span class="params">self, val: <span class="built_in">int</span></span>) -&gt; <span class="literal">None</span>:</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> <span class="variable language_">self</span>.min_stack <span class="keyword">or</span> val &lt;= <span class="variable language_">self</span>.min_stack[-<span class="number">1</span>]:</span><br><span class="line">            <span class="variable language_">self</span>.min_stack.append(val)</span><br><span class="line">        <span class="variable language_">self</span>.stack.append(val)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">pop</span>(<span class="params">self</span>) -&gt; <span class="literal">None</span>:</span><br><span class="line">        val = <span class="variable language_">self</span>.stack.pop()</span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>.min_stack <span class="keyword">and</span> val == <span class="variable language_">self</span>.min_stack[-<span class="number">1</span>]:</span><br><span class="line">            <span class="variable language_">self</span>.min_stack.pop()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">top</span>(<span class="params">self</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.stack[-<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">getMin</span>(<span class="params">self</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.min_stack[-<span class="number">1</span>]</span><br></pre></td></tr></table></figure>
+<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
 <li>当前最小元素可能相等。相等元素也要入最小栈，如5,3,6,3，最小栈为5,3,3。x &lt;= minS.peek()一定要取等于。</li>
 <li>考虑栈为空时，执行pop和peek的操作。这里存在一个decision point，设计原则与stack的操作一致，也就是暴露出exception。</li>
 </ol>
-<h3><strong>Java代码：</strong></h3>
-<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MinStack</span> &#123;</span><br><span class="line"></span><br><span class="line">	 <span class="comment">/** initialize your data structure here. */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">MinStack</span><span class="params">()</span> &#123;</span><br><span class="line">        s = <span class="keyword">new</span> <span class="title class_">Stack</span>&lt;&gt;();</span><br><span class="line">        minS = <span class="keyword">new</span> <span class="title class_">Stack</span>&lt;&gt;();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">push</span><span class="params">(<span class="type">int</span> x)</span> &#123;</span><br><span class="line">        s.push(x);</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span>(minS.isEmpty() || x &lt;= minS.peek())</span><br><span class="line">        	minS.push(x);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">pop</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">top</span> <span class="operator">=</span> s.pop();</span><br><span class="line">        <span class="keyword">if</span>(top == minS.peek())</span><br><span class="line">        	minS.pop();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">top</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> s.peek();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">getMin</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> minS.peek();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    Stack&lt;Integer&gt; s;</span><br><span class="line">    Stack&lt;Integer&gt; minS;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3><strong>O(1)空间算法分析(不用看)：</strong></h3>
-<p>时间复杂度为<code>O(1)</code>，空间复杂度<code>O(n)</code>。</p>
-<p>算法2也是可以通过leetcode测试的，虽然空间复杂度比上述差。
-<a href="https://dotblogs.com.tw/tsanmmmm2000/2017/05/19/leetcode-practice-min-stack">存储每个新加值对应的min，更加浪费空间</a></p>
-<h3><strong>Follow-up:</strong></h3>
-<p>如果用O(1)额外空间，怎么改进算法？</p>
-<p>先考虑最简单的情况，用一个min来记录当前最小值，它可以满足最小值不需更新的情况，解决了问题的一半：
-x表示要加入的值，m表示最小值的变量，y是真正加入栈的值
-x 1 5 3
-m 1 1 1
-y 1 5 3
-可以看出无论入栈出栈，最小值均为1.</p>
-<p>比较难的是最小值需要更新时，如下一个要加入0，最小值要更新m=0，但0不能入栈，前一个最小值1的信息就丢失了，所以要设计一个计算y方法(push)满足</p>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MinStack</span> &#123;</span><br><span class="line"></span><br><span class="line">	 <span class="comment">/** initialize your data structure here. */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">MinStack</span><span class="params">()</span> &#123;</span><br><span class="line">        s = <span class="keyword">new</span> <span class="title class_">Stack</span>&lt;&gt;();</span><br><span class="line">        minS = <span class="keyword">new</span> <span class="title class_">Stack</span>&lt;&gt;();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">push</span><span class="params">(<span class="type">int</span> x)</span> &#123;</span><br><span class="line">        s.push(x);</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span>(minS.isEmpty() || x &lt;= minS.peek())</span><br><span class="line">        	minS.push(x);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">pop</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">top</span> <span class="operator">=</span> s.pop();</span><br><span class="line">        <span class="keyword">if</span>(top == minS.peek())</span><br><span class="line">        	minS.pop();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">top</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> s.peek();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">getMin</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> minS.peek();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    Stack&lt;Integer&gt; s;</span><br><span class="line">    Stack&lt;Integer&gt; minS;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="O-1-空间算法分析-不用看-："><a href="#O-1-空间算法分析-不用看-：" class="headerlink" title="O(1)空间算法分析(不用看)："></a><strong>O(1)空间算法分析(不用看)：</strong></h3><p>时间复杂度为<code>O(1)</code>，空间复杂度<code>O(n)</code>。</p>
+<p>算法2也是可以通过leetcode测试的，虽然空间复杂度比上述差。<br><a href="https://dotblogs.com.tw/tsanmmmm2000/2017/05/19/leetcode-practice-min-stack">存储每个新加值对应的min，更加浪费空间</a></p>
+<h3 id="Follow-up"><a href="#Follow-up" class="headerlink" title="Follow-up:"></a><strong>Follow-up:</strong></h3><p>如果用O(1)额外空间，怎么改进算法？ </p>
+<p>先考虑最简单的情况，用一个min来记录当前最小值，它可以满足最小值不需更新的情况，解决了问题的一半：<br>x表示要加入的值，m表示最小值的变量，y是真正加入栈的值<br>x 1 5 3<br>m 1 1 1<br>y 1 5 3<br>可以看出无论入栈出栈，最小值均为1.  </p>
+<p>比较难的是最小值需要更新时，如下一个要加入0，最小值要更新m=0，但0不能入栈，前一个最小值1的信息就丢失了，所以要设计一个计算y方法(push)满足  </p>
 <ol>
-<li>已知条件：含有前一个最小值的的信息。x1&lt;m0.</li>
-<li>设计要求：y&lt;m, 因为最小值不更新的时候y值永远大于等于m，必须区分开来，从而知道怎么pop，也就是还原入栈值（最小值）。y1&lt;m1=x1.
-解决了这个问题就解决了另一半的问题。</li>
+<li>已知条件：含有前一个最小值的的信息。x1&lt;m0.  </li>
+<li>设计要求：y&lt;m, 因为最小值不更新的时候y值永远大于等于m，必须区分开来，从而知道怎么pop，也就是还原入栈值（最小值）。y1&lt;m1=x1.<br>解决了这个问题就解决了另一半的问题。  </li>
 </ol>
-<p>以下解释如何推出最小值需要更新时y的计算方式（，以及push和pop的方法：
-<img src="/images/L155.png" alt=""></p>
-<p>以下例子解释Push
-x 1 5 3 0 6
-m 1 1 1 0 0
-y 1 5 3 -1 6</p>
-<p>以下例子解释Pop
-x 6 0 3 5 1
-m 0 0 1 1 1
-y 6 -1 3 5 1
-可以看出真正入栈值可以是原数或者是计算值，取决它与最小值的关系。</p>
-<h3><strong>注意事项：</strong></h3>
-<ol>
+<p>以下解释如何推出最小值需要更新时y的计算方式（，以及push和pop的方法：<br><img src="/images/L155.png" alt="">  </p>
+<p>以下例子解释Push<br>x 1 5 3 0 6<br>m 1 1 1 0 0<br>y 1 5 3 -1 6</p>
+<p>以下例子解释Pop<br>x 6 0 3 5 1<br>m 0 0 1 1 1<br>y 6 -1 3 5 1<br>可以看出真正入栈值可以是原数或者是计算值，取决它与最小值的关系。</p>
+<h3 id="注意事项：-2"><a href="#注意事项：-2" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
 <li>当前最小元素可能相等。相等元素不用更新最小值，也就是新值直接入栈。</li>
 <li>以上递推式的初始条件为：第一个元素是直接加入栈且等于m，无论何种情况都不需任何计算。push时候注意当栈为空，m值为第一个元素的值。</li>
 <li>数据溢出。涉及int的加减乘除法，都要预先将其转化为long，否则会溢出。</li>
 </ol>
-<h3><strong>Java代码：</strong></h3>
-<p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MinStack</span> &#123;</span><br><span class="line">     <span class="keyword">public</span> <span class="title function_">MinStack</span><span class="params">()</span> &#123;</span><br><span class="line">        s = <span class="keyword">new</span> <span class="title class_">Stack</span>&lt;&gt;();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">push</span><span class="params">(<span class="type">int</span> x)</span> &#123;</span><br><span class="line">    	<span class="keyword">if</span> (s.isEmpty())</span><br><span class="line">    		m = x;</span><br><span class="line">    	</span><br><span class="line">    	<span class="type">long</span> <span class="variable">xx</span> <span class="operator">=</span> (<span class="type">long</span>)x;</span><br><span class="line">    	<span class="keyword">if</span> (x &gt;= m)</span><br><span class="line">    		s.push(xx);</span><br><span class="line">    	<span class="keyword">else</span> &#123;</span><br><span class="line">    		s.push(<span class="number">2</span>*xx-m);</span><br><span class="line">    		m = x;</span><br><span class="line">    	&#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">pop</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">long</span> <span class="variable">top</span> <span class="operator">=</span> s.pop();</span><br><span class="line">        <span class="keyword">if</span>(top &lt; m)     </span><br><span class="line">        	m = <span class="number">2</span>*m - top;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">top</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> (<span class="type">int</span>)(s.peek() &gt;= m? s.peek() : m);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">getMin</span><span class="params">()</span> &#123; </span><br><span class="line">        <span class="keyword">return</span> (<span class="type">int</span>)m;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    Stack&lt;Long&gt; s;</span><br><span class="line">    <span class="type">long</span> <span class="variable">m</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>时间复杂度为<code>O(1)</code>，空间复杂度<code>O(1)</code>。</p>
-<h3><strong>考点:</strong></h3>
-<ol>
+<h3 id="Java代码：-1"><a href="#Java代码：-1" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MinStack</span> &#123;</span><br><span class="line">     <span class="keyword">public</span> <span class="title function_">MinStack</span><span class="params">()</span> &#123;</span><br><span class="line">        s = <span class="keyword">new</span> <span class="title class_">Stack</span>&lt;&gt;();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">push</span><span class="params">(<span class="type">int</span> x)</span> &#123;</span><br><span class="line">    	<span class="keyword">if</span> (s.isEmpty())</span><br><span class="line">    		m = x;</span><br><span class="line">    	</span><br><span class="line">    	<span class="type">long</span> <span class="variable">xx</span> <span class="operator">=</span> (<span class="type">long</span>)x;</span><br><span class="line">    	<span class="keyword">if</span> (x &gt;= m)</span><br><span class="line">    		s.push(xx);</span><br><span class="line">    	<span class="keyword">else</span> &#123;</span><br><span class="line">    		s.push(<span class="number">2</span>*xx-m);</span><br><span class="line">    		m = x;</span><br><span class="line">    	&#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">pop</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">long</span> <span class="variable">top</span> <span class="operator">=</span> s.pop();</span><br><span class="line">        <span class="keyword">if</span>(top &lt; m)     </span><br><span class="line">        	m = <span class="number">2</span>*m - top;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">top</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> (<span class="type">int</span>)(s.peek() &gt;= m? s.peek() : m);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">getMin</span><span class="params">()</span> &#123; </span><br><span class="line">        <span class="keyword">return</span> (<span class="type">int</span>)m;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    Stack&lt;Long&gt; s;</span><br><span class="line">    <span class="type">long</span> <span class="variable">m</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(1)</code>，空间复杂度<code>O(1)</code>。</p>
+<h3 id="考点"><a href="#考点" class="headerlink" title="考点:"></a><strong>考点:</strong></h3><ol>
 <li>先不考虑getMin，用什么数据结构实现push, pop, top</li>
 <li>暴力法可以实现getMin，怎么实现O(1)。用什么数据结构实现存储min，额外用一个stack</li>
 <li>元素可能相等</li>
@@ -431,40 +396,18 @@ y 6 -1 3 5 1
 
       
           <p><strong><a href="https://leetcode.com/problems/max-points-on-a-line/">LeetCode</a></strong></p>
-<p>&lt;div&gt;</p>
-<p>Given an array of <code>points</code> where <code>points[i] = [x&lt;sub&gt;i&lt;/sub&gt;, y&lt;sub&gt;i&lt;/sub&gt;]</code> represents a point on the <strong>X-Y</strong> plane, return <em>the maximum number of points that lie on the same straight line</em>.</p>
-<p><strong>Example 1:</strong></p>
-<p><img src="https://assets.leetcode.com/uploads/2021/02/25/plane1.jpg" alt=""></p>
-<p>&lt;pre&gt;<strong>Input:</strong> points = [[1,1],[2,2],[3,3]]
-<strong>Output:</strong> 3
-&lt;/pre&gt;</p>
-<p><strong>Example 2:</strong></p>
-<p><img src="https://assets.leetcode.com/uploads/2021/02/25/plane2.jpg" alt=""></p>
-<p>&lt;pre&gt;<strong>Input:</strong> points = [[1,1],[3,2],[5,3],[4,1],[2,3],[1,4]]
-<strong>Output:</strong> 4
-&lt;/pre&gt;</p>
-<p><strong>Constraints:</strong></p>
-<ul>
-<li><code>1 &lt;= points.length &lt;= 300</code></li>
-<li><code>points[i].length == 2</code></li>
-<li><code>-10&lt;sup&gt;4&lt;/sup&gt; &lt;= x&lt;sub&gt;i&lt;/sub&gt;, y&lt;sub&gt;i&lt;/sub&gt; &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code></li>
-<li>All the <code>points</code> are <strong>unique</strong>.</li>
-</ul>
-<p>&lt;/div&gt;</p>
-<h3><strong>题目大意：</strong></h3>
-<p>求在同一直线上的点的最大个数</p>
-<h3><strong>解题思路：</strong></h3>
-<p>固定一个点，求其与其他点的斜率是否相同，记录在map中。通过同一个点，若斜率相同，肯定在同一直线上。这是几何题。</p>
-<h3><strong>解题步骤：</strong></h3>
-<p>N/A</p>
-<h3><strong>注意事项：</strong></h3>
-<ol>
+<div><br><br>Given an array of <code>points</code> where <code>points[i] = [x&lt;sub&gt;i&lt;/sub&gt;, y&lt;sub&gt;i&lt;/sub&gt;]</code> represents a point on the <strong>X-Y</strong> plane, return <em>the maximum number of points that lie on the same straight line</em>.<br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/02/25/plane1.jpg" alt=""><br><br><pre><strong>Input:</strong> points = [[1,1],[2,2],[3,3]]<br><strong>Output:</strong> 3<br></pre><br><br><strong>Example 2:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/02/25/plane2.jpg" alt=""><br><br><pre><strong>Input:</strong> points = [[1,1],[3,2],[5,3],[4,1],[2,3],[1,4]]<br><strong>Output:</strong> 4<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= points.length &lt;= 300</code>
+</em>   <code>points[i].length == 2</code><br><em>   <code>-10&lt;sup&gt;4&lt;/sup&gt; &lt;= x&lt;sub&gt;i&lt;/sub&gt;, y&lt;sub&gt;i&lt;/sub&gt; &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code>
+</em>   All the <code>points</code> are <strong>unique</strong>.<br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求在同一直线上的点的最大个数</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>固定一个点，求其与其他点的斜率是否相同，记录在map中。通过同一个点，若斜率相同，肯定在同一直线上。这是几何题。</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
 <li>两重循环，外循环为每个点，内循环为该点和其他的点的斜率。<strong>斜率可以为无穷大</strong></li>
 </ol>
-<h3><strong>Python代码：</strong></h3>
-<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">maxPoints</span>(<span class="params">self, points: <span class="type">List</span>[<span class="type">List</span>[<span class="built_in">int</span>]]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	res = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(points)):</span><br><span class="line">		slope_to_count = collections.defaultdict(<span class="built_in">int</span>)</span><br><span class="line">		max_p = <span class="number">0</span></span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(i + <span class="number">1</span>, <span class="built_in">len</span>(points)):</span><br><span class="line">			slope = (points[j][<span class="number">1</span>] - points[i][<span class="number">1</span>]) / (points[j][<span class="number">0</span>] - points[i][<span class="number">0</span>]) \</span><br><span class="line">				<span class="keyword">if</span> points[j][<span class="number">0</span>] - points[i][<span class="number">0</span>] != <span class="number">0</span> <span class="keyword">else</span> <span class="built_in">float</span>(<span class="string">&#x27;inf&#x27;</span>) <span class="comment"># remember line is y-axis</span></span><br><span class="line">			slope_to_count[slope] += <span class="number">1</span></span><br><span class="line">			max_p = <span class="built_in">max</span>(max_p, slope_to_count[slope])</span><br><span class="line">		res = <span class="built_in">max</span>(res, max_p + <span class="number">1</span>)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>时间复杂度为&lt;code&gt;O(n&lt;sup&gt;2&lt;/sup&gt;)&lt;/code&gt;，空间复杂度<code>O(n)</code></p>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">maxPoints</span>(<span class="params">self, points: <span class="type">List</span>[<span class="type">List</span>[<span class="built_in">int</span>]]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	res = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(points)):</span><br><span class="line">		slope_to_count = collections.defaultdict(<span class="built_in">int</span>)</span><br><span class="line">		max_p = <span class="number">0</span></span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(i + <span class="number">1</span>, <span class="built_in">len</span>(points)):</span><br><span class="line">			slope = (points[j][<span class="number">1</span>] - points[i][<span class="number">1</span>]) / (points[j][<span class="number">0</span>] - points[i][<span class="number">0</span>]) \</span><br><span class="line">				<span class="keyword">if</span> points[j][<span class="number">0</span>] - points[i][<span class="number">0</span>] != <span class="number">0</span> <span class="keyword">else</span> <span class="built_in">float</span>(<span class="string">&#x27;inf&#x27;</span>) <span class="comment"># remember line is y-axis</span></span><br><span class="line">			slope_to_count[slope] += <span class="number">1</span></span><br><span class="line">			max_p = <span class="built_in">max</span>(max_p, slope_to_count[slope])</span><br><span class="line">		res = <span class="built_in">max</span>(res, max_p + <span class="number">1</span>)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n<sup>2</sup>)</code>，空间复杂度<code>O(n)</code>  </p>
 
       
     </div>
@@ -544,53 +487,18 @@ y 6 -1 3 5 1
 
       
           <p><strong><a href="https://leetcode.com/problems/evaluate-reverse-polish-notation/">LeetCode</a></strong></p>
-<p>&lt;div&gt;</p>
-<p>Evaluate the value of an arithmetic expression in <a href="http://en.wikipedia.org/wiki/Reverse_Polish_notation">Reverse Polish Notation</a>.</p>
-<p>Valid operators are <code>+</code>, <code>-</code>, <code>*</code>, and <code>/</code>. Each operand may be an integer or another expression.</p>
-<p><strong>Note</strong> that division between two integers should truncate toward zero.</p>
-<p>It is guaranteed that the given RPN expression is always valid. That means the expression would always evaluate to a result, and there will not be any division by zero operation.</p>
-<p><strong>Example 1:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> tokens = [&quot;2&quot;,&quot;1&quot;,&quot;+&quot;,&quot;3&quot;,&quot;*&quot;]
-<strong>Output:</strong> 9
-<strong>Explanation:</strong> ((2 + 1) * 3) = 9
-&lt;/pre&gt;</p>
-<p><strong>Example 2:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> tokens = [&quot;4&quot;,&quot;13&quot;,&quot;5&quot;,&quot;/&quot;,&quot;+&quot;]
-<strong>Output:</strong> 6
-<strong>Explanation:</strong> (4 + (13 / 5)) = 6
-&lt;/pre&gt;</p>
-<p><strong>Example 3:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> tokens = [&quot;10&quot;,&quot;6&quot;,&quot;9&quot;,&quot;3&quot;,&quot;+&quot;,&quot;-11&quot;,&quot;<em>&quot;,&quot;/&quot;,&quot;</em>&quot;,&quot;17&quot;,&quot;+&quot;,&quot;5&quot;,&quot;+&quot;]
-<strong>Output:</strong> 22
-<strong>Explanation:</strong> ((10 * (6 / ((9 + 3) * -11))) + 17) + 5
-= ((10 * (6 / (12 * -11))) + 17) + 5
-= ((10 * (6 / -132)) + 17) + 5
-= ((10 * 0) + 17) + 5
-= (0 + 17) + 5
-= 17 + 5
-= 22
-&lt;/pre&gt;</p>
-<p><strong>Constraints:</strong></p>
-<ul>
-<li><code>1 &lt;= tokens.length &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code></li>
-<li><code>tokens[i]</code> is either an operator: <code>&quot;+&quot;</code>, <code>&quot;-&quot;</code>, <code>&quot;*&quot;</code>, or <code>&quot;/&quot;</code>, or an integer in the range <code>[-200, 200]</code>.</li>
-</ul>
-<p>&lt;/div&gt;</p>
-<h3><strong>题目大意：</strong></h3>
-<p>求逆波兰式计算结果</p>
-<h3><strong>解题思路：</strong></h3>
-<p>逆波兰式用Stack</p>
-<h3><strong>解题步骤：</strong></h3>
-<p>N/A</p>
-<h3><strong>注意事项：</strong></h3>
-<ol>
+<div><br><br>Evaluate the value of an arithmetic expression in <a href="http://en.wikipedia.org/wiki/Reverse_Polish_notation">Reverse Polish Notation</a>.<br><br>Valid operators are <code>+</code>, <code>-</code>, <code>*</code>, and <code>/</code>. Each operand may be an integer or another expression.<br><br><strong>Note</strong> that division between two integers should truncate toward zero.<br><br>It is guaranteed that the given RPN expression is always valid. That means the expression would always evaluate to a result, and there will not be any division by zero operation.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> tokens = [“2”,”1”,”+”,”3”,”<em>“]<br><strong>Output:</strong> 9<br><strong>Explanation:</strong> ((2 + 1) </em> 3) = 9<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> tokens = [“4”,”13”,”5”,”/“,”+”]<br><strong>Output:</strong> 6<br><strong>Explanation:</strong> (4 + (13 / 5)) = 6<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> tokens = [“10”,”6”,”9”,”3”,”+”,”-11”,”<em>“,”/“,”</em>“,”17”,”+”,”5”,”+”]<br><strong>Output:</strong> 22<br><strong>Explanation:</strong> ((10 <em> (6 / ((9 + 3) </em> -11))) + 17) + 5<br>= ((10 <em> (6 / (12 </em> -11))) + 17) + 5<br>= ((10 <em> (6 / -132)) + 17) + 5<br>= ((10 </em> 0) + 17) + 5<br>= (0 + 17) + 5<br>= 17 + 5<br>= 22<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= tokens.length &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code>
+</em>   <code>tokens[i]</code> is either an operator: <code>&quot;+&quot;</code>, <code>&quot;-&quot;</code>, <code>&quot;*&quot;</code>, or <code>&quot;/&quot;</code>, or an integer in the range <code>[-200, 200]</code>.<br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求逆波兰式计算结果</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>逆波兰式用Stack</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
 <li><strong>左右操作数</strong>是有区别的，所以stack先出栈的为右操作数，后出栈的为左操作数</li>
 <li>最容易错的是向下取整, 题目返回要求整数。所以<strong>要除法后取整int(prev / num)</strong>。这点和LeetCode 227 Basic Calculator II一样。也是和Java一致，用类型转化来实现，而//是比它小的整数如-2.8就是-3，只在负数是有区别</li>
 </ol>
-<h3><strong>Python代码：</strong></h3>
-<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">evalRPN</span>(<span class="params">self, tokens: <span class="type">List</span>[<span class="built_in">str</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	stack = []</span><br><span class="line">	<span class="keyword">for</span> token <span class="keyword">in</span> tokens:</span><br><span class="line">		<span class="keyword">if</span> token <span class="keyword">in</span> <span class="string">&#x27;+-*/&#x27;</span>:</span><br><span class="line">			operand_right = stack.pop() <span class="comment"># remember</span></span><br><span class="line">			operand_left = stack.pop()</span><br><span class="line">			<span class="keyword">if</span> token == <span class="string">&#x27;+&#x27;</span>:</span><br><span class="line">				stack.append(operand_left + operand_right)</span><br><span class="line">			<span class="keyword">elif</span> token == <span class="string">&#x27;-&#x27;</span>:</span><br><span class="line">				stack.append(operand_left - operand_right)</span><br><span class="line">			<span class="keyword">elif</span> token == <span class="string">&#x27;*&#x27;</span>:</span><br><span class="line">				stack.append(operand_left * operand_right)</span><br><span class="line">			<span class="keyword">else</span>:</span><br><span class="line">				stack.append(<span class="built_in">int</span>(operand_left / operand_right)) <span class="comment"># remember</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			stack.append(<span class="built_in">int</span>(token))</span><br><span class="line">	<span class="keyword">return</span> stack[-<span class="number">1</span>]</span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code></p>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">evalRPN</span>(<span class="params">self, tokens: <span class="type">List</span>[<span class="built_in">str</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	stack = []</span><br><span class="line">	<span class="keyword">for</span> token <span class="keyword">in</span> tokens:</span><br><span class="line">		<span class="keyword">if</span> token <span class="keyword">in</span> <span class="string">&#x27;+-*/&#x27;</span>:</span><br><span class="line">			operand_right = stack.pop() <span class="comment"># remember</span></span><br><span class="line">			operand_left = stack.pop()</span><br><span class="line">			<span class="keyword">if</span> token == <span class="string">&#x27;+&#x27;</span>:</span><br><span class="line">				stack.append(operand_left + operand_right)</span><br><span class="line">			<span class="keyword">elif</span> token == <span class="string">&#x27;-&#x27;</span>:</span><br><span class="line">				stack.append(operand_left - operand_right)</span><br><span class="line">			<span class="keyword">elif</span> token == <span class="string">&#x27;*&#x27;</span>:</span><br><span class="line">				stack.append(operand_left * operand_right)</span><br><span class="line">			<span class="keyword">else</span>:</span><br><span class="line">				stack.append(<span class="built_in">int</span>(operand_left / operand_right)) <span class="comment"># remember</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			stack.append(<span class="built_in">int</span>(token))</span><br><span class="line">	<span class="keyword">return</span> stack[-<span class="number">1</span>]</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>  </p>
 
       
     </div>
@@ -670,47 +578,17 @@ y 6 -1 3 5 1
 
       
           <p><strong><a href="https://leetcode.com/problems/reverse-words-in-a-string/">LeetCode</a></strong></p>
-<p>&lt;div&gt;</p>
-<p>Given an input string <code>s</code>, reverse the order of the <strong>words</strong>.</p>
-<p>A <strong>word</strong> is defined as a sequence of non-space characters. The <strong>words</strong> in <code>s</code> will be separated by at least one space.</p>
-<p>Return <em>a string of the words in reverse order concatenated by a single space.</em></p>
-<p><strong>Note</strong> that <code>s</code> may contain leading or trailing spaces or multiple spaces between two words. The returned string should only have a single space separating the words. Do not include any extra spaces.</p>
-<p><strong>Example 1:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> s = &quot;the sky is blue&quot;
-<strong>Output:</strong> &quot;blue is sky the&quot;
-&lt;/pre&gt;</p>
-<p><strong>Example 2:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> s = &quot;  hello world  &quot;
-<strong>Output:</strong> &quot;world hello&quot;
-<strong>Explanation:</strong> Your reversed string should not contain leading or trailing spaces.
-&lt;/pre&gt;</p>
-<p><strong>Example 3:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> s = &quot;a good   example&quot;
-<strong>Output:</strong> &quot;example good a&quot;
-<strong>Explanation:</strong> You need to reduce multiple spaces between two words to a single space in the reversed string.
-&lt;/pre&gt;</p>
-<p><strong>Constraints:</strong></p>
-<ul>
-<li><code>1 &lt;= s.length &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code></li>
-<li><code>s</code> contains English letters (upper-case and lower-case), digits, and spaces <code>' '</code>.</li>
-<li>There is <strong>at least one</strong> word in <code>s</code>.</li>
-</ul>
-<p>**Follow-up: **If the string data type is mutable in your language, can you solve it <strong>in-place</strong> with <code>O(1)</code> extra space?</p>
-<p>&lt;/div&gt;</p>
-<h3><strong>题目大意：</strong></h3>
-<p>反转字符串中的单词顺序</p>
-<h3><strong>解题思路：</strong></h3>
-<p>N/A</p>
-<h3><strong>解题步骤：</strong></h3>
-<p>N/A</p>
-<h3><strong>注意事项：</strong></h3>
-<ol>
+<div><br><br>Given an input string <code>s</code>, reverse the order of the <strong>words</strong>.<br><br>A <strong>word</strong> is defined as a sequence of non-space characters. The <strong>words</strong> in <code>s</code> will be separated by at least one space.<br><br>Return <em>a string of the words in reverse order concatenated by a single space.</em><br><br><strong>Note</strong> that <code>s</code> may contain leading or trailing spaces or multiple spaces between two words. The returned string should only have a single space separating the words. Do not include any extra spaces.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> s = “the sky is blue”<br><strong>Output:</strong> “blue is sky the”<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> s = “  hello world  “<br><strong>Output:</strong> “world hello”<br><strong>Explanation:</strong> Your reversed string should not contain leading or trailing spaces.<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> s = “a good   example”<br><strong>Output:</strong> “example good a”<br><strong>Explanation:</strong> You need to reduce multiple spaces between two words to a single space in the reversed string.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= s.length &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code>
+</em>   <code>s</code> contains English letters (upper-case and lower-case), digits, and spaces <code>&#39; &#39;</code>.<br><em>   There is <strong>at least one</strong> word in <code>s</code>.<br><br><strong>Follow-up: </strong>If the string data type is mutable in your language, can you solve it <em>*in-place</em></em> with <code>O(1)</code> extra space?<br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>反转字符串中的单词顺序</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>N/A</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
 <li>word不能为空，单词之间可能含多个空格</li>
 </ol>
-<h3><strong>Python代码：</strong></h3>
-<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">reverseWords</span>(<span class="params">self, s: <span class="built_in">str</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">	words = s.split(<span class="string">&#x27; &#x27;</span>)</span><br><span class="line">	words_without_space = [word <span class="keyword">for</span> word <span class="keyword">in</span> words <span class="keyword">if</span> word]</span><br><span class="line">	<span class="keyword">return</span> <span class="string">&#x27; &#x27;</span>.join(words_without_space[::-<span class="number">1</span>])</span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code></p>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">reverseWords</span>(<span class="params">self, s: <span class="built_in">str</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">	words = s.split(<span class="string">&#x27; &#x27;</span>)</span><br><span class="line">	words_without_space = [word <span class="keyword">for</span> word <span class="keyword">in</span> words <span class="keyword">if</span> word]</span><br><span class="line">	<span class="keyword">return</span> <span class="string">&#x27; &#x27;</span>.join(words_without_space[::-<span class="number">1</span>])</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>  </p>
 
       
     </div>
@@ -790,43 +668,17 @@ y 6 -1 3 5 1
 
       
           <p><strong><a href="https://leetcode.com/problems/maximum-product-subarray/">LeetCode</a></strong></p>
-<p>&lt;div&gt;</p>
-<p>Given an integer array <code>nums</code>, find a contiguous non-empty subarray within the array that has the largest product, and return <em>the product</em>.</p>
-<p>The test cases are generated so that the answer will fit in a <strong>32-bit</strong> integer.</p>
-<p>A <strong>subarray</strong> is a contiguous subsequence of the array.</p>
-<p><strong>Example 1:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> nums = [2,3,-2,4]
-<strong>Output:</strong> 6
-<strong>Explanation:</strong> [2,3] has the largest product 6.
-&lt;/pre&gt;</p>
-<p><strong>Example 2:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> nums = [-2,0,-1]
-<strong>Output:</strong> 0
-<strong>Explanation:</strong> The result cannot be 2, because [-2,-1] is not a subarray.
-&lt;/pre&gt;</p>
-<p><strong>Constraints:</strong></p>
-<ul>
-<li><code>1 &lt;= nums.length &lt;= 2 * 10&lt;sup&gt;4&lt;/sup&gt;</code></li>
-<li><code>-10 &lt;= nums[i] &lt;= 10</code></li>
-<li>The product of any prefix or suffix of <code>nums</code> is <strong>guaranteed</strong> to fit in a <strong>32-bit</strong> integer.</li>
-</ul>
-<p>&lt;/div&gt;</p>
-<h3><strong>题目大意：</strong></h3>
-<p>求子数组最大积</p>
-<h3><strong>解题思路：</strong></h3>
-<p>类似于LeetCode 053 Maximum Subarray求子数组最大和，用DP。</p>
-<p>递归式； dp为以某个数为结尾的最大子数组积，dp2为以某个数为结尾的最小子数组积
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dp[i] = max(num[i], dp[i-1] * num[i], dp2[i-1] * num[i])</span><br><span class="line">dp2[i] = min(num[i], dp[i-1] * num[i], dp2[i-1] * num[i])</span><br></pre></td></tr></table></figure></p>
-<h3><strong>解题步骤：</strong></h3>
-<p>N/A</p>
-<h3><strong>注意事项：</strong></h3>
-<ol>
+<div><br><br>Given an integer array <code>nums</code>, find a contiguous non-empty subarray within the array that has the largest product, and return <em>the product</em>.<br><br>The test cases are generated so that the answer will fit in a <strong>32-bit</strong> integer.<br><br>A <strong>subarray</strong> is a contiguous subsequence of the array.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> nums = [2,3,-2,4]<br><strong>Output:</strong> 6<br><strong>Explanation:</strong> [2,3] has the largest product 6.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> nums = [-2,0,-1]<br><strong>Output:</strong> 0<br><strong>Explanation:</strong> The result cannot be 2, because [-2,-1] is not a subarray.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   `1 &lt;= nums.length &lt;= 2 </em> 10<sup>4</sup><code>*</code>-10 &lt;= nums[i] &lt;= 10<code>*   The product of any prefix or suffix of</code>nums` is <strong>guaranteed</strong> to fit in a <strong>32-bit</strong> integer.<br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求子数组最大积</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>类似于LeetCode 053 Maximum Subarray求子数组最大和，用DP。</p>
+<p>递归式； dp为以某个数为结尾的最大子数组积，dp2为以某个数为结尾的最小子数组积<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dp[i] = max(num[i], dp[i-1] * num[i], dp2[i-1] * num[i])</span><br><span class="line">dp2[i] = min(num[i], dp[i-1] * num[i], dp2[i-1] * num[i])</span><br></pre></td></tr></table></figure></p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
 <li>由于负负得正，所以是多状态DP。需要同时赋值</li>
 </ol>
-<h3><strong>Python代码：</strong></h3>
-<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># dp[i] = max(num[i], dp[i-1] * num[i], dp2[i-1] * num[i])</span></span><br><span class="line"><span class="comment"># dp2[i] = min(num[i], dp[i-1] * num[i], dp2[i-1] * num[i])</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">maxProduct</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	max_p, min_p, res = <span class="number">1</span>, <span class="number">1</span>, <span class="built_in">float</span>(<span class="string">&#x27;-inf&#x27;</span>)</span><br><span class="line">	<span class="keyword">for</span> n <span class="keyword">in</span> nums:</span><br><span class="line">		<span class="comment"># remember assign same time</span></span><br><span class="line">		max_p, min_p = <span class="built_in">max</span>(n, max_p * n, min_p * n), <span class="built_in">min</span>(n, max_p * n, min_p * n) <span class="comment"># 4, -48 | 4, -8, -48</span></span><br><span class="line">		res = <span class="built_in">max</span>(res, max_p) <span class="comment"># 6</span></span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code></p>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># dp[i] = max(num[i], dp[i-1] * num[i], dp2[i-1] * num[i])</span></span><br><span class="line"><span class="comment"># dp2[i] = min(num[i], dp[i-1] * num[i], dp2[i-1] * num[i])</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">maxProduct</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	max_p, min_p, res = <span class="number">1</span>, <span class="number">1</span>, <span class="built_in">float</span>(<span class="string">&#x27;-inf&#x27;</span>)</span><br><span class="line">	<span class="keyword">for</span> n <span class="keyword">in</span> nums:</span><br><span class="line">		<span class="comment"># remember assign same time</span></span><br><span class="line">		max_p, min_p = <span class="built_in">max</span>(n, max_p * n, min_p * n), <span class="built_in">min</span>(n, max_p * n, min_p * n) <span class="comment"># 4, -48 | 4, -8, -48</span></span><br><span class="line">		res = <span class="built_in">max</span>(res, max_p) <span class="comment"># 6</span></span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
 
       
     </div>

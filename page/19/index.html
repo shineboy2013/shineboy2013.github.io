@@ -262,54 +262,33 @@
       
           <p><strong><a href="https://leetcode.com/problems/meeting-rooms-ii/">LeetCode 253 Meeting Rooms II</a></strong></p>
 <p>Given an array of meeting time intervals consisting of start and end times <code>[[s1,e1],[s2,e2],...]</code> (si &lt; ei), find the minimum number of conference rooms required.</p>
-<p>For example,
-Given <code>[[0, 30],[5, 10],[15, 20]]</code>,
-return <code>2</code>.</p>
-<h3><strong>题目大意：</strong></h3>
-<p>输入[[0, 30],[5, 10],[15, 20]]表示每个会议的开始结束时间，求最少需要多少会议室能够安排所有的会议。</p>
-<h3><strong>最小堆解题思路：</strong></h3>
-<p>基于merging interval题目，首先按start排序。并且merge条件是start小于上一个会议的end。</p>
+<p>For example,<br>Given <code>[[0, 30],[5, 10],[15, 20]]</code>,<br>return <code>2</code>.</p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>输入[[0, 30],[5, 10],[15, 20]]表示每个会议的开始结束时间，求最少需要多少会议室能够安排所有的会议。</p>
+<h3 id="最小堆解题思路："><a href="#最小堆解题思路：" class="headerlink" title="最小堆解题思路："></a><strong>最小堆解题思路：</strong></h3><p>基于merging interval题目，首先按start排序。并且merge条件是start小于上一个会议的end。</p>
 <ol>
-<li>写几个例子感受一下。
-<img src="/images/L253.png" alt="">
-有两个重叠的会议，现在插入新的会议。是否再需要一个会议室取决于该新会议的开始时间小于这两个目前会议的终止时间的最小值。<br>
-所以思路是用End time min-heap维护目前会议End time。若新会议start time小于堆顶元素，入栈且activeMeeting++，否则循环地出栈且activeMeeting--直到
-start time小于堆顶。<br>
-这过程activeMeeting的最大值即所求。
-最坏情况是所有会议都重叠，复杂度为n* 2logn因为n个元素入堆出堆各一次，所以复杂度为nlogn，但会议一般不会集中，平均情况比排序法稍优。</li>
+<li>写几个例子感受一下。<br><img src="/images/L253.png" alt=""><br>有两个重叠的会议，现在插入新的会议。是否再需要一个会议室取决于该新会议的开始时间小于这两个目前会议的终止时间的最小值。<br>所以思路是用End time min-heap维护目前会议End time。若新会议start time小于堆顶元素，入栈且activeMeeting++，否则循环地出栈且activeMeeting–直到<br>start time小于堆顶。<br>这过程activeMeeting的最大值即所求。<br>最坏情况是所有会议都重叠，复杂度为n* 2logn因为n个元素入堆出堆各一次，所以复杂度为nlogn，但会议一般不会集中，平均情况比排序法稍优。 </li>
 </ol>
-<h3><strong>注意事项：</strong></h3>
-<ol>
-<li>Heap为结束时间的heap。</li>
-<li>类似于递减栈模板，用开始时间与堆顶的结束时间比较（表示这些会议均已结束），若大于堆顶，连续出堆。</li>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>Heap为结束时间的heap。 </li>
+<li>类似于递减栈模板，用开始时间与堆顶的结束时间比较（表示这些会议均已结束），若大于堆顶，连续出堆。  </li>
 </ol>
-<h3><strong>Python代码：</strong></h3>
-<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">minMeetingRooms</span>(<span class="params">self, intervals: <span class="type">List</span>[<span class="type">List</span>[<span class="built_in">int</span>]]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	intervals.sort()</span><br><span class="line">	heap = [] <span class="comment"># heap for end time</span></span><br><span class="line">	<span class="built_in">max</span> = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(intervals)):</span><br><span class="line">		<span class="comment"># start time of the new meeting is earlier than on-going endtime</span></span><br><span class="line">		<span class="keyword">while</span> heap <span class="keyword">and</span> intervals[i][<span class="number">0</span>] &gt;= heap[<span class="number">0</span>]:</span><br><span class="line">			heappop(heap)</span><br><span class="line">		heappush(heap, (intervals[i][<span class="number">1</span>]))</span><br><span class="line">		<span class="keyword">if</span> <span class="built_in">len</span>(heap) &gt; <span class="built_in">max</span>:</span><br><span class="line">			<span class="built_in">max</span> = <span class="built_in">len</span>(heap)</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">max</span></span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>由于输入无序，所以先要排序O(nlogn), 而循环复杂度为O(nlogk), 所以总时间复杂度为<code>O(nlogn)</code>，空间复杂度<code>O(k)</code>, k为所求也就是需要的会议室数。</p>
-<h3><strong>排序法解题思路(推荐)：</strong></h3>
-<ol>
-<li>证明解与具体间隔无关，只与end time的值有关。
-<img src="/images/L253-2.png" alt=""></li>
-<li>基于1和2，对end time进行排序，题解只与start-end的相对顺序有关。既然这样，我们可以把所有start，end一起排序，也就是按时间轴排列，排成一个2n大小的数组，<br>
-遇到start，activeMeeting++，遇到end，activeMeeting--。 这过程activeMeeting的最大值即所求。
-当然，上述方法直观，但实现起来需要建立一个class Node{value, startOrEnd}。本质上等价于对排序后的start数组和排序后的end数组进行<strong>合并排序</strong>。
-合并排序的结果等价于时间轴上两个数组的统一排序。当然，不需要剩余部分的合并排序，因为这部分不会增加activeMeeting的值。</li>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">minMeetingRooms</span>(<span class="params">self, intervals: <span class="type">List</span>[<span class="type">List</span>[<span class="built_in">int</span>]]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	intervals.sort()</span><br><span class="line">	heap = [] <span class="comment"># heap for end time</span></span><br><span class="line">	<span class="built_in">max</span> = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(intervals)):</span><br><span class="line">		<span class="comment"># start time of the new meeting is earlier than on-going endtime</span></span><br><span class="line">		<span class="keyword">while</span> heap <span class="keyword">and</span> intervals[i][<span class="number">0</span>] &gt;= heap[<span class="number">0</span>]:</span><br><span class="line">			heappop(heap)</span><br><span class="line">		heappush(heap, (intervals[i][<span class="number">1</span>]))</span><br><span class="line">		<span class="keyword">if</span> <span class="built_in">len</span>(heap) &gt; <span class="built_in">max</span>:</span><br><span class="line">			<span class="built_in">max</span> = <span class="built_in">len</span>(heap)</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">max</span></span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>由于输入无序，所以先要排序O(nlogn), 而循环复杂度为O(nlogk), 所以总时间复杂度为<code>O(nlogn)</code>，空间复杂度<code>O(k)</code>, k为所求也就是需要的会议室数。     </p>
+<h3 id="排序法解题思路-推荐-："><a href="#排序法解题思路-推荐-：" class="headerlink" title="排序法解题思路(推荐)："></a><strong>排序法解题思路(推荐)：</strong></h3><ol>
+<li>证明解与具体间隔无关，只与end time的值有关。<br><img src="/images/L253-2.png" alt=""></li>
+<li>基于1和2，对end time进行排序，题解只与start-end的相对顺序有关。既然这样，我们可以把所有start，end一起排序，也就是按时间轴排列，排成一个2n大小的数组，<br>遇到start，activeMeeting++，遇到end，activeMeeting–。 这过程activeMeeting的最大值即所求。<br>当然，上述方法直观，但实现起来需要建立一个class Node{value, startOrEnd}。本质上等价于对排序后的start数组和排序后的end数组进行<strong>合并排序</strong>。<br>合并排序的结果等价于时间轴上两个数组的统一排序。当然，不需要剩余部分的合并排序，因为这部分不会增加activeMeeting的值。</li>
 </ol>
 <p>解题步骤：</p>
 <ol>
 <li>排序start</li>
 <li>排序end</li>
-<li>合并排序，start小就activeMeeting++，否则activeMeeting--。求activeMeeting的最大值。</li>
+<li>合并排序，start小就activeMeeting++，否则activeMeeting–。求activeMeeting的最大值。</li>
 </ol>
-<h3><strong>注意事项：</strong></h3>
-<ol>
+<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
 <li>若endpoint值相同情况下，要确保第二个排序先结束点，再出发点，因为相同点不算有重复飞机</li>
 </ol>
-<h3><strong>Python代码：</strong></h3>
-<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">minMeetingRooms</span>(<span class="params">self, intervals: <span class="type">List</span>[<span class="type">List</span>[<span class="built_in">int</span>]]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	start = [(i[<span class="number">0</span>], <span class="number">1</span>) <span class="keyword">for</span> i <span class="keyword">in</span> intervals]</span><br><span class="line">	ends = [(i[<span class="number">1</span>], -<span class="number">1</span>) <span class="keyword">for</span> i <span class="keyword">in</span> intervals]</span><br><span class="line">	endpoints = start + ends</span><br><span class="line">	endpoints.sort()</span><br><span class="line">	active_meetings, <span class="built_in">max</span> = <span class="number">0</span>, <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(endpoints)):</span><br><span class="line">		<span class="keyword">if</span> endpoints[i][<span class="number">1</span>] == <span class="number">1</span>:</span><br><span class="line">			active_meetings += <span class="number">1</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			active_meetings -= <span class="number">1</span></span><br><span class="line">		<span class="keyword">if</span> active_meetings &gt; <span class="built_in">max</span>:</span><br><span class="line">			<span class="built_in">max</span> = active_meetings</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">max</span></span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>时间复杂度为<code>O(nlogn)</code>，空间复杂度<code>O(n)</code>。</p>
+<h3 id="Python代码：-1"><a href="#Python代码：-1" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">minMeetingRooms</span>(<span class="params">self, intervals: <span class="type">List</span>[<span class="type">List</span>[<span class="built_in">int</span>]]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	start = [(i[<span class="number">0</span>], <span class="number">1</span>) <span class="keyword">for</span> i <span class="keyword">in</span> intervals]</span><br><span class="line">	ends = [(i[<span class="number">1</span>], -<span class="number">1</span>) <span class="keyword">for</span> i <span class="keyword">in</span> intervals]</span><br><span class="line">	endpoints = start + ends</span><br><span class="line">	endpoints.sort()</span><br><span class="line">	active_meetings, <span class="built_in">max</span> = <span class="number">0</span>, <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(endpoints)):</span><br><span class="line">		<span class="keyword">if</span> endpoints[i][<span class="number">1</span>] == <span class="number">1</span>:</span><br><span class="line">			active_meetings += <span class="number">1</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			active_meetings -= <span class="number">1</span></span><br><span class="line">		<span class="keyword">if</span> active_meetings &gt; <span class="built_in">max</span>:</span><br><span class="line">			<span class="built_in">max</span> = active_meetings</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">max</span></span><br></pre></td></tr></table></figure>
+<h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nlogn)</code>，空间复杂度<code>O(n)</code>。</p>
 
       
     </div>
@@ -389,55 +368,19 @@ start time小于堆顶。<br>
 
       
           <p><strong><a href="https://leetcode.com/problems/minimum-degree-of-a-connected-trio-in-a-graph/">LeetCode</a></strong></p>
-<p>&lt;div&gt;</p>
-<p>You are given an undirected graph. You are given an integer <code>n</code> which is the number of nodes in the graph and an array <code>edges</code>, where each <code>edges[i] = [u&lt;sub&gt;i&lt;/sub&gt;, v&lt;sub&gt;i&lt;/sub&gt;]</code> indicates that there is an undirected edge between <code>u&lt;sub&gt;i&lt;/sub&gt;</code> and <code>v&lt;sub&gt;i&lt;/sub&gt;</code>.</p>
-<p>A <strong>connected trio</strong> is a set of <strong>three</strong> nodes where there is an edge between <strong>every</strong> pair of them.</p>
-<p>The <strong>degree of a connected trio</strong> is the number of edges where one endpoint is in the trio, and the other is not.</p>
-<p>Return <em>the <strong>minimum</strong> degree of a connected trio in the graph, or</em> <code>-1</code> <em>if the graph has no connected trios.</em></p>
-<p><strong>Example 1:</strong></p>
-<p><img src="https://assets.leetcode.com/uploads/2021/01/26/trios1.png" alt=""></p>
-<p>&lt;pre&gt;<strong>Input:</strong> n = 6, edges = [[1,2],[1,3],[3,2],[4,1],[5,2],[3,6]]
-<strong>Output:</strong> 3
-<strong>Explanation:</strong> There is exactly one trio, which is [1,2,3]. The edges that form its degree are bolded in the figure above.
-&lt;/pre&gt;</p>
-<p><strong>Example 2:</strong></p>
-<p><img src="https://assets.leetcode.com/uploads/2021/01/26/trios2.png" alt=""></p>
-<p>&lt;pre&gt;<strong>Input:</strong> n = 7, edges = [[1,3],[4,1],[4,3],[2,5],[5,6],[6,7],[7,5],[2,6]]
-<strong>Output:</strong> 0
-<strong>Explanation:</strong> There are exactly three trios:</p>
-<ol>
-<li>[1,4,3] with degree 0.</li>
-<li>[2,5,6] with degree 2.</li>
-<li>[5,6,7] with degree 2.
-&lt;/pre&gt;</li>
-</ol>
-<p><strong>Constraints:</strong></p>
-<ul>
-<li><code>2 &lt;= n &lt;= 400</code></li>
-<li><code>edges[i].length == 2</code></li>
-<li><code>1 &lt;= edges.length &lt;= n * (n-1) / 2</code></li>
-<li><code>1 &lt;= u&lt;sub&gt;i&lt;/sub&gt;, v&lt;sub&gt;i&lt;/sub&gt; &lt;= n</code></li>
-<li><code>u&lt;sub&gt;i&lt;/sub&gt; != v&lt;sub&gt;i&lt;/sub&gt;</code></li>
-<li>There are no repeated edges.</li>
-</ul>
-<p>&lt;/div&gt;</p>
-<h3><strong>题目大意：</strong></h3>
-<p>给定一个图，trio是三个节点直接互相相连，而度数表示连着trio的边的个数</p>
-<h3><strong>解题思路：</strong></h3>
-<p>根据定义，找出所有三个节点的组合，判断是否trio，然后根据trio的每个节点的度数总和 - 6即为所求<br>
-遍历所有三个节点组合时，会重复了两次。所以一个优化是，先按度数排序节点，若节点度数大于等于最小度数除以3，跳出循环。因为这个最小度数的节点已经大于等于3，trio里其他两个度数比它大的节点的度数更加会大于最小度数除以3，这样总度数肯定大于此时的最小度数</p>
-<h3><strong>解题步骤：</strong></h3>
-<p>N/A</p>
-<h3><strong>注意事项：</strong></h3>
-<ol>
+<div><br><br>You are given an undirected graph. You are given an integer <code>n</code> which is the number of nodes in the graph and an array <code>edges</code>, where each <code>edges[i] = [u&lt;sub&gt;i&lt;/sub&gt;, v&lt;sub&gt;i&lt;/sub&gt;]</code> indicates that there is an undirected edge between <code>u&lt;sub&gt;i&lt;/sub&gt;</code> and <code>v&lt;sub&gt;i&lt;/sub&gt;</code>.<br><br>A <strong>connected trio</strong> is a set of <strong>three</strong> nodes where there is an edge between <strong>every</strong> pair of them.<br><br>The <strong>degree of a connected trio</strong> is the number of edges where one endpoint is in the trio, and the other is not.<br><br>Return <em>the <strong>minimum</strong> degree of a connected trio in the graph, or</em> <code>-1</code> <em>if the graph has no connected trios.</em><br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/01/26/trios1.png" alt=""><br><br><pre><strong>Input:</strong> n = 6, edges = [[1,2],[1,3],[3,2],[4,1],[5,2],[3,6]]<br><strong>Output:</strong> 3<br><strong>Explanation:</strong> There is exactly one trio, which is [1,2,3]. The edges that form its degree are bolded in the figure above.<br></pre><br><br><strong>Example 2:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/01/26/trios2.png" alt=""><br><br><pre><strong>Input:</strong> n = 7, edges = [[1,3],[4,1],[4,3],[2,5],[5,6],[6,7],[7,5],[2,6]]<br><strong>Output:</strong> 0<br><strong>Explanation:</strong> There are exactly three trios:<br>1) [1,4,3] with degree 0.<br>2) [2,5,6] with degree 2.<br>3) [5,6,7] with degree 2.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>2 &lt;= n &lt;= 400</code>
+</em>   <code>edges[i].length == 2</code><br><em>   `1 &lt;= edges.length &lt;= n </em> (n-1) / 2<code>*</code>1 &lt;= u<sub>i</sub>, v<sub>i</sub> &lt;= n<code>*</code>u<sub>i</sub> != v<sub>i</sub>`<br>*   There are no repeated edges.<br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个图，trio是三个节点直接互相相连，而度数表示连着trio的边的个数</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>根据定义，找出所有三个节点的组合，判断是否trio，然后根据trio的每个节点的度数总和 - 6即为所求<br>遍历所有三个节点组合时，会重复了两次。所以一个优化是，先按度数排序节点，若节点度数大于等于最小度数除以3，跳出循环。因为这个最小度数的节点已经大于等于3，trio里其他两个度数比它大的节点的度数更加会大于最小度数除以3，这样总度数肯定大于此时的最小度数</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
 <li>根据定义，找出所有三个节点的组合u -&gt; v, v -&gt; w, w是否在u中，判断是否trio。先按度数排序节点，若节点度数大于等于最小度数除以3，跳出循环</li>
 <li>邻接图用set，因为Line 13查找w是否在u中可以提高效率</li>
 <li>min_degree / 3不是// 3</li>
 </ol>
-<h3><strong>Python代码：</strong></h3>
-<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">minTrioDegree</span>(<span class="params">self, n: <span class="built_in">int</span>, edges: <span class="type">List</span>[<span class="type">List</span>[<span class="built_in">int</span>]]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	graph = collections.defaultdict(<span class="built_in">set</span>) <span class="comment"># use set coz if w in graph[u]</span></span><br><span class="line">	<span class="keyword">for</span> u, v <span class="keyword">in</span> edges:</span><br><span class="line">		graph[u].add(v)</span><br><span class="line">		graph[v].add(u)</span><br><span class="line"></span><br><span class="line">	min_degree = <span class="built_in">float</span>(<span class="string">&#x27;inf&#x27;</span>)</span><br><span class="line">	<span class="keyword">for</span> u <span class="keyword">in</span> <span class="built_in">sorted</span>(<span class="built_in">range</span>(<span class="number">1</span>, n + <span class="number">1</span>), key=<span class="keyword">lambda</span> x: <span class="built_in">len</span>(graph[x])):</span><br><span class="line">		<span class="keyword">if</span> <span class="built_in">len</span>(graph[u]) &gt;= min_degree / <span class="number">3</span>: <span class="comment"># remember / 3 not // 3</span></span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		<span class="keyword">for</span> v <span class="keyword">in</span> graph[u]:</span><br><span class="line">			<span class="keyword">for</span> w <span class="keyword">in</span> graph[v]:</span><br><span class="line">				<span class="keyword">if</span> w <span class="keyword">in</span> graph[u]:</span><br><span class="line">					min_degree = <span class="built_in">min</span>(min_degree, <span class="built_in">len</span>(graph[u]) + <span class="built_in">len</span>(graph[v]) + <span class="built_in">len</span>(graph[w]))</span><br><span class="line">	<span class="keyword">return</span> min_degree - <span class="number">6</span> <span class="keyword">if</span> min_degree != <span class="built_in">float</span>(<span class="string">&#x27;inf&#x27;</span>) <span class="keyword">else</span> -<span class="number">1</span></span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>时间复杂度为&lt;code&gt;O(n&lt;sup&gt;3&lt;/sup&gt;)&lt;/code&gt;，空间复杂度&lt;code&gt;O(n&lt;sup&gt;2&lt;/sup&gt;)&lt;/code&gt;</p>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">minTrioDegree</span>(<span class="params">self, n: <span class="built_in">int</span>, edges: <span class="type">List</span>[<span class="type">List</span>[<span class="built_in">int</span>]]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	graph = collections.defaultdict(<span class="built_in">set</span>) <span class="comment"># use set coz if w in graph[u]</span></span><br><span class="line">	<span class="keyword">for</span> u, v <span class="keyword">in</span> edges:</span><br><span class="line">		graph[u].add(v)</span><br><span class="line">		graph[v].add(u)</span><br><span class="line"></span><br><span class="line">	min_degree = <span class="built_in">float</span>(<span class="string">&#x27;inf&#x27;</span>)</span><br><span class="line">	<span class="keyword">for</span> u <span class="keyword">in</span> <span class="built_in">sorted</span>(<span class="built_in">range</span>(<span class="number">1</span>, n + <span class="number">1</span>), key=<span class="keyword">lambda</span> x: <span class="built_in">len</span>(graph[x])):</span><br><span class="line">		<span class="keyword">if</span> <span class="built_in">len</span>(graph[u]) &gt;= min_degree / <span class="number">3</span>: <span class="comment"># remember / 3 not // 3</span></span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		<span class="keyword">for</span> v <span class="keyword">in</span> graph[u]:</span><br><span class="line">			<span class="keyword">for</span> w <span class="keyword">in</span> graph[v]:</span><br><span class="line">				<span class="keyword">if</span> w <span class="keyword">in</span> graph[u]:</span><br><span class="line">					min_degree = <span class="built_in">min</span>(min_degree, <span class="built_in">len</span>(graph[u]) + <span class="built_in">len</span>(graph[v]) + <span class="built_in">len</span>(graph[w]))</span><br><span class="line">	<span class="keyword">return</span> min_degree - <span class="number">6</span> <span class="keyword">if</span> min_degree != <span class="built_in">float</span>(<span class="string">&#x27;inf&#x27;</span>) <span class="keyword">else</span> -<span class="number">1</span></span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n<sup>3</sup>)</code>，空间复杂度<code>O(n<sup>2</sup>)</code>  </p>
 
       
     </div>
@@ -517,43 +460,17 @@ start time小于堆顶。<br>
 
       
           <p><strong><a href="https://leetcode.com/problems/minimum-degree-of-a-connected-trio-in-a-graph/">LeetCode</a></strong></p>
-<p>&lt;div&gt;</p>
-<p>You are given two integers, <code>x</code> and <code>y</code>, which represent your current location on a Cartesian grid: <code>(x, y)</code>. You are also given an array <code>points</code> where each <code>points[i] = [a&lt;sub&gt;i&lt;/sub&gt;, b&lt;sub&gt;i&lt;/sub&gt;]</code> represents that a point exists at <code>(a&lt;sub&gt;i&lt;/sub&gt;, b&lt;sub&gt;i&lt;/sub&gt;)</code>. A point is <strong>valid</strong> if it shares the same x-coordinate or the same y-coordinate as your location.</p>
-<p>Return <em>the index <strong>(0-indexed)</strong> of the <strong>valid</strong> point with the smallest <strong>Manhattan distance</strong> from your current location</em>. If there are multiple, return <em>the valid point with the <strong>smallest</strong> index</em>. If there are no valid points, return <code>-1</code>.</p>
-<p>The <strong>Manhattan distance</strong> between two points <code>(x&lt;sub&gt;1&lt;/sub&gt;, y&lt;sub&gt;1&lt;/sub&gt;)</code> and <code>(x&lt;sub&gt;2&lt;/sub&gt;, y&lt;sub&gt;2&lt;/sub&gt;)</code> is <code>abs(x&lt;sub&gt;1&lt;/sub&gt; - x&lt;sub&gt;2&lt;/sub&gt;) + abs(y&lt;sub&gt;1&lt;/sub&gt; - y&lt;sub&gt;2&lt;/sub&gt;)</code>.</p>
-<p><strong>Example 1:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> x = 3, y = 4, points = [[1,2],[3,1],[2,4],[2,3],[4,4]]
-<strong>Output:</strong> 2
-<strong>Explanation:</strong> Of all the points, only [3,1], [2,4] and [4,4] are valid. Of the valid points, [2,4] and [4,4] have the smallest Manhattan distance from your current location, with a distance of 1. [2,4] has the smallest index, so return 2.&lt;/pre&gt;</p>
-<p><strong>Example 2:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> x = 3, y = 4, points = [[3,4]]
-<strong>Output:</strong> 0
-<strong>Explanation:</strong> The answer is allowed to be on the same location as your current location.&lt;/pre&gt;</p>
-<p><strong>Example 3:</strong></p>
-<p>&lt;pre&gt;<strong>Input:</strong> x = 3, y = 4, points = [[2,3]]
-<strong>Output:</strong> -1
-<strong>Explanation:</strong> There are no valid points.&lt;/pre&gt;</p>
-<p><strong>Constraints:</strong></p>
-<ul>
-<li><code>1 &lt;= points.length &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code></li>
-<li><code>points[i].length == 2</code></li>
-<li><code>1 &lt;= x, y, a&lt;sub&gt;i&lt;/sub&gt;, b&lt;sub&gt;i&lt;/sub&gt; &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code></li>
-</ul>
-<p>&lt;/div&gt;</p>
-<h3><strong>题目大意：</strong></h3>
-<p>给定一个坐标和一堆坐标，这个坐标与某个点在同一条y轴或x轴上叫合法点，求它到这些点的最小曼哈顿距离对应的点的下标，若有多个结果，返回最小的数组下标。</p>
-<h3><strong>解题思路：</strong></h3>
-<p>Easy题，根据题意求</p>
-<h3><strong>解题步骤：</strong></h3>
-<p>N/A</p>
-<h3><strong>注意事项：</strong></h3>
-<ol>
-<li></li>
+<div><br><br>You are given two integers, <code>x</code> and <code>y</code>, which represent your current location on a Cartesian grid: <code>(x, y)</code>. You are also given an array <code>points</code> where each <code>points[i] = [a&lt;sub&gt;i&lt;/sub&gt;, b&lt;sub&gt;i&lt;/sub&gt;]</code> represents that a point exists at <code>(a&lt;sub&gt;i&lt;/sub&gt;, b&lt;sub&gt;i&lt;/sub&gt;)</code>. A point is <strong>valid</strong> if it shares the same x-coordinate or the same y-coordinate as your location.<br><br>Return <em>the index <strong>(0-indexed)</strong> of the <strong>valid</strong> point with the smallest <strong>Manhattan distance</strong> from your current location</em>. If there are multiple, return <em>the valid point with the <strong>smallest</strong> index</em>. If there are no valid points, return <code>-1</code>.<br><br>The <strong>Manhattan distance</strong> between two points <code>(x&lt;sub&gt;1&lt;/sub&gt;, y&lt;sub&gt;1&lt;/sub&gt;)</code> and <code>(x&lt;sub&gt;2&lt;/sub&gt;, y&lt;sub&gt;2&lt;/sub&gt;)</code> is <code>abs(x&lt;sub&gt;1&lt;/sub&gt; - x&lt;sub&gt;2&lt;/sub&gt;) + abs(y&lt;sub&gt;1&lt;/sub&gt; - y&lt;sub&gt;2&lt;/sub&gt;)</code>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> x = 3, y = 4, points = [[1,2],[3,1],[2,4],[2,3],[4,4]]<br><strong>Output:</strong> 2<br><strong>Explanation:</strong> Of all the points, only [3,1], [2,4] and [4,4] are valid. Of the valid points, [2,4] and [4,4] have the smallest Manhattan distance from your current location, with a distance of 1. [2,4] has the smallest index, so return 2.</pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> x = 3, y = 4, points = [[3,4]]<br><strong>Output:</strong> 0<br><strong>Explanation:</strong> The answer is allowed to be on the same location as your current location.</pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> x = 3, y = 4, points = [[2,3]]<br><strong>Output:</strong> -1<br><strong>Explanation:</strong> There are no valid points.</pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= points.length &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code>
+</em>   <code>points[i].length == 2</code><br>*   <code>1 &lt;= x, y, a&lt;sub&gt;i&lt;/sub&gt;, b&lt;sub&gt;i&lt;/sub&gt; &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code><br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个坐标和一堆坐标，这个坐标与某个点在同一条y轴或x轴上叫合法点，求它到这些点的最小曼哈顿距离对应的点的下标，若有多个结果，返回最小的数组下标。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>Easy题，根据题意求</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li><h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">nearestValidPoint</span>(<span class="params">self, x: <span class="built_in">int</span>, y: <span class="built_in">int</span>, points: <span class="type">List</span>[<span class="type">List</span>[<span class="built_in">int</span>]]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	min_dis = <span class="built_in">float</span>(<span class="string">&#x27;inf&#x27;</span>)</span><br><span class="line">	res = -<span class="number">1</span></span><br><span class="line">	<span class="keyword">for</span> i, (_x, _y) <span class="keyword">in</span> <span class="built_in">enumerate</span>(points):</span><br><span class="line">		<span class="keyword">if</span> x == _x <span class="keyword">or</span> y == _y:</span><br><span class="line">			<span class="keyword">if</span> <span class="built_in">abs</span>(x - _x) + <span class="built_in">abs</span>(y - _y) &lt; min_dis:</span><br><span class="line">				min_dis = <span class="built_in">abs</span>(x - _x) + <span class="built_in">abs</span>(y - _y)</span><br><span class="line">				res = i</span><br><span class="line">			<span class="keyword">elif</span> <span class="built_in">abs</span>(x - _x) + <span class="built_in">abs</span>(y - _y) == min_dis <span class="keyword">and</span> i &lt; res:</span><br><span class="line">				res = i</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+</li>
 </ol>
-<h3><strong>Python代码：</strong></h3>
-<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">nearestValidPoint</span>(<span class="params">self, x: <span class="built_in">int</span>, y: <span class="built_in">int</span>, points: <span class="type">List</span>[<span class="type">List</span>[<span class="built_in">int</span>]]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	min_dis = <span class="built_in">float</span>(<span class="string">&#x27;inf&#x27;</span>)</span><br><span class="line">	res = -<span class="number">1</span></span><br><span class="line">	<span class="keyword">for</span> i, (_x, _y) <span class="keyword">in</span> <span class="built_in">enumerate</span>(points):</span><br><span class="line">		<span class="keyword">if</span> x == _x <span class="keyword">or</span> y == _y:</span><br><span class="line">			<span class="keyword">if</span> <span class="built_in">abs</span>(x - _x) + <span class="built_in">abs</span>(y - _y) &lt; min_dis:</span><br><span class="line">				min_dis = <span class="built_in">abs</span>(x - _x) + <span class="built_in">abs</span>(y - _y)</span><br><span class="line">				res = i</span><br><span class="line">			<span class="keyword">elif</span> <span class="built_in">abs</span>(x - _x) + <span class="built_in">abs</span>(y - _y) == min_dis <span class="keyword">and</span> i &lt; res:</span><br><span class="line">				res = i</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code></p>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
 
       
     </div>
@@ -633,47 +550,18 @@ start time小于堆顶。<br>
 
       
           <p><strong><a href="https://leetcode.com/problems/distribute-coins-in-binary-tree/">LeetCode</a></strong></p>
-<p>&lt;div&gt;</p>
-<p>You are given the <code>root</code> of a binary tree with <code>n</code> nodes where each <code>node</code> in the tree has <code>node.val</code> coins. There are <code>n</code> coins in total throughout the whole tree.</p>
-<p>In one move, we may choose two adjacent nodes and move one coin from one node to another. A move may be from parent to child, or from child to parent.</p>
-<p>Return <em>the <strong>minimum</strong> number of moves required to make every node have <strong>exactly</strong> one coin</em>.</p>
-<p><strong>Example 1:</strong></p>
-<p><img src="https://assets.leetcode.com/uploads/2019/01/18/tree1.png" alt=""></p>
-<p>&lt;pre&gt;<strong>Input:</strong> root = [3,0,0]
-<strong>Output:</strong> 2
-<strong>Explanation:</strong> From the root of the tree, we move one coin to its left child, and one coin to its right child.
-&lt;/pre&gt;</p>
-<p><strong>Example 2:</strong></p>
-<p><img src="https://assets.leetcode.com/uploads/2019/01/18/tree2.png" alt=""></p>
-<p>&lt;pre&gt;<strong>Input:</strong> root = [0,3,0]
-<strong>Output:</strong> 3
-<strong>Explanation:</strong> From the left child of the root, we move two coins to the root [taking two moves]. Then, we move one coin from the root of the tree to the right child.
-&lt;/pre&gt;</p>
-<p><strong>Constraints:</strong></p>
-<ul>
-<li>The number of nodes in the tree is <code>n</code>.</li>
-<li><code>1 &lt;= n &lt;= 100</code></li>
-<li><code>0 &lt;= Node.val &lt;= n</code></li>
-<li>The sum of all <code>Node.val</code> is <code>n</code>.</li>
-</ul>
-<p>&lt;/div&gt;</p>
-<h3><strong>题目大意：</strong></h3>
-<p>二叉树某些节点含有硬币，求将这些硬币推向其他节点，使得所有节点都有一个硬币，求总移动次数</p>
-<h3><strong>解题思路：</strong></h3>
-<p>先思考，若硬币都在root，也就是求所有节点的路径和。可以用每个节点的路径和求和，也可以定义dfs返回节点数，用全局变量加左右数，每轮递归都加一次，所以每个节点被加了其路径长度的次数。本算法采用后者<br>
-下面思考若硬币不在root，由于硬币可以从儿子给父亲，这是双向的，所以<strong>dfs定义为儿子给父亲的硬币数</strong>，若节点没有硬币，返回值会是负数，也就是父亲给儿子硬币，此时这个负数正是以此节点为root的数的总的节点数，所以与上述定义一致。<br>
-所以返回root.val + left + right - 1，left和right都是负数，left + right - 1是树的大小的负数，此结果为剩余硬币推给父亲的硬币数<br>
-res += abs(left) + abs(right)左子树和右子树所有节点一起走一条边的路径和</p>
-<h3><strong>解题步骤：</strong></h3>
-<p>N/A</p>
-<h3><strong>注意事项：</strong></h3>
-<ol>
+<div><br><br>You are given the <code>root</code> of a binary tree with <code>n</code> nodes where each <code>node</code> in the tree has <code>node.val</code> coins. There are <code>n</code> coins in total throughout the whole tree.<br><br>In one move, we may choose two adjacent nodes and move one coin from one node to another. A move may be from parent to child, or from child to parent.<br><br>Return <em>the <strong>minimum</strong> number of moves required to make every node have <strong>exactly</strong> one coin</em>.<br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2019/01/18/tree1.png" alt=""><br><br><pre><strong>Input:</strong> root = [3,0,0]<br><strong>Output:</strong> 2<br><strong>Explanation:</strong> From the root of the tree, we move one coin to its left child, and one coin to its right child.<br></pre><br><br><strong>Example 2:</strong><br><br><img src="https://assets.leetcode.com/uploads/2019/01/18/tree2.png" alt=""><br><br><pre><strong>Input:</strong> root = [0,3,0]<br><strong>Output:</strong> 3<br><strong>Explanation:</strong> From the left child of the root, we move two coins to the root [taking two moves]. Then, we move one coin from the root of the tree to the right child.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   The number of nodes in the tree is <code>n</code>.
+</em>   <code>1 &lt;= n &lt;= 100</code><br><em>   <code>0 &lt;= Node.val &lt;= n</code>
+</em>   The sum of all <code>Node.val</code> is <code>n</code>.<br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>二叉树某些节点含有硬币，求将这些硬币推向其他节点，使得所有节点都有一个硬币，求总移动次数</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>先思考，若硬币都在root，也就是求所有节点的路径和。可以用每个节点的路径和求和，也可以定义dfs返回节点数，用全局变量加左右数，每轮递归都加一次，所以每个节点被加了其路径长度的次数。本算法采用后者<br>下面思考若硬币不在root，由于硬币可以从儿子给父亲，这是双向的，所以<strong>dfs定义为儿子给父亲的硬币数</strong>，若节点没有硬币，返回值会是负数，也就是父亲给儿子硬币，此时这个负数正是以此节点为root的数的总的节点数，所以与上述定义一致。<br>所以返回root.val + left + right - 1，left和right都是负数，left + right - 1是树的大小的负数，此结果为剩余硬币推给父亲的硬币数<br>res += abs(left) + abs(right)左子树和右子树所有节点一起走一条边的路径和</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
 <li><strong>dfs定义为儿子给父亲的硬币数(若有硬币)，同时是子树的节点数的负数(若无硬币)</strong></li>
 </ol>
-<h3><strong>Python代码：</strong></h3>
-<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">distributeCoins</span>(<span class="params">self, root: TreeNode</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	res = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">def</span> <span class="title function_">dfs</span>(<span class="params">root</span>):</span><br><span class="line">		<span class="keyword">if</span> <span class="keyword">not</span> root:</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">		<span class="keyword">nonlocal</span> res</span><br><span class="line">		left = dfs(root.left)</span><br><span class="line">		right = dfs(root.right)</span><br><span class="line">		res += <span class="built_in">abs</span>(left) + <span class="built_in">abs</span>(right)</span><br><span class="line">		<span class="keyword">return</span> root.val + left + right - <span class="number">1</span></span><br><span class="line"></span><br><span class="line">	dfs(root)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code></p>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">distributeCoins</span>(<span class="params">self, root: TreeNode</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	res = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">def</span> <span class="title function_">dfs</span>(<span class="params">root</span>):</span><br><span class="line">		<span class="keyword">if</span> <span class="keyword">not</span> root:</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">		<span class="keyword">nonlocal</span> res</span><br><span class="line">		left = dfs(root.left)</span><br><span class="line">		right = dfs(root.right)</span><br><span class="line">		res += <span class="built_in">abs</span>(left) + <span class="built_in">abs</span>(right)</span><br><span class="line">		<span class="keyword">return</span> root.val + left + right - <span class="number">1</span></span><br><span class="line"></span><br><span class="line">	dfs(root)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
 
       
     </div>
@@ -752,46 +640,16 @@ res += abs(left) + abs(right)左子树和右子树所有节点一起走一条边
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>A nonogram is a logic puzzle, similar to a crossword, in which the player is given
-a blank grid and has to color it according to some instructions. Specifically,
-each cell can be either black or white, which we will represent as 0 for black and
-1 for white.
-+------------+
-| 1 1 1 1 |
-| 0 1 1 1 |
-| 0 1 0 0 |
-| 1 1 0 1 |
-| 0 0 1 1 |
-+------------+
-For each row and column, the instructions give the lengths of contiguous runs of
-black (0) cells. For example, the instructions for one row of [ 2, 1 ] indicate
-that there must be a run of two black cells, followed later by another run of one
-black cell, and the rest of the row filled with white cells.
-These are valid solutions: [ 1, 0, 0, 1, 0 ] and [ 0, 0, 1, 1, 0 ] and also [ 0,
-0, 1, 0, 1 ]
-This is not valid: [ 1, 0, 1, 0, 0 ] since the runs are not in the correct order.
-This is not valid: [ 1, 0, 0, 0, 1 ] since the two runs of 0s are not separated by
-1s.
-Your job is to write a function to validate a possible solution against a set of
-instructions. Given a 2D matrix representing a player's solution; and instructions
-for each row along with additional instructions for each column; return True or
-False according to whether both sets of instructions match.</p>
-<h3><strong>题目大意：</strong></h3>
-<p>Nonogram日本游戏，0表示黑子，[2, 1]表示黑子的连续数目，如棋盘状态[ 1, 0, 0, 1, 0 ]，表示连续黑子数为[2, 1]<br>
-[ 1, 0, 0, 0, 1 ]连续黑子数为[3]. 验证棋盘的每一行和每一列是否满足rows和cols所指定的连续黑子数</p>
-<h3><strong>解题思路：</strong></h3>
-<p>按题意求解</p>
-<h3><strong>解题步骤：</strong></h3>
-<p>N/A</p>
-<h3><strong>注意事项：</strong></h3>
-<ol>
+          <p>A nonogram is a logic puzzle, similar to a crossword, in which the player is given<br>a blank grid and has to color it according to some instructions. Specifically,<br>each cell can be either black or white, which we will represent as 0 for black and<br>1 for white.<br>+————+<br>| 1 1 1 1 |<br>| 0 1 1 1 |<br>| 0 1 0 0 |<br>| 1 1 0 1 |<br>| 0 0 1 1 |<br>+————+<br>For each row and column, the instructions give the lengths of contiguous runs of<br>black (0) cells. For example, the instructions for one row of [ 2, 1 ] indicate<br>that there must be a run of two black cells, followed later by another run of one<br>black cell, and the rest of the row filled with white cells.<br>These are valid solutions: [ 1, 0, 0, 1, 0 ] and [ 0, 0, 1, 1, 0 ] and also [ 0,<br>0, 1, 0, 1 ]<br>This is not valid: [ 1, 0, 1, 0, 0 ] since the runs are not in the correct order.<br>This is not valid: [ 1, 0, 0, 0, 1 ] since the two runs of 0s are not separated by<br>1s.<br>Your job is to write a function to validate a possible solution against a set of<br>instructions. Given a 2D matrix representing a player’s solution; and instructions<br>for each row along with additional instructions for each column; return True or<br>False according to whether both sets of instructions match.</p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>Nonogram日本游戏，0表示黑子，[2, 1]表示黑子的连续数目，如棋盘状态[ 1, 0, 0, 1, 0 ]，表示连续黑子数为[2, 1]<br>[ 1, 0, 0, 0, 1 ]连续黑子数为[3]. 验证棋盘的每一行和每一列是否满足rows和cols所指定的连续黑子数</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>按题意求解</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
 <li>递归只有一种情况</li>
 <li>答案需求全局</li>
 </ol>
-<h3><strong>Python代码：</strong></h3>
-<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">valid_nonogram</span>(<span class="params">self, matrix, rows, cols</span>):</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(matrix)):</span><br><span class="line">		<span class="keyword">if</span> <span class="variable language_">self</span>.get_consecutive_zeros(matrix[i]) != rows[i]:</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">	<span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(matrix[<span class="number">0</span>])):</span><br><span class="line">		col_vals = []</span><br><span class="line">		<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(matrix)):</span><br><span class="line">			col_vals.append(matrix[i][j])</span><br><span class="line">		<span class="keyword">if</span> <span class="variable language_">self</span>.get_consecutive_zeros(col_vals) != cols[j]:</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">	<span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># [ 1, 0, 0, 1, 0 ] -&gt; [2, 1], # of 0s</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_consecutive_zeros</span>(<span class="params">self, matrix_row</span>):</span><br><span class="line">	count, res = <span class="number">0</span>, []</span><br><span class="line">	<span class="keyword">for</span> n <span class="keyword">in</span> matrix_row:</span><br><span class="line">		<span class="keyword">if</span> n == <span class="number">0</span>:</span><br><span class="line">			count += <span class="number">1</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			<span class="keyword">if</span> count &gt; <span class="number">0</span>:</span><br><span class="line">				res.append(count)</span><br><span class="line">			count = <span class="number">0</span></span><br><span class="line">	<span class="keyword">if</span> count &gt; <span class="number">0</span>:</span><br><span class="line">		res.append(count)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure></p>
-<h3><strong>算法分析：</strong></h3>
-<p>时间复杂度为<code>O(nm)</code>，空间复杂度<code>O(n)</code></p>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">valid_nonogram</span>(<span class="params">self, matrix, rows, cols</span>):</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(matrix)):</span><br><span class="line">		<span class="keyword">if</span> <span class="variable language_">self</span>.get_consecutive_zeros(matrix[i]) != rows[i]:</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">	<span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(matrix[<span class="number">0</span>])):</span><br><span class="line">		col_vals = []</span><br><span class="line">		<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(matrix)):</span><br><span class="line">			col_vals.append(matrix[i][j])</span><br><span class="line">		<span class="keyword">if</span> <span class="variable language_">self</span>.get_consecutive_zeros(col_vals) != cols[j]:</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">	<span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># [ 1, 0, 0, 1, 0 ] -&gt; [2, 1], # of 0s</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_consecutive_zeros</span>(<span class="params">self, matrix_row</span>):</span><br><span class="line">	count, res = <span class="number">0</span>, []</span><br><span class="line">	<span class="keyword">for</span> n <span class="keyword">in</span> matrix_row:</span><br><span class="line">		<span class="keyword">if</span> n == <span class="number">0</span>:</span><br><span class="line">			count += <span class="number">1</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			<span class="keyword">if</span> count &gt; <span class="number">0</span>:</span><br><span class="line">				res.append(count)</span><br><span class="line">			count = <span class="number">0</span></span><br><span class="line">	<span class="keyword">if</span> count &gt; <span class="number">0</span>:</span><br><span class="line">		res.append(count)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nm)</code>，空间复杂度<code>O(n)</code>  </p>
 
       
     </div>
