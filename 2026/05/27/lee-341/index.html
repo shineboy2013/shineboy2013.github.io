@@ -28,7 +28,7 @@
 <meta property="og:description" content="LeetCode You are given a nested list of integers nestedList. Each element is either an integer or a list whose elements may also be integers or other lists. Implement an iterator to flatten it.Impleme">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2026-05-27T07:00:00.000Z">
-<meta property="article:modified_time" content="2026-06-03T08:41:25.650Z">
+<meta property="article:modified_time" content="2026-06-21T08:55:07.910Z">
 <meta property="article:author" content="KK Shum">
 <meta property="article:tag" content="Array">
 <meta property="article:tag" content="Iterator">
@@ -239,7 +239,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2026-06-03 01:41:25" itemprop="dateModified" datetime="2026-06-03T01:41:25-07:00">2026-06-03</time>
+                <time title="Modified: 2026-06-21 01:55:07" itemprop="dateModified" datetime="2026-06-21T01:55:07-07:00">2026-06-21</time>
               </span>
 
           
@@ -279,12 +279,13 @@
 <h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><ol>
 <li>Iterator题目都是用Stack，比如BST Iterator</li>
 <li>init和next都可以假设是用int来完成，用reversed加入</li>
-<li>next则要考虑两种情况</li>
+<li>next或hasNext要迭代到第一个integer为止</li>
+<li>hasNext和next要对第三步保持一致: next要call self.hasNext()</li>
 </ol>
 <h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
 <li>用Stack，<strong>逆序将nestedList中nestedinteger加入到stack，直到栈顶元素为int，hasNext才算结束</strong></li>
 </ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">NestedIterator</span>(<span class="title class_ inherited__">TestCases</span>):</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, nestedList</span>):</span><br><span class="line">        <span class="variable language_">self</span>.stack = []</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">reversed</span>(<span class="built_in">range</span>(<span class="built_in">len</span>(nestedList))):</span><br><span class="line">            <span class="variable language_">self</span>.stack.append(nestedList[i])</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">next</span>(<span class="params">self</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>.hasNext():</span><br><span class="line">            <span class="keyword">return</span> <span class="variable language_">self</span>.stack.pop().getInteger()</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">hasNext</span>(<span class="params">self</span>) -&gt; <span class="built_in">bool</span>:</span><br><span class="line">        <span class="keyword">while</span> <span class="variable language_">self</span>.stack <span class="keyword">and</span> <span class="keyword">not</span> <span class="variable language_">self</span>.stack[-<span class="number">1</span>].isInteger():</span><br><span class="line">            nestedList = <span class="variable language_">self</span>.stack.pop().getList()</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">reversed</span>(<span class="built_in">range</span>(<span class="built_in">len</span>(nestedList))):</span><br><span class="line">                <span class="variable language_">self</span>.stack.append(nestedList[i])</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span> <span class="keyword">if</span> <span class="variable language_">self</span>.stack <span class="keyword">else</span> <span class="literal">False</span></span><br></pre></td></tr></table></figure>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">NestedIterator</span>(<span class="title class_ inherited__">TestCases</span>):</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, nestedList: [NestedInteger]</span>):</span><br><span class="line">        <span class="variable language_">self</span>.stack = []</span><br><span class="line">        <span class="keyword">for</span> n <span class="keyword">in</span> <span class="built_in">reversed</span>(nestedList):</span><br><span class="line">            <span class="variable language_">self</span>.stack.append(n)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">next</span>(<span class="params">self</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.stack.pop() <span class="keyword">if</span> <span class="variable language_">self</span>.hasNext() <span class="keyword">else</span> <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">hasNext</span>(<span class="params">self</span>) -&gt; <span class="built_in">bool</span>:</span><br><span class="line">        <span class="keyword">while</span> <span class="variable language_">self</span>.stack <span class="keyword">and</span> <span class="keyword">not</span> <span class="variable language_">self</span>.stack[-<span class="number">1</span>].isInteger():</span><br><span class="line">            n = <span class="variable language_">self</span>.stack.pop()</span><br><span class="line">            <span class="keyword">for</span> m <span class="keyword">in</span> <span class="built_in">reversed</span>(n.getList()):</span><br><span class="line">                <span class="variable language_">self</span>.stack.append(m)</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.stack</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>next操作时间复杂度为<code>O(V/N)</code>或<code>O(1)</code>，空间复杂度<code>O(L + N)</code>, N为所有数，V为nested list数，O(N + V)/N. O(1)如果不存在nested list </p>
 
     </div>
@@ -387,14 +388,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">364</span>
+          <span class="site-state-item-count">365</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-count">59</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

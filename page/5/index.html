@@ -201,6 +201,111 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2026/05/27/memoization/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KK Shum">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KK's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2026/05/27/memoization/" class="post-title-link" itemprop="url">记忆性搜索</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2026-05-27 00:00:00" itemprop="dateCreated datePublished" datetime="2026-05-27T00:00:00-07:00">2026-05-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2026-06-03 01:41:26" itemprop="dateModified" datetime="2026-06-03T01:41:26-07:00">2026-06-03</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2026/05/27/memoization/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2026/05/27/memoization/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>DFS将子问题的解存于结果中。cache[st] = result. st是子问题边界。  </p>
+<h3 id="应用："><a href="#应用：" class="headerlink" title="应用："></a><strong>应用：</strong></h3><p>用于求所有可能性，且这些可能性有重复，记忆性搜索可以用于剪枝。  </p>
+<ol>
+<li>Leetcode 139</li>
+<li>Leetcode 140</li>
+</ol>
+<p>与DP的界线：  </p>
+<ol>
+<li>状态转移特别麻烦如有循环依赖, 不是顺序性。如棋盘，上下左右四个方向如1197 Minimum Knight Moves和word ladder  </li>
+<li>初始化状态不是特别容易找到</li>
+</ol>
+<h3 id="算法步骤："><a href="#算法步骤：" class="headerlink" title="算法步骤："></a><strong>算法步骤：</strong></h3><ol>
+<li>key为子问题索引st，value为子问题的解。不含path和res因为类似于Catalan，用子问题返回结果来组成此轮结果。f(input, st, endIndex, cache) -&gt; List    </li>
+<li>紧跟终结条件，若在cache中，返回子问题的解。  </li>
+<li>循环结束，将子问题的结果存于cache。  </li>
+</ol>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>cache是一个解的集合，所以<strong>终止条件返回也需要是一个list</strong></li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">dfs</span>(<span class="params">self, <span class="built_in">input</span>, cache</span>) -&gt; <span class="type">List</span>[<span class="built_in">int</span>]:</span><br><span class="line">	<span class="keyword">if</span> &lt;终止条件&gt;:</span><br><span class="line">		<span class="keyword">return</span> [] <span class="comment"># remember to use list</span></span><br><span class="line">	<span class="keyword">if</span> <span class="built_in">input</span> <span class="keyword">in</span> cache:</span><br><span class="line">		<span class="keyword">return</span> cache[<span class="built_in">input</span>]</span><br><span class="line">	res = []</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(<span class="built_in">input</span>)):</span><br><span class="line">		anwser = <span class="variable language_">self</span>.dfs(<span class="built_in">input</span>[:i], cache)</span><br><span class="line">		res.append(anwser)</span><br><span class="line">	cache[<span class="built_in">input</span>] = res</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(解大小)</code>，空间复杂度<code>O(解大小)</code>.</p>
+<h3 id="例子："><a href="#例子：" class="headerlink" title="例子："></a><strong>例子：</strong></h3><p>LeetCode 140 Word Break II<br>这是单边catalan<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">wordBreak</span>(<span class="params">self, s: <span class="built_in">str</span>, wordDict: <span class="type">List</span>[<span class="built_in">str</span>]</span>) -&gt; <span class="type">List</span>[<span class="built_in">str</span>]:</span><br><span class="line">	word_set = <span class="built_in">set</span>(wordDict)</span><br><span class="line">	res = []</span><br><span class="line">	cache = &#123;&#125;</span><br><span class="line">	res = <span class="variable language_">self</span>.dfs(s, word_set, cache) <span class="comment">#cat</span></span><br><span class="line">	<span class="keyword">return</span> res</span><br><span class="line"><span class="comment"># dfs(s) = word + dfs(s[i+1:])</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">dfs</span>(<span class="params">self, s, word_set, cache</span>):</span><br><span class="line">	<span class="keyword">if</span> s == <span class="string">&quot;&quot;</span>:</span><br><span class="line">		<span class="keyword">return</span> [<span class="string">&quot;&quot;</span>]</span><br><span class="line">	<span class="keyword">if</span> s <span class="keyword">in</span> cache:</span><br><span class="line">		<span class="keyword">return</span> cache[s]</span><br><span class="line">	res = []</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(s)):</span><br><span class="line">		<span class="keyword">if</span> s[:i + <span class="number">1</span>] <span class="keyword">not</span> <span class="keyword">in</span> word_set:</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		cur_list = <span class="variable language_">self</span>.dfs(s[i + <span class="number">1</span>:], word_set, cache) <span class="comment"># i = 2, dfs(&quot;&quot;)</span></span><br><span class="line">		<span class="keyword">for</span> _s <span class="keyword">in</span> cur_list: <span class="comment"># [&quot;&quot;]</span></span><br><span class="line">			res.append((s[:i + <span class="number">1</span>] + <span class="string">&quot; &quot;</span> + _s).strip()) <span class="comment">#cat</span></span><br><span class="line">	cache[s] = res</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure></p>
+<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>终止条件返回[‘’]而不是[]，正如L017，空字符串作为初始结果。返回到上层要strip(), 因为ss可能为空    </li>
+<li>子问题用f=word + f并不是f=f + word, 这样最后结果避免反转。</li>
+<li>s[:i + 1]判断是否在字典中，而不是s[:i]，单词包括整个字符串。  </li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2026/05/27/merge-sort/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -321,7 +426,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2026-06-03 01:41:26" itemprop="dateModified" datetime="2026-06-03T01:41:26-07:00">2026-06-03</time>
+                <time title="Modified: 2026-06-21 12:20:25" itemprop="dateModified" datetime="2026-06-21T12:20:25-07:00">2026-06-21</time>
               </span>
 
           
@@ -369,8 +474,8 @@
 <h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>.</p>
 <h3 id="LeetCode-394-Decode-String"><a href="#LeetCode-394-Decode-String" class="headerlink" title="LeetCode 394 Decode String"></a>LeetCode 394 Decode String</h3><p>两个stack存储优先级较低的字符以及数字，类似于多重括号2*(3*(4))<br>公式：prev_res+prev_num*[res]  </p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">decodeString</span>(<span class="params">self, s: <span class="built_in">str</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">	stack_num, stack_char, num, char_str = [], [], <span class="number">0</span>, <span class="string">&quot;&quot;</span></span><br><span class="line">	<span class="comment"># char_str + num[&lt;&gt;]</span></span><br><span class="line">	<span class="keyword">for</span> c <span class="keyword">in</span> s:</span><br><span class="line">		<span class="keyword">if</span> c.isdigit():</span><br><span class="line">			num = <span class="number">10</span> * num + <span class="built_in">int</span>(c)</span><br><span class="line">		<span class="keyword">if</span> c.isalpha():</span><br><span class="line">			char_str += c</span><br><span class="line">		<span class="keyword">if</span> c == <span class="string">&quot;[&quot;</span>:</span><br><span class="line">			stack_num.append(num)</span><br><span class="line">			stack_char.append(char_str)</span><br><span class="line">			num = <span class="number">0</span></span><br><span class="line">			char_str = <span class="string">&quot;&quot;</span></span><br><span class="line">		<span class="keyword">if</span> c == <span class="string">&quot;]&quot;</span>:</span><br><span class="line">			prev_char = stack_char.pop()</span><br><span class="line">			prev_num = stack_num.pop()</span><br><span class="line">			char_str = prev_char + prev_num * char_str</span><br><span class="line">	<span class="keyword">return</span> char_str</span><br></pre></td></tr></table></figure>
-<h3 id="LeetCode-227-Basic-Calculator-II"><a href="#LeetCode-227-Basic-Calculator-II" class="headerlink" title="LeetCode 227 Basic Calculator II"></a>LeetCode 227 Basic Calculator II</h3><p>stack=<strong>只存加号操作符</strong><br>核心思想是<strong>只有出现运算符，才能计算前一个数[op]num. 所以op和num是记录前一个符号和数字</strong><br>字符三种类别:空格，数字和运算符<br>若遇到运算符，就处理四种的op，目标是都要把num压栈，但是op是乘除要计算积或商后才能压栈。压栈后num=0，<br>若5*6+, char=”+”的时候, prev = “5”, op = “*“, num=”6”.<br>公式： [prev][op][num][char]  </p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">calculate</span>(<span class="params">self, s: <span class="built_in">str</span></span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	<span class="comment"># prev[op]+num[char]</span></span><br><span class="line">	<span class="comment"># 2-3</span></span><br><span class="line">	stack, num, op = [], <span class="number">0</span>, <span class="string">&#x27;+&#x27;</span></span><br><span class="line">	s += <span class="string">&quot;+&quot;</span></span><br><span class="line">	<span class="keyword">for</span> c <span class="keyword">in</span> s:</span><br><span class="line">		<span class="keyword">if</span> c == <span class="string">&quot; &quot;</span>:</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		<span class="keyword">if</span> c.isdigit():</span><br><span class="line">			num = <span class="number">10</span> * num + <span class="built_in">int</span>(c) <span class="comment">#2</span></span><br><span class="line">		<span class="keyword">if</span> c <span class="keyword">in</span> <span class="string">&quot;+-*/&quot;</span>:</span><br><span class="line">			<span class="keyword">if</span> op == <span class="string">&quot;+&quot;</span>:</span><br><span class="line">				stack.append(num)</span><br><span class="line">			<span class="keyword">if</span> op == <span class="string">&quot;-&quot;</span>:</span><br><span class="line">				stack.append(-num)</span><br><span class="line">			<span class="keyword">if</span> op == <span class="string">&quot;*&quot;</span>:</span><br><span class="line">				prev = stack.pop()</span><br><span class="line">				stack.append(prev * num)</span><br><span class="line">			<span class="keyword">if</span> op == <span class="string">&quot;/&quot;</span>:</span><br><span class="line">				prev = stack.pop()</span><br><span class="line">				stack.append(<span class="built_in">int</span>(prev / num))</span><br><span class="line">			op = c <span class="comment"># *</span></span><br><span class="line">			num = <span class="number">0</span></span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">sum</span>(stack)</span><br></pre></td></tr></table></figure>
+<h3 id="LeetCode-227-Basic-Calculator-II"><a href="#LeetCode-227-Basic-Calculator-II" class="headerlink" title="LeetCode 227 Basic Calculator II"></a>LeetCode 227 Basic Calculator II</h3><p>stack=<strong>只存加号操作符</strong><br>核心思想是<strong>只有出现运算符，才能计算前一个数[op]num. 所以op和num是记录前一个符号和数字</strong><br>字符三种类别:空格，数字和运算符<br>若遇到运算符，就处理四种的op，目标是都要把num压栈，但是op是乘除要计算积或商后才能压栈。压栈后num=0，<br>若5*6+, char=”+”的时候, prev = “5”, prev_op = “*“, num=”6”.<br>公式： [prev][prev_op][num][c=op]<br>实现时候先写只有加减的，再处理乘除，思维从简单开始。注意减法容易遗漏  </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">calculate</span>(<span class="params">self, s: <span class="built_in">str</span></span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	<span class="comment"># prev_num[prev_op]num, 2+3+4+, 2+3*4+</span></span><br><span class="line">	stack, prev_op, num = [], <span class="string">&#x27;+&#x27;</span>, <span class="number">0</span></span><br><span class="line">	s += <span class="string">&quot;+&quot;</span></span><br><span class="line">	<span class="keyword">for</span> c <span class="keyword">in</span> s:</span><br><span class="line">		<span class="keyword">if</span> c == <span class="string">&quot;&quot;</span>:</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		<span class="keyword">if</span> c.isdigit():</span><br><span class="line">			num = num * <span class="number">10</span> + <span class="built_in">int</span>(c)</span><br><span class="line">		<span class="keyword">elif</span> c <span class="keyword">in</span> <span class="string">&#x27;+-*/&#x27;</span>:</span><br><span class="line">			<span class="keyword">if</span> prev_op <span class="keyword">in</span> <span class="string">&#x27;*/&#x27;</span>:</span><br><span class="line">				prev_num = stack.pop()</span><br><span class="line">				<span class="keyword">if</span> prev_op == <span class="string">&quot;*&quot;</span>:</span><br><span class="line">					num = prev_num * num</span><br><span class="line">				<span class="keyword">else</span>:</span><br><span class="line">					num = <span class="built_in">int</span>(prev_num / num)               </span><br><span class="line">			<span class="keyword">if</span> prev_op == <span class="string">&quot;-&quot;</span>:</span><br><span class="line">				num = -num</span><br><span class="line">			stack.append(num)</span><br><span class="line">			num = <span class="number">0</span></span><br><span class="line">			prev_op = c</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">sum</span>(stack)</span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -602,99 +707,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2026/05/27/stack/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="KK Shum">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="KK's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2026/05/27/stack/" class="post-title-link" itemprop="url">Stack</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2026-05-27 00:00:00" itemprop="dateCreated datePublished" datetime="2026-05-27T00:00:00-07:00">2026-05-27</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2026-06-04 15:58:01" itemprop="dateModified" datetime="2026-06-04T15:58:01-07:00">2026-06-04</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2026/05/27/stack/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2026/05/27/stack/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>定义： 栈里元素维持由栈底到栈顶从大到小的顺序叫递减栈。跟最小堆一样，递减栈的<strong>栈首元素最小</strong>。<br><img src="/images/stack.png" alt="">  </p>
-<p>反之是递增栈，不过此法因为用递减栈比较多，所以统称递减栈。通常是将下标而不是值放入到栈中，这样还可以知道元素间的距离。  </p>
-<p>求较大值 -&gt; 递减栈<br>求较小值 -&gt; 递增栈   </p>
-<p>递减栈 vs heap<br>实现上几乎一样，详见算法知识点目录。区别在于元素间是否需要保持顺序或者是否是stream     </p>
-<h3 id="应用："><a href="#应用：" class="headerlink" title="应用："></a><strong>应用：</strong></h3><ol>
-<li>数组不能打乱顺序且求极值</li>
-</ol>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>跟最小堆一样，当元素大于栈顶元素的时候才倒逼栈内元素出栈。    </li>
-<li>记得是stack[-1]看栈顶元素不是stack[0]</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">stack = []</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(li)):</span><br><span class="line">	<span class="keyword">while</span> stack <span class="keyword">and</span> li[i] &gt; li[stack[-<span class="number">1</span>]]:</span><br><span class="line">		index = stack.pop()</span><br><span class="line"></span><br><span class="line">	stack.append(i)</span><br></pre></td></tr></table></figure>
-<p>LeetCode 503 Next Greater Element II<br>核心思想: 原数组复制一遍，用新数组完全做一遍递减栈，最后才截取结果  </p>
-<h3 id="例子："><a href="#例子：" class="headerlink" title="例子："></a><strong>例子：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">nextGreaterElements</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="type">List</span>[<span class="built_in">int</span>]:</span><br><span class="line">	num_list = nums * <span class="number">2</span></span><br><span class="line">	result, stack = [<span class="number">0</span>] * <span class="built_in">len</span>(num_list), []</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(num_list)):</span><br><span class="line">		<span class="keyword">while</span> stack <span class="keyword">and</span> num_list[i] &gt; num_list[stack[-<span class="number">1</span>]]:</span><br><span class="line">			index = stack.pop()</span><br><span class="line">			result[index] = num_list[i]</span><br><span class="line">		stack.append(i)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> stack:</span><br><span class="line">		index = stack.pop()</span><br><span class="line">		result[index] = -<span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> result[:<span class="built_in">len</span>(nums)]</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -769,14 +781,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">364</span>
+          <span class="site-state-item-count">365</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-count">59</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

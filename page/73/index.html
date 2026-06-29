@@ -201,6 +201,113 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2018/01/29/lee-658/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KK Shum">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KK's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/01/29/lee-658/" class="post-title-link" itemprop="url">LeetCode 658 Find K Closest Elements</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2018-01-29 00:00:00" itemprop="dateCreated datePublished" datetime="2018-01-29T00:00:00-08:00">2018-01-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2026-06-03 02:03:57" itemprop="dateModified" datetime="2026-06-03T02:03:57-07:00">2026-06-03</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2018/01/29/lee-658/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/01/29/lee-658/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong><a href="https://leetcode.com/problems/find-k-closest-elements">LeetCode 658 Find K Closest Elements</a></strong></p>
+<p>Given a sorted array, two integers <code>k</code> and <code>x</code>, find the <code>k</code> closest elements to <code>x</code> in the array. The result should also be sorted in ascending order. If there is a tie, the smaller elements are always preferred.</p>
+<p><strong>Example 1:</strong>  </p>
+<pre><b>Input:</b> [1,2,3,4,5], k=4, x=3
+<b>Output:</b> [1,2,3,4]
+</pre>
+
+<p><strong>Example 2:</strong>  </p>
+<pre><b>Input:</b> [1,2,3,4,5], k=4, x=-1
+<b>Output:</b> [1,2,3,4]
+</pre>
+
+<p><strong>Note:</strong>  </p>
+<ol>
+<li>The value k is positive and will always be smaller than the length of the sorted array.</li>
+<li>Length of the given array is positive and will not exceed 10<sup>4</sup></li>
+<li>Absolute value of elements in the array and x will not exceed 10<sup>4</sup></li>
+</ol>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个排序数组，两个整数k和x，求数组中距离x最近的k个数字。结果应该有序，距离相同时优先选择较小的数字。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><ol>
+<li>进阶二分法找出第一个大于等于key值的元素。</li>
+<li>左右两指针搜索k个元素。</li>
+</ol>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>指针不能越界</li>
+<li>根据题意，与key距离一样时，取较小元素。</li>
+</ol>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> List&lt;Integer&gt; <span class="title function_">findClosestElements</span><span class="params">(<span class="type">int</span>[] arr, <span class="type">int</span> k, <span class="type">int</span> x)</span> &#123;</span><br><span class="line">	<span class="type">int</span> <span class="variable">upperIdx</span> <span class="operator">=</span> firstEqualOrGreater(arr, x);</span><br><span class="line">	<span class="type">int</span> <span class="variable">lowerIdx</span> <span class="operator">=</span> upperIdx-<span class="number">1</span>;</span><br><span class="line">	<span class="type">List</span> <span class="variable">result</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ArrayList</span>();</span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> i=k;i&gt;<span class="number">0</span>;i--)&#123;</span><br><span class="line">		<span class="keyword">if</span>(lowerIdx&lt;<span class="number">0</span>)</span><br><span class="line">			result.add(arr[upperIdx++]);</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(upperIdx&gt;=arr.length)</span><br><span class="line">			result.add(arr[lowerIdx--]);</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(x-arr[lowerIdx]&lt;=arr[upperIdx]-x)</span><br><span class="line">			result.add(arr[lowerIdx--]);</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			result.add(arr[upperIdx++]);</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	Collections.sort(result);</span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="type">int</span> <span class="title function_">firstEqualOrGreater</span><span class="params">(<span class="type">int</span>[] a, <span class="type">int</span> key)</span>&#123;</span><br><span class="line">	<span class="type">int</span> <span class="variable">lo</span> <span class="operator">=</span> <span class="number">0</span>, hi = a.length-<span class="number">1</span>;</span><br><span class="line">	<span class="keyword">while</span>(lo&lt;=hi)&#123;</span><br><span class="line">		<span class="type">int</span> <span class="variable">mid</span> <span class="operator">=</span>  lo + (hi - lo) / <span class="number">2</span>;</span><br><span class="line">		<span class="keyword">if</span>(a[mid]&lt;key)</span><br><span class="line">			lo = mid+<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			hi = mid-<span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> lo;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(logn+k)</code>，空间复杂度<code>O(1)</code>。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2017/12/31/lee/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -4202,14 +4309,14 @@ Output: "s'teL ekat edoCteeL tsetnoc"
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">364</span>
+          <span class="site-state-item-count">365</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-count">59</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
