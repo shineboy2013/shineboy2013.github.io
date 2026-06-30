@@ -201,6 +201,356 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/01/15/lee-010/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KK Shum">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KK's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/01/15/lee-010/" class="post-title-link" itemprop="url">LeetCode 010 Regular Expression Matching</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-01-15 00:00:00" itemprop="dateCreated datePublished" datetime="2022-01-15T00:00:00-08:00">2022-01-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2026-06-03 02:03:56" itemprop="dateModified" datetime="2026-06-03T02:03:56-07:00">2026-06-03</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2022/01/15/lee-010/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/01/15/lee-010/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong><a href="https://leetcode.com/problems/regular-expression-matching/">LeetCode 010 Regular Expression Matching</a></strong></p>
+<p>Given an input string (<code>s</code>) and a pattern (<code>p</code>), implement regular expression matching with support for <code>&#39;.&#39;</code> and <code>&#39;*&#39;</code>.</p>
+<pre>'.' Matches any single character.
+'*' Matches zero or more of the preceding element.
+</pre>
+
+<p>The matching should cover the <strong>entire</strong> input string (not partial).</p>
+<p><strong>Note:</strong></p>
+<ul>
+<li><code>s</code> could be empty and contains only lowercase letters <code>a-z</code>.</li>
+<li><code>p</code> could be empty and contains only lowercase letters <code>a-z</code>, and characters like <code>.</code> or <code>*</code>.</li>
+</ul>
+<p><strong>Example 1:</strong></p>
+<pre>**Input:**
+s = "aa"
+p = "a"
+**Output:** false
+**Explanation:** "a" does not match the entire string "aa".
+</pre>
+
+<p><strong>Example 2:</strong></p>
+<pre>**Input:**
+s = "aa"
+p = "a*"
+**Output:** true
+**Explanation:** '*' means zero or more of the preceding element, 'a'. Therefore, by repeating 'a' once, it becomes "aa".
+</pre>
+
+<p><strong>Example 3:</strong></p>
+<pre>**Input:**
+s = "ab"
+p = ".*"
+**Output:** true
+**Explanation:** ".*" means "zero or more (*) of any character (.)".
+</pre>
+
+<p><strong>Example 4:</strong></p>
+<pre>**Input:**
+s = "aab"
+p = "c*a*b"
+**Output:** true
+**Explanation:** c can be repeated 0 times, a can be repeated 1 time. Therefore, it matches "aab".
+</pre>
+
+<p><strong>Example 5:</strong></p>
+<pre>**Input:**
+s = "mississippi"
+p = "mis*is*p*."
+**Output:** false
+</pre>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>这道求正则表达式匹配的题和那道Leetocde 044 Wildcard Matching很类似，不同点在于*的意义不同，在之前那道题中，<br>*表示可以代替任意个数的不同字符，而这道题中的*表示之前一个字符（同样字符）可以有0-N个匹配。此题更难一些。    </p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是经典题。两字符串匹配题基本就是DP而且知道子问题答案可以推导下一个。    </p>
+<ol>
+<li>定义dp[i][j]为字符串s[i-1]和p[j-1]是否能匹配。  </li>
+<li>递归式为dp[i][j] = dp[i-1][j-1] &amp;&amp; (p[j-1] == <strong>.</strong> || s[i-1] == p[j-1])<br>OR ((dp[i-1][j] &amp;&amp; <strong>(s[i-1] == p[j-2] || p[j-2] == .)</strong>) || dp[i][<strong>j-2</strong>]) &amp;&amp; p[j-1] == *<br>第一种情况为非*，通配一样字符或.<br>第二种情况为*，如果通配<strong>（有条件：与p的前一个字符相等或p为.）</strong>就是只移动s，dp[i-1][j]。若不通配就只移动p<strong>及其前一个字符</strong>。  </li>
+<li>方向为从左到右，从上到下。初始值为dp[0][0] = true。以及若s为空，p为多个*时候，dp[0][j]=true。</li>
+</ol>
+<p>与Wildcard Matching不同之处用黑体标注了：  </p>
+<ol>
+<li>用.代替?  </li>
+<li>*情况，不匹配p移动两位而不是一位。  </li>
+<li>*情况，匹配带条件而不是无条件。  </li>
+<li>初始化用dp[0][j-2]而不是j-1。  </li>
+</ol>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>递归式含*不匹配情况dp[i][j-2]。  </li>
+<li>初始化s为空，p为多个*。此情况其实与递归式符合，因为i=1开始，所以i=0的时候，dp[i-1][j]为负值省去，<br>只取dp[i][j-2]。</li>
+<li>循环中j按理应该从2开始，因为递归式含p[j-2], 这样要初始化第1列(第0列已经初始化为False)。由于题目条件保证星号前一定有其他字符，所以<strong>p的第0位不能是星号，所以j可以从1开始</strong>   </li>
+<li>Python中任何矩阵初始化都只能用两重for循环而不能用乘号</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">isMatch</span>(<span class="params">self, s: <span class="built_in">str</span>, p: <span class="built_in">str</span></span>) -&gt; <span class="built_in">bool</span>:</span><br><span class="line">	dp = [[<span class="literal">False</span> <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>((<span class="built_in">len</span>(p) + <span class="number">1</span>))] <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(s) + <span class="number">1</span>)]</span><br><span class="line">	dp[<span class="number">0</span>][<span class="number">0</span>] = <span class="literal">True</span></span><br><span class="line">	<span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>, <span class="built_in">len</span>(dp[<span class="number">0</span>])):</span><br><span class="line">		dp[<span class="number">0</span>][j] = dp[<span class="number">0</span>][j - <span class="number">2</span>] <span class="keyword">and</span> p[j - <span class="number">1</span>] == <span class="string">&#x27;*&#x27;</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="built_in">len</span>(dp)):</span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="built_in">len</span>(dp[<span class="number">0</span>])):</span><br><span class="line">			<span class="keyword">if</span> p[j - <span class="number">1</span>] != <span class="string">&#x27;*&#x27;</span>:</span><br><span class="line">				dp[i][j] = dp[i - <span class="number">1</span>][j - <span class="number">1</span>] <span class="keyword">and</span> (s[i - <span class="number">1</span>] == p[j - <span class="number">1</span>] <span class="keyword">or</span> p[j - <span class="number">1</span>] == <span class="string">&#x27;.&#x27;</span>)</span><br><span class="line">			<span class="keyword">else</span>:</span><br><span class="line">				dp[i][j] = (dp[i - <span class="number">1</span>][j] <span class="keyword">and</span> (s[i - <span class="number">1</span>] == p[j - <span class="number">2</span>] <span class="keyword">or</span> p[j - <span class="number">2</span>] == <span class="string">&#x27;.&#x27;</span>)) <span class="keyword">or</span> (dp[i][j - <span class="number">2</span>])</span><br><span class="line">	<span class="keyword">return</span> dp[-<span class="number">1</span>][-<span class="number">1</span>]</span><br></pre></td></tr></table></figure>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">isMatch</span><span class="params">(String s, String p)</span> &#123;</span><br><span class="line">	<span class="type">boolean</span>[][] dp = <span class="keyword">new</span> <span class="title class_">boolean</span>[s.length() + <span class="number">1</span>][p.length() + <span class="number">1</span>];</span><br><span class="line">	dp[<span class="number">0</span>][<span class="number">0</span>] = <span class="literal">true</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> <span class="variable">j</span> <span class="operator">=</span> <span class="number">2</span>; j &lt; dp[<span class="number">0</span>].length; j++)</span><br><span class="line">		<span class="keyword">if</span>(p.charAt(j-<span class="number">1</span>) == <span class="string">&#x27;*&#x27;</span>) <span class="comment">// remember s=&quot;&quot;, p=&quot;a*&quot;</span></span><br><span class="line">			dp[<span class="number">0</span>][j] = dp[<span class="number">0</span>][j-<span class="number">2</span>];</span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">1</span>; i &lt; dp.length; i++)</span><br><span class="line">		<span class="keyword">for</span>(<span class="type">int</span> <span class="variable">j</span> <span class="operator">=</span> <span class="number">1</span>; j &lt; dp[<span class="number">0</span>].length; j++) &#123;</span><br><span class="line">			<span class="keyword">if</span>(p.charAt(j-<span class="number">1</span>) == <span class="string">&#x27;*&#x27;</span>)</span><br><span class="line">				dp[i][j] = (dp[i][j-<span class="number">2</span>] || ((s.charAt(i-<span class="number">1</span>) == p.charAt(j-<span class="number">2</span>) </span><br><span class="line">				|| p.charAt(j-<span class="number">2</span>) == <span class="string">&#x27;.&#x27;</span>) &amp;&amp; dp[i-<span class="number">1</span>][j]));</span><br><span class="line">			<span class="keyword">else</span></span><br><span class="line">				dp[i][j] = dp[i-<span class="number">1</span>][j-<span class="number">1</span>] &amp;&amp; (s.charAt(i-<span class="number">1</span>) == p.charAt(j-<span class="number">1</span>) </span><br><span class="line">				|| p.charAt(j-<span class="number">1</span>) == <span class="string">&#x27;.&#x27;</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	<span class="keyword">return</span> dp[dp.length -<span class="number">1</span>][dp[<span class="number">0</span>].length - <span class="number">1</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n*m)</code>，空间复杂度为<code>O(n*m)</code>。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/01/15/lee-042/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KK Shum">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KK's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/01/15/lee-042/" class="post-title-link" itemprop="url">LeetCode 042 Trapping Rain Water</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-01-15 00:00:00" itemprop="dateCreated datePublished" datetime="2022-01-15T00:00:00-08:00">2022-01-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2026-06-03 02:03:56" itemprop="dateModified" datetime="2026-06-03T02:03:56-07:00">2026-06-03</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2022/01/15/lee-042/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/01/15/lee-042/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong><a href="https://leetcode.com/problems/trapping-rain-water">LeetCode 042 Trapping Rain Water</a></strong></p>
+<p>Given <em>n</em> non-negative integers representing an elevation map where the width of each bar is 1, compute how much water it is able to trap after raining.</p>
+<p><img src="http://www.leetcode.com/static/images/problemset/rainwatertrap.png" alt=""><br><small>The above elevation map is represented by array [0,1,0,2,1,0,1,3,2,1,2,1]. In this case, 6 units of rain water (blue section) are being trapped. <strong>Thanks Marcos</strong> for contributing this image!</small></p>
+<p><strong>Example:</strong></p>
+<pre>**Input:** [0,1,0,2,1,0,1,3,2,1,2,1]
+**Output:** 6</pre>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给出 n 个非负整数，代表一张X轴上每个区域宽度为 1 的海拔图, 计算这个海拔图最多能接住多少（面积）雨水。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>画图解题。<br>比较直观的方法是找低谷，只有低谷才可以藏水。用一个递减栈来存所有呈递减趋势的下标，而当上升时就计算藏水量。<br><img src="/images/L042-3.png" alt=""><br>从图可以看出，栈中有最高的，3,2,1，最矮的已经出栈了。蓝色的bar准备入栈。计算水量是水平计算的。具体而言，<br>右边界是确定的，左边界以及高度都是由此bar相邻的在栈中的bar确定的。如1的水量由bar2的高度和位置确定。<br>同理bar2的水量由bar3确定。实质上，是求出栈的元素之间的水量，既然是之间，最后一个出栈就要特殊处理，需要准入栈<br>元素来确定。特殊之处是计算栈中最后一个将要被新bar踢出栈的bar3时，并没有相邻的bar作参考，<br>导致它需要用新bar作为参考，所以它不能在while中处理，需要特别处理，主要因为它是最后一个，属于edge case。</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><ol>
+<li>遍历数组</li>
+<li>若比上一个高度递增，出栈直至栈中下标对应高度大于当前高度（保持递减栈）。每次出栈，用上一轮的高度作为底部计算高度差<br>乘以下标距离即为横向藏水增量，更新底部进入下一次出栈。  </li>
+<li>出栈完成后，根据新bar计算最后一个bar的水量，用当前高度计算藏水增量。</li>
+<li>加入下标到栈中</li>
+</ol>
+<p>公式：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">水量 = 准入栈下标与相邻栈(栈顶)的下标i - stack[-1] - 1 乘以 (相邻栈高度 - 刚出栈高度)</span><br></pre></td></tr></table></figure></p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>[公式]水量 = 准入栈下标与<strong>相邻栈(栈顶)</strong>的下标i - stack[-1] - 1 乘以 (<strong>相邻栈</strong>高度 - 刚出栈高度)<br>水量的宽度并不是用刚出栈的下标，因为如上图，2-3之间可能实际上不相邻（有些高度已出栈），若用当前栈的下标会忽略了2-3之间的水量。 </li>
+<li>最后一个出栈的宽度计算要还有相邻栈(栈顶)i - stack[-1] - 1才计算也就是栈不为空if stack。</li>
+<li>最后一个出栈的高度公式要改成相邻栈高度 -&gt; 准入栈高度。  </li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">trap</span>(<span class="params">self, height: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	stack = []</span><br><span class="line">	<span class="built_in">sum</span> = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(height)):</span><br><span class="line">		j = -<span class="number">1</span></span><br><span class="line">		<span class="keyword">while</span> stack <span class="keyword">and</span> height[i] &gt; height[stack[-<span class="number">1</span>]]:</span><br><span class="line">			j = stack.pop()</span><br><span class="line">			<span class="keyword">if</span> stack <span class="keyword">and</span> height[i] &gt; height[stack[-<span class="number">1</span>]]:</span><br><span class="line">				<span class="built_in">sum</span> += (height[stack[-<span class="number">1</span>]] - height[j]) * (i - stack[-<span class="number">1</span>] - <span class="number">1</span>) <span class="comment"># stack[-1] is the neighboring index</span></span><br><span class="line">		<span class="keyword">if</span> stack <span class="keyword">and</span> j &gt; <span class="number">0</span>:</span><br><span class="line">			<span class="built_in">sum</span> += (height[i] - height[j]) * (i - stack[-<span class="number">1</span>] - <span class="number">1</span>)</span><br><span class="line">		stack.append(i)</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">sum</span></span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>。</p>
+<hr>
+<h3 id="算法II解题思路-推荐-："><a href="#算法II解题思路-推荐-：" class="headerlink" title="算法II解题思路(推荐)："></a><strong>算法II解题思路(推荐)：</strong></h3><p>算法I主要从面考虑，现在我们从点来考虑。下标4的水量取决于向左最大值（下标0）和向右最大值（下标12）中的较小值。<br>问题转化为求每个点的向左向右最大值。数组从左到右扫描，把当前最大值存入leftHeight中，这是向左最大值。<br><img src="/images/L042-2.png" alt=""><br>同理，数组从又到左扫描，得到向右最大值。对每个点取向左向右最大值的较小者，从而计算水量。此法实现起来简单很多。  </p>
+<h3 id="Python代码：-1"><a href="#Python代码：-1" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">trap</span>(<span class="params">self, height: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	max_height = <span class="built_in">max</span>(height)</span><br><span class="line">	max_index = height.index(max_height)</span><br><span class="line">	<span class="built_in">sum</span>, left_max, right_max = <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(max_index):</span><br><span class="line">		<span class="built_in">sum</span> += <span class="built_in">max</span>(<span class="number">0</span>, left_max - height[i])</span><br><span class="line">		left_max = <span class="built_in">max</span>(left_max, height[i])</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(height) - <span class="number">1</span>, max_index, -<span class="number">1</span>):</span><br><span class="line">		<span class="built_in">sum</span> += <span class="built_in">max</span>(<span class="number">0</span>, right_max - height[i])</span><br><span class="line">		right_max = <span class="built_in">max</span>(right_max, height[i])</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">sum</span></span><br></pre></td></tr></table></figure>
+<h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/01/15/lee-072/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KK Shum">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KK's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/01/15/lee-072/" class="post-title-link" itemprop="url">LeetCode 072 Edit Distance</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-01-15 00:00:00" itemprop="dateCreated datePublished" datetime="2022-01-15T00:00:00-08:00">2022-01-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2026-06-03 02:03:56" itemprop="dateModified" datetime="2026-06-03T02:03:56-07:00">2026-06-03</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2022/01/15/lee-072/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/01/15/lee-072/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong><a href="https://leetcode.com/problems/edit-distance/">LeetCode</a></strong></p>
+<div><br><br>Given two strings <code>word1</code> and <code>word2</code>, return <em>the minimum number of operations required to convert <code>word1</code> to <code>word2</code></em>.<br><br>You have the following three operations permitted on a word:<br><br><em>   Insert a character
+</em>   Delete a character<br><em>   Replace a character<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> word1 = “horse”, word2 = “ros”<br><strong>Output:</strong> 3<br><strong>Explanation:</strong><br>horse -&gt; rorse (replace ‘h’ with ‘r’)<br>rorse -&gt; rose (remove ‘r’)<br>rose -&gt; ros (remove ‘e’)<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> word1 = “intention”, word2 = “execution”<br><strong>Output:</strong> 5<br><strong>Explanation:</strong><br>intention -&gt; inention (remove ‘t’)<br>inention -&gt; enention (replace ‘i’ with ‘e’)<br>enention -&gt; exention (replace ‘n’ with ‘x’)<br>exention -&gt; exection (replace ‘n’ with ‘c’)<br>exection -&gt; execution (insert ‘u’)<br></pre><br><br><strong>Constraints:</strong>
+
+</em>   <code>0 &lt;= word1.length, word2.length &lt;= 500</code><br>*   <code>word1</code> and <code>word2</code> consist of lowercase English letters.<br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求编辑两个字符串的最短距离。编辑操作含加删一个字符，替换一个字符。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>求最值且涉及到字符串考虑用DP。递归式为<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dp[i][j] = dp[i-1][j-1]                                   if word1[i-1] == word[j-1]  </span><br><span class="line">         = min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]) + 1, otherwise</span><br></pre></td></tr></table></figure></p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>初始值先word2长度再word1.</li>
+<li><strong>初始化上和左边界，表示当一个字符串为空时，另一个字符串的编辑距离是其长度。</strong></li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># dp[i][j] = dp[i-1][j-1] if word1[i-1] == word[j-1]</span></span><br><span class="line"><span class="comment">#          = min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]) + 1, otherwise</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">minDistance</span>(<span class="params">self, word1: <span class="built_in">str</span>, word2: <span class="built_in">str</span></span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	dp = [[<span class="number">0</span> <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(word2) + <span class="number">1</span>)] <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(word1) + <span class="number">1</span>)]</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="built_in">len</span>(dp)):</span><br><span class="line">		dp[i][<span class="number">0</span>] = i</span><br><span class="line">	<span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="built_in">len</span>(dp[<span class="number">0</span>])):</span><br><span class="line">		dp[<span class="number">0</span>][j] = j</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="built_in">len</span>(dp)):</span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="built_in">len</span>(dp[<span class="number">0</span>])):</span><br><span class="line">			<span class="keyword">if</span> word1[i - <span class="number">1</span>] == word2[j - <span class="number">1</span>]:</span><br><span class="line">				dp[i][j] = dp[i - <span class="number">1</span>][j - <span class="number">1</span>]</span><br><span class="line">			<span class="keyword">else</span>:</span><br><span class="line">				dp[i][j] = <span class="built_in">min</span>(dp[i - <span class="number">1</span>][j], dp[i][j - <span class="number">1</span>], dp[i - <span class="number">1</span>][j - <span class="number">1</span>]) + <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> dp[-<span class="number">1</span>][-<span class="number">1</span>]</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nm)</code>，空间复杂度<code>O(nm)</code>  </p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/01/15/lee-073/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -381,282 +731,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/01/15/lee-090/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="KK Shum">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="KK's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/01/15/lee-090/" class="post-title-link" itemprop="url">LeetCode 090 Subsets II</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2022-01-15 00:00:00" itemprop="dateCreated datePublished" datetime="2022-01-15T00:00:00-08:00">2022-01-15</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2026-06-03 02:03:56" itemprop="dateModified" datetime="2026-06-03T02:03:56-07:00">2026-06-03</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2022/01/15/lee-090/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/01/15/lee-090/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong><a href="https://leetcode.com/problems/subsets-ii/">LeetCode</a></strong></p>
-<div><br><br>Given an integer array <code>nums</code> that may contain duplicates, return <em>all possible subsets (the power set)</em>.<br><br>The solution set <strong>must not</strong> contain duplicate subsets. Return the solution in <strong>any order</strong>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> nums = [1,2,2]<br><strong>Output:</strong> [[],[1],[1,2],[1,2,2],[2],[2,2]]<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> nums = [0]<br><strong>Output:</strong> [[],[0]]<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= nums.length &lt;= 10</code>
-</em>   <code>-10 &lt;= nums[i] &lt;= 10</code><br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求所有子集，元素可能相同，不能含相同子集</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>类似于L078 Subsets，但元素可能相同，所以排序且比较相邻元素，若相等就跳过</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>元素可能相同，所以排序且比较相邻元素，若相等就跳过</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">subsetsWithDup</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="type">List</span>[<span class="type">List</span>[<span class="built_in">int</span>]]:</span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> nums:</span><br><span class="line">		<span class="keyword">return</span> []</span><br><span class="line">	nums.sort()</span><br><span class="line">	res = [[]]</span><br><span class="line">	<span class="variable language_">self</span>.dfs(nums, <span class="number">0</span>, [], res)</span><br><span class="line">	<span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">dfs</span>(<span class="params">self, nums, st, path, res</span>):</span><br><span class="line">	<span class="keyword">if</span> st == <span class="built_in">len</span>(nums):</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(st, <span class="built_in">len</span>(nums)):</span><br><span class="line">		<span class="keyword">if</span> i &gt; st <span class="keyword">and</span> nums[i] == nums[i - <span class="number">1</span>]:</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		path.append(nums[i])</span><br><span class="line">		res.append(<span class="built_in">list</span>(path))</span><br><span class="line">		<span class="variable language_">self</span>.dfs(nums, i + <span class="number">1</span>, path, res)</span><br><span class="line">		path.pop()</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nx2<sup>n</sup>)</code>，空间复杂度<code>O(n)</code>   </p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/01/15/lee-2139/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="KK Shum">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="KK's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/01/15/lee-2139/" class="post-title-link" itemprop="url">LeetCode 2139 Minimum Moves to Reach Target Score</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2022-01-15 00:00:00" itemprop="dateCreated datePublished" datetime="2022-01-15T00:00:00-08:00">2022-01-15</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2026-06-03 02:03:57" itemprop="dateModified" datetime="2026-06-03T02:03:57-07:00">2026-06-03</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2022/01/15/lee-2139/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/01/15/lee-2139/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong><a href="https://leetcode.com/problems/minimum-moves-to-reach-target-score/">LeetCode</a></strong></p>
-<div><br><br>You are playing a game with integers. You start with the integer <code>1</code> and you want to reach the integer <code>target</code>.<br><br>In one move, you can either:<br><br><em>   <strong>Increment</strong> the current integer by one (i.e., <code>x = x + 1</code>).
-</em>   <strong>Double</strong> the current integer (i.e., <code>x = 2 * x</code>).<br><br>You can use the <strong>increment</strong> operation <strong>any</strong> number of times, however, you can only use the <strong>double</strong> operation <strong>at most</strong> <code>maxDoubles</code> times.<br><br>Given the two integers <code>target</code> and <code>maxDoubles</code>, return <em>the minimum number of moves needed to reach</em> <code>target</code> <em>starting with</em> <code>1</code>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> target = 5, maxDoubles = 0<br><strong>Output:</strong> 4<br><strong>Explanation:</strong> Keep incrementing by 1 until you reach target.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> target = 19, maxDoubles = 2<br><strong>Output:</strong> 7<br><strong>Explanation:</strong> Initially, x = 1<br>Increment 3 times so x = 4<br>Double once so x = 8<br>Increment once so x = 9<br>Double again so x = 18<br>Increment once so x = 19<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> target = 10, maxDoubles = 4<br><strong>Output:</strong> 4<br><strong>Explanation:</strong>Initially, x = 1<br>Increment once so x = 2<br>Double once so x = 4<br>Increment once so x = 5<br>Double again so x = 10<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= target &lt;= 10&lt;sup&gt;9&lt;/sup&gt;</code>
-</em>   <code>0 &lt;= maxDoubles &lt;= 100</code><br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>加1或者乘2达到target，乘2有次数限制，求到达target的最小步数</p>
-<h3 id="DFS解题思路-推荐-："><a href="#DFS解题思路-推荐-：" class="headerlink" title="DFS解题思路(推荐)："></a><strong>DFS解题思路(推荐)：</strong></h3><p>由于是最值，一开始用DP，但得到TLE，分析后觉得是因为加法太慢，所以用贪心法，尽量用乘法。此题类似于求幂值。改用DFS。</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>若允许乘法次数为0，直接返回加法次数，而不应再用递归，否则会出现超过系统栈深度</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">minMoves</span>(<span class="params">self, target: <span class="built_in">int</span>, maxDoubles: <span class="built_in">int</span></span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	<span class="keyword">if</span> target == <span class="number">1</span>:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">	<span class="keyword">if</span> maxDoubles == <span class="number">0</span>:</span><br><span class="line">		<span class="keyword">return</span> target - <span class="number">1</span></span><br><span class="line">	<span class="keyword">if</span> target % <span class="number">2</span> == <span class="number">0</span> <span class="keyword">and</span> maxDoubles &gt; <span class="number">0</span>:</span><br><span class="line">		<span class="keyword">return</span> <span class="variable language_">self</span>.minMoves(target // <span class="number">2</span>, maxDoubles - <span class="number">1</span>) + <span class="number">1</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="variable language_">self</span>.minMoves(target - <span class="number">1</span>, maxDoubles) + <span class="number">1</span></span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(logn)</code>，空间复杂度<code>O(1)</code>  </p>
-<hr>
-<h3 id="DP算法II解题思路："><a href="#DP算法II解题思路：" class="headerlink" title="DP算法II解题思路："></a><strong>DP算法II解题思路：</strong></h3><p>TLE</p>
-<h3 id="Python代码：-1"><a href="#Python代码：-1" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># dp[i][j] = dp[i - 1][j], dp[i // 2][j - 1]</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">minMoves2</span>(<span class="params">self, target: <span class="built_in">int</span>, maxDoubles: <span class="built_in">int</span></span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	dp = [[<span class="number">0</span>] * (maxDoubles + <span class="number">1</span>) <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(target + <span class="number">1</span>)]</span><br><span class="line">	dp[<span class="number">1</span>][<span class="number">0</span>] = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>, <span class="built_in">len</span>(dp)):</span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(dp[<span class="number">0</span>])):</span><br><span class="line">			dp[i][j] = dp[i - <span class="number">1</span>][j] + <span class="number">1</span></span><br><span class="line">			<span class="keyword">if</span> j &gt;= <span class="number">1</span> <span class="keyword">and</span> i % <span class="number">2</span> == <span class="number">0</span>:</span><br><span class="line">				dp[i][j] = <span class="built_in">min</span>(dp[i][j], dp[i // <span class="number">2</span>][j - <span class="number">1</span>] + <span class="number">1</span>)</span><br><span class="line">	<span class="keyword">return</span> dp[-<span class="number">1</span>][-<span class="number">1</span>]</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n x maxDoubles)</code>，空间复杂度<code>O(n x maxDoubles)</code>  </p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/01/15/leetcode-000/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="KK Shum">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="KK's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/01/15/leetcode-000/" class="post-title-link" itemprop="url">LeetCode</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2022-01-15 00:00:00" itemprop="dateCreated datePublished" datetime="2022-01-15T00:00:00-08:00">2022-01-15</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2026-06-03 02:03:57" itemprop="dateModified" datetime="2026-06-03T02:03:57-07:00">2026-06-03</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2022/01/15/leetcode-000/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/01/15/leetcode-000/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong><a href="">LeetCode</a></strong></p>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>N/A</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>N/A</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li><h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/43/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/43/">43</a><span class="page-number current">44</span><a class="page-number" href="/page/45/">45</a><span class="space">&hellip;</span><a class="page-number" href="/page/73/">73</a><a class="extend next" rel="next" href="/page/45/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+    <a class="extend prev" rel="prev" href="/page/43/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/43/">43</a><span class="page-number current">44</span><a class="page-number" href="/page/45/">45</a><span class="space">&hellip;</span><a class="page-number" href="/page/74/">74</a><a class="extend next" rel="next" href="/page/45/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 
@@ -727,14 +805,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">365</span>
+          <span class="site-state-item-count">368</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">59</span>
+        <span class="site-state-item-count">60</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

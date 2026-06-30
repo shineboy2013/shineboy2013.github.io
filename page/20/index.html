@@ -201,6 +201,279 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/02/08/leetcode-1761-minimum-degree-of-a-connected-trio-in-a-graph/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KK Shum">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KK's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/02/08/leetcode-1761-minimum-degree-of-a-connected-trio-in-a-graph/" class="post-title-link" itemprop="url">LeetCode 1761 Minimum Degree of a Connected Trio in a Graph</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-02-08 00:00:00" itemprop="dateCreated datePublished" datetime="2022-02-08T00:00:00-08:00">2022-02-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2026-06-03 02:03:57" itemprop="dateModified" datetime="2026-06-03T02:03:57-07:00">2026-06-03</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2022/02/08/leetcode-1761-minimum-degree-of-a-connected-trio-in-a-graph/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/02/08/leetcode-1761-minimum-degree-of-a-connected-trio-in-a-graph/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong><a href="https://leetcode.com/problems/minimum-degree-of-a-connected-trio-in-a-graph/">LeetCode</a></strong></p>
+<div><br><br>You are given an undirected graph. You are given an integer <code>n</code> which is the number of nodes in the graph and an array <code>edges</code>, where each <code>edges[i] = [u&lt;sub&gt;i&lt;/sub&gt;, v&lt;sub&gt;i&lt;/sub&gt;]</code> indicates that there is an undirected edge between <code>u&lt;sub&gt;i&lt;/sub&gt;</code> and <code>v&lt;sub&gt;i&lt;/sub&gt;</code>.<br><br>A <strong>connected trio</strong> is a set of <strong>three</strong> nodes where there is an edge between <strong>every</strong> pair of them.<br><br>The <strong>degree of a connected trio</strong> is the number of edges where one endpoint is in the trio, and the other is not.<br><br>Return <em>the <strong>minimum</strong> degree of a connected trio in the graph, or</em> <code>-1</code> <em>if the graph has no connected trios.</em><br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/01/26/trios1.png" alt=""><br><br><pre><strong>Input:</strong> n = 6, edges = [[1,2],[1,3],[3,2],[4,1],[5,2],[3,6]]<br><strong>Output:</strong> 3<br><strong>Explanation:</strong> There is exactly one trio, which is [1,2,3]. The edges that form its degree are bolded in the figure above.<br></pre><br><br><strong>Example 2:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/01/26/trios2.png" alt=""><br><br><pre><strong>Input:</strong> n = 7, edges = [[1,3],[4,1],[4,3],[2,5],[5,6],[6,7],[7,5],[2,6]]<br><strong>Output:</strong> 0<br><strong>Explanation:</strong> There are exactly three trios:<br>1) [1,4,3] with degree 0.<br>2) [2,5,6] with degree 2.<br>3) [5,6,7] with degree 2.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>2 &lt;= n &lt;= 400</code>
+</em>   <code>edges[i].length == 2</code><br><em>   `1 &lt;= edges.length &lt;= n </em> (n-1) / 2<code>*</code>1 &lt;= u<sub>i</sub>, v<sub>i</sub> &lt;= n<code>*</code>u<sub>i</sub> != v<sub>i</sub>`<br>*   There are no repeated edges.<br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个图，trio是三个节点直接互相相连，而度数表示连着trio的边的个数</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>根据定义，找出所有三个节点的组合，判断是否trio，然后根据trio的每个节点的度数总和 - 6即为所求<br>遍历所有三个节点组合时，会重复了两次。所以一个优化是，先按度数排序节点，若节点度数大于等于最小度数除以3，跳出循环。因为这个最小度数的节点已经大于等于3，trio里其他两个度数比它大的节点的度数更加会大于最小度数除以3，这样总度数肯定大于此时的最小度数</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>根据定义，找出所有三个节点的组合u -&gt; v, v -&gt; w, w是否在u中，判断是否trio。先按度数排序节点，若节点度数大于等于最小度数除以3，跳出循环</li>
+<li>邻接图用set，因为Line 13查找w是否在u中可以提高效率</li>
+<li>min_degree / 3不是// 3</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">minTrioDegree</span>(<span class="params">self, n: <span class="built_in">int</span>, edges: <span class="type">List</span>[<span class="type">List</span>[<span class="built_in">int</span>]]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	graph = collections.defaultdict(<span class="built_in">set</span>) <span class="comment"># use set coz if w in graph[u]</span></span><br><span class="line">	<span class="keyword">for</span> u, v <span class="keyword">in</span> edges:</span><br><span class="line">		graph[u].add(v)</span><br><span class="line">		graph[v].add(u)</span><br><span class="line"></span><br><span class="line">	min_degree = <span class="built_in">float</span>(<span class="string">&#x27;inf&#x27;</span>)</span><br><span class="line">	<span class="keyword">for</span> u <span class="keyword">in</span> <span class="built_in">sorted</span>(<span class="built_in">range</span>(<span class="number">1</span>, n + <span class="number">1</span>), key=<span class="keyword">lambda</span> x: <span class="built_in">len</span>(graph[x])):</span><br><span class="line">		<span class="keyword">if</span> <span class="built_in">len</span>(graph[u]) &gt;= min_degree / <span class="number">3</span>: <span class="comment"># remember / 3 not // 3</span></span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		<span class="keyword">for</span> v <span class="keyword">in</span> graph[u]:</span><br><span class="line">			<span class="keyword">for</span> w <span class="keyword">in</span> graph[v]:</span><br><span class="line">				<span class="keyword">if</span> w <span class="keyword">in</span> graph[u]:</span><br><span class="line">					min_degree = <span class="built_in">min</span>(min_degree, <span class="built_in">len</span>(graph[u]) + <span class="built_in">len</span>(graph[v]) + <span class="built_in">len</span>(graph[w]))</span><br><span class="line">	<span class="keyword">return</span> min_degree - <span class="number">6</span> <span class="keyword">if</span> min_degree != <span class="built_in">float</span>(<span class="string">&#x27;inf&#x27;</span>) <span class="keyword">else</span> -<span class="number">1</span></span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n<sup>3</sup>)</code>，空间复杂度<code>O(n<sup>2</sup>)</code>  </p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/02/08/leetcode-1779-find-nearest-point-that-has-the-same-x-or-y-coordinate/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KK Shum">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KK's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/02/08/leetcode-1779-find-nearest-point-that-has-the-same-x-or-y-coordinate/" class="post-title-link" itemprop="url">LeetCode 1779 Find Nearest Point That Has the Same X or Y Coordinate</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-02-08 00:00:00" itemprop="dateCreated datePublished" datetime="2022-02-08T00:00:00-08:00">2022-02-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2026-06-03 02:03:57" itemprop="dateModified" datetime="2026-06-03T02:03:57-07:00">2026-06-03</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2022/02/08/leetcode-1779-find-nearest-point-that-has-the-same-x-or-y-coordinate/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/02/08/leetcode-1779-find-nearest-point-that-has-the-same-x-or-y-coordinate/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong><a href="https://leetcode.com/problems/minimum-degree-of-a-connected-trio-in-a-graph/">LeetCode</a></strong></p>
+<div><br><br>You are given two integers, <code>x</code> and <code>y</code>, which represent your current location on a Cartesian grid: <code>(x, y)</code>. You are also given an array <code>points</code> where each <code>points[i] = [a&lt;sub&gt;i&lt;/sub&gt;, b&lt;sub&gt;i&lt;/sub&gt;]</code> represents that a point exists at <code>(a&lt;sub&gt;i&lt;/sub&gt;, b&lt;sub&gt;i&lt;/sub&gt;)</code>. A point is <strong>valid</strong> if it shares the same x-coordinate or the same y-coordinate as your location.<br><br>Return <em>the index <strong>(0-indexed)</strong> of the <strong>valid</strong> point with the smallest <strong>Manhattan distance</strong> from your current location</em>. If there are multiple, return <em>the valid point with the <strong>smallest</strong> index</em>. If there are no valid points, return <code>-1</code>.<br><br>The <strong>Manhattan distance</strong> between two points <code>(x&lt;sub&gt;1&lt;/sub&gt;, y&lt;sub&gt;1&lt;/sub&gt;)</code> and <code>(x&lt;sub&gt;2&lt;/sub&gt;, y&lt;sub&gt;2&lt;/sub&gt;)</code> is <code>abs(x&lt;sub&gt;1&lt;/sub&gt; - x&lt;sub&gt;2&lt;/sub&gt;) + abs(y&lt;sub&gt;1&lt;/sub&gt; - y&lt;sub&gt;2&lt;/sub&gt;)</code>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> x = 3, y = 4, points = [[1,2],[3,1],[2,4],[2,3],[4,4]]<br><strong>Output:</strong> 2<br><strong>Explanation:</strong> Of all the points, only [3,1], [2,4] and [4,4] are valid. Of the valid points, [2,4] and [4,4] have the smallest Manhattan distance from your current location, with a distance of 1. [2,4] has the smallest index, so return 2.</pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> x = 3, y = 4, points = [[3,4]]<br><strong>Output:</strong> 0<br><strong>Explanation:</strong> The answer is allowed to be on the same location as your current location.</pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> x = 3, y = 4, points = [[2,3]]<br><strong>Output:</strong> -1<br><strong>Explanation:</strong> There are no valid points.</pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= points.length &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code>
+</em>   <code>points[i].length == 2</code><br>*   <code>1 &lt;= x, y, a&lt;sub&gt;i&lt;/sub&gt;, b&lt;sub&gt;i&lt;/sub&gt; &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code><br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个坐标和一堆坐标，这个坐标与某个点在同一条y轴或x轴上叫合法点，求它到这些点的最小曼哈顿距离对应的点的下标，若有多个结果，返回最小的数组下标。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>Easy题，根据题意求</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li><h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">nearestValidPoint</span>(<span class="params">self, x: <span class="built_in">int</span>, y: <span class="built_in">int</span>, points: <span class="type">List</span>[<span class="type">List</span>[<span class="built_in">int</span>]]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	min_dis = <span class="built_in">float</span>(<span class="string">&#x27;inf&#x27;</span>)</span><br><span class="line">	res = -<span class="number">1</span></span><br><span class="line">	<span class="keyword">for</span> i, (_x, _y) <span class="keyword">in</span> <span class="built_in">enumerate</span>(points):</span><br><span class="line">		<span class="keyword">if</span> x == _x <span class="keyword">or</span> y == _y:</span><br><span class="line">			<span class="keyword">if</span> <span class="built_in">abs</span>(x - _x) + <span class="built_in">abs</span>(y - _y) &lt; min_dis:</span><br><span class="line">				min_dis = <span class="built_in">abs</span>(x - _x) + <span class="built_in">abs</span>(y - _y)</span><br><span class="line">				res = i</span><br><span class="line">			<span class="keyword">elif</span> <span class="built_in">abs</span>(x - _x) + <span class="built_in">abs</span>(y - _y) == min_dis <span class="keyword">and</span> i &lt; res:</span><br><span class="line">				res = i</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/02/08/leetcode-979-distribute-coins-in-binary-tree/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KK Shum">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KK's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/02/08/leetcode-979-distribute-coins-in-binary-tree/" class="post-title-link" itemprop="url">LeetCode 979 Distribute Coins in Binary Tree</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-02-08 00:00:00" itemprop="dateCreated datePublished" datetime="2022-02-08T00:00:00-08:00">2022-02-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2026-06-03 02:03:57" itemprop="dateModified" datetime="2026-06-03T02:03:57-07:00">2026-06-03</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2022/02/08/leetcode-979-distribute-coins-in-binary-tree/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/02/08/leetcode-979-distribute-coins-in-binary-tree/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong><a href="https://leetcode.com/problems/distribute-coins-in-binary-tree/">LeetCode</a></strong></p>
+<div><br><br>You are given the <code>root</code> of a binary tree with <code>n</code> nodes where each <code>node</code> in the tree has <code>node.val</code> coins. There are <code>n</code> coins in total throughout the whole tree.<br><br>In one move, we may choose two adjacent nodes and move one coin from one node to another. A move may be from parent to child, or from child to parent.<br><br>Return <em>the <strong>minimum</strong> number of moves required to make every node have <strong>exactly</strong> one coin</em>.<br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2019/01/18/tree1.png" alt=""><br><br><pre><strong>Input:</strong> root = [3,0,0]<br><strong>Output:</strong> 2<br><strong>Explanation:</strong> From the root of the tree, we move one coin to its left child, and one coin to its right child.<br></pre><br><br><strong>Example 2:</strong><br><br><img src="https://assets.leetcode.com/uploads/2019/01/18/tree2.png" alt=""><br><br><pre><strong>Input:</strong> root = [0,3,0]<br><strong>Output:</strong> 3<br><strong>Explanation:</strong> From the left child of the root, we move two coins to the root [taking two moves]. Then, we move one coin from the root of the tree to the right child.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   The number of nodes in the tree is <code>n</code>.
+</em>   <code>1 &lt;= n &lt;= 100</code><br><em>   <code>0 &lt;= Node.val &lt;= n</code>
+</em>   The sum of all <code>Node.val</code> is <code>n</code>.<br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>二叉树某些节点含有硬币，求将这些硬币推向其他节点，使得所有节点都有一个硬币，求总移动次数</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>先思考，若硬币都在root，也就是求所有节点的路径和。可以用每个节点的路径和求和，也可以定义dfs返回节点数，用全局变量加左右数，每轮递归都加一次，所以每个节点被加了其路径长度的次数。本算法采用后者<br>下面思考若硬币不在root，由于硬币可以从儿子给父亲，这是双向的，所以<strong>dfs定义为儿子给父亲的硬币数</strong>，若节点没有硬币，返回值会是负数，也就是父亲给儿子硬币，此时这个负数正是以此节点为root的数的总的节点数，所以与上述定义一致。<br>所以返回root.val + left + right - 1，left和right都是负数，left + right - 1是树的大小的负数，此结果为剩余硬币推给父亲的硬币数<br>res += abs(left) + abs(right)左子树和右子树所有节点一起走一条边的路径和</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li><strong>dfs定义为儿子给父亲的硬币数(若有硬币)，同时是子树的节点数的负数(若无硬币)</strong></li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">distributeCoins</span>(<span class="params">self, root: TreeNode</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	res = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">def</span> <span class="title function_">dfs</span>(<span class="params">root</span>):</span><br><span class="line">		<span class="keyword">if</span> <span class="keyword">not</span> root:</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">		<span class="keyword">nonlocal</span> res</span><br><span class="line">		left = dfs(root.left)</span><br><span class="line">		right = dfs(root.right)</span><br><span class="line">		res += <span class="built_in">abs</span>(left) + <span class="built_in">abs</span>(right)</span><br><span class="line">		<span class="keyword">return</span> root.val + left + right - <span class="number">1</span></span><br><span class="line"></span><br><span class="line">	dfs(root)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/02/07/karat-003/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -378,284 +651,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/02/07/leetcode-1304-find-n-unique-integers-sum-up-to-zero/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="KK Shum">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="KK's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/02/07/leetcode-1304-find-n-unique-integers-sum-up-to-zero/" class="post-title-link" itemprop="url">LeetCode 1304 Find N Unique Integers Sum up to Zero</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2022-02-07 00:00:00" itemprop="dateCreated datePublished" datetime="2022-02-07T00:00:00-08:00">2022-02-07</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2026-06-03 02:03:57" itemprop="dateModified" datetime="2026-06-03T02:03:57-07:00">2026-06-03</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2022/02/07/leetcode-1304-find-n-unique-integers-sum-up-to-zero/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/02/07/leetcode-1304-find-n-unique-integers-sum-up-to-zero/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong><a href="https://leetcode.com/problems/find-n-unique-integers-sum-up-to-zero/">LeetCode</a></strong></p>
-<div><br><br>Given an integer <code>n</code>, return <strong>any</strong> array containing <code>n</code> <strong>unique</strong> integers such that they add up to <code>0</code>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> n = 5<br><strong>Output:</strong> [-7,-1,1,3,4]<br><strong>Explanation:</strong> These arrays also are accepted [-5,-1,1,2,3] , [-3,-1,2,-2,4].<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> n = 3<br><strong>Output:</strong> [-1,0,1]<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> n = 1<br><strong>Output:</strong> [0]<br></pre><br><br><strong>Constraints:</strong><br><br>*   <code>1 &lt;= n &lt;= 1000</code><br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定n，求n个数的数组使得数组和为0</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>Easy题，只要将相反数放入数组即可</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li><h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">sumZero</span>(<span class="params">self, n: <span class="built_in">int</span></span>) -&gt; <span class="type">List</span>[<span class="built_in">int</span>]:</span><br><span class="line">	res = []</span><br><span class="line">	<span class="keyword">if</span> n % <span class="number">2</span> == <span class="number">1</span>:</span><br><span class="line">		res.append(<span class="number">0</span>)</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(n // <span class="number">2</span>):</span><br><span class="line">		res.append(i + <span class="number">1</span>)</span><br><span class="line">		res.append(-i - <span class="number">1</span>)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/02/07/leetcode-1405-longest-happy-string/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="KK Shum">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="KK's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/02/07/leetcode-1405-longest-happy-string/" class="post-title-link" itemprop="url">LeetCode 1405 Longest Happy String</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2022-02-07 00:00:00" itemprop="dateCreated datePublished" datetime="2022-02-07T00:00:00-08:00">2022-02-07</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2026-06-03 02:03:57" itemprop="dateModified" datetime="2026-06-03T02:03:57-07:00">2026-06-03</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2022/02/07/leetcode-1405-longest-happy-string/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/02/07/leetcode-1405-longest-happy-string/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong><a href="https://leetcode.com/problems/longest-happy-string/">LeetCode</a></strong></p>
-<div><br><br>A string <code>s</code> is called <strong>happy</strong> if it satisfies the following conditions:<br><br><em>   <code>s</code> only contains the letters <code>&#39;a&#39;</code>, <code>&#39;b&#39;</code>, and <code>&#39;c&#39;</code>.
-</em>   <code>s</code> does not contain any of <code>&quot;aaa&quot;</code>, <code>&quot;bbb&quot;</code>, or <code>&quot;ccc&quot;</code> as a substring.<br><em>   <code>s</code> contains <strong>at most</strong> <code>a</code> occurrences of the letter <code>&#39;a&#39;</code>.
-</em>   <code>s</code> contains <strong>at most</strong> <code>b</code> occurrences of the letter <code>&#39;b&#39;</code>.<br><em>   <code>s</code> contains <strong>at most</strong> <code>c</code> occurrences of the letter <code>&#39;c&#39;</code>.<br><br>Given three integers <code>a</code>, <code>b</code>, and <code>c</code>, return <em>the <strong>longest possible happy</strong> string</em>. If there are multiple longest happy strings, return <em>any of them</em>. If there is no such string, return <em>the empty string</em> <code>&quot;&quot;</code>.<br><br>A <strong>substring</strong> is a contiguous sequence of characters within a string.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> a = 1, b = 1, c = 7<br><strong>Output:</strong> “ccaccbcc”<br><strong>Explanation:</strong> “ccbccacc” would also be a correct answer.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> a = 7, b = 1, c = 0<br><strong>Output:</strong> “aabaa”<br><strong>Explanation:</strong> It is the only correct answer in this case.<br></pre><br><br><strong>Constraints:</strong>
-
-</em>   <code>0 &lt;= a, b, c &lt;= 100</code><br>*   <code>a + b + c &gt; 0</code><br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定三个整数代表abc的个数，生成一个字符串，字符串abc频数不能超过这3个数，不能有连续的aaa, bbb, ccc, 求此种字符串的最大长度</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>由第一个例子看出，先尽量用频数最多的字符，直到连续3个为止，然后再用次多的，如此反复做。这里用到最多和次多，所以考虑用Heap</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>每次选频数最高的字符，但若此字符已连续3次，选次高的，用heap。 </li>
-<li>大于0的频数才加入到heap Line 4和Line 17</li>
-<li>heapreplace等于heappop次高的和heappush最高的。<strong>既然要有次高，heap就不能为空</strong></li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">longestDiverseString</span>(<span class="params">self, a: <span class="built_in">int</span>, b: <span class="built_in">int</span>, c: <span class="built_in">int</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">	res = <span class="string">&#x27;&#x27;</span></span><br><span class="line">	heap = []</span><br><span class="line">	<span class="keyword">if</span> a &gt; <span class="number">0</span>: <span class="comment"># remember</span></span><br><span class="line">		heapq.heappush(heap, (-a, <span class="string">&#x27;a&#x27;</span>))</span><br><span class="line">	<span class="keyword">if</span> b &gt; <span class="number">0</span>:</span><br><span class="line">		heapq.heappush(heap, (-b, <span class="string">&#x27;b&#x27;</span>))</span><br><span class="line">	<span class="keyword">if</span> c &gt; <span class="number">0</span>:</span><br><span class="line">		heapq.heappush(heap, (-c, <span class="string">&#x27;c&#x27;</span>))</span><br><span class="line">	<span class="keyword">while</span> heap:</span><br><span class="line">		count, char = heapq.heappop(heap)</span><br><span class="line">		<span class="keyword">if</span> <span class="built_in">len</span>(res) &gt; <span class="number">1</span> <span class="keyword">and</span> res[-<span class="number">2</span>] == res[-<span class="number">1</span>] == char:</span><br><span class="line">			<span class="keyword">if</span> <span class="keyword">not</span> heap:</span><br><span class="line">				<span class="keyword">break</span></span><br><span class="line">			count, char = heapq.heapreplace(heap, (count, char))</span><br><span class="line">		res += char</span><br><span class="line">		<span class="keyword">if</span> count + <span class="number">1</span>:</span><br><span class="line">			heapq.heappush(heap, (count + <span class="number">1</span>, char))</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/02/07/leetcode-1448-count-good-nodes-in-binary-tree/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="KK Shum">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="KK's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/02/07/leetcode-1448-count-good-nodes-in-binary-tree/" class="post-title-link" itemprop="url">LeetCode 1448 Count Good Nodes in Binary Tree</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2022-02-07 00:00:00" itemprop="dateCreated datePublished" datetime="2022-02-07T00:00:00-08:00">2022-02-07</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2026-06-03 02:03:57" itemprop="dateModified" datetime="2026-06-03T02:03:57-07:00">2026-06-03</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2022/02/07/leetcode-1448-count-good-nodes-in-binary-tree/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/02/07/leetcode-1448-count-good-nodes-in-binary-tree/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong><a href="https://leetcode.com/problems/count-good-nodes-in-binary-tree/">LeetCode</a></strong></p>
-<div><br><br>Given a binary tree <code>root</code>, a node <em>X</em> in the tree is named <strong>good</strong> if in the path from root to <em>X</em> there are no nodes with a value <em>greater than</em> X.<br><br>Return the number of <strong>good</strong> nodes in the binary tree.<br><br><strong>Example 1:</strong><br><br><strong><img src="https://assets.leetcode.com/uploads/2020/04/02/test_sample_1.png" alt=""></strong><br><br><pre><strong>Input:</strong> root = [3,1,4,3,null,1,5]<br><strong>Output:</strong> 4<br><strong>Explanation:</strong> Nodes in blue are <strong>good</strong>.<br>Root Node (3) is always a good node.<br>Node 4 -&gt; (3,4) is the maximum value in the path starting from the root.<br>Node 5 -&gt; (3,4,5) is the maximum value in the path<br>Node 3 -&gt; (3,1,3) is the maximum value in the path.</pre><br><br><strong>Example 2:</strong><br><br><strong><img src="https://assets.leetcode.com/uploads/2020/04/02/test_sample_2.png" alt=""></strong><br><br><pre><strong>Input:</strong> root = [3,3,null,4,2]<br><strong>Output:</strong> 3<br><strong>Explanation:</strong> Node 2 -&gt; (3, 3, 2) is not good, because “3” is higher than it.</pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> root = [1]<br><strong>Output:</strong> 1<br><strong>Explanation:</strong> Root is considered as <strong>good</strong>.</pre><br><br><strong>Constraints:</strong><br><br><em>   The number of nodes in the binary tree is in the range <code>[1, 10^5]</code>.
-</em>   Each node’s value is between <code>[-10^4, 10^4]</code>.<br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>一个节点是good表示该节点从root到自己的路径上，所有节点都小于等于自己。求二叉树的good节点个数</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>统计左右子树的good节点个数，最重要是引入类似于min, max验证BST，<strong>引入path_max来记录路径上的最大值</strong>，只要该节点值大于path_max就是good节点。DFS返回good节点个数</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li><strong>引入path_max来记录路径上的最大值</strong></li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">goodNodes</span>(<span class="params">self, root: TreeNode</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	<span class="keyword">return</span> <span class="variable language_">self</span>.dfs(root, <span class="built_in">float</span>(<span class="string">&#x27;-inf&#x27;</span>))</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">dfs</span>(<span class="params">self, root, path_max</span>):</span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> root:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">	left = <span class="variable language_">self</span>.dfs(root.left, <span class="built_in">max</span>(root.val, path_max))</span><br><span class="line">	right = <span class="variable language_">self</span>.dfs(root.right, <span class="built_in">max</span>(root.val, path_max))</span><br><span class="line">	res = left + right</span><br><span class="line">	<span class="keyword">if</span> path_max &lt;= root.val:</span><br><span class="line">		res += <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/19/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/19/">19</a><span class="page-number current">20</span><a class="page-number" href="/page/21/">21</a><span class="space">&hellip;</span><a class="page-number" href="/page/73/">73</a><a class="extend next" rel="next" href="/page/21/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+    <a class="extend prev" rel="prev" href="/page/19/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/19/">19</a><span class="page-number current">20</span><a class="page-number" href="/page/21/">21</a><span class="space">&hellip;</span><a class="page-number" href="/page/74/">74</a><a class="extend next" rel="next" href="/page/21/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 
@@ -726,14 +725,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">365</span>
+          <span class="site-state-item-count">368</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">59</span>
+        <span class="site-state-item-count">60</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

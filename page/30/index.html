@@ -201,6 +201,310 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/01/30/lee-1654/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KK Shum">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KK's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/01/30/lee-1654/" class="post-title-link" itemprop="url">LeetCode 1654 Minimum Jumps to Reach Home</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-01-30 00:00:00" itemprop="dateCreated datePublished" datetime="2022-01-30T00:00:00-08:00">2022-01-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2026-06-03 02:03:57" itemprop="dateModified" datetime="2026-06-03T02:03:57-07:00">2026-06-03</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2022/01/30/lee-1654/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/01/30/lee-1654/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong><a href="https://leetcode.com/problems/minimum-jumps-to-reach-home/">LeetCode</a></strong></p>
+<div><br><br>A certain bug’s home is on the x-axis at position <code>x</code>. Help them get there from position <code>0</code>.<br><br>The bug jumps according to the following rules:<br><br><em>   It can jump exactly <code>a</code> positions <strong>forward</strong> (to the right).
+</em>   It can jump exactly <code>b</code> positions <strong>backward</strong> (to the left).<br><em>   It cannot jump backward twice in a row.
+</em>   It cannot jump to any <code>forbidden</code> positions.<br><br>The bug may jump forward <strong>beyond</strong> its home, but it <strong>cannot jump</strong> to positions numbered with <strong>negative</strong> integers.<br><br>Given an array of integers <code>forbidden</code>, where <code>forbidden[i]</code> means that the bug cannot jump to the position <code>forbidden[i]</code>, and integers <code>a</code>, <code>b</code>, and <code>x</code>, return <em>the minimum number of jumps needed for the bug to reach its home</em>. If there is no possible sequence of jumps that lands the bug on position <code>x</code>, return <code>-1.</code><br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> forbidden = [14,4,18,1,15], a = 3, b = 15, x = 9<br><strong>Output:</strong> 3<br><strong>Explanation:</strong> 3 jumps forward (0 -&gt; 3 -&gt; 6 -&gt; 9) will get the bug home.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> forbidden = [8,3,16,6,12,20], a = 15, b = 13, x = 11<br><strong>Output:</strong> -1<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> forbidden = [1,6,2,14,5,17,4], a = 16, b = 9, x = 7<br><strong>Output:</strong> 2<br><strong>Explanation:</strong> One jump forward (0 -&gt; 16) then one jump backward (16 -&gt; 7) will get the bug home.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= forbidden.length &lt;= 1000</code>
+</em>   <code>1 &lt;= a, b, forbidden[i] &lt;= 2000</code><br><em>   <code>0 &lt;= x &lt;= 2000</code>
+</em>   All the elements in <code>forbidden</code> are distinct.<br>*   Position <code>x</code> is not forbidden.<br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求从0到x的最小步数，可以往前跳a步，往后跳b步，不能跳到负数，不能连续两次往前跳，不能跳到被禁止的位置。</p>
+<h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>类似于Jump game，不过此题要用真的BFS，用三个元素push如queue: (point, distance, is_backward), is_backward记录是否回退两次而剪枝，distance是结果。</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>用BFS模板，但此题到了某个位置可以有两个状态：向前跳和向后跳。所以<strong>visited不能只含位置，必须包含方向</strong>，(position, is_backward). if (neighbor, neighbor_is_backward) in visited也记得包含方向，否则LTE，因为Python不会检查是否tuple  </li>
+<li>upper limit为max(x, max(forbidden)) + a + b，否则LTE，这个比较推导，可以这么理解max(x, max(forbidden))之后可以自由不受限制地走，必定存在一个点之后会重复且无意义，如a和b的最小倍数。举个例子找规律，a=2, b=1, x=10, 要走到11的话就要先到x+a+b再往回走     </li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">minimumJumps</span>(<span class="params">self, forbidden: <span class="type">List</span>[<span class="built_in">int</span>], a: <span class="built_in">int</span>, b: <span class="built_in">int</span>, x: <span class="built_in">int</span></span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	forbidden_set = <span class="built_in">set</span>(forbidden)</span><br><span class="line">	limit = <span class="built_in">max</span>(x, <span class="built_in">max</span>(forbidden)) + a + b</span><br><span class="line">	queue = collections.deque([(<span class="number">0</span>, <span class="number">0</span>, <span class="literal">False</span>)])</span><br><span class="line">	visited = <span class="built_in">set</span>([(<span class="number">0</span>, <span class="literal">False</span>)])  <span class="comment"># remember two states</span></span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.popleft()</span><br><span class="line">		<span class="keyword">if</span> node[<span class="number">0</span>] == x:</span><br><span class="line">			<span class="keyword">return</span> node[<span class="number">1</span>]</span><br><span class="line">		<span class="keyword">for</span> neighbor <span class="keyword">in</span> [node[<span class="number">0</span>] + a, node[<span class="number">0</span>] - b]:</span><br><span class="line">			<span class="keyword">if</span> neighbor <span class="keyword">in</span> forbidden_set <span class="keyword">or</span> neighbor &lt; <span class="number">0</span> <span class="keyword">or</span> neighbor &gt; limit: <span class="comment"># remember limit</span></span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			<span class="keyword">if</span> neighbor == node[<span class="number">0</span>] - b <span class="keyword">and</span> node[<span class="number">2</span>]: <span class="comment"># no backward twice</span></span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			neighbor_is_backward = <span class="literal">True</span> <span class="keyword">if</span> neighbor == node[<span class="number">0</span>] - b <span class="keyword">else</span> <span class="literal">False</span></span><br><span class="line">			<span class="keyword">if</span> (neighbor, neighbor_is_backward) <span class="keyword">in</span> visited: <span class="comment"># remember not neighbor in visited - LTE</span></span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			queue.append((neighbor, node[<span class="number">1</span>] + <span class="number">1</span>, neighbor_is_backward))</span><br><span class="line">			visited.add((neighbor, neighbor_is_backward))</span><br><span class="line">	<span class="keyword">return</span> -<span class="number">1</span></span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(max(x, max(forbidden)) + a + b)</code>，空间复杂度<code>O(max(x, max(forbidden)) + a + b)</code>  </p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/01/30/lee-200/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KK Shum">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KK's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/01/30/lee-200/" class="post-title-link" itemprop="url">LeetCode 200 Number of Islands</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-01-30 00:00:00" itemprop="dateCreated datePublished" datetime="2022-01-30T00:00:00-08:00">2022-01-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2026-06-03 02:03:57" itemprop="dateModified" datetime="2026-06-03T02:03:57-07:00">2026-06-03</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2022/01/30/lee-200/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/01/30/lee-200/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong><a href="https://leetcode.com/problems/number-of-islands">LeetCode 200 Number of Islands</a></strong></p>
+<p>Given a 2d grid map of <code>&#39;1&#39;</code>s (land) and <code>&#39;0&#39;</code>s (water), count the number of islands. An island is surrounded by water and is formed by connecting adjacent lands horizontally or vertically. You may assume all four edges of the grid are all surrounded by water. </p>
+<p><strong><em>Example 1:</em></strong></p>
+<pre><code>11110
+11010
+11000
+00000
+</code></pre><p>Answer: 1</p>
+<p><strong><em>Example 2:</em></strong></p>
+<pre><code>11000
+11000
+00100
+00011
+</code></pre><p>Answer: 3</p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个由字符‘1’（陆地）和‘0’（水域）组成的二维网格地图，计算岛屿的个数。岛屿被水域环绕，由竖直或者水平方向邻接的陆地构成。你可以假设网格地图的四条边都被水域包围。</p>
+<h3 id="BFS解题思路："><a href="#BFS解题思路：" class="headerlink" title="BFS解题思路："></a><strong>BFS解题思路：</strong></h3><p>BFS入列后立即标记为已访问，否则会有空间和时间问题。<br>二维变成一维，不但节省空间，还可以避免创建Point的新class。a = x * C + y(C为列数) &lt;=&gt; x = a/C, y = a%C</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>注意到题目给定输入数组的类型，用其来标记已访问的单元（节点）。</li>
+<li>BFS中如果cell为<strong>0或X</strong>就要跳过，不要漏掉0，因为如果是海不应做BFS。根据题目要求，可能还要将X恢复为1.</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">OFFSETS = [(<span class="number">1</span>, <span class="number">0</span>), (-<span class="number">1</span>, <span class="number">0</span>), (<span class="number">0</span>, <span class="number">1</span>), (<span class="number">0</span>, -<span class="number">1</span>)]</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">numIslands</span>(<span class="params">self, grid: <span class="type">List</span>[<span class="type">List</span>[<span class="built_in">str</span>]]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> grid:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        count = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(grid)):</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(grid[<span class="number">0</span>])):</span><br><span class="line">                <span class="keyword">if</span> grid[i][j] == <span class="string">&#x27;1&#x27;</span>:</span><br><span class="line">                    <span class="variable language_">self</span>.bfs(grid, i, j)</span><br><span class="line">                    count += <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> count</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">bfs</span>(<span class="params">self, nums, i, j</span>):</span><br><span class="line">        queue = deque([(i, j)])</span><br><span class="line">        nums[i][j] = <span class="string">&#x27;X&#x27;</span></span><br><span class="line">        <span class="keyword">while</span> queue:</span><br><span class="line">            island = queue.popleft()</span><br><span class="line">            <span class="keyword">for</span> dx, dy <span class="keyword">in</span> OFFSETS:</span><br><span class="line">                x, y = island[<span class="number">0</span>] + dx, island[<span class="number">1</span>] + dy</span><br><span class="line">                <span class="keyword">if</span> x &lt; <span class="number">0</span> <span class="keyword">or</span> x &gt;= <span class="built_in">len</span>(nums) <span class="keyword">or</span> y &lt; <span class="number">0</span> <span class="keyword">or</span> y &gt;= <span class="built_in">len</span>(nums[<span class="number">0</span>]) <span class="keyword">or</span> nums[x][y] <span class="keyword">in</span> [<span class="string">&#x27;0&#x27;</span>, <span class="string">&#x27;X&#x27;</span>]:</span><br><span class="line">                    <span class="keyword">continue</span></span><br><span class="line">                queue.append((x, y))</span><br><span class="line">                nums[x][y] = <span class="string">&#x27;X&#x27;</span></span><br></pre></td></tr></table></figure>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">int</span> <span class="title function_">numIslands2</span><span class="params">(<span class="type">char</span>[][] grid)</span> &#123;</span><br><span class="line">	<span class="keyword">if</span> (grid ==<span class="literal">null</span> || grid.length == <span class="number">0</span> || grid[<span class="number">0</span>].length == <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="type">boolean</span>[][] visited = <span class="keyword">new</span> <span class="title class_">boolean</span>[grid.length][grid[<span class="number">0</span>].length];</span><br><span class="line">	<span class="type">int</span> <span class="variable">islands</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; grid.length; i++)</span><br><span class="line">		<span class="keyword">for</span>(<span class="type">int</span> j=<span class="number">0</span>; j &lt; grid[<span class="number">0</span>].length; j++) &#123;</span><br><span class="line">			<span class="keyword">if</span>(grid[i][j] == <span class="string">&#x27;0&#x27;</span> || visited[i][j])</span><br><span class="line">				<span class="keyword">continue</span>;</span><br><span class="line">	</span><br><span class="line">			bfs3(grid, i, j, visited);</span><br><span class="line">			islands++;</span><br><span class="line">		&#125;</span><br><span class="line">	<span class="keyword">return</span> islands;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">bfs3</span><span class="params">(<span class="type">char</span>[][] grid, <span class="type">int</span> a, <span class="type">int</span> b, <span class="type">boolean</span>[][] visited)</span> &#123;</span><br><span class="line">	Queue&lt;Point&gt; q = <span class="keyword">new</span> <span class="title class_">LinkedList</span>&lt;&gt;();</span><br><span class="line">	<span class="type">int</span>[][] directions = <span class="keyword">new</span> <span class="title class_">int</span>[][] &#123;&#123;<span class="number">1</span>, <span class="number">0</span>&#125;, &#123;<span class="number">0</span>, <span class="number">1</span>&#125;, &#123;-<span class="number">1</span>, <span class="number">0</span>&#125;, &#123;<span class="number">0</span>, -<span class="number">1</span>&#125;&#125;;</span><br><span class="line">	q.offer(<span class="keyword">new</span> <span class="title class_">Point</span>(a, b));</span><br><span class="line">	visited[a][b] = <span class="literal">true</span>;</span><br><span class="line">	<span class="keyword">while</span>(!q.isEmpty()) &#123;</span><br><span class="line">		<span class="type">Point</span> <span class="variable">point</span> <span class="operator">=</span> q.poll();</span><br><span class="line">		<span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; <span class="number">4</span>; i++) &#123;</span><br><span class="line">			<span class="type">Point</span> <span class="variable">neighbor</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Point</span>(point.x + directions[i][<span class="number">0</span>], point.y + directions[i][<span class="number">1</span>]);</span><br><span class="line">			<span class="keyword">if</span>(!isValid(grid, neighbor.x, neighbor.y) || visited[neighbor.x][neighbor.y])</span><br><span class="line">				<span class="keyword">continue</span>;</span><br><span class="line">			</span><br><span class="line">			q.offer(neighbor);</span><br><span class="line">			visited[neighbor.x][neighbor.y] = <span class="literal">true</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(MN)</code>，空间复杂度<code>O(min{M,N})</code>。M,N分别为矩阵长宽。因为最坏情况下，以矩形中心为root，最大的一层为矩形里面的最大正方形，它的长度为min{M,N}。<br><img src="/images/L200.png" alt=""></p>
+<h3 id="DFS解题思路："><a href="#DFS解题思路：" class="headerlink" title="DFS解题思路："></a><strong>DFS解题思路：</strong></h3><p>遍历矩阵的每一个元素，对每个元素进行DFS四个方位搜索陆地，访问过的元素在原数组中进行标记。每次DFS搜索后，层数加1。</p>
+<h3 id="Java代码：-1"><a href="#Java代码：-1" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">int</span> <span class="title function_">numIslands</span><span class="params">(<span class="type">char</span>[][] grid)</span> &#123;</span><br><span class="line">	<span class="type">int</span> <span class="variable">layer</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>; i&lt;grid.length;i++)</span><br><span class="line">		<span class="keyword">for</span>(<span class="type">int</span> j=<span class="number">0</span>;j&lt;grid[<span class="number">0</span>].length;j++)</span><br><span class="line">			<span class="keyword">if</span>(grid[i][j]==<span class="string">&#x27;1&#x27;</span>)&#123;</span><br><span class="line">				dfs(grid,i,j);</span><br><span class="line">				layer++;</span><br><span class="line">		&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">return</span> layer;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">dfs</span><span class="params">(<span class="type">char</span>[][] grid, <span class="type">int</span> a, <span class="type">int</span> b)</span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(!isValid(grid,a,b))</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	</span><br><span class="line">	grid[a][b] = <span class="string">&#x27;x&#x27;</span>;</span><br><span class="line">	dfs(grid, a+<span class="number">1</span>, b);</span><br><span class="line">	dfs(grid, a-<span class="number">1</span>, b);</span><br><span class="line">	dfs(grid, a, b+<span class="number">1</span>);</span><br><span class="line">	dfs(grid, a, b-<span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">isValid</span><span class="params">(<span class="type">char</span>[][] grid, <span class="type">int</span> x, <span class="type">int</span> y)</span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(x&lt;<span class="number">0</span>||x&gt;=grid.length||y&lt;<span class="number">0</span>||y&gt;=grid[<span class="number">0</span>].length||grid[x][y]!=<span class="string">&#x27;1&#x27;</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(MN)</code>，空间复杂度<code>O(MN)</code>。M,N分别为矩阵长宽。最坏情况，全为陆地，DFS退化成线性。</p>
+<h3 id="Union-Find解题思路："><a href="#Union-Find解题思路：" class="headerlink" title="Union Find解题思路："></a><strong>Union Find解题思路：</strong></h3><p>见Union Find算法详解。</p>
+<ol>
+<li>初始化UnionFind类，包括3个属性：count（独立连通数）, parent（某节点的父节点）, rank（连通集排名）。合格的节点的parent初始化为自己的id，rank为0，count为所有合格节点数量。</li>
+<li>遍历所有节点，<strong>union</strong>此节点及其相邻的节点（如上下左右）</li>
+<li>union时候，先<strong>find</strong>两节点的根节点，若相同忽略。若不同，合并此两连通集：rank大的连通集，作为rank小的连通集的父节点。若rank相等，选任一作为另一个的父节点且把它的rank加1。count减1。<br>如下图，union 6和11的，find(6)会进行压缩路径，把6接到5下。<br><img src="/images/union-find-2.png" alt=""></li>
+<li>find寻找根节点的同时，压缩成与根节点路径为1的连通。  </li>
+</ol>
+<h3 id="Java代码：-2"><a href="#Java代码：-2" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">UnionFind</span> &#123;</span><br><span class="line">	<span class="type">int</span> count; <span class="comment">// # of connected components</span></span><br><span class="line">	<span class="type">int</span>[] parent;</span><br><span class="line">	<span class="type">int</span>[] rank;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="title function_">UnionFind</span><span class="params">(<span class="type">char</span>[][] grid)</span> &#123; <span class="comment">// for problem 200</span></span><br><span class="line">		count = <span class="number">0</span>;</span><br><span class="line">		<span class="type">int</span> <span class="variable">m</span> <span class="operator">=</span> grid.length;</span><br><span class="line">		<span class="type">int</span> <span class="variable">n</span> <span class="operator">=</span> grid[<span class="number">0</span>].length;</span><br><span class="line">		parent = <span class="keyword">new</span> <span class="title class_">int</span>[m * n];</span><br><span class="line">		rank = <span class="keyword">new</span> <span class="title class_">int</span>[m * n];</span><br><span class="line">		<span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; m; ++i) &#123;</span><br><span class="line">			<span class="keyword">for</span> (<span class="type">int</span> <span class="variable">j</span> <span class="operator">=</span> <span class="number">0</span>; j &lt; n; ++j) &#123;</span><br><span class="line">				<span class="keyword">if</span> (grid[i][j] == <span class="string">&#x27;1&#x27;</span>) &#123;</span><br><span class="line">					parent[i * n + j] = i * n + j;</span><br><span class="line">					++count;</span><br><span class="line">				&#125;</span><br><span class="line">				rank[i * n + j] = <span class="number">0</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="type">int</span> <span class="title function_">find</span><span class="params">(<span class="type">int</span> i)</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> (parent[i] != i) &#123;</span><br><span class="line">			parent[i] = find(parent[i]); <span class="comment">// path compression</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> parent[i];</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// union with rank</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">union</span><span class="params">(<span class="type">int</span> x, <span class="type">int</span> y)</span> &#123;</span><br><span class="line">		<span class="type">int</span> <span class="variable">rootx</span> <span class="operator">=</span> find(x);</span><br><span class="line">		<span class="type">int</span> <span class="variable">rooty</span> <span class="operator">=</span> find(y);</span><br><span class="line">		<span class="keyword">if</span> (rootx != rooty) &#123;</span><br><span class="line">			<span class="keyword">if</span> (rank[rootx] &gt; rank[rooty]) &#123;</span><br><span class="line">				parent[rooty] = rootx;</span><br><span class="line">			&#125; <span class="keyword">else</span> <span class="keyword">if</span> (rank[rootx] &lt; rank[rooty]) &#123;</span><br><span class="line">				parent[rootx] = rooty;</span><br><span class="line">			&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">				parent[rooty] = rootx;</span><br><span class="line">				rank[rootx] += <span class="number">1</span>;</span><br><span class="line">			&#125;</span><br><span class="line">			--count;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="type">int</span> <span class="title function_">getCount</span><span class="params">()</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> count;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="type">int</span> <span class="title function_">numIslands3</span><span class="params">(<span class="type">char</span>[][] grid)</span> &#123;</span><br><span class="line">	<span class="keyword">if</span> (grid == <span class="literal">null</span> || grid.length == <span class="number">0</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="type">int</span> <span class="variable">nr</span> <span class="operator">=</span> grid.length;</span><br><span class="line">	<span class="type">int</span> <span class="variable">nc</span> <span class="operator">=</span> grid[<span class="number">0</span>].length;</span><br><span class="line">	<span class="type">int</span> <span class="variable">num_islands</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">	<span class="type">UnionFind</span> <span class="variable">uf</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">UnionFind</span>(grid);</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> <span class="variable">r</span> <span class="operator">=</span> <span class="number">0</span>; r &lt; nr; ++r) &#123;</span><br><span class="line">		<span class="keyword">for</span> (<span class="type">int</span> <span class="variable">c</span> <span class="operator">=</span> <span class="number">0</span>; c &lt; nc; ++c) &#123;</span><br><span class="line">			<span class="keyword">if</span> (grid[r][c] == <span class="string">&#x27;1&#x27;</span>) &#123;</span><br><span class="line">				grid[r][c] = <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">				<span class="keyword">if</span> (r - <span class="number">1</span> &gt;= <span class="number">0</span> &amp;&amp; grid[r - <span class="number">1</span>][c] == <span class="string">&#x27;1&#x27;</span>) &#123; </span><br><span class="line">					uf.union(r * nc + c, (r - <span class="number">1</span>) * nc + c);</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">if</span> (r + <span class="number">1</span> &lt; nr &amp;&amp; grid[r + <span class="number">1</span>][c] == <span class="string">&#x27;1&#x27;</span>) &#123;</span><br><span class="line">					uf.union(r * nc + c, (r + <span class="number">1</span>) * nc + c);</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">if</span> (c - <span class="number">1</span> &gt;= <span class="number">0</span> &amp;&amp; grid[r][c - <span class="number">1</span>] == <span class="string">&#x27;1&#x27;</span>) &#123;</span><br><span class="line">					uf.union(r * nc + c, r * nc + c - <span class="number">1</span>);</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">if</span> (c + <span class="number">1</span> &lt; nc &amp;&amp; grid[r][c + <span class="number">1</span>] == <span class="string">&#x27;1&#x27;</span>) &#123;</span><br><span class="line">					uf.union(r * nc + c, r * nc + c + <span class="number">1</span>);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> uf.getCount();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析：-2"><a href="#算法分析：-2" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(MN)</code>，空间复杂度<code>O(MN)</code>。M,N分别为矩阵长宽。遍历每个节点，而每个节点只会遍历4个相邻节点。</p>
+<h3 id="Follow-up"><a href="#Follow-up" class="headerlink" title="Follow-up:"></a><strong>Follow-up:</strong></h3><ol>
+<li>打印所有island坐标</li>
+<li>计算湖的数量。湖是被island维住的水域，与海有区别。解法是先从四条边界的海域进行DFS，标记为-1，然后采用上述算法，只要将搜寻1改为搜寻0即可。</li>
+<li>如果内存有限，不能一次读整个矩阵。方案是分块做，然后保留边界信息作为下一块的输入。</li>
+<li>地图中途被改动。分情况，若0-&gt;1，若此单元邻居只有一种label（即使多个邻居），岛屿数不变。无邻居，岛屿数+1。邻居有多种label为n，岛屿数减少n-1。Union Find也是一个更简洁方案。<br>此情况比较简单，只要查看邻居即可，因为它只会增加连接。<br>若1-&gt;0, 对此单元相邻的四个单元进行DFS重新label新数，新数的种数-四单元的DSF岛屿个数=岛屿增加的个数。<br>此情况需要重新做DFS，因为它破坏连接，可能导致连通性变小。</li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/01/30/lee-322/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KK Shum">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KK's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/01/30/lee-322/" class="post-title-link" itemprop="url">LeetCode 322 Coin Change</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-01-30 00:00:00" itemprop="dateCreated datePublished" datetime="2022-01-30T00:00:00-08:00">2022-01-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2026-06-03 02:03:57" itemprop="dateModified" datetime="2026-06-03T02:03:57-07:00">2026-06-03</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2022/01/30/lee-322/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/01/30/lee-322/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong><a href="https://leetcode.com/problems/coin-change/">LeetCode</a></strong></p>
+<div><br><br>You are given an integer array <code>coins</code> representing coins of different denominations and an integer <code>amount</code> representing a total amount of money.<br><br>Return <em>the fewest number of coins that you need to make up that amount</em>. If that amount of money cannot be made up by any combination of the coins, return <code>-1</code>.<br><br>You may assume that you have an infinite number of each kind of coin.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> coins = [1,2,5], amount = 11<br><strong>Output:</strong> 3<br><strong>Explanation:</strong> 11 = 5 + 5 + 1<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> coins = [2], amount = 3<br><strong>Output:</strong> -1<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> coins = [1], amount = 0<br><strong>Output:</strong> 0<br></pre><br><br><strong>Example 4:</strong><br><br><pre><strong>Input:</strong> coins = [1], amount = 1<br><strong>Output:</strong> 1<br></pre><br><br><strong>Example 5:</strong><br><br><pre><strong>Input:</strong> coins = [1], amount = 2<br><strong>Output:</strong> 2<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= coins.length &lt;= 12</code>
+</em>   <code>1 &lt;= coins[i] &lt;= 2&lt;sup&gt;31&lt;/sup&gt; - 1</code><br>*   <code>0 &lt;= amount &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code><br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求兑换硬币的最小个数</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>用数值-&gt;个数DP模板</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>amount为0时候，返回0，表示不用coin也能满足，属于合法情况, dp[0] = 0(第二步)  </li>
+<li>返回值，若dp[-1]为初始值，表示无解，返回-1(第5步)  </li>
+<li>实现中dp[i] = min(dp[i], dp[i - j] + 1), +1在min内而不是min外。  </li>
+<li>此题内外循环顺序不重要，跟LeetCode 518 Coin Change 2有区别</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">coinChange</span>(<span class="params">self, coins: <span class="type">List</span>[<span class="built_in">int</span>], amount: <span class="built_in">int</span></span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	coins.sort()</span><br><span class="line">	dp = [<span class="built_in">float</span>(<span class="string">&#x27;inf&#x27;</span>)] * (amount + <span class="number">1</span>)</span><br><span class="line">	dp[<span class="number">0</span>] = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> coin <span class="keyword">in</span> coins:</span><br><span class="line">		<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(dp)):</span><br><span class="line">			<span class="keyword">if</span> i + coin &lt;= amount:</span><br><span class="line">				dp[i + coin] = <span class="built_in">min</span>(dp[i + coin], dp[i] + <span class="number">1</span>)</span><br><span class="line">	<span class="keyword">return</span> dp[-<span class="number">1</span>] <span class="keyword">if</span> dp[-<span class="number">1</span>] &lt; <span class="built_in">float</span>(<span class="string">&#x27;inf&#x27;</span>) <span class="keyword">else</span> -<span class="number">1</span>  <span class="comment"># remember</span></span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n*amount)</code>，空间复杂度<code>O(amount)</code>。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/01/30/lee-423/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -372,288 +676,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/01/30/lee-809/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="KK Shum">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="KK's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/01/30/lee-809/" class="post-title-link" itemprop="url">LeetCode 809 Expressive Words</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2022-01-30 00:00:00" itemprop="dateCreated datePublished" datetime="2022-01-30T00:00:00-08:00">2022-01-30</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2026-06-03 02:03:57" itemprop="dateModified" datetime="2026-06-03T02:03:57-07:00">2026-06-03</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2022/01/30/lee-809/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/01/30/lee-809/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong><a href="https://leetcode.com/problems/expressive-words/">LeetCode</a></strong></p>
-<div><br><br>Sometimes people repeat letters to represent extra feeling. For example:<br><br><em>   <code>&quot;hello&quot; -&gt; &quot;heeellooo&quot;</code>
-</em>   <code>&quot;hi&quot; -&gt; &quot;hiiii&quot;</code><br><br>In these strings like <code>&quot;heeellooo&quot;</code>, we have groups of adjacent letters that are all the same: <code>&quot;h&quot;</code>, <code>&quot;eee&quot;</code>, <code>&quot;ll&quot;</code>, <code>&quot;ooo&quot;</code>.<br><br>You are given a string <code>s</code> and an array of query strings <code>words</code>. A query word is <strong>stretchy</strong> if it can be made to be equal to <code>s</code> by any number of applications of the following extension operation: choose a group consisting of characters <code>c</code>, and add some number of characters <code>c</code> to the group so that the size of the group is <strong>three or more</strong>.<br><br><em>   For example, starting with <code>&quot;hello&quot;</code>, we could do an extension on the group <code>&quot;o&quot;</code> to get <code>&quot;hellooo&quot;</code>, but we cannot get <code>&quot;helloo&quot;</code> since the group <code>&quot;oo&quot;</code> has a size less than three. Also, we could do another extension like <code>&quot;ll&quot; -&gt; &quot;lllll&quot;</code> to get <code>&quot;helllllooo&quot;</code>. If <code>s = &quot;helllllooo&quot;</code>, then the query word <code>&quot;hello&quot;</code> would be <strong>stretchy</strong> because of these two extension operations: <code>query = &quot;hello&quot; -&gt; &quot;hellooo&quot; -&gt; &quot;helllllooo&quot; = s</code>.<br><br>Return <em>the number of query strings that are <strong>stretchy</strong></em>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> s = “heeellooo”, words = [“hello”, “hi”, “helo”]<br><strong>Output:</strong> 1<br><strong>Explanation:</strong><br>We can extend “e” and “o” in the word “hello” to get “heeellooo”.<br>We can’t extend “helo” to get “heeellooo” because the group “ll” is not size 3 or more.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> s = “zzzzzyyyyy”, words = [“zzyy”,”zy”,”zyy”]<br><strong>Output:</strong> 3<br></pre><br><br><strong>Constraints:</strong>
-
-</em>   <code>1 &lt;= s.length, words.length &lt;= 100</code><br><em>   <code>1 &lt;= words[i].length &lt;= 100</code>
-</em>   <code>s</code> and <code>words[i]</code> consist of lowercase letters.<br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>Cisco常考题<br>定义了一种富于表现力的单词，就是说某个字母可以重复三次或以上，叫stretchy<br>找给定的单词列表中的单词可以成为stretchy单词的个数  </p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>统计每个字符的个数，然后比较对应每个字符个数 </p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>Line 13的条件，若个数不等，word的字符个数大于stretchy的字符个数(word不能删除字符)，或者stretchy的个数小于3，就不满足    </li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">expressiveWords</span>(<span class="params">self, s: <span class="built_in">str</span>, words: <span class="type">List</span>[<span class="built_in">str</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	res = <span class="number">0</span></span><br><span class="line">	s_count = <span class="variable language_">self</span>.get_consecutive_count(s)</span><br><span class="line">	<span class="keyword">for</span> word <span class="keyword">in</span> words:</span><br><span class="line">		char_count = <span class="variable language_">self</span>.get_consecutive_count(word)</span><br><span class="line">		<span class="keyword">if</span> <span class="built_in">len</span>(char_count) != <span class="built_in">len</span>(s_count):</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(s_count)):</span><br><span class="line">			char_s, count_s = s_count[i]</span><br><span class="line">			char_w, count_w = char_count[i]</span><br><span class="line">			<span class="keyword">if</span> char_w != char_s:</span><br><span class="line">				<span class="keyword">break</span></span><br><span class="line">			<span class="keyword">if</span> count_s != count_w <span class="keyword">and</span> (count_w &gt; count_s <span class="keyword">or</span> count_s &lt; <span class="number">3</span>): <span class="comment"># remember</span></span><br><span class="line">				<span class="keyword">break</span></span><br><span class="line">			<span class="keyword">if</span> i == <span class="built_in">len</span>(s_count) - <span class="number">1</span>:</span><br><span class="line">				res += <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_consecutive_count</span>(<span class="params">self, s</span>):</span><br><span class="line">	s += <span class="string">&#x27; &#x27;</span></span><br><span class="line">	s_count, count = [], <span class="number">1</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="built_in">len</span>(s)):</span><br><span class="line">		<span class="keyword">if</span> s[i] != s[i - <span class="number">1</span>]:</span><br><span class="line">			s_count.append((s[i - <span class="number">1</span>], count))</span><br><span class="line">			count = <span class="number">0</span></span><br><span class="line">		count += <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> s_count</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/01/29/leetcode-259-3sum-smaller/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="KK Shum">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="KK's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/01/29/leetcode-259-3sum-smaller/" class="post-title-link" itemprop="url">LeetCode 259 3Sum Smaller</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2022-01-29 00:00:00" itemprop="dateCreated datePublished" datetime="2022-01-29T00:00:00-08:00">2022-01-29</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2026-06-03 02:03:57" itemprop="dateModified" datetime="2026-06-03T02:03:57-07:00">2026-06-03</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2022/01/29/leetcode-259-3sum-smaller/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/01/29/leetcode-259-3sum-smaller/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong><a href="https://leetcode.com/problems/3sum-smaller/">LeetCode</a></strong></p>
-<div><br><br>Given an array of <code>n</code> integers <code>nums</code> and an integer <code>target</code>, find the number of index triplets <code>i</code>, <code>j</code>, <code>k</code> with <code>0 &lt;= i &lt; j &lt; k &lt; n</code> that satisfy the condition <code>nums[i] + nums[j] + nums[k] &lt; target</code>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> nums = [-2,0,1,3], target = 2<br><strong>Output:</strong> 2<br><strong>Explanation:</strong> Because there are two triplets which sums are less than 2:<br>[-2,0,1]<br>[-2,0,3]<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> nums = [], target = 0<br><strong>Output:</strong> 0<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> nums = [0], target = 0<br><strong>Output:</strong> 0<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>n == nums.length</code>
-</em>   <code>0 &lt;= n &lt;= 3500</code><br><em>   <code>-100 &lt;= nums[i] &lt;= 100</code>
-</em>   <code>-100 &lt;= target &lt;= 100</code><br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>找三数和小于target的组合个数</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>类似于三数和等于target，但当小于target时，直接求个数，类似于LeetCode 315 Count of Smaller Numbers After Self。</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>res不是+1而是right - left</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">threeSumSmaller</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>], target: <span class="built_in">int</span></span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	<span class="keyword">if</span> <span class="built_in">len</span>(nums) &lt; <span class="number">3</span>:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">	nums.sort()</span><br><span class="line">	res = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(nums) - <span class="number">2</span>):</span><br><span class="line">		left, right = i + <span class="number">1</span>, <span class="built_in">len</span>(nums) - <span class="number">1</span></span><br><span class="line">		<span class="keyword">while</span> left &lt; right:</span><br><span class="line">			<span class="keyword">if</span> nums[i] + nums[left] + nums[right] &lt; target:</span><br><span class="line">				res += right - left <span class="comment"># remember</span></span><br><span class="line">				left += <span class="number">1</span></span><br><span class="line">			<span class="keyword">else</span>:</span><br><span class="line">				right -= <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n<sup>2</sup>)</code>，空间复杂度<code>O(1)</code>  </p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/01/29/leetcode-628-maximum-product-of-three-numbers/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="KK Shum">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="KK's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/01/29/leetcode-628-maximum-product-of-three-numbers/" class="post-title-link" itemprop="url">LeetCode 628 Maximum Product of Three Numbers</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2022-01-29 00:00:00" itemprop="dateCreated datePublished" datetime="2022-01-29T00:00:00-08:00">2022-01-29</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2026-06-03 02:03:57" itemprop="dateModified" datetime="2026-06-03T02:03:57-07:00">2026-06-03</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2022/01/29/leetcode-628-maximum-product-of-three-numbers/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/01/29/leetcode-628-maximum-product-of-three-numbers/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong><a href="https://leetcode.com/problems/maximum-product-of-three-numbers/">LeetCode</a></strong></p>
-<div><br><br>Given an integer array <code>nums</code>, <em>find three numbers whose product is maximum and return the maximum product</em>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> nums = [1,2,3]<br><strong>Output:</strong> 6<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> nums = [1,2,3,4]<br><strong>Output:</strong> 24<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> nums = [-1,-2,-3]<br><strong>Output:</strong> -6<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>3 &lt;= nums.length &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code>
-</em>   <code>-1000 &lt;= nums[i] &lt;= 1000</code><br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求数组任意三个数的最大乘积</p>
-<h3 id="排序法解题思路："><a href="#排序法解题思路：" class="headerlink" title="排序法解题思路："></a><strong>排序法解题思路：</strong></h3><p>数学题，正负数分开，最大只可以是排序后最大的三个数(全正，全负)或最大整数乘以最小两个负数(正负均有)</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li><h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">maximumProduct</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	nums.sort()</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">max</span>(nums[-<span class="number">1</span>] * nums[-<span class="number">2</span>] * nums[-<span class="number">3</span>], nums[-<span class="number">1</span>] * nums[<span class="number">0</span>] * nums[<span class="number">1</span>])</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nlogn)</code>，空间复杂度<code>O(1)</code>  </p>
-<hr>
-<h3 id="Heap算法II解题思路："><a href="#Heap算法II解题思路：" class="headerlink" title="Heap算法II解题思路："></a><strong>Heap算法II解题思路：</strong></h3><p>由上述思路进一步优化，不需要全部排序，只需要知道最大的3个数和最小的两个数即可</p>
-<h3 id="Python代码：-1"><a href="#Python代码：-1" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">maximumProduct2</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	largest = heapq.nlargest(<span class="number">3</span>, nums)</span><br><span class="line">	smallest = heapq.nsmallest(<span class="number">2</span>, nums)</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">max</span>(largest[<span class="number">0</span>] * largest[<span class="number">1</span>] * largest[<span class="number">2</span>], largest[<span class="number">0</span>] * smallest[<span class="number">0</span>] * smallest[<span class="number">1</span>])</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/29/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/29/">29</a><span class="page-number current">30</span><a class="page-number" href="/page/31/">31</a><span class="space">&hellip;</span><a class="page-number" href="/page/73/">73</a><a class="extend next" rel="next" href="/page/31/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+    <a class="extend prev" rel="prev" href="/page/29/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/29/">29</a><span class="page-number current">30</span><a class="page-number" href="/page/31/">31</a><span class="space">&hellip;</span><a class="page-number" href="/page/74/">74</a><a class="extend next" rel="next" href="/page/31/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 
@@ -724,14 +750,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">365</span>
+          <span class="site-state-item-count">368</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">59</span>
+        <span class="site-state-item-count">60</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

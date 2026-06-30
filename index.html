@@ -201,6 +201,373 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2026/06/29/leetcode-761-special-binary-string/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KK Shum">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KK's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2026/06/29/leetcode-761-special-binary-string/" class="post-title-link" itemprop="url">LeetCode 761 Special Binary String</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2026-06-29 00:00:00 / Modified: 15:57:31" itemprop="dateCreated datePublished" datetime="2026-06-29T00:00:00-07:00">2026-06-29</time>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2026/06/29/leetcode-761-special-binary-string/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2026/06/29/leetcode-761-special-binary-string/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong><a href="https://leetcode.com/problems/special-binary-string">LeetCode</a></strong></p>
+<p>&lt;div&gt;</p>
+<p><strong>Special binary strings</strong> are binary strings with the following two properties:</p>
+<ul>
+<li>The number of <code>0</code>'s is equal to the number of <code>1</code>'s.</li>
+<li>Every prefix of the binary string has at least as many <code>1</code>'s as <code>0</code>'s.</li>
+</ul>
+<p>You are given a <strong>special binary</strong> string <code>s</code>.</p>
+<p>A move consists of choosing two consecutive, non-empty, special substrings of <code>s</code>, and swapping them. Two strings are consecutive if the last character of the first string is exactly one index before the first character of the second string.</p>
+<p>Return <em>the lexicographically largest resulting string possible after applying the mentioned operations on the string</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> s = &quot;11011000&quot;
+<strong>Output:</strong> &quot;11100100&quot;
+<strong>Explanation:</strong> The strings &quot;10&quot; [occuring at s[1]] and &quot;1100&quot; [at s[3]] are swapped.
+This is the lexicographically largest string possible after some number of swaps.
+&lt;/pre&gt;</p>
+<p><strong>Example 2:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> s = &quot;10&quot;
+<strong>Output:</strong> &quot;10&quot;
+&lt;/pre&gt;</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= s.length &lt;= 50</code></li>
+<li><code>s[i]</code> is either <code>'0'</code> or <code>'1'</code>.</li>
+<li><code>s</code> is a special binary string.</li>
+</ul>
+<p>&lt;/div&gt;</p>
+<h3><strong>题目大意：</strong></h3>
+<p>Special string由0和1组成，数目一样且每个前缀1的数目大于等于0的数目。可以交换其内部的子特别字符串，让其数值最大</p>
+<h3><strong>解题思路：</strong></h3>
+<p>一开始考虑用统计presum的方法LeetCode 696 Count Binary Substrings，然后如果后者1的数目大于前者0的数目，表示可以交换。但这里只考虑到相邻特别子串的关系，并没有考虑特别字串的内部也是需要排序的。</p>
+<p>此题特别串是含有递归定义，所以考虑DFS。首先，一个特别字符串是由多个特别子串连续组成，所以需要找出它们，且进行排序<br>
+第二，更难的是每个字串内部特别字串也需要重新排序比如11011000中的10和1100就需要互换。这个串不是直接由内部特殊字串组成而是1+特殊串+0组成(递归式). 根据特殊串定义，是以1开头0结束，类似于统计左右括号数，这点规律比较难找。</p>
+<p>总结而已，这题是catalan递归但不是递归两边是，多边。且每个递归都是由总结出来的规律获得1+f(s[start+1:i])获得</p>
+<h3><strong>解题步骤：</strong></h3>
+<p>N/A</p>
+<h3><strong>注意事项：</strong></h3>
+<ol>
+<li>如果遇到0，count要减一</li>
+<li>倒序排序：parts.sort(reverse=True)</li>
+</ol>
+<h3><strong>Python代码：</strong></h3>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">makeLargestSpecial</span>(<span class="params">self, s: <span class="built_in">str</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">	parts = []</span><br><span class="line">	count = <span class="number">0</span></span><br><span class="line">	start = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(s)):</span><br><span class="line">		<span class="keyword">if</span> s[i] == <span class="string">&#x27;1&#x27;</span>:</span><br><span class="line">			count += <span class="number">1</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			count -= <span class="number">1</span> <span class="comment">#attn</span></span><br><span class="line">		<span class="keyword">if</span> count == <span class="number">0</span>:</span><br><span class="line">			sorted_part = <span class="string">&#x27;1&#x27;</span>+ <span class="variable language_">self</span>.makeLargestSpecial(s[start+<span class="number">1</span>:i]) + <span class="string">&#x27;0&#x27;</span></span><br><span class="line">			parts.append(sorted_part)</span><br><span class="line">			start = i + <span class="number">1</span></span><br><span class="line">	parts.sort(reverse=<span class="literal">True</span>) <span class="comment">#attn</span></span><br><span class="line">	<span class="keyword">return</span> <span class="string">&#x27;&#x27;</span>.join(parts)</span><br></pre></td></tr></table></figure></p>
+<h3><strong>算法分析：</strong></h3>
+<p>next时间复杂度为<code>O(n^2)</code>，空间复杂度<code>O(n)</code></p>
+<p>错误的做法，只考虑到相互关系，没考虑内部关系</p>
+<h3><strong>Python代码：</strong></h3>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">makeLargestSpecial</span>(<span class="params">self, s: <span class="built_in">str</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">	count, presum = <span class="number">1</span>, []</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="built_in">len</span>(s)):</span><br><span class="line">		<span class="keyword">if</span> s[i] == s[i-<span class="number">1</span>]:</span><br><span class="line">			count += <span class="number">1</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			presum.append(count)</span><br><span class="line">			count = <span class="number">1</span></span><br><span class="line">	<span class="keyword">if</span> count &gt; <span class="number">0</span>:</span><br><span class="line">		presum.append(count)</span><br><span class="line">	<span class="built_in">print</span>(presum)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">def</span> <span class="title function_">move</span>(<span class="params">presum</span>):</span><br><span class="line">		is_moved = <span class="literal">False</span></span><br><span class="line">		<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>, <span class="built_in">len</span>(presum), <span class="number">2</span>):</span><br><span class="line">			<span class="keyword">if</span> presum[i] &gt; presum[i-<span class="number">1</span>]:</span><br><span class="line">				presum[i-<span class="number">2</span>] += -presum[i-<span class="number">1</span>] + presum[i]</span><br><span class="line">				presum[i+<span class="number">1</span>] += -presum[i] + presum[i-<span class="number">1</span>]</span><br><span class="line">				presum[i-<span class="number">1</span>], presum[i] = presum[i], presum[i-<span class="number">1</span>]</span><br><span class="line">				<span class="built_in">print</span>(presum)</span><br><span class="line">				is_moved = <span class="literal">True</span></span><br><span class="line">		<span class="keyword">return</span> is_moved</span><br><span class="line">	</span><br><span class="line">	move_res = <span class="literal">True</span></span><br><span class="line">	<span class="keyword">while</span> move_res:</span><br><span class="line">		move_res = move(presum)</span><br><span class="line"></span><br><span class="line">	res, c = <span class="string">&#x27;&#x27;</span>, <span class="string">&#x27;1&#x27;</span></span><br><span class="line">	<span class="keyword">for</span> n <span class="keyword">in</span> presum:</span><br><span class="line">		res += c * n</span><br><span class="line">		<span class="keyword">if</span> c == <span class="string">&#x27;1&#x27;</span>:</span><br><span class="line">			c = <span class="string">&#x27;0&#x27;</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			c = <span class="string">&#x27;1&#x27;</span></span><br><span class="line">	<span class="built_in">print</span>(res)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2026/06/29/leetcode-930-Binary-subarrays-with-sum/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KK Shum">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KK's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2026/06/29/leetcode-930-Binary-subarrays-with-sum/" class="post-title-link" itemprop="url">LeetCode 930 Binary Subarrays With Sum</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2026-06-29 00:00:00" itemprop="dateCreated datePublished" datetime="2026-06-29T00:00:00-07:00">2026-06-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2026-06-30 00:19:57" itemprop="dateModified" datetime="2026-06-30T00:19:57-07:00">2026-06-30</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2026/06/29/leetcode-930-Binary-subarrays-with-sum/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2026/06/29/leetcode-930-Binary-subarrays-with-sum/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong><a href="https://leetcode.com/problems/special-binary-string">LeetCode</a></strong></p>
+<p>&lt;div&gt;</p>
+<p>Given a binary array <code>nums</code> and an integer <code>goal</code>, return <em>the number of non-empty <strong>subarrays</strong> with a sum</em> <code>goal</code>.</p>
+<p>A <strong>subarray</strong> is a contiguous part of the array.</p>
+<p><strong>Example 1:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> nums = [1,0,1,0,1], goal = 2
+<strong>Output:</strong> 4
+<strong>Explanation:</strong> The 4 subarrays are bolded and underlined below:
+[&lt;u&gt;<strong>1,0,1</strong>&lt;/u&gt;,0,1]
+[&lt;u&gt;<strong>1,0,1,0</strong>&lt;/u&gt;,1]
+[1,&lt;u&gt;<strong>0,1,0,1</strong>&lt;/u&gt;]
+[1,0,&lt;u&gt;<strong>1,0,1</strong>&lt;/u&gt;]
+&lt;/pre&gt;</p>
+<p><strong>Example 2:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> nums = [0,0,0,0,0], goal = 0
+<strong>Output:</strong> 15
+&lt;/pre&gt;</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= nums.length &lt;= 3 * 10&lt;sup&gt;4&lt;/sup&gt;</code></li>
+<li><code>nums[i]</code> is either <code>0</code> or <code>1</code>.</li>
+<li><code>0 &lt;= goal &lt;= nums.length</code></li>
+</ul>
+<p>&lt;/div&gt;</p>
+<h3><strong>题目大意：</strong></h3>
+<p>有0和1组成的字符串，求所有子数组的和等于goal的个数</p>
+<h3><strong>解题思路Presum(推荐)：</strong></h3>
+<p>求子数组和第一时间想到presum，然后就是presum-goal是否在hashmap中，类似于Two sum。</p>
+<h3><strong>解题步骤：</strong></h3>
+<p>N/A</p>
+<h3><strong>注意事项：</strong></h3>
+<ol>
+<li>presum初始值为0，因为如果单元素数组，才能得到它的差值。</li>
+<li>val_to_freq的计算要在循环中，类似于Two sum，不能提前用Counter计算，否则会有重复，比如[0, 0], goal=0, 不应该为4.</li>
+</ol>
+<h3><strong>Python代码：</strong></h3>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">numSubarraysWithSum</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>], goal: <span class="built_in">int</span></span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	presum = [<span class="number">0</span>]</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(nums)):</span><br><span class="line">		presum.append(presum[-<span class="number">1</span>] + nums[i])</span><br><span class="line">	val_to_freq, res = collections.defaultdict(<span class="built_in">int</span>), <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(presum)):</span><br><span class="line">		<span class="keyword">if</span> presum[i] - goal <span class="keyword">in</span> val_to_freq:</span><br><span class="line">			res += val_to_freq[presum[i] - goal]</span><br><span class="line">		val_to_freq[presum[i]] += <span class="number">1</span> <span class="comment">#attn</span></span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure></p>
+<h3><strong>算法分析：</strong></h3>
+<p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code></p>
+<h3><strong>算法II解题思路Sliding Window：</strong></h3>
+<p>此法虽然空间复杂度较优，但较难想。求字串的和可以考虑用Two pointers两边夹。这里求所有可能性，比如0011100, goal=3, 必须包括前缀0和后缀0，所以用Two pointers最长串的模板<br>
+类似于LeetCode 340 Longest Substring with At Most K Distinct Characters，不满足条件为窗口和大于goal，所以满足条件为小于等于goal(类似于at most k)。
+所以要用at_most(goal) - at_most(goal - 1)才能得到最后结果。<br>
+计算的时候，是i-left+1代表窗口和&lt;=subgoal的以nums[i]为结尾的子数组个数，比如10101, i指向最后一个1, left指向第一个0, res是4个，对应1, 01, 101, 0101</p>
+<h3><strong>注意事项：</strong></h3>
+<ol>
+<li>模板满足条件在内循环外，所以计算结果在内循环结束后。</li>
+<li>subgoal如果小于0，返回0。比如goal为0，nums=[0,0]</li>
+</ol>
+<h3><strong>Python代码：</strong></h3>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">numSubarraysWithSum</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>], goal: <span class="built_in">int</span></span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	<span class="keyword">def</span> <span class="title function_">at_most</span>(<span class="params">subgoal</span>):</span><br><span class="line">		<span class="keyword">if</span> subgoal &lt; <span class="number">0</span>: <span class="comment">#attn</span></span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">		window_sum, left, res = <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span></span><br><span class="line">		i = <span class="number">0</span></span><br><span class="line">		<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(nums)):</span><br><span class="line">			window_sum += nums[i]</span><br><span class="line">			<span class="keyword">while</span> window_sum &gt; subgoal:</span><br><span class="line">				window_sum -= nums[left]</span><br><span class="line">				left += <span class="number">1</span></span><br><span class="line">			res += i - left + <span class="number">1</span> <span class="comment"># ending with nums[i]</span></span><br><span class="line">		<span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> at_most(goal) - at_most(goal - <span class="number">1</span>)</span><br></pre></td></tr></table></figure></p>
+<h3><strong>算法分析：</strong></h3>
+<p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2026/06/29/leetcode-875-koko-eating-banana/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KK Shum">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KK's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2026/06/29/leetcode-875-koko-eating-banana/" class="post-title-link" itemprop="url">LeetCode 875 Koko Eating Bananas</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2026-06-29 00:00:00 / Modified: 00:47:44" itemprop="dateCreated datePublished" datetime="2026-06-29T00:00:00-07:00">2026-06-29</time>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2026/06/29/leetcode-875-koko-eating-banana/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2026/06/29/leetcode-875-koko-eating-banana/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong><a href="https://leetcode.com/problems/koko-eating-bananas/">LeetCode</a></strong></p>
+<p>&lt;div&gt;</p>
+<p>Koko loves to eat bananas. There are <code>n</code> piles of bananas, the <code>i&lt;sup&gt;th&lt;/sup&gt;</code> pile has <code>piles[i]</code> bananas. The guards have gone and will come back in <code>h</code> hours.</p>
+<p>Koko can decide her bananas-per-hour eating speed of <code>k</code>. Each hour, she chooses some pile of bananas and eats <code>k</code> bananas from that pile. If the pile has less than <code>k</code> bananas, she eats all of them instead and will not eat any more bananas during this hour.</p>
+<p>Koko likes to eat slowly but still wants to finish eating all the bananas before the guards return.</p>
+<p>Return <em>the minimum integer</em> <code>k</code> <em>such that she can eat all the bananas within</em> <code>h</code> <em>hours</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> piles = [3,6,7,11], h = 8
+<strong>Output:</strong> 4
+&lt;/pre&gt;</p>
+<p><strong>Example 2:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> piles = [30,11,23,4,20], h = 5
+<strong>Output:</strong> 30
+&lt;/pre&gt;</p>
+<p><strong>Example 3:</strong></p>
+<p>&lt;pre&gt;<strong>Input:</strong> piles = [30,11,23,4,20], h = 6
+<strong>Output:</strong> 23
+&lt;/pre&gt;</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= piles.length &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code></li>
+<li><code>piles.length &lt;= h &lt;= 10&lt;sup&gt;9&lt;/sup&gt;</code></li>
+<li><code>1 &lt;= piles[i] &lt;= 10&lt;sup&gt;9&lt;/sup&gt;</code></li>
+</ul>
+<p>&lt;/div&gt;</p>
+<h3><strong>题目大意：</strong></h3>
+<p>猴子吃n堆香蕉，要在h小时内吃完，求每小时吃的最少k根才能在限定时间内全部吃完。</p>
+<h3><strong>解题思路：</strong></h3>
+<p>枚举法，如果对于[3,6,7,11], k=3, 怎么算出多少小时呢? 数组每个数除以k向上取整求和即可，O(n)完成。怎么可以更快找到答案呢，很明显是二分法logn找答案，每次用O(n)算实际吃了多少小时。总的复杂度是O(nlogn).<br>
+所以此题是数值二分法，我也曾想过排序，但排序只能影响计算小于k值的小时数，不能优化后半段的，所以不用排序，而且数值二分法也不要求排序。</p>
+<h3><strong>解题步骤：</strong></h3>
+<p>数值二分法模板</p>
+<h3><strong>注意事项：</strong></h3>
+<ol>
+<li>start是从1开始，不是min(piles)。最大值取max(piles)因为跟取整型最大值是一样的。这样也可以避免单独处理单元素数组。</li>
+<li>epsilon取0.5. 一般整数题都取0.5</li>
+<li><strong>mid是除2获得不是//2</strong></li>
+<li>mid作为参数输入到get_hours()要去int(mid)与题目一致，因为题目的k是整数</li>
+<li>模板中h==hours时，不能return，要继续在左半区找，因为要达到误差epsilon内才会停止。类似于first_position</li>
+</ol>
+<h3><strong>Python代码：</strong></h3>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">minEatingSpeed</span>(<span class="params">self, piles: <span class="type">List</span>[<span class="built_in">int</span>], h: <span class="built_in">int</span></span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	<span class="comment">#if len(piles) == 1: # attn</span></span><br><span class="line">	 <span class="comment">#   return math.ceil(piles[0] / h)</span></span><br><span class="line">	<span class="comment"># piles.sort()</span></span><br><span class="line">	</span><br><span class="line">	<span class="keyword">def</span> <span class="title function_">get_hours</span>(<span class="params">piles, k</span>):</span><br><span class="line">		<span class="keyword">return</span> <span class="built_in">sum</span>([math.ceil(n / k) <span class="keyword">for</span> n <span class="keyword">in</span> piles])</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="comment"># start, end = piles[0], piles[-1] # 3, 4</span></span><br><span class="line">	start, end = <span class="number">1</span>, <span class="built_in">max</span>(piles) <span class="comment"># attn: 1 rather than min(piles)</span></span><br><span class="line">	<span class="keyword">while</span> start + <span class="number">0.5</span> &lt; end: <span class="comment"># attn: use 0.5</span></span><br><span class="line">		mid = start + (end - start) / <span class="number">2</span> <span class="comment"># attn /2 not // 2 | 7, 5, 4            </span></span><br><span class="line">		hours = get_hours(piles, <span class="built_in">int</span>(mid))  <span class="comment"># attn: int(mid) | 5, 8, 8</span></span><br><span class="line">		<span class="keyword">if</span> h &gt;= hours: <span class="comment"># eat slower, attn 8 &gt; 5</span></span><br><span class="line">			end = mid <span class="comment"># end=7, 5, 4</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">                start = mid</span><br></pre></td></tr></table></figure></p>
+<h3><strong>算法分析：</strong></h3>
+<p>next时间复杂度为<code>O(nlogn)</code>，空间复杂度<code>O(n)</code></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2026/06/28/leetcode-743-network-delay-time/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -411,343 +778,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2026/06/02/linked-list/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="KK Shum">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="KK's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2026/06/02/linked-list/" class="post-title-link" itemprop="url">Linked List</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2026-06-02 00:00:00" itemprop="dateCreated datePublished" datetime="2026-06-02T00:00:00-07:00">2026-06-02</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2026-06-21 10:37:11" itemprop="dateModified" datetime="2026-06-21T10:37:11-07:00">2026-06-21</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2026/06/02/linked-list/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2026/06/02/linked-list/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>a.next = b。 b赋值给a的next，指向是从左到右，也就是a.next指向b</li>
-<li><strong>it = it.next记得移动指针</strong></li>
-<li>fake_node如果链首会改变，引入fake_node</li>
-<li>决定是while it还是it.next</li>
-<li>删除节点.next = None</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><p>LeetCode 138 Copy List with Random Pointer<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">copyRandomList</span>(<span class="params">self, head: <span class="string">&#x27;Node&#x27;</span></span>) -&gt; <span class="string">&#x27;Node&#x27;</span>:</span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> head:</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line">	old_to_new = &#123;&#125;</span><br><span class="line">	fake_head = Node(<span class="number">0</span>)</span><br><span class="line">	it, it_new = head, fake_head</span><br><span class="line">	<span class="keyword">while</span> it:</span><br><span class="line">		new_node = Node(it.val)</span><br><span class="line">		it_new.<span class="built_in">next</span> = new_node</span><br><span class="line">		old_to_new[it] = new_node</span><br><span class="line">		it, it_new = it.<span class="built_in">next</span>, it_new.<span class="built_in">next</span></span><br><span class="line">	it, it_new = head, fake_head.<span class="built_in">next</span></span><br><span class="line">	<span class="keyword">while</span> it:</span><br><span class="line">		<span class="keyword">if</span> it.random:</span><br><span class="line">			old_to_new[it].random = old_to_new[it.random]</span><br><span class="line">		it = it.<span class="built_in">next</span></span><br><span class="line">	<span class="keyword">return</span> fake_head.<span class="built_in">next</span></span><br></pre></td></tr></table></figure></p>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2026/05/29/others-key-value-store/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="KK Shum">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="KK's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2026/05/29/others-key-value-store/" class="post-title-link" itemprop="url">KV Store Serialize & Deserialize</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2026-05-29 00:00:00" itemprop="dateCreated datePublished" datetime="2026-05-29T00:00:00-07:00">2026-05-29</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2026-06-03 01:41:26" itemprop="dateModified" datetime="2026-06-03T01:41:26-07:00">2026-06-03</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2026/05/29/others-key-value-store/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2026/05/29/others-key-value-store/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <div><br>Implement a key-value store that can serialize multiple string key-value pairs into a single string and deserialize it back. Both keys and values can contain any characters including delimiters, newlines, and special characters.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> {“a,”: “4,,5”, “b”: “”}<br></pre><br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>实现一个serialize和deserialize键值存储的方法。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>用key和value的长度及自定义分隔符[<len>]<key>[<len>]<value>来作为serialized的一部分，从而避开delimiter的限制.<br>上面的例子serialize后变成[2]a,[4]4,,5[1]b[0]</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>不用+=连接res，用list和join提交效率</li>
-<li>用index方法找自定义分隔符而不是逐字符处理</li>
-<li>重复代码来处理token可以放入子函数，用nonlocal不用作为输入参数且可以修改此变量</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">serialize</span>(<span class="params">kv</span>):</span><br><span class="line">    tokens = []</span><br><span class="line">    <span class="keyword">for</span> k, v <span class="keyword">in</span> kv.items():</span><br><span class="line">        tokens.append(<span class="string">f&quot;[<span class="subst">&#123;<span class="built_in">len</span>(k)&#125;</span>]<span class="subst">&#123;k&#125;</span>[<span class="subst">&#123;<span class="built_in">len</span>(v)&#125;</span>]<span class="subst">&#123;v&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;&quot;</span>.join(tokens)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">deserialize</span>(<span class="params">serialized</span>):</span><br><span class="line">    i = <span class="number">0</span></span><br><span class="line">    <span class="built_in">dict</span> = &#123;&#125;</span><br><span class="line">    <span class="keyword">while</span> i &lt; <span class="built_in">len</span>(serialized):</span><br><span class="line"></span><br><span class="line">        <span class="keyword">def</span> <span class="title function_">get_token</span>(<span class="params">s</span>):</span><br><span class="line">            <span class="keyword">nonlocal</span> i</span><br><span class="line">            token_len_st = serialized.find(<span class="string">&quot;[&quot;</span>, i) + <span class="number">1</span></span><br><span class="line">            token_len_end = serialized.find(<span class="string">&quot;]&quot;</span>, i)</span><br><span class="line">            token_len = <span class="built_in">int</span>(serialized[token_len_st:token_len_end])</span><br><span class="line">            token_st = token_len_end + <span class="number">1</span></span><br><span class="line">            i = token_st + token_len</span><br><span class="line">            <span class="keyword">return</span> serialized[token_st:token_st + token_len]</span><br><span class="line"></span><br><span class="line">        k = get_token(serialized)</span><br><span class="line">        v = get_token(serialized)</span><br><span class="line">        <span class="built_in">dict</span>[k] = v</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">dict</span></span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>  </p>
-<h3 id="Python代码：-1"><a href="#Python代码：-1" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">serialize2</span>(<span class="params">kv</span>):</span><br><span class="line">    res = <span class="string">&quot;&quot;</span></span><br><span class="line">    <span class="keyword">for</span> k, v <span class="keyword">in</span> kv.items():</span><br><span class="line">        res += <span class="string">f&quot;[<span class="subst">&#123;<span class="built_in">len</span>(k)&#125;</span>]<span class="subst">&#123;k&#125;</span>[<span class="subst">&#123;<span class="built_in">len</span>(v)&#125;</span>]<span class="subst">&#123;v&#125;</span>&quot;</span></span><br><span class="line">    <span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">deserialize2</span>(<span class="params">serialized</span>):</span><br><span class="line">    is_key = <span class="literal">True</span></span><br><span class="line">    i, kv_length = <span class="number">0</span>, -<span class="number">1</span></span><br><span class="line">    k, v = <span class="string">&quot;&quot;</span>, <span class="string">&quot;&quot;</span></span><br><span class="line">    <span class="built_in">dict</span> = &#123;&#125;</span><br><span class="line">    serialized += <span class="string">&quot; &quot;</span></span><br><span class="line">    <span class="keyword">while</span> i &lt; <span class="built_in">len</span>(serialized):</span><br><span class="line">        <span class="keyword">if</span> kv_length &gt;= <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">if</span> is_key:</span><br><span class="line">                k = serialized[i:i + kv_length] <span class="comment"># a,</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                v = serialized[i:i + kv_length] <span class="comment"># 4,,5</span></span><br><span class="line">                <span class="built_in">dict</span>[k] = v</span><br><span class="line">            is_key = <span class="literal">False</span> <span class="keyword">if</span> is_key <span class="keyword">else</span> <span class="literal">True</span></span><br><span class="line">            i += kv_length</span><br><span class="line">            kv_length = -<span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> serialized[i] == <span class="string">&quot;[&quot;</span>:</span><br><span class="line">            st = i + <span class="number">1</span> <span class="comment"># 6</span></span><br><span class="line">        <span class="keyword">elif</span> serialized[i] == <span class="string">&quot;]&quot;</span>:</span><br><span class="line">            end = i <span class="comment"># 2</span></span><br><span class="line">            kv_length = <span class="built_in">int</span>(serialized[st:end]) <span class="comment"># 4</span></span><br><span class="line">        i += <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">dict</span></span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2026/05/27/binary-search/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="KK Shum">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="KK's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2026/05/27/binary-search/" class="post-title-link" itemprop="url">Binary Search</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2026-05-27 00:00:00" itemprop="dateCreated datePublished" datetime="2026-05-27T00:00:00-07:00">2026-05-27</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2026-06-03 01:41:25" itemprop="dateModified" datetime="2026-06-03T01:41:25-07:00">2026-06-03</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2026/05/27/binary-search/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2026/05/27/binary-search/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><ol>
-<li>循环条件start + 1 &lt; end。 当跳出循环时，start和end的关系只能是相等或相邻。<br>相等是若数组只有一个元素，没有进入循环时出现。当进入过循环，一定是相邻。</li>
-<li>跳出循环后比较start和end的关系从而判断答案。  </li>
-</ol>
-<p>这可以满足二分法找first position或者last position, peak element的题目。<br>first position中若等于target，end = mid，因为要在左半部分找，相反last<br>position在右半部分找，所以start = mid。</p>
-<h3 id="应用："><a href="#应用：" class="headerlink" title="应用："></a><strong>应用：</strong></h3><ol>
-<li>有序数组找目标</li>
-<li>没给定目标情况下，找峰值， 缺失数(元素间关系)</li>
-<li>没给定目标情况下，求第k小的数，如求根号（数值关系）</li>
-</ol>
-<h2 id="找目标"><a href="#找目标" class="headerlink" title="找目标"></a>找目标</h2><h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>判断数组是否为空。    </li>
-<li>如果只有唯一的target的话，target==nums[mid]可以并入任何一种。end和target的顺序也没关系。其他注意循环后要根据题目条件(如小于或者大于或者等于tgt)，<br>再比较一次start和end上的元素，详见下表  </li>
-<li>start + (end - start) // 2 是// 2</li>
-</ol>
-<table>
-<thead>
-<tr>
-<th>类型</th>
-<th style="text-align:left">if target = nums[mid]</th>
-<th style="text-align:left">循环之后</th>
-<th style="text-align:left">备注</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>binary_search</td>
-<td style="text-align:left">任意</td>
-<td style="text-align:left">任意</td>
-<td style="text-align:left">N/A</td>
-</tr>
-<tr>
-<td>last_position</td>
-<td style="text-align:left">向右start = mid</td>
-<td style="text-align:left">先end且是否等于tgt</td>
-<td style="text-align:left">贪婪法，找最后一个target，所以尽量靠后，先end</td>
-</tr>
-<tr>
-<td>first_position</td>
-<td style="text-align:left">向左end = mid</td>
-<td style="text-align:left">先start是否等于tgt</td>
-<td style="text-align:left">贪婪法，找第一个target，所以尽量靠前，先start</td>
-</tr>
-<tr>
-<td>smaller(_or_equal)_position</td>
-<td style="text-align:left">向左end = mid</td>
-<td style="text-align:left">先end是否小于tgt</td>
-<td style="text-align:left">贪婪法，找最后一个小于target的数，所以尽量靠近target，先end</td>
-</tr>
-<tr>
-<td>greater(_or_equal)_position</td>
-<td style="text-align:left">向右start = mid</td>
-<td style="text-align:left">先start是否大于tgt</td>
-<td style="text-align:left">贪婪法，找第一个大于target的数，所以尽量靠近target，先start</td>
-</tr>
-</tbody>
-</table>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">binary_search</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>], target: <span class="built_in">int</span></span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> nums:</span><br><span class="line">		<span class="keyword">return</span> -<span class="number">1</span></span><br><span class="line">	start, end = <span class="number">0</span>, <span class="built_in">len</span>(nums) - <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> start + <span class="number">1</span> &lt; end:</span><br><span class="line">		mid = start + (end - start) // <span class="number">2</span></span><br><span class="line">		<span class="keyword">if</span> target &lt; nums[mid]:</span><br><span class="line">			end = mid</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			start = mid</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> nums[end] == target:</span><br><span class="line">		<span class="keyword">return</span> end</span><br><span class="line">	<span class="keyword">elif</span> nums[start] == target:</span><br><span class="line">		<span class="keyword">return</span> start</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		<span class="keyword">return</span> -<span class="number">1</span></span><br></pre></td></tr></table></figure>
-<h3 id="Python代码：-1"><a href="#Python代码：-1" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">last_position</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>], target: <span class="built_in">int</span></span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> nums:</span><br><span class="line">		<span class="keyword">return</span> -<span class="number">1</span></span><br><span class="line">	start, end = <span class="number">0</span>, <span class="built_in">len</span>(nums) - <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> start + <span class="number">1</span> &lt; end:</span><br><span class="line">		mid = start + (end - start) // <span class="number">2</span></span><br><span class="line">		<span class="keyword">if</span> target &lt; nums[mid]:</span><br><span class="line">			end = mid</span><br><span class="line">		<span class="keyword">elif</span> target &gt; nums[mid]:</span><br><span class="line">			start = mid</span><br><span class="line">		<span class="keyword">else</span>:  <span class="comment"># Depends on the target on the right side or left side. For fist pos, use end = mid</span></span><br><span class="line">			start = mid</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> nums[end] == target:</span><br><span class="line">		<span class="keyword">return</span> end</span><br><span class="line">	<span class="keyword">elif</span> nums[start] == target:</span><br><span class="line">		<span class="keyword">return</span> start</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		<span class="keyword">return</span> -<span class="number">1</span></span><br></pre></td></tr></table></figure>
-<h3 id="Python代码：-2"><a href="#Python代码：-2" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">first_position</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>], target: <span class="built_in">int</span></span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> nums:</span><br><span class="line">		<span class="keyword">return</span> -<span class="number">1</span></span><br><span class="line">	start, end = <span class="number">0</span>, <span class="built_in">len</span>(nums) - <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> start + <span class="number">1</span> &lt; end:</span><br><span class="line">		mid = start + (end - start) // <span class="number">2</span></span><br><span class="line">		<span class="keyword">if</span> target &lt; nums[mid]:</span><br><span class="line">			end = mid</span><br><span class="line">		<span class="keyword">elif</span> target &gt; nums[mid]:</span><br><span class="line">			start = mid</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			end = mid</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> nums[start] == target:</span><br><span class="line">		<span class="keyword">return</span> start</span><br><span class="line">	<span class="keyword">elif</span> nums[end] == target:</span><br><span class="line">		<span class="keyword">return</span> end</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		<span class="keyword">return</span> -<span class="number">1</span></span><br></pre></td></tr></table></figure>
-<h3 id="Python代码：-3"><a href="#Python代码：-3" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><p>如果是smaller_or_equal_position，Line 13和15取等号<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">smaller_position</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>], target: <span class="built_in">int</span></span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> nums:</span><br><span class="line">		<span class="keyword">return</span> -<span class="number">1</span></span><br><span class="line">	start, end = <span class="number">0</span>, <span class="built_in">len</span>(nums) - <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> start + <span class="number">1</span> &lt; end:</span><br><span class="line">		mid = start + (end - start) // <span class="number">2</span></span><br><span class="line">		<span class="keyword">if</span> target &gt; nums[mid]:</span><br><span class="line">			start = mid</span><br><span class="line">		<span class="keyword">elif</span> target &lt; nums[mid]:</span><br><span class="line">			end = mid</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			end = mid</span><br><span class="line">	<span class="keyword">if</span> nums[end] &lt; target:  <span class="comment"># nums[end] &lt;= target for smaller_or_equal_position</span></span><br><span class="line">		<span class="keyword">return</span> end</span><br><span class="line">	<span class="keyword">if</span> nums[start] &lt; target:  <span class="comment"># nums[start] &lt; target for smaller_or_equal_position</span></span><br><span class="line">		<span class="keyword">return</span> start</span><br><span class="line">	<span class="keyword">return</span> -<span class="number">1</span></span><br></pre></td></tr></table></figure></p>
-<h3 id="Python代码：-4"><a href="#Python代码：-4" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><p>如果是greater_or_equal_position，Line 13和15取等号<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">greater_position</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>], target: <span class="built_in">int</span></span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> nums:</span><br><span class="line">		<span class="keyword">return</span> -<span class="number">1</span></span><br><span class="line">	start, end = <span class="number">0</span>, <span class="built_in">len</span>(nums) - <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> start + <span class="number">1</span> &lt; end:</span><br><span class="line">		mid = start + (end - start) // <span class="number">2</span></span><br><span class="line">		<span class="keyword">if</span> target &gt; nums[mid]:</span><br><span class="line">			start = mid</span><br><span class="line">		<span class="keyword">elif</span> target &lt; nums[mid]:</span><br><span class="line">			end = mid</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			start = mid</span><br><span class="line">	<span class="keyword">if</span> nums[start] &gt; target:  <span class="comment"># nums[start] &gt;= target for greater_or_equal_position</span></span><br><span class="line">		<span class="keyword">return</span> start</span><br><span class="line">	<span class="keyword">if</span> nums[end] &gt; target:  <span class="comment"># nums[end] &gt;= target for greater_or_equal_position</span></span><br><span class="line">		<span class="keyword">return</span> end</span><br><span class="line">	<span class="keyword">return</span> -<span class="number">1</span></span><br></pre></td></tr></table></figure></p>
-<h2 id="找峰值"><a href="#找峰值" class="headerlink" title="找峰值"></a>找峰值</h2><h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>判断mid+1的元素不越界  </li>
-<li>最后返回start和end之中较大者    </li>
-</ol>
-<h3 id="Python代码：-5"><a href="#Python代码：-5" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">find_peak</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> nums:</span><br><span class="line">		<span class="keyword">return</span> -<span class="number">1</span></span><br><span class="line">	start, end = <span class="number">0</span>, <span class="built_in">len</span>(nums) - <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> start + <span class="number">1</span> &lt; end:</span><br><span class="line">		mid = start + (end - start) // <span class="number">2</span></span><br><span class="line">		<span class="keyword">if</span> mid + <span class="number">1</span> &lt;= end <span class="keyword">and</span> nums[mid] &lt; nums[mid + <span class="number">1</span>]:</span><br><span class="line">			start = mid</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			end = mid</span><br><span class="line">	<span class="keyword">return</span> start <span class="keyword">if</span> nums[start] &gt; nums[end] <span class="keyword">else</span> end</span><br></pre></td></tr></table></figure>
-<h2 id="找第k小的数"><a href="#找第k小的数" class="headerlink" title="找第k小的数"></a>找第k小的数</h2><h3 id="注意事项：-2"><a href="#注意事项：-2" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>数值比较，所以mid是除2获得不是//2。start，end，mid都是数值而不是索引    </li>
-<li>k是从0开始，count==k的时候，k在mid的右边，如数组1-10, k=3, mid=3.5, count=3，k是前4个数，所以在mid右边。nums[i] &lt;= mid这个等号有没有也没关系，因为mid是小数，不会相等的。   </li>
-<li>最后start，end区间内是一个整数正是所求，所以返回end向下取整</li>
-</ol>
-<h3 id="Python代码：-6"><a href="#Python代码：-6" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> math</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">binary_select</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>], k: <span class="built_in">int</span></span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> nums:</span><br><span class="line">		<span class="keyword">return</span> -<span class="number">1</span></span><br><span class="line">	start, end, epsilon = <span class="built_in">min</span>(nums), <span class="built_in">max</span>(nums), <span class="number">0.5</span></span><br><span class="line">	<span class="keyword">while</span> end - start &gt; epsilon:</span><br><span class="line">		mid = start + (end - start) / <span class="number">2</span></span><br><span class="line">		count = <span class="built_in">len</span>([n <span class="keyword">for</span> n <span class="keyword">in</span> nums <span class="keyword">if</span> n &lt;= mid])</span><br><span class="line">		<span class="keyword">if</span> k &lt; count:</span><br><span class="line">			end = mid</span><br><span class="line">		<span class="keyword">elif</span> k &gt; count:</span><br><span class="line">			start = mid</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			start =  mid</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">int</span>(end)</span><br></pre></td></tr></table></figure>
-<p>若nums有序，<strong>count的统计可以用bisect(nums, mid)完成</strong>，记得不需要用+1，而且空数组也无问题<br>上面line 8可以改成<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">count = bisect.bisect(matrix[i], mid)</span><br></pre></td></tr></table></figure></p>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nlog(|hi-lo|/delta))</code>，如果数据比较平均也就是差值相当的情况下(比如1,2,3)，复杂度为O(nlogn). 空间复杂度<code>O(1)</code>。<br>若不需要搜索全数组，前面的n会变成logn  </p>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">int</span> <span class="title function_">lastPosition</span><span class="params">(<span class="type">int</span>[] nums, <span class="type">int</span> target)</span> &#123;</span><br><span class="line">	<span class="keyword">if</span>(nums == <span class="literal">null</span> || nums.length == <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="type">int</span> <span class="variable">start</span> <span class="operator">=</span> <span class="number">0</span>, end = nums.length - <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">while</span>(start + <span class="number">1</span> &lt; end) &#123;</span><br><span class="line">		<span class="type">int</span> <span class="variable">mid</span> <span class="operator">=</span> start + (end - start) / <span class="number">2</span>;</span><br><span class="line">		<span class="keyword">if</span>(nums[mid] &lt; target)</span><br><span class="line">			start = mid;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(nums[mid] == target) </span><br><span class="line">		<span class="comment">// Depends on the target on the right side or left side. For fist pos, use end = mid</span></span><br><span class="line">			start = mid; </span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			end = mid;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(nums[end] == target)</span><br><span class="line">		<span class="keyword">return</span> end;</span><br><span class="line">	<span class="keyword">if</span>(nums[start] == target)</span><br><span class="line">		<span class="keyword">return</span> start;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(logn)</code>，空间复杂度<code>O(1)</code>。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/73/">73</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/74/">74</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 
@@ -818,14 +852,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">365</span>
+          <span class="site-state-item-count">368</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">59</span>
+        <span class="site-state-item-count">60</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

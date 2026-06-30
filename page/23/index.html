@@ -201,6 +201,290 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/02/06/lee-212/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KK Shum">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KK's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/02/06/lee-212/" class="post-title-link" itemprop="url">LeetCode 212 Word Search II</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-02-06 00:00:00" itemprop="dateCreated datePublished" datetime="2022-02-06T00:00:00-08:00">2022-02-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2026-06-03 02:03:57" itemprop="dateModified" datetime="2026-06-03T02:03:57-07:00">2026-06-03</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2022/02/06/lee-212/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/02/06/lee-212/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong><a href="https://leetcode.com/problems/gas-station/">LeetCode</a></strong></p>
+<div><br><br>Given an <code>m x n</code> <code>board</code> of characters and a list of strings <code>words</code>, return <em>all words on the board</em>.<br><br>Each word must be constructed from letters of sequentially adjacent cells, where <strong>adjacent cells</strong> are horizontally or vertically neighboring. The same letter cell may not be used more than once in a word.<br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2020/11/07/search1.jpg" alt=""><br><br><pre><strong>Input:</strong> board = [[“o”,”a”,”a”,”n”],[“e”,”t”,”a”,”e”],[“i”,”h”,”k”,”r”],[“i”,”f”,”l”,”v”]], words = [“oath”,”pea”,”eat”,”rain”]<br><strong>Output:</strong> [“eat”,”oath”]<br></pre><br><br><strong>Example 2:</strong><br><br><img src="https://assets.leetcode.com/uploads/2020/11/07/search2.jpg" alt=""><br><br><pre><strong>Input:</strong> board = [[“a”,”b”],[“c”,”d”]], words = [“abcb”]<br><strong>Output:</strong> []<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>m == board.length</code>
+</em>   <code>n == board[i].length</code><br><em>   <code>1 &lt;= m, n &lt;= 12</code>
+</em>   <code>board[i][j]</code> is a lowercase English letter.<br><em>   `1 &lt;= words.length &lt;= 3 </em> 10<sup>4</sup><code>*</code>1 &lt;= words[i].length &lt;= 10<code>*</code>words[i]<code>consists of lowercase English letters.
+*   All the strings of</code>words` are unique.<br><br></div>
+
+<h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>N/A  </p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>用Trie来保存单词列表，这样每次DFS的每一步都可以O(1)时间知道是否和单词吻合，而不是O(n)</li>
+<li>难点1: Trie的接口有startswith, search, insert，仅insert可以用，其他两个不支持与DFS同步搜索。所以要写一个新函数：其实修改startsWith将for循环去掉当然DFS的API也要改，去掉word, word_index加入trie, trie_node, path, res  </li>
+<li>TLE错误，因为比如矩阵为[abc]，单词列表为abc, abc, abc，这样abc加入到结果后就不应该再搜abc，因为结果不能重且效率大打折扣。如果找到了单词，就应该将它从Trie中去掉，避免无谓的搜索，条件是该节点children长度为0，就父节点就将key删除。如果还有儿子节点只能标记is_end为False。Line 29 - 31和35 - 36</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line">OFFSETS = [(<span class="number">0</span>, <span class="number">1</span>), (<span class="number">1</span>, <span class="number">0</span>), (-<span class="number">1</span>, <span class="number">0</span>), (<span class="number">0</span>, -<span class="number">1</span>)]</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>(<span class="title class_ inherited__">TestCases</span>):</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">findWords</span>(<span class="params">self, board: <span class="type">List</span>[<span class="type">List</span>[<span class="built_in">str</span>]], words: <span class="type">List</span>[<span class="built_in">str</span>]</span>) -&gt; <span class="type">List</span>[<span class="built_in">str</span>]:</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> board <span class="keyword">or</span> <span class="keyword">not</span> board[<span class="number">0</span>] <span class="keyword">or</span> <span class="keyword">not</span> words:</span><br><span class="line">            <span class="keyword">return</span> []</span><br><span class="line">        trie, res = Trie(), []</span><br><span class="line">        <span class="keyword">for</span> word <span class="keyword">in</span> words:</span><br><span class="line">            trie.insert(word)</span><br><span class="line"></span><br><span class="line">        visited = [[<span class="literal">False</span> <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(board[<span class="number">0</span>]))] <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(board))]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(board)):</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(board[<span class="number">0</span>])):</span><br><span class="line">                <span class="variable language_">self</span>.dfs(board, i, j, visited, trie, trie.get_head(), <span class="string">&#x27;&#x27;</span>, res)</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">list</span>(res)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">dfs</span>(<span class="params">self, board, start_x, start_y, visited, trie, trie_node, path, res</span>):</span><br><span class="line">        <span class="keyword">if</span> start_x &lt; <span class="number">0</span> <span class="keyword">or</span> start_x &gt;= <span class="built_in">len</span>(board) <span class="keyword">or</span> start_y &lt; <span class="number">0</span> <span class="keyword">or</span> start_y &gt;= <span class="built_in">len</span>(board[<span class="number">0</span>]):</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        <span class="keyword">if</span> visited[start_x][start_y]:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        trie_child = trie.search_one_node(board[start_x][start_y], trie_node)</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> trie_child:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        visited[start_x][start_y] = <span class="literal">True</span></span><br><span class="line">        path += board[start_x][start_y]</span><br><span class="line">        <span class="keyword">if</span> trie_child.is_end:</span><br><span class="line">            res.append(path)</span><br><span class="line">            trie_child.is_end = <span class="literal">False</span></span><br><span class="line">            <span class="keyword">if</span> <span class="built_in">len</span>(trie_child.children) == <span class="number">0</span> <span class="keyword">and</span> board[start_x][start_y] <span class="keyword">in</span> trie_node.children:</span><br><span class="line">                trie_node.children.pop(board[start_x][start_y])</span><br><span class="line">        <span class="keyword">for</span> dx, dy <span class="keyword">in</span> OFFSETS:</span><br><span class="line">            <span class="variable language_">self</span>.dfs(board, start_x + dx, start_y + dy, visited, trie, trie_child, path, res)</span><br><span class="line">        path = path[:-<span class="number">1</span>]</span><br><span class="line">        visited[start_x][start_y] = <span class="literal">False</span></span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">len</span>(trie_child.children) == <span class="number">0</span> <span class="keyword">and</span> board[start_x][start_y] <span class="keyword">in</span> trie_node.children:</span><br><span class="line">            trie_node.children.pop(board[start_x][start_y])</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Trie</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="variable language_">self</span>.head = TrieNode()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">insert</span>(<span class="params">self, word: <span class="built_in">str</span></span>) -&gt; <span class="literal">None</span>:</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> word:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        it = <span class="variable language_">self</span>.head</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(word)):</span><br><span class="line">            it = it.children[word[i]]</span><br><span class="line">        it.is_end = <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">search_one_node</span>(<span class="params">self, c: <span class="built_in">str</span>, trie_node</span>):</span><br><span class="line">        <span class="keyword">if</span> c <span class="keyword">not</span> <span class="keyword">in</span> trie_node.children:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> trie_node.children[c]</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">TrieNode</span>:</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="variable language_">self</span>.children = collections.defaultdict(TrieNode)  <span class="comment"># &#123;&#125;</span></span><br><span class="line">        <span class="variable language_">self</span>.is_end = <span class="literal">False</span></span><br></pre></td></tr></table></figure>
+<p>上述代码比较复杂，可以先写这个LTE版本, 它在最后结果去重，但是对于重复单词会LTE，如[‘a’, … ‘a’]. 所以演变成最优版本，需要删除Trie的节点</p>
+<h3 id="Python代码：-1"><a href="#Python代码：-1" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">findWords</span>(<span class="params">self, board: <span class="type">List</span>[<span class="type">List</span>[<span class="built_in">str</span>]], words: <span class="type">List</span>[<span class="built_in">str</span>]</span>) -&gt; <span class="type">List</span>[<span class="built_in">str</span>]:</span><br><span class="line">	...</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">list</span>(<span class="built_in">set</span>(res))</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">dfs</span>(<span class="params">self, board, start_x, start_y, visited, trie, trie_node, path, res</span>):</span><br><span class="line">	<span class="keyword">if</span> start_x &lt; <span class="number">0</span> <span class="keyword">or</span> start_x &gt;= <span class="built_in">len</span>(board) <span class="keyword">or</span> start_y &lt; <span class="number">0</span> <span class="keyword">or</span> start_y &gt;= <span class="built_in">len</span>(board[<span class="number">0</span>]):</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	<span class="keyword">if</span> visited[start_x][start_y]:</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	trie_child = trie.search_one_node(board[start_x][start_y], trie_node)</span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> trie_child:</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	visited[start_x][start_y] = <span class="literal">True</span></span><br><span class="line">	path += board[start_x][start_y]</span><br><span class="line">	<span class="keyword">if</span> trie_child.is_end:</span><br><span class="line">		res.append(path)</span><br><span class="line">	<span class="keyword">for</span> dx, dy <span class="keyword">in</span> OFFSETS:</span><br><span class="line">		<span class="variable language_">self</span>.dfs(board, start_x + dx, start_y + dy, visited, trie, trie_child, path, res)</span><br><span class="line">	path = path[:-<span class="number">1</span>]</span><br><span class="line">	visited[start_x][start_y] = <span class="literal">False</span></span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(<em>n</em><sup>2</sup>*4*3<sup>L-1</sup>)</code>，空间复杂度<code>O(<em>n</em><sup>2</sup>)</code>, n是矩阵长度，L是最大单词长度.<br>3是因为访问过的节点不合法，也就是来的节点不能再走一次，所以只能3个方向,第一个可以4个方向，其他步是3个方向    </p>
+<p>有一个方法是不用Trie而是将单词所有prefix放入到set中，但会TLE，因为时间复杂度为<code>O(<em>n</em><sup>2</sup><em>3</em><sup>n*n</sup>)</code>，它不会剪枝，从顶点出发，最差情况是z型走完board，此时路径长度为n*n.  </p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/02/06/lee-811/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KK Shum">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KK's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/02/06/lee-811/" class="post-title-link" itemprop="url">LeetCode 811 Subdomain Visit Count</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-02-06 00:00:00" itemprop="dateCreated datePublished" datetime="2022-02-06T00:00:00-08:00">2022-02-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2026-06-03 02:03:57" itemprop="dateModified" datetime="2026-06-03T02:03:57-07:00">2026-06-03</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2022/02/06/lee-811/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/02/06/lee-811/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong><a href="https://leetcode.com/problems/subdomain-visit-count/">LeetCode</a></strong></p>
+<div><br><br>A website domain <code>&quot;discuss.leetcode.com&quot;</code> consists of various subdomains. At the top level, we have <code>&quot;com&quot;</code>, at the next level, we have <code>&quot;leetcode.com&quot;</code> and at the lowest level, <code>&quot;discuss.leetcode.com&quot;</code>. When we visit a domain like <code>&quot;discuss.leetcode.com&quot;</code>, we will also visit the parent domains <code>&quot;leetcode.com&quot;</code> and <code>&quot;com&quot;</code> implicitly.<br><br>A <strong>count-paired domain</strong> is a domain that has one of the two formats <code>&quot;rep d1.d2.d3&quot;</code> or <code>&quot;rep d1.d2&quot;</code> where <code>rep</code> is the number of visits to the domain and <code>d1.d2.d3</code> is the domain itself.<br><br><em>   For example, <code>&quot;9001 discuss.leetcode.com&quot;</code> is a <strong>count-paired domain</strong> that indicates that <code>discuss.leetcode.com</code> was visited <code>9001</code> times.<br><br>Given an array of <strong>count-paired domains</strong> <code>cpdomains</code>, return <em>an array of the <strong>count-paired domains</strong> of each subdomain in the input</em>. You may return the answer in <strong>any order</strong>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> cpdomains = [“9001 discuss.leetcode.com”]<br><strong>Output:</strong> [“9001 leetcode.com”,”9001 discuss.leetcode.com”,”9001 com”]<br><strong>Explanation:</strong> We only have one website domain: “discuss.leetcode.com”.<br>As discussed above, the subdomain “leetcode.com” and “com” will also be visited. So they will all be visited 9001 times.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> cpdomains = [“900 google.mail.com”, “50 yahoo.com”, “1 intel.mail.com”, “5 wiki.org”]<br><strong>Output:</strong> [“901 mail.com”,”50 yahoo.com”,”900 google.mail.com”,”5 wiki.org”,”5 org”,”1 intel.mail.com”,”951 com”]<br><strong>Explanation:</strong> We will visit “google.mail.com” 900 times, “yahoo.com” 50 times, “intel.mail.com” once and “wiki.org” 5 times.<br>For the subdomains, we will visit “mail.com” 900 + 1 = 901 times, “com” 900 + 50 + 1 = 951 times, and “org” 5 times.<br></pre><br><br><strong>Constraints:</strong>
+
+</em>   <code>1 &lt;= cpdomain.length &lt;= 100</code><br><em>   <code>1 &lt;= cpdomain[i].length &lt;= 100</code>
+</em>   <code>cpdomain[i]</code> follows either the <code>&quot;rep&lt;sub&gt;i&lt;/sub&gt; d1&lt;sub&gt;i&lt;/sub&gt;.d2&lt;sub&gt;i&lt;/sub&gt;.d3&lt;sub&gt;i&lt;/sub&gt;&quot;</code> format or the <code>&quot;rep&lt;sub&gt;i&lt;/sub&gt; d1&lt;sub&gt;i&lt;/sub&gt;.d2&lt;sub&gt;i&lt;/sub&gt;&quot;</code> format.<br><em>   <code>rep&lt;sub&gt;i&lt;/sub&gt;</code> is an integer in the range <code>[1, 10&lt;sup&gt;4&lt;/sup&gt;]</code>.
+</em>   <code>d1&lt;sub&gt;i&lt;/sub&gt;</code>, <code>d2&lt;sub&gt;i&lt;/sub&gt;</code>, and <code>d3&lt;sub&gt;i&lt;/sub&gt;</code> consist of lowercase English letters.<br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>统计所以domain和子域名个数  </p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>遍历每个domain，将domain和个数存入dict，再对domain按点号break，将每个sub-domain存入dict</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>Line 64根据题意倒转统计，Line 65记得非空时候加点号   </li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">subdomainVisits</span>(<span class="params">self, cpdomains: <span class="type">List</span>[<span class="built_in">str</span>]</span>) -&gt; <span class="type">List</span>[<span class="built_in">str</span>]:</span><br><span class="line">	domain_to_count = collections.defaultdict(<span class="built_in">int</span>)</span><br><span class="line">	<span class="keyword">for</span> pair_str <span class="keyword">in</span> cpdomains:</span><br><span class="line">		pair = pair_str.split(<span class="string">&#x27; &#x27;</span>)</span><br><span class="line">		count = <span class="built_in">int</span>(pair[<span class="number">0</span>])</span><br><span class="line">		domain = pair[<span class="number">1</span>]</span><br><span class="line">		subdomain = <span class="string">&#x27;&#x27;</span></span><br><span class="line">		<span class="keyword">for</span> segment <span class="keyword">in</span> domain.split(<span class="string">&#x27;.&#x27;</span>)[::-<span class="number">1</span>]:</span><br><span class="line">			subdomain = segment + (<span class="string">&#x27;.&#x27;</span> + subdomain <span class="keyword">if</span> subdomain <span class="keyword">else</span> <span class="string">&#x27;&#x27;</span>)</span><br><span class="line">			domain_to_count[subdomain] += count</span><br><span class="line">	<span class="keyword">return</span> [<span class="string">&#x27;&#123;&#125; &#123;&#125;&#x27;</span>.<span class="built_in">format</span>(_count, _domain) <span class="keyword">for</span> _domain, _count <span class="keyword">in</span> domain_to_count.items()]</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>  </p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/02/06/leetcode-785-is-graph-bipartite/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KK Shum">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KK's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/02/06/leetcode-785-is-graph-bipartite/" class="post-title-link" itemprop="url">LeetCode 785 Is Graph Bipartite?</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-02-06 00:00:00" itemprop="dateCreated datePublished" datetime="2022-02-06T00:00:00-08:00">2022-02-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2026-06-03 02:03:57" itemprop="dateModified" datetime="2026-06-03T02:03:57-07:00">2026-06-03</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2022/02/06/leetcode-785-is-graph-bipartite/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/02/06/leetcode-785-is-graph-bipartite/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong><a href="https://leetcode.com/problems/is-graph-bipartite/">LeetCode</a></strong></p>
+<div><br><br>There is an <strong>undirected</strong> graph with <code>n</code> nodes, where each node is numbered between <code>0</code> and <code>n - 1</code>. You are given a 2D array <code>graph</code>, where <code>graph[u]</code> is an array of nodes that node <code>u</code> is adjacent to. More formally, for each <code>v</code> in <code>graph[u]</code>, there is an undirected edge between node <code>u</code> and node <code>v</code>. The graph has the following properties:<br><br><em>   There are no self-edges (<code>graph[u]</code> does not contain <code>u</code>).
+</em>   There are no parallel edges (<code>graph[u]</code> does not contain duplicate values).<br><em>   If <code>v</code> is in <code>graph[u]</code>, then <code>u</code> is in <code>graph[v]</code> (the graph is undirected).
+</em>   The graph may not be connected, meaning there may be two nodes <code>u</code> and <code>v</code> such that there is no path between them.<br><br>A graph is <strong>bipartite</strong> if the nodes can be partitioned into two independent sets <code>A</code> and <code>B</code> such that <strong>every</strong> edge in the graph connects a node in set <code>A</code> and a node in set <code>B</code>.<br><br>Return <code>true</code> <em>if and only if it is <strong>bipartite</strong></em>.<br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2020/10/21/bi2.jpg" alt=""><br><br><pre><strong>Input:</strong> graph = [[1,2,3],[0,2],[0,1,3],[0,2]]<br><strong>Output:</strong> false<br><strong>Explanation:</strong> There is no way to partition the nodes into two independent sets such that every edge connects a node in one and a node in the other.</pre><br><br><strong>Example 2:</strong><br><br><img src="https://assets.leetcode.com/uploads/2020/10/21/bi1.jpg" alt=""><br><br><pre><strong>Input:</strong> graph = [[1,3],[0,2],[1,3],[0,2]]<br><strong>Output:</strong> true<br><strong>Explanation:</strong> We can partition the nodes into two sets: {0, 2} and {1, 3}.</pre><br><br><strong>Constraints:</strong><br><br><em>   <code>graph.length == n</code>
+</em>   <code>1 &lt;= n &lt;= 100</code><br><em>   <code>0 &lt;= graph[u].length &lt; n</code>
+</em>   <code>0 &lt;= graph[u][i] &lt;= n - 1</code><br><em>   <code>graph[u]</code> does not contain <code>u</code>.
+</em>   All the values of <code>graph[u]</code> are <strong>unique</strong>.<br>*   If <code>graph[u]</code> contains <code>v</code>, then <code>graph[v]</code> contains <code>u</code>.<br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>无向图中是否存在一个划分，将节点分为两集合，任何一条边都连接着两个集合，也就是不存在一条边在单一集合内。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>图上色法。两种颜色，将节点上色0，儿子上色1，若某个节点已经上的色和将要上的色矛盾（来自的路径不同），即不合法</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>图上色法。两种颜色，将节点上色0，儿子上色1，若某个节点已经上的色和将要上的色矛盾（来自的路径不同），即不合法</li>
+<li>题意表示，图可能是有几个连通图，所以要从每个节点做BFS，除非节点已访问过， Line 4. node_to_color作为visited的功能</li>
+<li>return True在两个函数中要写，否则返回None</li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">isBipartite</span>(<span class="params">self, graph: <span class="type">List</span>[<span class="type">List</span>[<span class="built_in">int</span>]]</span>) -&gt; <span class="built_in">bool</span>:</span><br><span class="line">	node_to_color = collections.defaultdict(<span class="built_in">int</span>)</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(graph)):</span><br><span class="line">		<span class="keyword">if</span> i <span class="keyword">in</span> node_to_color: <span class="comment"># disconnected nodes</span></span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		node_to_color[i] = <span class="number">0</span></span><br><span class="line">		<span class="keyword">if</span> <span class="keyword">not</span> <span class="variable language_">self</span>.bfs(graph, i, node_to_color):</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">	<span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">bfs</span>(<span class="params">self, graph, n, node_to_color</span>):</span><br><span class="line">	queue = collections.deque([n])</span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		node = queue.popleft()</span><br><span class="line">		<span class="keyword">for</span> neighbor <span class="keyword">in</span> graph[node]:</span><br><span class="line">			<span class="keyword">if</span> neighbor <span class="keyword">in</span> node_to_color <span class="keyword">and</span> node_to_color[neighbor] != <span class="number">1</span> - node_to_color[node]:</span><br><span class="line">				<span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">			<span class="keyword">if</span> neighbor <span class="keyword">in</span> node_to_color:</span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			queue.append(neighbor)</span><br><span class="line">			node_to_color[neighbor] = <span class="number">1</span> - node_to_color[node]</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(V + E)</code>，空间复杂度<code>O(V + E)</code>  </p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/02/03/lee-309/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -446,288 +730,10 @@ transactions = [buy, sell, cooldown, buy, sell]
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/02/03/leetcode-337-house-robber-iii/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="KK Shum">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="KK's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/02/03/leetcode-337-house-robber-iii/" class="post-title-link" itemprop="url">LeetCode 337 House Robber III</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2022-02-03 00:00:00" itemprop="dateCreated datePublished" datetime="2022-02-03T00:00:00-08:00">2022-02-03</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2026-06-03 02:03:57" itemprop="dateModified" datetime="2026-06-03T02:03:57-07:00">2026-06-03</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2022/02/03/leetcode-337-house-robber-iii/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/02/03/leetcode-337-house-robber-iii/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong><a href="https://leetcode.com/problems/house-robber-iii/">LeetCode</a></strong></p>
-<div><br><br>The thief has found himself a new place for his thievery again. There is only one entrance to this area, called <code>root</code>.<br><br>Besides the <code>root</code>, each house has one and only one parent house. After a tour, the smart thief realized that all houses in this place form a binary tree. It will automatically contact the police if <strong>two directly-linked houses were broken into on the same night</strong>.<br><br>Given the <code>root</code> of the binary tree, return <em>the maximum amount of money the thief can rob <strong>without alerting the police</strong></em>.<br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/03/10/rob1-tree.jpg" alt=""><br><br><pre><strong>Input:</strong> root = [3,2,3,null,3,null,1]<br><strong>Output:</strong> 7<br><strong>Explanation:</strong> Maximum amount of money the thief can rob = 3 + 3 + 1 = 7.<br></pre><br><br><strong>Example 2:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/03/10/rob2-tree.jpg" alt=""><br><br><pre><strong>Input:</strong> root = [3,4,5,1,3,null,1]<br><strong>Output:</strong> 9<br><strong>Explanation:</strong> Maximum amount of money the thief can rob = 4 + 5 = 9.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   The number of nodes in the tree is in the range <code>[1, 10&lt;sup&gt;4&lt;/sup&gt;]</code>.
-</em>   <code>0 &lt;= Node.val &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code><br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>二叉树，相隔一层投，求最大值</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>多状态DP。返回值为，第一个是以root为结尾的最大值，第二个为儿子层总和的最大值。</p>
-<p>与LeetCode 309 Best Time to Buy and Sell Stock with Cooldown相似</p>
-<h3 id="DFS解题步骤："><a href="#DFS解题步骤：" class="headerlink" title="DFS解题步骤："></a><strong>DFS解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>以儿子层的前n最大值 = max(left) + max(right)</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">rob2</span>(<span class="params">self, root: TreeNode</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	res = <span class="variable language_">self</span>.dfs2(root)</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">max</span>(res)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">dfs2</span>(<span class="params">self, root</span>):</span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> root:</span><br><span class="line">		<span class="keyword">return</span> (<span class="number">0</span>, <span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">	left = <span class="variable language_">self</span>.dfs2(root.left)</span><br><span class="line">	right = <span class="variable language_">self</span>.dfs2(root.right)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> root.val + left[<span class="number">1</span>] + right[<span class="number">1</span>], <span class="built_in">max</span>(left) + <span class="built_in">max</span>(right)</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
-<hr>
-<h3 id="记忆法搜索算法II解题思路："><a href="#记忆法搜索算法II解题思路：" class="headerlink" title="记忆法搜索算法II解题思路："></a><strong>记忆法搜索算法II解题思路：</strong></h3><p>递归式：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">f(n) = root.val + g(root.left) + g(root.right)  </span><br><span class="line">g(n) = max(f(root.left), g(root.left)) + max(f(root.right), g(root.right))</span><br></pre></td></tr></table></figure></p>
-<h3 id="Python代码：-1"><a href="#Python代码：-1" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">rob</span>(<span class="params">self, root: TreeNode</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	f, g = &#123;&#125;, &#123;&#125;</span><br><span class="line">	res = <span class="variable language_">self</span>.dfs(root, f, g)</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">max</span>(res)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">dfs</span>(<span class="params">self, root, f, g</span>):</span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> root:</span><br><span class="line">		<span class="keyword">return</span> (<span class="number">0</span>, <span class="number">0</span>)</span><br><span class="line">	<span class="keyword">if</span> root.left <span class="keyword">not</span> <span class="keyword">in</span> f <span class="keyword">or</span> root.left <span class="keyword">not</span> <span class="keyword">in</span> g:</span><br><span class="line">		f[root.left], g[root.left] = <span class="variable language_">self</span>.dfs(root.left, f, g)</span><br><span class="line">	<span class="keyword">if</span> root.right <span class="keyword">not</span> <span class="keyword">in</span> f <span class="keyword">or</span> root.right <span class="keyword">not</span> <span class="keyword">in</span> g:</span><br><span class="line">		f[root.right], g[root.right] = <span class="variable language_">self</span>.dfs(root.right, f, g)</span><br><span class="line">	f[root] = root.val + g[root.left] + g[root.right]</span><br><span class="line">	g[root] = <span class="built_in">max</span>(f[root.left], g[root.left]) + <span class="built_in">max</span>(f[root.right], g[root.right])</span><br><span class="line">	<span class="keyword">return</span> f[root], g[root]</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(1)</code>  </p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/02/03/leetcode-364-nested-list-weight-sum-ii/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="KK Shum">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="KK's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/02/03/leetcode-364-nested-list-weight-sum-ii/" class="post-title-link" itemprop="url">LeetCode 364 Nested List Weight Sum II</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2022-02-03 00:00:00" itemprop="dateCreated datePublished" datetime="2022-02-03T00:00:00-08:00">2022-02-03</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2026-06-03 02:03:57" itemprop="dateModified" datetime="2026-06-03T02:03:57-07:00">2026-06-03</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2022/02/03/leetcode-364-nested-list-weight-sum-ii/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/02/03/leetcode-364-nested-list-weight-sum-ii/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong><a href="https://leetcode.com/problems/nested-list-weight-sum-ii/">LeetCode</a></strong></p>
-<div><br><br>You are given a nested list of integers <code>nestedList</code>. Each element is either an integer or a list whose elements may also be integers or other lists.<br><br>The <strong>depth</strong> of an integer is the number of lists that it is inside of. For example, the nested list <code>[1,[2,2],[[3],2],1]</code> has each integer’s value set to its <strong>depth</strong>. Let <code>maxDepth</code> be the <strong>maximum depth</strong> of any integer.<br><br>The <strong>weight</strong> of an integer is <code>maxDepth - (the depth of the integer) + 1</code>.<br><br>Return <em>the sum of each integer in</em> <code>nestedList</code> <em>multiplied by its <strong>weight</strong></em>.<br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/03/27/nestedlistweightsumiiex1.png" alt=""><br><br><pre><strong>Input:</strong> nestedList = [[1,1],2,[1,1]]<br><strong>Output:</strong> 8<br><strong>Explanation:</strong> Four 1’s with a weight of 1, one 2 with a weight of 2.<br>1<em>1 + 1</em>1 + 2<em>2 + 1</em>1 + 1<em>1 = 8<br></pre><br><br><strong>Example 2:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/03/27/nestedlistweightsumiiex2.png" alt=""><br><br><pre><strong>Input:</strong> nestedList = [1,[4,[6]]]<br><strong>Output:</strong> 17<br><strong>Explanation:</strong> One 1 at depth 3, one 4 at depth 2, and one 6 at depth 1.<br>1</em>3 + 4<em>2 + 6</em>1 = 17<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= nestedList.length &lt;= 50</code>
-</em>   The values of the integers in the nested list is in the range <code>[-100, 100]</code>.<br><em>   The maximum <em>*depth</em></em> of any integer is less than or equal to <code>50</code>.<br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求NestedInteger的和。越浅，权重越高</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>BFS按层遍历。此题类似于LeetCode 339 Nested List Weight Sum。归纳成更一般的方法：因为权重只与第几层有关。所以先求每一层的和，存到sums里面，再按照题目要求每个和乘以相应的权重求和。</p>
-<p>Nested List题目：<br>LeetCode 341 Flatten Nested List Iterator Iterator - Stack<br>LeetCode 339 Nested List Weight Sum - BFS<br>LeetCode 364 Nested List Weight Sum II - BFS</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>queue.extend(node.getList())将节点的儿子节点即node.getList()放入queue</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">depthSumInverse</span>(<span class="params">self, nestedList</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	queue = collections.deque(nestedList)</span><br><span class="line">	sums, max_depth, res = [], <span class="number">0</span>, <span class="number">0</span></span><br><span class="line">	<span class="keyword">while</span> queue:</span><br><span class="line">		layer_sum = <span class="number">0</span></span><br><span class="line">		<span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(queue)):</span><br><span class="line">			node = queue.popleft()</span><br><span class="line">			<span class="keyword">if</span> node.isInteger():</span><br><span class="line">				layer_sum += node.getInteger()</span><br><span class="line">			<span class="keyword">else</span>:</span><br><span class="line">				queue.extend(node.getList()) <span class="comment"># remember</span></span><br><span class="line">		sums.append(layer_sum)</span><br><span class="line">		max_depth += <span class="number">1</span></span><br><span class="line">	<span class="keyword">for</span> i, n <span class="keyword">in</span> <span class="built_in">enumerate</span>(sums):</span><br><span class="line">		res += n * (max_depth - i)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(k)</code>, k为每层最多节点数 + 最大层数  </p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/02/02/lee-084/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="KK Shum">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="KK's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/02/02/lee-084/" class="post-title-link" itemprop="url">LeetCode 084 Largest Rectangle in Histogram</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2022-02-02 00:00:00" itemprop="dateCreated datePublished" datetime="2022-02-02T00:00:00-08:00">2022-02-02</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2026-06-03 02:03:56" itemprop="dateModified" datetime="2026-06-03T02:03:56-07:00">2026-06-03</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2022/02/02/lee-084/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/02/02/lee-084/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong><a href="https://leetcode.com/problems/largest-rectangle-in-histogram/">LeetCode</a></strong></p>
-<div><br><br>Given an array of integers <code>heights</code> representing the histogram’s bar height where the width of each bar is <code>1</code>, return <em>the area of the largest rectangle in the histogram</em>.<br><br><strong>Example 1:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/01/04/histogram.jpg" alt=""><br><br><pre><strong>Input:</strong> heights = [2,1,5,6,2,3]<br><strong>Output:</strong> 10<br><strong>Explanation:</strong> The above is a histogram where width of each bar is 1.<br>The largest rectangle is shown in the red area, which has an area = 10 units.<br></pre><br><br><strong>Example 2:</strong><br><br><img src="https://assets.leetcode.com/uploads/2021/01/04/histogram-1.jpg" alt=""><br><br><pre><strong>Input:</strong> heights = [2,4]<br><strong>Output:</strong> 4<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= heights.length &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code>
-</em>   <code>0 &lt;= heights[i] &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code><br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求直方图中最大的矩形面积</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>类似于L042 Trapping Rain Water的stack法，但此题水量是反的。所以仍然用Stack，但用递增栈 </p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>比L042稍简单，不用处理最后一个bar高度和宽度计算，但是用递增栈且公式中宽度计算仍然<strong>采用i - stack[-1] - 1</strong>，因为bar并不一定连续，如212, 最后一个2入栈，栈中剩下[_, 1]第一个2已经出栈了，但是可以有水量的。</li>
-<li>原数组头尾加入0，头0是因为公式有stack[-1]避免越界， 尾0是因为让所有留在栈中的bar出栈且计算。</li>
-</ol>
-<p>大厦题，<strong>首尾加入节点</strong>：<br>LeetCode 084 Largest Rectangle in Histogram<br>LeetCode 218 The Skyline Problem</p>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">largestRectangleArea</span>(<span class="params">self, heights: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	stack, res = [], <span class="number">0</span></span><br><span class="line">	heights.insert(<span class="number">0</span>, <span class="number">0</span>) <span class="comment"># remember</span></span><br><span class="line">	heights.append(<span class="number">0</span>)</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(heights)):</span><br><span class="line">		<span class="keyword">while</span> stack <span class="keyword">and</span> heights[i] &lt; heights[stack[-<span class="number">1</span>]]:</span><br><span class="line">			index = stack.pop()</span><br><span class="line">			res = <span class="built_in">max</span>(res, (i - stack[-<span class="number">1</span>] - <span class="number">1</span>) * heights[index]) <span class="comment"># remember i - stack[-1] - 1 not i - index</span></span><br><span class="line">		stack.append(i)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>  </p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/22/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/22/">22</a><span class="page-number current">23</span><a class="page-number" href="/page/24/">24</a><span class="space">&hellip;</span><a class="page-number" href="/page/73/">73</a><a class="extend next" rel="next" href="/page/24/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+    <a class="extend prev" rel="prev" href="/page/22/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/22/">22</a><span class="page-number current">23</span><a class="page-number" href="/page/24/">24</a><span class="space">&hellip;</span><a class="page-number" href="/page/74/">74</a><a class="extend next" rel="next" href="/page/24/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 
@@ -798,14 +804,14 @@ transactions = [buy, sell, cooldown, buy, sell]
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">365</span>
+          <span class="site-state-item-count">368</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">59</span>
+        <span class="site-state-item-count">60</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
