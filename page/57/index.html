@@ -201,6 +201,187 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2021/12/26/lee-907/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KK Shum">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KK's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/12/26/lee-907/" class="post-title-link" itemprop="url">LeetCode 907 Sum of Subarray Minimums</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-12-26 00:00:00" itemprop="dateCreated datePublished" datetime="2021-12-26T00:00:00-08:00">2021-12-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2026-06-03 02:03:57" itemprop="dateModified" datetime="2026-06-03T02:03:57-07:00">2026-06-03</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2021/12/26/lee-907/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2021/12/26/lee-907/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong><a href="https://leetcode.com/problems/sum-of-subarray-minimums/">LeetCode</a></strong></p>
+<div><p>Given an array of integers arr, find the sum of <code>min(b)</code>, where <code>b</code> ranges over every (contiguous) subarray of <code>arr</code>. Since the answer may be large, return the answer <strong>modulo</strong> <code>10<sup>9</sup> + 7</code>.</p><br><br><p>&nbsp;</p><br><p><strong>Example 1:</strong></p><br><br><pre><strong>Input:</strong> arr = [3,1,2,4]<br><strong>Output:</strong> 17<br><strong>Explanation:</strong><br>Subarrays are [3], [1], [2], [4], [3,1], [1,2], [2,4], [3,1,2], [1,2,4], [3,1,2,4].<br>Minimums are 3, 1, 2, 4, 1, 1, 2, 1, 1, 1.<br>Sum is 17.<br></pre><br><br><p><strong>Example 2:</strong></p><br><br><pre><strong>Input:</strong> arr = [11,81,94,43,3]<br><strong>Output:</strong> 444<br></pre><br><br><p>&nbsp;</p><br><p><strong>Constraints:</strong></p><br><br><ul><br>    <li><code>1 &lt;= arr.length &lt;= 3 <em> 10<sup>4</sup></code></li><br>    <li><code>1 &lt;= arr[i] &lt;= 3 </em> 10<sup>4</sup></code></li><br></ul><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求所有子数组的最小值的和</p>
+<h3 id="算法思路："><a href="#算法思路：" class="headerlink" title="算法思路："></a><strong>算法思路：</strong></h3><p>求区间最值用Stack，因为是最小值，所以用<strong>递增栈</strong><br>一开始考虑用类似DP，因为若知道[3, 2, 6]栈为[2, 6], 8入栈，8与每一个栈内元素计算最小值，优化是用栈内的累计和，如2和6对应的累计和而不用每个元素计算。<br>参考了网上算法，<strong>栈内每个元素向左向右区间内（包括自己）均是最小值</strong>，所以出栈时候进行计算即可。<br>如[3, 2, 8, 7, 6, 9, 10, 4]栈是[2, 6, 9, 10]对应的下标，现在4入栈，9和10出栈后，6准备出栈。<br>prev_idx为6的下标4， i是7，6是[8, 7, 6], [7, 6], [6]三个区间的最小值prev_idx - stack[-1] = 3个区间，<br>而这些区间的最小值的和还要再乘以后面的大于它的数，如[7, 6]这个区间可以和这些区间合并[7, 6], [7, 6, 9], [7, 6, 9, 10], 所以(i - prev_idx) = 3<br>这就是arr[prev_idx] * (prev_idx - stack[-1]) * (i - prev_idx)的精髓  </p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>头尾加入最小值，加入头部因为公式需要栈内的前元素，这样可以处理只有一个元素出栈的情况。尾部加入最小值因为确保所有元素都出栈。     </li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">sumSubarrayMins</span>(<span class="params">self, arr: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	arr.insert(<span class="number">0</span>, -sys.maxsize)</span><br><span class="line">	arr.append(-sys.maxsize)</span><br><span class="line">	stack, res = [], <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(arr)):</span><br><span class="line">		<span class="keyword">while</span> stack <span class="keyword">and</span> arr[i] &lt; arr[stack[-<span class="number">1</span>]]:</span><br><span class="line">			prev_idx = stack.pop()</span><br><span class="line">			res += arr[prev_idx] * (prev_idx - stack[-<span class="number">1</span>]) * (i - prev_idx)</span><br><span class="line">			res = res % (<span class="built_in">pow</span>(<span class="number">10</span>, <span class="number">9</span>) + <span class="number">7</span>)</span><br><span class="line">		stack.append(i)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>  </p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2021/12/25/lee-2121/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KK Shum">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KK's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/12/25/lee-2121/" class="post-title-link" itemprop="url">LeetCode 2121 Intervals Between Identical Elements</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-12-25 00:00:00" itemprop="dateCreated datePublished" datetime="2021-12-25T00:00:00-08:00">2021-12-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2026-06-03 02:03:57" itemprop="dateModified" datetime="2026-06-03T02:03:57-07:00">2026-06-03</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2021/12/25/lee-2121/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2021/12/25/lee-2121/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong><a href="https://leetcode.com/problems/intervals-between-identical-elements/">LeetCode</a></strong></p>
+<div><br><br>You are given a <strong>0-indexed</strong> array of <code>n</code> integers <code>arr</code>.<br><br>The <strong>interval</strong> between two elements in <code>arr</code> is defined as the <strong>absolute difference</strong> between their indices. More formally, the <strong>interval</strong> between <code>arr[i]</code> and <code>arr[j]</code> is <code>|i - j|</code>.<br><br>Return <em>an array</em> <code>intervals</code> <em>of length</em> <code>n</code> <em>where</em> <code>intervals[i]</code> <em>is <strong>the sum of intervals</strong> between</em> <code>arr[i]</code> <em>and each element in</em> <code>arr</code> <em>with the same value as</em> <code>arr[i]</code><em>.</em><br><br><strong>Note:</strong> <code>|x|</code> is the absolute value of <code>x</code>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> arr = [2,1,3,1,2,3,3]<br><strong>Output:</strong> [4,2,7,2,4,4,5]<br><strong>Explanation:</strong><br>- Index 0: Another 2 is found at index 4. |0 - 4| = 4<br>- Index 1: Another 1 is found at index 3. |1 - 3| = 2<br>- Index 2: Two more 3s are found at indices 5 and 6. |2 - 5| + |2 - 6| = 7<br>- Index 3: Another 1 is found at index 1. |3 - 1| = 2<br>- Index 4: Another 2 is found at index 0. |4 - 0| = 4<br>- Index 5: Two more 3s are found at indices 2 and 6. |5 - 2| + |5 - 6| = 4<br>- Index 6: Two more 3s are found at indices 2 and 5. |6 - 2| + |6 - 5| = 5<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> arr = [10,5,10,10]<br><strong>Output:</strong> [5,0,3,4]<br><strong>Explanation:</strong><br>- Index 0: Two more 10s are found at indices 2 and 3. |0 - 2| + |0 - 3| = 5<br>- Index 1: There is only one 5 in the array, so its sum of intervals to identical elements is 0.<br>- Index 2: Two more 10s are found at indices 0 and 3. |2 - 0| + |2 - 3| = 3<br>- Index 3: Two more 10s are found at indices 0 and 2. |3 - 0| + |3 - 2| = 4<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>n == arr.length</code>
+</em>   <code>1 &lt;= n &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code><br>*   <code>1 &lt;= arr[i] &lt;= 10&lt;sup&gt;5&lt;/sup&gt;</code><br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>求相同元素的下标差的和</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>暴力法是TLE，由于存在重复计算。用prefix和suffix来优化。<br>prefix为从某个元素为起点到前继节点下标差之和<br>suffix为从某个元素为起点到后继节点下标差之和<br>结果 = prefix[i] + suffix[i]</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><ol>
+<li>用Map来存储相同元素的下标  </li>
+<li>用prefix和suffix来计算每个元素的结果</li>
+</ol>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>一开始用presum表示从起点到其他下标的差之和。这不能用于某个元素的前继元素下标差之和。所以要改成<strong>从某个元素为起点到前继节点下标差之和</strong>    </li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">getDistances</span>(<span class="params">self, arr: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="type">List</span>[<span class="built_in">int</span>]:</span><br><span class="line">	val_to_index = collections.defaultdict(<span class="built_in">list</span>)</span><br><span class="line">	res = [<span class="number">0</span>] * <span class="built_in">len</span>(arr)</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(arr)):</span><br><span class="line">		val_to_index[arr[i]].append(i)</span><br><span class="line">	<span class="keyword">for</span> val, indices <span class="keyword">in</span> val_to_index.items():</span><br><span class="line">		prefix, suffix = [<span class="number">0</span>], [<span class="number">0</span>]</span><br><span class="line">		<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="built_in">len</span>(indices)):</span><br><span class="line">			prefix.append(prefix[-<span class="number">1</span>] + i * <span class="built_in">abs</span>(indices[i] - indices[i - <span class="number">1</span>]))</span><br><span class="line">		<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(indices) - <span class="number">2</span>, -<span class="number">1</span>, -<span class="number">1</span>):</span><br><span class="line">			suffix.append(suffix[-<span class="number">1</span>] + (<span class="built_in">len</span>(indices) - i - <span class="number">1</span>) * <span class="built_in">abs</span>(indices[i] - indices[i + <span class="number">1</span>]))</span><br><span class="line">		<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(indices)):</span><br><span class="line">			res[indices[i]] = prefix[i] + suffix[<span class="built_in">len</span>(indices) - i - <span class="number">1</span>]</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>  </p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2021/12/25/lee-244/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -534,204 +715,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2021/12/25/lee-540/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="KK Shum">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="KK's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/12/25/lee-540/" class="post-title-link" itemprop="url">LeetCode 540 Single Element in a Sorted Array</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-12-25 00:00:00" itemprop="dateCreated datePublished" datetime="2021-12-25T00:00:00-08:00">2021-12-25</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2026-06-03 02:03:57" itemprop="dateModified" datetime="2026-06-03T02:03:57-07:00">2026-06-03</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2021/12/25/lee-540/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2021/12/25/lee-540/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong><a href="https://leetcode.com/problems/single-element-in-a-sorted-array">LeetCode 540 Single Element in a Sorted Array</a></strong></p>
-<p>Given a sorted array consisting of only integers where every element appears twice except for one element which appears once. Find this single element that appears only once.</p>
-<p><strong>Example 1:</strong>  </p>
-<pre>**Input:** [1,1,2,3,3,4,4,8,8]
-**Output:** 2
-</pre>
-
-<p><strong>Example 2:</strong>  </p>
-<pre>**Input:** [3,3,7,7,10,11,11]
-**Output:** 10
-</pre>
-
-<p><strong>Note:</strong> Your solution should run in O(log n) time and O(1) space.</p>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>一个有序数组中，每个数字都出现了两次，只有一个数字出现了一次，求出现一次的数字。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是A公司Problem solving的题目。类似于L136。此题数组有序且要求O(logn)时间，所以考虑用二分法。由于没有输入tgt，有点似<br>算法文档中用二分法求峰值，就是比较相邻两个数做二分法。考虑一个结论，若数组为偶数个数，就一定不存在只出现一次的元素。<br>所以必须考虑奇偶位，若下标mid为偶数，其后一位与其相等，就一定在右半边搜索left=mid+2(不会是mid和mid+1)，如第二个<br>例子，因为mid左边个数为偶数，利用结论可知不会在左边。同理与后一位不等，搜左边right=mid(可能为mid)。注意边界。<br>若mid为奇数，mid前面有奇数个，mid包括自己的后面有偶数个，所以mid和mid+1上的数相等，就应在左半搜，所以与偶数位的<br>情况正好相反，但是边界不同，产生了4个if语句。<br>法二：改进一下，若mid为奇数位，就mid–归结为偶数位的情况，这样if变成两个。  </p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>类似于Leetcode 033，四种情况，前两种中的第二种全包第一种。  </li>
-<li>for循环后，答案一定在start和end其中一个。end前面有偶数个与start不同就肯定在start上。</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">singleNonDuplicate</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	start, end = <span class="number">0</span>, <span class="built_in">len</span>(nums) - <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> start + <span class="number">1</span> &lt; end:</span><br><span class="line">		mid = start + (end - start) //<span class="number">2</span></span><br><span class="line">		<span class="keyword">if</span> mid % <span class="number">2</span> == <span class="number">1</span> <span class="keyword">and</span> mid &gt;= <span class="number">1</span> <span class="keyword">and</span> nums[mid - <span class="number">1</span>] == nums[mid]:</span><br><span class="line">			start = mid</span><br><span class="line">		<span class="keyword">elif</span> mid % <span class="number">2</span> == <span class="number">1</span>:</span><br><span class="line">			end = mid</span><br><span class="line">		<span class="keyword">elif</span> mid % <span class="number">2</span> == <span class="number">0</span> <span class="keyword">and</span> mid &gt;= <span class="number">1</span> <span class="keyword">and</span> nums[mid - <span class="number">1</span>] != nums[mid]:</span><br><span class="line">			start = mid</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			end = mid</span><br><span class="line">	<span class="keyword">if</span> end % <span class="number">2</span> == <span class="number">1</span> <span class="keyword">and</span> nums[start] != nums[end]:</span><br><span class="line">		<span class="keyword">return</span> nums[start] <span class="comment"># remember</span></span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		<span class="keyword">return</span> nums[end]</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>边界也就是mid的赋值，写出例子来理解。  </li>
-</ol>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">int</span> <span class="title function_">singleNonDuplicate</span><span class="params">(<span class="type">int</span>[] nums)</span> &#123;</span><br><span class="line">	<span class="type">int</span> <span class="variable">N</span> <span class="operator">=</span> nums.length;</span><br><span class="line">	<span class="type">int</span> <span class="variable">left</span> <span class="operator">=</span> <span class="number">0</span>, right = N - <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">while</span> (left &lt; right) &#123;</span><br><span class="line">		<span class="type">int</span> <span class="variable">mid</span> <span class="operator">=</span> (right - left) / <span class="number">2</span> + left;</span><br><span class="line">		<span class="type">boolean</span> <span class="variable">isEven</span> <span class="operator">=</span> <span class="literal">true</span>;</span><br><span class="line">		<span class="keyword">if</span> (mid % <span class="number">2</span> == <span class="number">1</span>) isEven = <span class="literal">false</span>;</span><br><span class="line">		<span class="keyword">if</span> ((isEven &amp;&amp; nums[mid] != nums[mid + <span class="number">1</span>]) )</span><br><span class="line">			right = mid;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (isEven &amp;&amp; nums[mid] == nums[mid + <span class="number">1</span>])</span><br><span class="line">			left = mid + <span class="number">2</span>;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (!isEven &amp;&amp; nums[mid] == nums[mid + <span class="number">1</span>])</span><br><span class="line">			right = mid-<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			left = mid + <span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> nums[left];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">int</span> <span class="title function_">singleNonDuplicate2</span><span class="params">(<span class="type">int</span>[] nums)</span> &#123;</span><br><span class="line">	  <span class="type">int</span> <span class="variable">N</span> <span class="operator">=</span> nums.length;</span><br><span class="line">	  <span class="type">int</span> <span class="variable">left</span> <span class="operator">=</span> <span class="number">0</span>, right = N - <span class="number">1</span>;</span><br><span class="line">	  <span class="keyword">while</span> (left &lt; right) &#123;</span><br><span class="line">		  <span class="type">int</span> <span class="variable">mid</span> <span class="operator">=</span> (right - left) / <span class="number">2</span> + left;</span><br><span class="line">		  <span class="keyword">if</span> (mid % <span class="number">2</span> == <span class="number">1</span>) mid--;</span><br><span class="line">		  <span class="keyword">if</span> (nums[mid] != nums[mid + <span class="number">1</span>])</span><br><span class="line">			  right = mid;</span><br><span class="line">		  <span class="keyword">else</span></span><br><span class="line">			  left = mid + <span class="number">2</span>;</span><br><span class="line">	  &#125;</span><br><span class="line">	  <span class="keyword">return</span> nums[left];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(logn)</code>，空间复杂度<code>O(1)</code>。  </p>
-<h3 id="Follow-up"><a href="#Follow-up" class="headerlink" title="Follow-up:"></a><strong>Follow-up:</strong></h3><p>首先问L316 Given a non-empty array of integers, every element appears twice except for one. Find that single one.<br>XOR解法，不用实现。<br>Follow up问题是L260 Given an array of numbers nums, in which exactly two elements appear only once and all the other elements appear exactly twice. Find the two elements that appear only once.<br>分三步。若只有一个数出现1次，只要把所有数异或^即可(相同数异或=0)。如果有两个此数，异或结果是这两数不同的位。只要选为1且最低位(或任意为1的位)lowBit=a-(a&amp;(a-1))。再扫所有数，根据它们在lowBit上=0和=1分组异或num1, num2，最后分组异或后它们为所求</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2021/12/25/lee-735/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="KK Shum">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="KK's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/12/25/lee-735/" class="post-title-link" itemprop="url">LeetCode 735 Asteroid Collision</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-12-25 00:00:00" itemprop="dateCreated datePublished" datetime="2021-12-25T00:00:00-08:00">2021-12-25</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2026-06-03 02:03:57" itemprop="dateModified" datetime="2026-06-03T02:03:57-07:00">2026-06-03</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2021/12/25/lee-735/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2021/12/25/lee-735/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong><a href="https://leetcode.com/problems/asteroid-collision/">LeetCode</a></strong></p>
-<div><br><br>We are given an array <code>asteroids</code> of integers representing asteroids in a row.<br><br>For each asteroid, the absolute value represents its size, and the sign represents its direction (positive meaning right, negative meaning left). Each asteroid moves at the same speed.<br><br>Find out the state of the asteroids after all collisions. If two asteroids meet, the smaller one will explode. If both are the same size, both will explode. Two asteroids moving in the same direction will never meet.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> asteroids = [5,10,-5]<br><strong>Output:</strong> [5,10]<br><strong>Explanation:</strong> The 10 and -5 collide resulting in 10. The 5 and 10 never collide.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> asteroids = [8,-8]<br><strong>Output:</strong> []<br><strong>Explanation:</strong> The 8 and -8 collide exploding each other.<br></pre><br><br><strong>Example 3:</strong><br><br><pre><strong>Input:</strong> asteroids = [10,2,-5]<br><strong>Output:</strong> [10]<br><strong>Explanation:</strong> The 2 and -5 collide resulting in -5. The 10 and -5 collide resulting in 10.<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>2 &lt;= asteroids.length &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code>
-</em>   <code>-1000 &lt;= asteroids[i] &lt;= 1000</code><br>*   <code>asteroids[i] != 0</code><br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>星体向左向右同速运动，符号表示方向，数值表示星体大小。若相撞，同大小想消，否则较小的消失。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>保持原有顺序且相邻元素大小关系，考虑用Stack</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>两星体可以正负，所以有四种可能：同左，同右，向左向右，向右向左。<strong>只有最后一种向右向左才会相撞。</strong>所以出栈条件为栈顶为正，遍历元素为负。    </li>
-<li>同大小要特别处理，记录到is_same_size变量中。入栈条件为<strong>出栈条件的非以及不是is_same_size</strong></li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">asteroidCollision</span>(<span class="params">self, asteroids: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="type">List</span>[<span class="built_in">int</span>]:</span><br><span class="line">	stack = []</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(asteroids)):</span><br><span class="line">		is_same_size = <span class="literal">False</span></span><br><span class="line">		<span class="keyword">while</span> stack <span class="keyword">and</span> stack[-<span class="number">1</span>] &gt; <span class="number">0</span> <span class="keyword">and</span> asteroids[i] &lt; <span class="number">0</span> <span class="keyword">and</span> -asteroids[i] &gt;= stack[-<span class="number">1</span>]:</span><br><span class="line">			stack_top = stack.pop()</span><br><span class="line">			<span class="keyword">if</span> stack_top == -asteroids[i]:</span><br><span class="line">				is_same_size = <span class="literal">True</span></span><br><span class="line">				<span class="keyword">break</span></span><br><span class="line">		<span class="keyword">if</span> <span class="keyword">not</span> (stack <span class="keyword">and</span> stack[-<span class="number">1</span>] &gt; <span class="number">0</span> <span class="keyword">and</span> asteroids[i] &lt; <span class="number">0</span>) <span class="keyword">and</span> <span class="keyword">not</span> is_same_size:</span><br><span class="line">			stack.append(asteroids[i])</span><br><span class="line">	<span class="keyword">return</span> stack</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>  </p>
-<p>更简洁的写法，不要要掌握while, break, else语句，如果没有break，else永远执行，若break，else不执行。若不熟悉该语法，推荐用上法。  </p>
-<h3 id="Python代码：-1"><a href="#Python代码：-1" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">asteroidCollision2</span>(<span class="params">self, asteroids: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="type">List</span>[<span class="built_in">int</span>]:</span><br><span class="line">	stack = []</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(asteroids)):</span><br><span class="line">		<span class="keyword">while</span> stack <span class="keyword">and</span> stack[-<span class="number">1</span>] &gt; <span class="number">0</span> <span class="keyword">and</span> asteroids[i] &lt; <span class="number">0</span>:</span><br><span class="line">			<span class="keyword">if</span> -asteroids[i] &lt; stack[-<span class="number">1</span>] <span class="keyword">or</span> stack.pop() == -asteroids[i]:</span><br><span class="line">				<span class="keyword">break</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			stack.append(asteroids[i])</span><br><span class="line">	<span class="keyword">return</span> stack</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -806,14 +789,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">368</span>
+          <span class="site-state-item-count">370</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-count">59</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

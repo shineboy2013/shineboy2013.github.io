@@ -201,6 +201,257 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/02/09/design-tiny-url/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KK Shum">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KK's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/02/09/design-tiny-url/" class="post-title-link" itemprop="url">Design Tiny URL</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-02-09 00:00:00" itemprop="dateCreated datePublished" datetime="2022-02-09T00:00:00-08:00">2022-02-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2026-06-03 02:03:56" itemprop="dateModified" datetime="2026-06-03T02:03:56-07:00">2026-06-03</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2022/02/09/design-tiny-url/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/02/09/design-tiny-url/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>长URL变成短URL方便传输和阅读，特别是很多社交网站对字数有限制如Twitter。</p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><ol>
+<li>沟通清楚需要，用户数（都会很大）</li>
+<li>数据量估计。如火车售票系统，估计西雅图总人口，高峰乘坐人数。</li>
+<li>先完成一个功能。如buy ticket。画图，每个部件high level细节包括数据库的schema和组件间的API接口。</li>
+<li>自觉加上优化，如cache，master-slave数据库,LB等等。不要等面试官提醒</li>
+<li>完成一个功能后，再画图扩展到其他功能。 </li>
+</ol>
+<h3 id="短网址长度："><a href="#短网址长度：" class="headerlink" title="短网址长度："></a><strong>短网址长度：</strong></h3><p>短网址若只含数字，也就是十进制整数还是不够短。可以考虑加入大小写字母，总共有26x2+10=62，也就是一个62进制数。<br>网站总数是45亿个，62^7就远远大于45亿，7位就够。<br>若long表示的64位整数，log62(2^64-1)=11，大约是对应11位。  </p>
+<table>
+<thead>
+<tr>
+<th>网站</th>
+<th style="text-align:left">十进制</th>
+<th style="text-align:left">62进制</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>amazon.com</td>
+<td style="text-align:left">0854</td>
+<td style="text-align:left">a5G</td>
+</tr>
+</tbody>
+</table>
+<h3 id="存储方法："><a href="#存储方法：" class="headerlink" title="存储方法："></a><strong>存储方法：</strong></h3><p>写操作：长网址到短网址<br>读操作：短网址到长网址<br>读操作远远大于写操作，所以key（或primary key）选在短网址， value在长网址。<br>每个新的长网址，对应一个短网址还是多个？考虑一下几点：</p>
+<ol>
+<li>若对应一个短网址，必须再产生一个unique key在长网址上来决定该长网址对应的短网址是否存在。大大降低写操作速度。  </li>
+<li>长网址虽然一样，但可以带不同的header, user agent，从而知道进入该长网址的入口（其他网站），短网址商的盈利来源。<br>所以长网址对应多个短网址，Google Maps就采取这个设计。    </li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>网站</th>
+<th style="text-align:left">十进制</th>
+<th style="text-align:left">62进制</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>amazon.com</td>
+<td style="text-align:left">0854</td>
+<td style="text-align:left">a5G</td>
+</tr>
+<tr>
+<td>amazon.com</td>
+<td style="text-align:left">17922</td>
+<td style="text-align:left">bYd</td>
+</tr>
+</tbody>
+</table>
+<p>数据库选择可以是关系型数据库SQL Server，或者KV数据库如Redis，dynamoDB。可以详细讨论关系型数据库与No SQL的区别。<br>此题目用No sql比较好，因为从分布性考虑和是否需要复杂的Join操作来考虑，No sql有明显优势。</p>
+<h3 id="计算短网址："><a href="#计算短网址：" class="headerlink" title="计算短网址："></a><strong>计算短网址：</strong></h3><p>另一个核心问题就是如何计算短网址，具体而言是怎么从URL转化为一个十进制整数。有几个方案：  </p>
+<ol>
+<li>最简单的是维护一个最大值，每个新的请求，对此值加1。缺点是分布式系统中，维护单一最大值（所有机器中）大大降低性能。</li>
+<li>取URL的hash值得到64位整数再取前7位，但会有冲突。</li>
+<li><a href="https://shineboy2013.github.io/2018/06/17/design-distributed-id/">参考分布式发号器</a>  </li>
+</ol>
+<p>十进制到62进制用短除法来做，<br><img src="/images/design-tiny-url.png" alt=""><br>796%62=52， (796-52)/62=12.<br>12%62=12, (12-12)/62=0.<br>结果为(12)(52) = cP</p>
+<h3 id="DDOS："><a href="#DDOS：" class="headerlink" title="DDOS："></a><strong>DDOS：</strong></h3><p>这是一个细节考虑，若黑客大量发请求，耗尽所有ID怎么办？</p>
+<ol>
+<li>限制IP单日请求总数，超过直接拒绝。</li>
+<li>限制长网址的单一性。限制IP还不够，因为用proxy provider服务可以绕过这个限制。用Redis来cache长网址到短网址的一日数据，<br>然后LRU淘汰旧的数据。这样如果此URL的请求超过一定数量，比如100次，就返回最新的短网址。<br>长网址-&gt;次数+短URL</li>
+</ol>
+<h3 id="301还是302："><a href="#301还是302：" class="headerlink" title="301还是302："></a><strong>301还是302：</strong></h3><p>301是永久重定向，302是临时重定向。如果用了301， Google，百度等搜索引擎，搜索的时候会直接展示真实地址，那我们就无法统计<br>到短地址被点击的次数了，也无法收集用户的Cookie, User Agent等信息。这是短网址商的盈利来源。  </p>
+<h3 id="Ref："><a href="#Ref：" class="headerlink" title="Ref："></a><strong>Ref：</strong></h3><p><a href="https://soulmachine.gitbooks.io/system-design/content/cn/tinyurl.html">https://soulmachine.gitbooks.io/system-design/content/cn/tinyurl.html</a><br><a href="https://segmentfault.com/a/1190000006140476">https://segmentfault.com/a/1190000006140476</a>  </p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/02/08/lee-253/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KK Shum">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KK's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/02/08/lee-253/" class="post-title-link" itemprop="url">LeetCode 253 Meeting Rooms II</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-02-08 00:00:00" itemprop="dateCreated datePublished" datetime="2022-02-08T00:00:00-08:00">2022-02-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2026-06-03 02:03:57" itemprop="dateModified" datetime="2026-06-03T02:03:57-07:00">2026-06-03</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2022/02/08/lee-253/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/02/08/lee-253/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong><a href="https://leetcode.com/problems/meeting-rooms-ii/">LeetCode 253 Meeting Rooms II</a></strong></p>
+<p>Given an array of meeting time intervals consisting of start and end times <code>[[s1,e1],[s2,e2],...]</code> (si &lt; ei), find the minimum number of conference rooms required.</p>
+<p>For example,<br>Given <code>[[0, 30],[5, 10],[15, 20]]</code>,<br>return <code>2</code>.</p>
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>输入[[0, 30],[5, 10],[15, 20]]表示每个会议的开始结束时间，求最少需要多少会议室能够安排所有的会议。</p>
+<h3 id="最小堆解题思路："><a href="#最小堆解题思路：" class="headerlink" title="最小堆解题思路："></a><strong>最小堆解题思路：</strong></h3><p>基于merging interval题目，首先按start排序。并且merge条件是start小于上一个会议的end。</p>
+<ol>
+<li>写几个例子感受一下。<br><img src="/images/L253.png" alt=""><br>有两个重叠的会议，现在插入新的会议。是否再需要一个会议室取决于该新会议的开始时间小于这两个目前会议的终止时间的最小值。<br>所以思路是用End time min-heap维护目前会议End time。若新会议start time小于堆顶元素，入栈且activeMeeting++，否则循环地出栈且activeMeeting–直到<br>start time小于堆顶。<br>这过程activeMeeting的最大值即所求。<br>最坏情况是所有会议都重叠，复杂度为n* 2logn因为n个元素入堆出堆各一次，所以复杂度为nlogn，但会议一般不会集中，平均情况比排序法稍优。 </li>
+</ol>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>Heap为结束时间的heap。 </li>
+<li>类似于递减栈模板，用开始时间与堆顶的结束时间比较（表示这些会议均已结束），若大于堆顶，连续出堆。  </li>
+</ol>
+<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">minMeetingRooms</span>(<span class="params">self, intervals: <span class="type">List</span>[<span class="type">List</span>[<span class="built_in">int</span>]]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	intervals.sort()</span><br><span class="line">	heap = [] <span class="comment"># heap for end time</span></span><br><span class="line">	<span class="built_in">max</span> = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(intervals)):</span><br><span class="line">		<span class="comment"># start time of the new meeting is earlier than on-going endtime</span></span><br><span class="line">		<span class="keyword">while</span> heap <span class="keyword">and</span> intervals[i][<span class="number">0</span>] &gt;= heap[<span class="number">0</span>]:</span><br><span class="line">			heappop(heap)</span><br><span class="line">		heappush(heap, (intervals[i][<span class="number">1</span>]))</span><br><span class="line">		<span class="keyword">if</span> <span class="built_in">len</span>(heap) &gt; <span class="built_in">max</span>:</span><br><span class="line">			<span class="built_in">max</span> = <span class="built_in">len</span>(heap)</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">max</span></span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>由于输入无序，所以先要排序O(nlogn), 而循环复杂度为O(nlogk), 所以总时间复杂度为<code>O(nlogn)</code>，空间复杂度<code>O(k)</code>, k为所求也就是需要的会议室数。     </p>
+<h3 id="排序法解题思路-推荐-："><a href="#排序法解题思路-推荐-：" class="headerlink" title="排序法解题思路(推荐)："></a><strong>排序法解题思路(推荐)：</strong></h3><ol>
+<li>证明解与具体间隔无关，只与end time的值有关。<br><img src="/images/L253-2.png" alt=""></li>
+<li>基于1和2，对end time进行排序，题解只与start-end的相对顺序有关。既然这样，我们可以把所有start，end一起排序，也就是按时间轴排列，排成一个2n大小的数组，<br>遇到start，activeMeeting++，遇到end，activeMeeting–。 这过程activeMeeting的最大值即所求。<br>当然，上述方法直观，但实现起来需要建立一个class Node{value, startOrEnd}。本质上等价于对排序后的start数组和排序后的end数组进行<strong>合并排序</strong>。<br>合并排序的结果等价于时间轴上两个数组的统一排序。当然，不需要剩余部分的合并排序，因为这部分不会增加activeMeeting的值。</li>
+</ol>
+<p>解题步骤：</p>
+<ol>
+<li>排序start</li>
+<li>排序end</li>
+<li>合并排序，start小就activeMeeting++，否则activeMeeting–。求activeMeeting的最大值。</li>
+</ol>
+<h3 id="注意事项：-1"><a href="#注意事项：-1" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>若endpoint值相同情况下，要确保第二个排序先结束点，再出发点，因为相同点不算有重复飞机</li>
+</ol>
+<h3 id="Python代码：-1"><a href="#Python代码：-1" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">minMeetingRooms</span>(<span class="params">self, intervals: <span class="type">List</span>[<span class="type">List</span>[<span class="built_in">int</span>]]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">	start = [(i[<span class="number">0</span>], <span class="number">1</span>) <span class="keyword">for</span> i <span class="keyword">in</span> intervals]</span><br><span class="line">	ends = [(i[<span class="number">1</span>], -<span class="number">1</span>) <span class="keyword">for</span> i <span class="keyword">in</span> intervals]</span><br><span class="line">	endpoints = start + ends</span><br><span class="line">	endpoints.sort()</span><br><span class="line">	active_meetings, <span class="built_in">max</span> = <span class="number">0</span>, <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(endpoints)):</span><br><span class="line">		<span class="keyword">if</span> endpoints[i][<span class="number">1</span>] == <span class="number">1</span>:</span><br><span class="line">			active_meetings += <span class="number">1</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			active_meetings -= <span class="number">1</span></span><br><span class="line">		<span class="keyword">if</span> active_meetings &gt; <span class="built_in">max</span>:</span><br><span class="line">			<span class="built_in">max</span> = active_meetings</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">max</span></span><br></pre></td></tr></table></figure>
+<h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nlogn)</code>，空间复杂度<code>O(n)</code>。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/02/08/leetcode-1761-minimum-degree-of-a-connected-trio-in-a-graph/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -470,187 +721,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/02/07/karat-003/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="KK Shum">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="KK's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/02/07/karat-003/" class="post-title-link" itemprop="url">Karat 003 Nonogram</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2022-02-07 00:00:00" itemprop="dateCreated datePublished" datetime="2022-02-07T00:00:00-08:00">2022-02-07</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2026-06-03 02:03:56" itemprop="dateModified" datetime="2026-06-03T02:03:56-07:00">2026-06-03</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2022/02/07/karat-003/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/02/07/karat-003/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>A nonogram is a logic puzzle, similar to a crossword, in which the player is given<br>a blank grid and has to color it according to some instructions. Specifically,<br>each cell can be either black or white, which we will represent as 0 for black and<br>1 for white.<br>+————+<br>| 1 1 1 1 |<br>| 0 1 1 1 |<br>| 0 1 0 0 |<br>| 1 1 0 1 |<br>| 0 0 1 1 |<br>+————+<br>For each row and column, the instructions give the lengths of contiguous runs of<br>black (0) cells. For example, the instructions for one row of [ 2, 1 ] indicate<br>that there must be a run of two black cells, followed later by another run of one<br>black cell, and the rest of the row filled with white cells.<br>These are valid solutions: [ 1, 0, 0, 1, 0 ] and [ 0, 0, 1, 1, 0 ] and also [ 0,<br>0, 1, 0, 1 ]<br>This is not valid: [ 1, 0, 1, 0, 0 ] since the runs are not in the correct order.<br>This is not valid: [ 1, 0, 0, 0, 1 ] since the two runs of 0s are not separated by<br>1s.<br>Your job is to write a function to validate a possible solution against a set of<br>instructions. Given a 2D matrix representing a player’s solution; and instructions<br>for each row along with additional instructions for each column; return True or<br>False according to whether both sets of instructions match.</p>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>Nonogram日本游戏，0表示黑子，[2, 1]表示黑子的连续数目，如棋盘状态[ 1, 0, 0, 1, 0 ]，表示连续黑子数为[2, 1]<br>[ 1, 0, 0, 0, 1 ]连续黑子数为[3]. 验证棋盘的每一行和每一列是否满足rows和cols所指定的连续黑子数</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>按题意求解</p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>递归只有一种情况</li>
-<li>答案需求全局</li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">valid_nonogram</span>(<span class="params">self, matrix, rows, cols</span>):</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(matrix)):</span><br><span class="line">		<span class="keyword">if</span> <span class="variable language_">self</span>.get_consecutive_zeros(matrix[i]) != rows[i]:</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">	<span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(matrix[<span class="number">0</span>])):</span><br><span class="line">		col_vals = []</span><br><span class="line">		<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(matrix)):</span><br><span class="line">			col_vals.append(matrix[i][j])</span><br><span class="line">		<span class="keyword">if</span> <span class="variable language_">self</span>.get_consecutive_zeros(col_vals) != cols[j]:</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">	<span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># [ 1, 0, 0, 1, 0 ] -&gt; [2, 1], # of 0s</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_consecutive_zeros</span>(<span class="params">self, matrix_row</span>):</span><br><span class="line">	count, res = <span class="number">0</span>, []</span><br><span class="line">	<span class="keyword">for</span> n <span class="keyword">in</span> matrix_row:</span><br><span class="line">		<span class="keyword">if</span> n == <span class="number">0</span>:</span><br><span class="line">			count += <span class="number">1</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			<span class="keyword">if</span> count &gt; <span class="number">0</span>:</span><br><span class="line">				res.append(count)</span><br><span class="line">			count = <span class="number">0</span></span><br><span class="line">	<span class="keyword">if</span> count &gt; <span class="number">0</span>:</span><br><span class="line">		res.append(count)</span><br><span class="line">	<span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nm)</code>，空间复杂度<code>O(n)</code>  </p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2022/02/07/lee-005/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="KK Shum">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="KK's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/02/07/lee-005/" class="post-title-link" itemprop="url">LeetCode 005 Longest Palindromic Substring</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2022-02-07 00:00:00" itemprop="dateCreated datePublished" datetime="2022-02-07T00:00:00-08:00">2022-02-07</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2026-06-03 02:03:56" itemprop="dateModified" datetime="2026-06-03T02:03:56-07:00">2026-06-03</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2022/02/07/lee-005/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/02/07/lee-005/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong><a href="https://leetcode.com/problems/longest-palindromic-substring/">LeetCode</a></strong></p>
-<div><br><br>Given a string <code>s</code>, return <em>the longest palindromic substring</em> in <code>s</code>.<br><br><strong>Example 1:</strong><br><br><pre><strong>Input:</strong> s = “babad”<br><strong>Output:</strong> “bab”<br><strong>Explanation:</strong> “aba” is also a valid answer.<br></pre><br><br><strong>Example 2:</strong><br><br><pre><strong>Input:</strong> s = “cbbd”<br><strong>Output:</strong> “bb”<br></pre><br><br><strong>Constraints:</strong><br><br><em>   <code>1 &lt;= s.length &lt;= 1000</code>
-</em>   <code>s</code> consist of only digits and English letters.<br><br></div>
-
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>最长回文</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>遍历每个字符，以该字符为中心，往前后比较是否回文，求最长回文  </p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>N/A</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>回文字符串的中心位可以为1个或2个      </li>
-<li>此题求最长回文字符串，而不是其长度  </li>
-<li>避免死循环，记得i -= 1, j += 1  </li>
-<li>Line 63 <strong>若不相等，要break，或者return[i + 1:j]和下面return一样</strong></li>
-</ol>
-<h3 id="Python代码："><a href="#Python代码：" class="headerlink" title="Python代码："></a><strong>Python代码：</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">longestPalindrome</span>(<span class="params">self, s: <span class="built_in">str</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">	res = <span class="string">&#x27;&#x27;</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(s)):</span><br><span class="line">		tmp = <span class="variable language_">self</span>.longestPalindromeFromCenter(s, i, i)</span><br><span class="line">		<span class="keyword">if</span> <span class="built_in">len</span>(tmp) &gt; <span class="built_in">len</span>(res):</span><br><span class="line">			res = tmp</span><br><span class="line">		<span class="keyword">if</span> i + <span class="number">1</span> &lt; <span class="built_in">len</span>(s):</span><br><span class="line">			tmp = <span class="variable language_">self</span>.longestPalindromeFromCenter(s, i, i + <span class="number">1</span>)</span><br><span class="line">			<span class="keyword">if</span> <span class="built_in">len</span>(tmp) &gt; <span class="built_in">len</span>(res):</span><br><span class="line">				res = tmp</span><br><span class="line">	<span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">longestPalindromeFromCenter</span>(<span class="params">self, s, left, right</span>):</span><br><span class="line">	<span class="keyword">while</span> left &gt;= <span class="number">0</span> <span class="keyword">and</span> right &lt;= <span class="built_in">len</span>(s) - <span class="number">1</span>:</span><br><span class="line">		<span class="keyword">if</span> s[left] != s[right]:</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		left -= <span class="number">1</span></span><br><span class="line">		right += <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> s[left + <span class="number">1</span>:right]</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n<sup>2</sup>)</code>，空间复杂度<code>O(1)</code>  </p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -725,14 +795,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">368</span>
+          <span class="site-state-item-count">370</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-count">59</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

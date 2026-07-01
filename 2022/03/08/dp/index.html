@@ -28,7 +28,7 @@
 <meta property="og:description" content="典型递归式 单序列或匹配型DP模板 数值到个数DP模板(最常考)  区间型DP模板 压缩空间 打印路径  典型递归式：单序列型(与一个或多个前状态有关)硬币个数(数值型)： dp[i] &#x3D; min(dp[i], dp[i - j] + 1)偷房子： dp[i] &#x3D; max(dp[i-1], dp[i-2] + nums[i - 1])LIS： dp[i] &#x3D; max(dp[i], dp[j] +">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2022-03-08T08:00:00.000Z">
-<meta property="article:modified_time" content="2026-06-03T09:03:56.683Z">
+<meta property="article:modified_time" content="2026-07-01T07:26:02.197Z">
 <meta property="article:author" content="KK Shum">
 <meta property="article:tag" content="Knowledge Base">
 <meta name="twitter:card" content="summary">
@@ -237,7 +237,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2026-06-03 02:03:56" itemprop="dateModified" datetime="2026-06-03T02:03:56-07:00">2026-06-03</time>
+                <time title="Modified: 2026-07-01 00:26:02" itemprop="dateModified" datetime="2026-07-01T00:26:02-07:00">2026-07-01</time>
               </span>
 
           
@@ -278,11 +278,12 @@
 <p>匹配型(与上、左、左上等三个前状态有关)<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">正则： dp[i][j] = dp[i-1][j-1] &amp;&amp; (p[j-1] == . || s[i-1] == p[j-1])</span><br><span class="line">OR ((dp[i-1][j] &amp;&amp; (s[i-1] == p[j-2] || p[j-2] == .)) || dp[i][j-2]) &amp;&amp; p[j-1] == *</span><br></pre></td></tr></table></figure></p>
 <p>区间型(与该区间内以k为划分的两个子区间有关)<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dp[i][j] = max&#123;dp[i][m] + nums[i]×nums[m]×nums[j] + dp[m][j]&#125;, i &lt; m &lt; j  </span><br></pre></td></tr></table></figure></p>
 <p>多状态型DP(DP有多个终止状态)<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">dp = dp     if s[i] = &#x27;0&#x27;</span><br><span class="line">   = dp + 1 if s[i] = &#x27;1&#x27;</span><br><span class="line">   </span><br><span class="line">dp2 = min(dp2 + 1, dp + 1)     if s[i] = &#x27;0&#x27;</span><br><span class="line">    = min(dp2, dp)             if s[i] = &#x27;1&#x27;</span><br></pre></td></tr></table></figure></p>
-<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>9zhang按照DP四部曲  </p>
+<h3 id="解题步骤："><a href="#解题步骤：" class="headerlink" title="解题步骤："></a><strong>解题步骤：</strong></h3><p>DP五部曲  </p>
 <ol>
-<li>[初始化]dp数组</li>
-<li>[实现]  </li>
-<li>[答案]  </li>
+<li>[初始化]dp数组n+1</li>
+<li>dp初始值也就是基本条件</li>
+<li>[实现]定义状态和递归式     </li>
+<li>[答案] 如dp[-1]  </li>
 <li>[优化]是否可以用滚动内存优化空间</li>
 </ol>
 <h2 id="单序列或匹配型DP模板"><a href="#单序列或匹配型DP模板" class="headerlink" title="单序列或匹配型DP模板"></a>单序列或匹配型DP模板</h2><h3 id="实现注意事项-5点-："><a href="#实现注意事项-5点-：" class="headerlink" title="实现注意事项(5点)："></a><strong>实现注意事项(5点)：</strong></h3><ol>
@@ -306,7 +307,7 @@
 <li><strong>上述4点注意事项只有1和2。</strong>数</li>
 </ol>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">dp</span>(<span class="params">self, nums, target</span>):</span><br><span class="line">	nums.sort() <span class="comment"># remember</span></span><br><span class="line">	dp = [<span class="number">0</span>] * (target + <span class="number">1</span>)</span><br><span class="line">	dp[<span class="number">0</span>] = <span class="number">1</span> <span class="comment"># remember</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(dp)):</span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(nums)):</span><br><span class="line">			<span class="keyword">if</span> i + nums[j] &gt; target:</span><br><span class="line">				<span class="keyword">break</span></span><br><span class="line">			dp[i + nums[j]] += dp[i] <span class="comment"># remember no +1</span></span><br><span class="line">	<span class="keyword">return</span> dp[-<span class="number">1</span>]</span><br></pre></td></tr></table></figure>
-<h3 id="应用题型：-1"><a href="#应用题型：-1" class="headerlink" title="应用题型："></a><strong>应用题型：</strong></h3><p><a href="https://shineboy2013.github.io/2021/12/29/lee-377/">LeetCode 377 Combination Sum IV</a>  </p>
+<h3 id="应用题型：-1"><a href="#应用题型：-1" class="headerlink" title="应用题型："></a><strong>应用题型：</strong></h3><p><a href="https://shineboy2013.github.io/2021/12/29/lee-377/">LeetCode 377 Combination Sum IV</a><br><a href="https://shineboy2013.github.io/2021/12/13/lee-198/">LeetCode 198 House Robber</a>  </p>
 <hr>
 <h3 id="一个变体是求最小个数"><a href="#一个变体是求最小个数" class="headerlink" title="一个变体是求最小个数"></a>一个变体是求最小个数</h3><p>递归公式<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dp[n + coins[i]] = min&#123;dp[n + coins[i]], dp[n] + 1&#125;, n = [1, tgt], i = [0, len(nums) - 1]</span><br></pre></td></tr></table></figure></p>
 <h3 id="不同之处："><a href="#不同之处：" class="headerlink" title="不同之处："></a><strong>不同之处：</strong></h3><ol>
@@ -445,14 +446,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">368</span>
+          <span class="site-state-item-count">370</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-count">59</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

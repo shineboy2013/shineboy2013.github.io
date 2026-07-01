@@ -201,6 +201,216 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2021/10/24/lin-683/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KK Shum">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KK's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/10/24/lin-683/" class="post-title-link" itemprop="url">LintCode 683 Word Break III</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-10-24 00:00:00" itemprop="dateCreated datePublished" datetime="2021-10-24T00:00:00-07:00">2021-10-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2026-06-03 02:03:57" itemprop="dateModified" datetime="2026-06-03T02:03:57-07:00">2026-06-03</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2021/10/24/lin-683/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2021/10/24/lin-683/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong><a href="https://www.lintcode.com/problem/word-break-iii/">LintCode 683 Word Break III</a></strong></p>
+<div><br><br>Give a dictionary of words and a sentence with all whitespace removed, return the number of sentences you can form by inserting whitespaces to the sentence so that each word can be found in the dictionary.<br><br><strong>Example 1:</strong><br><br><pre><br>Input:<br>“CatMat”<br>[“Cat”, “Mat”, “Ca”, “tM”, “at”, “C”, “Dog”, “og”, “Do”]<br>Output: 3<br>Explanation:<br>we can form 3 sentences, as follows:<br>“CatMat” = “Cat” + “Mat”<br>“CatMat” = “Ca” + “tM” + “at”<br>“CatMat” = “C” + “at” + “Mat”<br></pre><br><br><strong>Example 2:</strong><br><br><pre><br>Input:<br>“a”<br>[]<br>Output: 0<br></pre><br><br></div>
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>一个字符串s，被“字典集合”（wordDict）中的单词拼接而成的可能性种数。  </p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这是经典题。如果知道s[0:n-1)很容易知道s[0:n)是否有解，既然和子问题有关，就用DP。  </p>
+<ol>
+<li>定义dp[i]为字符串s[0,i)是合法分解种数。</li>
+<li>判断一个字符串是否可以合法分解，方案是尝试在每一位进行分解，若其中一个可分解，即有解，加入到dp[i]中。<br>递归式为dp[i] += dp[k] * isWord(s[k:i)), 0 &lt;= k &lt; i. </li>
+<li>方向为从左到右i=0..n, 初始值为dp[0] = 1. </li>
+</ol>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>将两个输入都转换成小写。 </li>
+<li>dp[n+1]而不是dp[n]，而for循环从1开始。  </li>
+<li>递归中dp[i]用+操作符。  </li>
+</ol>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">int</span> <span class="title function_">wordBreak3</span><span class="params">(String s, Set&lt;String&gt; dict)</span> &#123;</span><br><span class="line">	<span class="keyword">if</span>(s == <span class="literal">null</span> || <span class="string">&quot;&quot;</span>.equals(s))</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	</span><br><span class="line">	Set&lt;String&gt; lowerDict = <span class="keyword">new</span> <span class="title class_">HashSet</span>&lt;&gt;();</span><br><span class="line">	<span class="keyword">for</span>(String c : dict)</span><br><span class="line">		lowerDict.add(c.toLowerCase());</span><br><span class="line">	dict = lowerDict;</span><br><span class="line">	s = s.toLowerCase();</span><br><span class="line">	</span><br><span class="line">	<span class="type">int</span>[] dp = <span class="keyword">new</span> <span class="title class_">int</span>[s.length() + <span class="number">1</span>];</span><br><span class="line">	dp[<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// dp[i][j] = sum(dp[i][k] * isWord(s[k,j])), i=0..n-1, j=i..n-1</span></span><br><span class="line">	<span class="comment">// dp[0][n-1] = sum(dp[0][k] * isWord(s[k,n-1]))</span></span><br><span class="line">	<span class="comment">// dp[n] = sum(dp[k] * isWord(s[k,n]))</span></span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">1</span>; i &lt;= s.length(); i++) &#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="type">int</span> <span class="variable">k</span> <span class="operator">=</span> <span class="number">0</span>; k &lt; i; k++) &#123;</span><br><span class="line">			dp[i] += dp[k] * (dict.contains(s.substring(k, i)) ? <span class="number">1</span> : <span class="number">0</span>); </span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> dp[s.length()];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n<sup>2</sup>)</code>，空间复杂度为<code>O(n)</code>。  </p>
+<p>这道题一开始走过一些弯路，首先我觉得类似于Catalan算法，左右半部都是子问题，但其实这属于单边问题。所以写了以下算法：  </p>
+<h3 id="Java代码：-1"><a href="#Java代码：-1" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">int</span> <span class="title function_">wordBreak3_wrong</span><span class="params">(String s, Set&lt;String&gt; dict)</span> &#123;</span><br><span class="line">	<span class="keyword">if</span>(s == <span class="literal">null</span> || <span class="string">&quot;&quot;</span>.equals(s))</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// dp[i][j] = sum(dp[i][k] * dp[k][j])</span></span><br><span class="line">	<span class="type">int</span>[][] dp = <span class="keyword">new</span> <span class="title class_">int</span>[s.length() + <span class="number">1</span>][s.length() + <span class="number">1</span>];</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// use &quot;ab&quot; as an example</span></span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> <span class="variable">len</span> <span class="operator">=</span> <span class="number">1</span>; len &lt;= s.length(); len++) &#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; s.length() - len + <span class="number">1</span>; i++) &#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="type">int</span> <span class="variable">j</span> <span class="operator">=</span> i + <span class="number">1</span>; j &lt; i + len; j++) &#123;</span><br><span class="line">				<span class="comment">//&quot;a&quot;,&quot;b&quot;</span></span><br><span class="line">				dp[i][i+len] += dp[i][j] * dp[j][i+len];    		</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="comment">//&quot;ab&quot;</span></span><br><span class="line">			<span class="keyword">if</span>(dict.contains(s.substring(i, i+len)))</span><br><span class="line">				dp[i][i+len]++;</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> dp[<span class="number">0</span>][s.length()];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>但这个方法会有重复解，比如<br>“abc”, “a”,”b”,”c”<br>-&gt; <code>dp[&quot;ab&quot;] * dp[&quot;c&quot;] = 1</code><br>-&gt; <code>dp[&quot;a&quot;] * dp[&quot;bc&quot;] = 1</code><br>所以解重复，因为这问题是单边子问题而不是Catalan问题。<br>更改版本为单边子问题，一开始用dp[n]导致初始化稍复杂，其实初始化可以并入到递归式，只要用dp[n+1]即可。  </p>
+<h3 id="Java代码：-2"><a href="#Java代码：-2" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">int</span> <span class="title function_">wordBreak32</span><span class="params">(String s, Set&lt;String&gt; dict)</span> &#123;</span><br><span class="line">	<span class="keyword">if</span>(s == <span class="literal">null</span> || <span class="string">&quot;&quot;</span>.equals(s))</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="type">int</span>[] dp = <span class="keyword">new</span> <span class="title class_">int</span>[s.length()];</span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; s.length(); i++)</span><br><span class="line">		dp[i] = dict.contains(s.substring(<span class="number">0</span>, i + <span class="number">1</span>)) ? <span class="number">1</span> : <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; s.length(); i++) &#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="type">int</span> <span class="variable">k</span> <span class="operator">=</span> <span class="number">0</span>; k &lt; i; k++) &#123;</span><br><span class="line">			dp[i] += dp[k] * (dict.contains(s.substring(k + <span class="number">1</span>, i + <span class="number">1</span>)) ? <span class="number">1</span> : <span class="number">0</span>); </span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> dp[s.length() - <span class="number">1</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2021/10/23/lee-416/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KK Shum">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KK's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/10/23/lee-416/" class="post-title-link" itemprop="url">LeetCode 416 Partition Equal Subset Sum</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-10-23 00:00:00" itemprop="dateCreated datePublished" datetime="2021-10-23T00:00:00-07:00">2021-10-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2026-06-03 02:03:57" itemprop="dateModified" datetime="2026-06-03T02:03:57-07:00">2026-06-03</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2021/10/23/lee-416/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2021/10/23/lee-416/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong><a href="https://leetcode.com/problems/partition-equal-subset-sum">LeetCode 416 Partition Equal Subset Sum</a></strong></p>
+<p>Given a <strong>non-empty</strong> array containing <strong>only positive integers</strong>, find if the array can be partitioned into two subsets such that the sum of elements in both subsets is equal.</p>
+<p><strong>Note:</strong>  </p>
+<ol>
+<li>Each of the array element will not exceed 100.</li>
+<li>The array size will not exceed 200.</li>
+</ol>
+<p><strong>Example 1:</strong></p>
+<pre>Input: [1, 5, 11, 5]
+
+Output: true
+
+Explanation: The array can be partitioned as [1, 5, 5] and [11].
+</pre>
+
+<p><strong>Example 2:</strong></p>
+<pre>Input: [1, 2, 3, 5]
+
+Output: false
+
+Explanation: The array cannot be partitioned into equal sum subsets.
+</pre>
+
+
+<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>给定一个只包含正整数的非空数组，判断数组是否可以分成两个和相等的子数组。</p>
+<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>这题转化为求是否有子序列的和等于数组和的一半，这就是0-1背包问题。价值和重量是一样数组的背包问题。背包问题递归式：<br>f[j] = Math.max(f[j], f[j-w[i]]+v[i]);<br>背包问题最后的解为容量为C的背包能装的最大价值，也就是在这题中，容量为数组一半和的背包能装的最大价值是否为数组一半。如果能，即有解。<br>表示存在前i个数它的和（最大价值）等于和的一半。<br>举例说明，容量一半表示刚好可以凑到几个数和为一半，如[1,5,11,5]，容量为11，就可以凑到[1,5,5]重量和价值均为一半。<br>如[1,2,3,10]和为16，容量为8，只能找到[1,2,3]价值为6达不到一半。所以这里C是限制条件并不是一定要达到。但刚好达到即为解。  </p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
+<li>数组和为奇数，无解</li>
+<li>背包问题的解若为数组一半的和即有解</li>
+<li>背包问题解法C向前滚</li>
+</ol>
+<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">canPartition</span><span class="params">(<span class="type">int</span>[] nums)</span> &#123;</span><br><span class="line">	<span class="type">int</span> <span class="variable">sum</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;nums.length;i++)</span><br><span class="line">		sum+=nums[i];</span><br><span class="line">	<span class="keyword">if</span>(sum%<span class="number">2</span>==<span class="number">1</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">	<span class="type">int</span>[] result = knapsack(nums,nums,sum/<span class="number">2</span>);</span><br><span class="line">	<span class="keyword">if</span>(sum/<span class="number">2</span>==result[result.length-<span class="number">1</span>])</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="type">int</span>[] knapsack(<span class="type">int</span> v[], <span class="type">int</span> w[], <span class="type">int</span> C)&#123;</span><br><span class="line">	<span class="type">int</span> <span class="variable">n</span> <span class="operator">=</span> v.length;</span><br><span class="line">	<span class="comment">//int[][] re = new int[n][C+1];</span></span><br><span class="line">	<span class="type">int</span>[] f = <span class="keyword">new</span> <span class="title class_">int</span>[C+<span class="number">1</span>];</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;n;i++)&#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="type">int</span> j=C;j&gt;=w[i];j--)&#123;</span><br><span class="line">			f[j] = Math.max(f[j], f[j-w[i]]+v[i]);</span><br><span class="line">			<span class="comment">//if(f[j]==f[j-w[i]]+v[i])</span></span><br><span class="line">			   <span class="comment">// re[i][j] = 1;</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> f;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(nC)</code>，空间复杂度<code>O(C)</code>。C为数组和的一半，n为数组个数。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2021/10/23/lee-572/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -531,684 +741,6 @@ Y   I   R
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2021/10/21/lee-123/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="KK Shum">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="KK's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/10/21/lee-123/" class="post-title-link" itemprop="url">LeetCode 123 Best Time to Buy and Sell Stock III</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-10-21 00:00:00" itemprop="dateCreated datePublished" datetime="2021-10-21T00:00:00-07:00">2021-10-21</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2026-06-03 02:03:56" itemprop="dateModified" datetime="2026-06-03T02:03:56-07:00">2026-06-03</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2021/10/21/lee-123/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2021/10/21/lee-123/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong><a href="https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iii">LeetCode 123 Best Time to Buy and Sell Stock III</a></strong></p>
-<p>Say you have an array for which the <em>i</em><sup>th</sup> element is the price of a given stock on day <em>i</em>.</p>
-<p>Design an algorithm to find the maximum profit. You may complete at most <em>two</em> transactions.</p>
-<p><strong>Note:</strong><br>You may not engage in multiple transactions at the same time (ie, you must sell the stock before you buy again).</p>
-<h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a><strong>题目大意：</strong></h3><p>假设你有一个数组，它的第i个元素是一支给定的股票在第i天的价格。设计一个算法来找到最大的利润。你最多可以完成两笔交易。</p>
-<h3 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a><strong>解题思路：</strong></h3><p>回顾一下前两题：只能进行一次交易和可以无数次交易。分别是用(min, p),sum(prices[i]-prices[i-1])的方法。这题很明显比较接近只能进行一次交易的题。<br>如果考虑将此问题分为两个子问题(Divide &amp; Conquer,二分法)，prices[0,k]和prices[k,n-1]，只要将k取遍所有值就得到解。</p>
-<h3 id="Java代码："><a href="#Java代码：" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">int</span> <span class="title function_">maxProfit</span><span class="params">(<span class="type">int</span>[] prices)</span> &#123;</span><br><span class="line">	<span class="type">int</span> <span class="variable">max</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;prices.length;i++)&#123;</span><br><span class="line">		<span class="type">int</span> <span class="variable">p</span> <span class="operator">=</span> maxProfitSingle(Arrays.copyOfRange(prices,<span class="number">0</span>, i+<span class="number">1</span>))</span><br><span class="line">				+ maxProfitSingle(Arrays.copyOfRange(prices,i, prices.length));</span><br><span class="line">		<span class="keyword">if</span>(max&lt;p)</span><br><span class="line">			max = p;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> max;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析："><a href="#算法分析：" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(<em>n</em><sup>2</sup>)</code>，空间复杂度<code>O(1)</code>。</p>
-<p>上述解法并非最优，因为计算prices[0,k-1]到prices[0,k]时候再次重复计算用了O(n)，但由只能进行一次交易题解中知道，其实O(1)可得，只要在计算过程中把结果存入left数组中即可。<br>下面的难点在于计算prices[k,n-1]。右端点固定，从右到左计算，所以其实是只能进行一次交易题解的逆运算并把结果存入到right数组。区别是(max, p)。最后只要遍历left[k]+right[k],即可得到最大利润。</p>
-<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h3><ol>
-<li>数组长度为0。</li>
-<li>二分法</li>
-<li>用数组存储重复计算结果(DP)</li>
-</ol>
-<h3 id="Java代码：-1"><a href="#Java代码：-1" class="headerlink" title="Java代码："></a><strong>Java代码：</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">int</span> <span class="title function_">maxProfit</span><span class="params">(<span class="type">int</span>[] prices)</span> &#123;</span><br><span class="line">	<span class="keyword">if</span>(prices.length==<span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="comment">//前i天最大利润，并非需要第i天卖出</span></span><br><span class="line">	<span class="type">int</span>[] left = <span class="keyword">new</span> <span class="title class_">int</span>[prices.length];</span><br><span class="line">	<span class="type">int</span>[] right = <span class="keyword">new</span> <span class="title class_">int</span>[prices.length];</span><br><span class="line">	</span><br><span class="line">	<span class="type">int</span> <span class="variable">min</span> <span class="operator">=</span> prices[<span class="number">0</span>], maxPL = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;prices.length;i++)&#123;</span><br><span class="line">		<span class="type">int</span> <span class="variable">p</span> <span class="operator">=</span> prices[i] - min;</span><br><span class="line">		<span class="keyword">if</span>(maxPL&lt;p)</span><br><span class="line">			maxPL = p;</span><br><span class="line">		left[i] = maxPL;</span><br><span class="line">		<span class="keyword">if</span>(min&gt;prices[i])</span><br><span class="line">			min=prices[i];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="type">int</span> max=prices[prices.length-<span class="number">1</span>],maxPR=<span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> j=prices.length-<span class="number">1</span>;j&gt;=<span class="number">0</span>;j--)&#123;</span><br><span class="line">		<span class="type">int</span> p=max-prices[j];</span><br><span class="line">		<span class="keyword">if</span>(maxPR&lt;p)</span><br><span class="line">			maxPR = p;</span><br><span class="line">		right[j] = maxPR;</span><br><span class="line">		<span class="keyword">if</span>(max&lt;prices[j])</span><br><span class="line">			max=prices[j];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="type">int</span> <span class="variable">maxP</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> k=<span class="number">0</span>;k&lt;prices.length;k++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(maxP&lt;left[k]+right[k])</span><br><span class="line">			maxP = left[k]+right[k];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> maxP;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="算法分析：-1"><a href="#算法分析：-1" class="headerlink" title="算法分析："></a><strong>算法分析：</strong></h3><p>时间复杂度为<code>O(n)</code>，空间复杂度<code>O(n)</code>。</p>
-<h3 id="相关题目："><a href="#相关题目：" class="headerlink" title="相关题目："></a><strong>相关题目：</strong></h3><p><a href="https://shineboy2013.github.io/2017/11/27/lee-121/">LeetCode 121 Best Time to Buy and Sell Stock</a><br><a href="https://shineboy2013.github.io/2017/11/28/lee-122/">LeetCode 122 Best Time to Buy and Sell Stock II</a><br><a href="https://shineboy2013.github.io/2017/12/11/lee-309/">LeetCode 309 Best Time to Buy and Sell Stock with Cooldown</a><br><a href="https://shineboy2013.github.io/2017/12/24/lee-123/">LeetCode 123 Best Time to Buy and Sell Stock III</a></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://shineboy2013.github.com/2020/05/24/kb/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="KK Shum">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="KK's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/05/24/kb/" class="post-title-link" itemprop="url">知识点</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2020-05-24 00:00:00" itemprop="dateCreated datePublished" datetime="2020-05-24T00:00:00-07:00">2020-05-24</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2026-06-03 02:03:56" itemprop="dateModified" datetime="2026-06-03T02:03:56-07:00">2026-06-03</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2020/05/24/kb/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/05/24/kb/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong>常用知识点</strong></p>
-<table>
-<thead>
-<tr>
-<th>类型</th>
-<th style="text-align:left">函数名</th>
-<th style="text-align:left">作用</th>
-<th style="text-align:left">输入参数</th>
-<th style="text-align:left">返回值</th>
-<th style="text-align:left">例子</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>String</td>
-<td style="text-align:left">split</td>
-<td style="text-align:left">根据输入参数分拆成字符串数组</td>
-<td style="text-align:left">String</td>
-<td style="text-align:left">String[]</td>
-<td style="text-align:left">String[] tokens = s.split(“ “);</td>
-</tr>
-<tr>
-<td>String</td>
-<td style="text-align:left">trim</td>
-<td style="text-align:left">将前后空格去掉</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">String</td>
-<td style="text-align:left">s = s.trim()</td>
-</tr>
-<tr>
-<td>String</td>
-<td style="text-align:left">toCharArray</td>
-<td style="text-align:left">将字符串变成字符数组</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">char</td>
-<td style="text-align:left">char[] a = s.toCharArray()</td>
-</tr>
-<tr>
-<td>String</td>
-<td style="text-align:left">charAt</td>
-<td style="text-align:left">取某字符</td>
-<td style="text-align:left">int</td>
-<td style="text-align:left">char</td>
-<td style="text-align:left">num1.charAt(i)</td>
-</tr>
-<tr>
-<td>String</td>
-<td style="text-align:left">length</td>
-<td style="text-align:left">取某字符长度</td>
-<td style="text-align:left">int</td>
-<td style="text-align:left">int</td>
-<td style="text-align:left">num1.length()</td>
-</tr>
-<tr>
-<td>String</td>
-<td style="text-align:left">equals</td>
-<td style="text-align:left">判断相等</td>
-<td style="text-align:left">String</td>
-<td style="text-align:left">boolean</td>
-<td style="text-align:left">“”.equals(str)</td>
-</tr>
-<tr>
-<td>String</td>
-<td style="text-align:left">substring</td>
-<td style="text-align:left">取某字符[beginIdx, endIdx)子串</td>
-<td style="text-align:left">int, int</td>
-<td style="text-align:left">String</td>
-<td style="text-align:left">“smiles”.substring(1,5)-&gt;”mile”</td>
-</tr>
-<tr>
-<td>Integer</td>
-<td style="text-align:left">parseInt</td>
-<td style="text-align:left">字符串变整型</td>
-<td style="text-align:left">String</td>
-<td style="text-align:left">int</td>
-<td style="text-align:left">Integer.parseInt(“2”); Integer.parseInt(“100”, 2) -&gt; 4，任意进制数转为10进制。</td>
-</tr>
-<tr>
-<td>Integer</td>
-<td style="text-align:left">Integer.MIN_VALUE</td>
-<td style="text-align:left">整型最小值</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">int</td>
-<td style="text-align:left">Integer.MIN_VALUE</td>
-</tr>
-<tr>
-<td>Integer</td>
-<td style="text-align:left">Integer.toString</td>
-<td style="text-align:left">整型-&gt;String</td>
-<td style="text-align:left">int</td>
-<td style="text-align:left">String</td>
-<td style="text-align:left">Integer.toString(root.val)</td>
-</tr>
-<tr>
-<td>StringBuilder</td>
-<td style="text-align:left">append</td>
-<td style="text-align:left">将新字符（串）加入到末尾</td>
-<td style="text-align:left">String或char</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">sb.append(“abc”)</td>
-</tr>
-<tr>
-<td>StringBuilder</td>
-<td style="text-align:left">new StringBuilder()</td>
-<td style="text-align:left">新建这个类当然也将目前字符串清空</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">sb=new StringBuilder()</td>
-</tr>
-<tr>
-<td>StringBuilder</td>
-<td style="text-align:left">reverse</td>
-<td style="text-align:left">反转</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">StringBuilder</td>
-<td style="text-align:left">sb.reverse()</td>
-</tr>
-<tr>
-<td>StringBuilder</td>
-<td style="text-align:left">toString</td>
-<td style="text-align:left">StringBuilder变成字符串</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">String</td>
-<td style="text-align:left">sb.reverse().toString()</td>
-</tr>
-<tr>
-<td>StringBuilder</td>
-<td style="text-align:left">deleteCharAt</td>
-<td style="text-align:left">StringBuilder删除某字符</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">int</td>
-<td style="text-align:left">sb.deleteCharAt(sb.length() - 1);</td>
-</tr>
-<tr>
-<td>Arrays</td>
-<td style="text-align:left">length</td>
-<td style="text-align:left">数组长度</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">int</td>
-<td style="text-align:left">ary.length</td>
-</tr>
-<tr>
-<td>Arrays</td>
-<td style="text-align:left">sort</td>
-<td style="text-align:left">对数组正(逆)排序</td>
-<td style="text-align:left">T[]</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">Arrays.sort(nums1); Arrays.sort(nums1,Collections.reverseOrder());  Arrays.sort(nums1,new Comparator<int[]>(){});</td>
-</tr>
-<tr>
-<td>Arrays</td>
-<td style="text-align:left">asList</td>
-<td style="text-align:left">包装类型数组转化成List</td>
-<td style="text-align:left">T[]</td>
-<td style="text-align:left">List</td>
-<td style="text-align:left">Arrays.asList(ary), ary为Integer数组或者常量  List: Arrays.asList(“a”, “b”);</td>
-</tr>
-<tr>
-<td>Arrays</td>
-<td style="text-align:left">stream</td>
-<td style="text-align:left">基本类型数组转化成List</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left"><strong>List<Integer> re = Arrays.stream(ints).boxed()   .collect(Collectors.toList())</strong></td>
-</tr>
-<tr>
-<td>Arrays</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left"><strong>去重</strong></td>
-<td style="text-align:left">int[]</td>
-<td style="text-align:left">int[]</td>
-<td style="text-align:left">Set<Integer> set = new HashSet&lt;&gt;(list);set-&gt;int[]</td>
-</tr>
-<tr>
-<td>Collections</td>
-<td style="text-align:left">sort</td>
-<td style="text-align:left">对List排序</td>
-<td style="text-align:left">List</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">Collections.sort(list); Collections.sort(l, Collections.reverseOrder());</td>
-</tr>
-<tr>
-<td>ArrayList</td>
-<td style="text-align:left">new ArrayList&lt;&gt;()</td>
-<td style="text-align:left">新建List</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">List</td>
-<td style="text-align:left">List<Integer> l = new ArrayList&lt;&gt;()</td>
-</tr>
-<tr>
-<td>ArrayList</td>
-<td style="text-align:left">stream</td>
-<td style="text-align:left">List转为基本类型数组</td>
-<td style="text-align:left">List</td>
-<td style="text-align:left">int[]</td>
-<td style="text-align:left"><strong>int[] re = l.stream().mapToInt(i-&gt;i).toArray()</strong></td>
-</tr>
-<tr>
-<td>ArrayList</td>
-<td style="text-align:left">stream</td>
-<td style="text-align:left">List转为Object类型数组</td>
-<td style="text-align:left">List</td>
-<td style="text-align:left">Integer[]</td>
-<td style="text-align:left">Integer[] re = l.toArray(new Integer[0]);</td>
-</tr>
-<tr>
-<td>ArrayList</td>
-<td style="text-align:left">add</td>
-<td style="text-align:left">把一个元素加入到List l中</td>
-<td style="text-align:left">List</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">l.add(“pen”);</td>
-</tr>
-<tr>
-<td>ArrayList</td>
-<td style="text-align:left">addAll</td>
-<td style="text-align:left">把一个List的所有元素加入到另一个中</td>
-<td style="text-align:left">List</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">l2.addAll(l);</td>
-</tr>
-<tr>
-<td>ArrayList</td>
-<td style="text-align:left">get</td>
-<td style="text-align:left">返回给定的下标对应的元素</td>
-<td style="text-align:left">List</td>
-<td style="text-align:left">T</td>
-<td style="text-align:left">l.get(2);</td>
-</tr>
-<tr>
-<td>ArrayList</td>
-<td style="text-align:left">remove</td>
-<td style="text-align:left">把给定下标的元素从List l中删除</td>
-<td style="text-align:left">List</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">l.remove(2);</td>
-</tr>
-<tr>
-<td>ArrayList</td>
-<td style="text-align:left">remove</td>
-<td style="text-align:left">把第一个出现的元素从List l中删除</td>
-<td style="text-align:left">List</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">l.remove(“pen”);</td>
-</tr>
-<tr>
-<td>ArrayList</td>
-<td style="text-align:left">size</td>
-<td style="text-align:left">大小</td>
-<td style="text-align:left">List</td>
-<td style="text-align:left">int</td>
-<td style="text-align:left">l.size();</td>
-</tr>
-<tr>
-<td>ArrayList</td>
-<td style="text-align:left">reverse</td>
-<td style="text-align:left">反转</td>
-<td style="text-align:left">List</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">Collections.reverse(l);</td>
-</tr>
-<tr>
-<td>LinkedList</td>
-<td style="text-align:left">add</td>
-<td style="text-align:left">加到末尾</td>
-<td style="text-align:left">T</td>
-<td style="text-align:left">N/a</td>
-<td style="text-align:left">ll.add(2);</td>
-</tr>
-<tr>
-<td>LinkedList</td>
-<td style="text-align:left">remove</td>
-<td style="text-align:left">头部删除</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">T</td>
-<td style="text-align:left">ll.remove();</td>
-</tr>
-<tr>
-<td>LinkedList</td>
-<td style="text-align:left">addFirst</td>
-<td style="text-align:left">加到头部</td>
-<td style="text-align:left">T</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">ll.addFirst(2);</td>
-</tr>
-<tr>
-<td>LinkedList</td>
-<td style="text-align:left">removeLast</td>
-<td style="text-align:left">末尾删除</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">T</td>
-<td style="text-align:left">ll.removeLast();</td>
-</tr>
-<tr>
-<td>Queue</td>
-<td style="text-align:left">new LinkedList<Integer>()</td>
-<td style="text-align:left">新建/复制队列</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">Queue</td>
-<td style="text-align:left">Queue<Integer> q = new LinkedList&lt;&gt;(q2)</td>
-</tr>
-<tr>
-<td>Queue</td>
-<td style="text-align:left">offer</td>
-<td style="text-align:left">不抛异常的加入尾元素</td>
-<td style="text-align:left">T</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">q.offer(5)</td>
-</tr>
-<tr>
-<td>Queue</td>
-<td style="text-align:left">poll</td>
-<td style="text-align:left">不抛异常的取出头元素</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">T</td>
-<td style="text-align:left">Integer i = q.poll()</td>
-</tr>
-<tr>
-<td>Queue</td>
-<td style="text-align:left">peek</td>
-<td style="text-align:left">不抛异常的看看头元素</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">T</td>
-<td style="text-align:left">Integer i = q.peek()</td>
-</tr>
-<tr>
-<td>Stack</td>
-<td style="text-align:left">new Stack</td>
-<td style="text-align:left">新建栈</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">Stack</td>
-<td style="text-align:left">Stack<Integer> s = new Stack&lt;&gt;()</td>
-</tr>
-<tr>
-<td>Stack</td>
-<td style="text-align:left">peek</td>
-<td style="text-align:left">获取栈顶元素但不出栈</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">T</td>
-<td style="text-align:left">Integer i = s.peek()</td>
-</tr>
-<tr>
-<td>Stack</td>
-<td style="text-align:left">pop</td>
-<td style="text-align:left">获取栈顶元素且出栈</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">T</td>
-<td style="text-align:left">Integer i = s.pop()</td>
-</tr>
-<tr>
-<td>Stack</td>
-<td style="text-align:left">push</td>
-<td style="text-align:left">加入</td>
-<td style="text-align:left">T</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">s.push(5)</td>
-</tr>
-<tr>
-<td>Stack</td>
-<td style="text-align:left">isEmpty</td>
-<td style="text-align:left">是否为空</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">boolean</td>
-<td style="text-align:left">s.isEmpty()</td>
-</tr>
-<tr>
-<td>HashMap</td>
-<td style="text-align:left">new HashMap</td>
-<td style="text-align:left">新建哈希表</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">Map</td>
-<td style="text-align:left">Map<Character, Integer> m = new HashMap&lt;&gt;()</td>
-</tr>
-<tr>
-<td>HashMap</td>
-<td style="text-align:left">get</td>
-<td style="text-align:left">获取</td>
-<td style="text-align:left">T</td>
-<td style="text-align:left">T</td>
-<td style="text-align:left">m.get(‘a’)</td>
-</tr>
-<tr>
-<td>HashMap</td>
-<td style="text-align:left">put</td>
-<td style="text-align:left">加入</td>
-<td style="text-align:left">T,T</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">m.put(‘a’,5)</td>
-</tr>
-<tr>
-<td>HashMap</td>
-<td style="text-align:left">containsKey</td>
-<td style="text-align:left">是否含有某个key</td>
-<td style="text-align:left">T</td>
-<td style="text-align:left">boolean</td>
-<td style="text-align:left">m.containsKey(‘a’)</td>
-</tr>
-<tr>
-<td>HashMap</td>
-<td style="text-align:left">get,put</td>
-<td style="text-align:left">更新key对应的value</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">m.put(‘a’,m.get(‘a’)+1)</td>
-</tr>
-<tr>
-<td>Map</td>
-<td style="text-align:left">Map.of</td>
-<td style="text-align:left">Map常量</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">Map</td>
-<td style="text-align:left">Map.of(2, “abc”, 3, “def”);</td>
-</tr>
-<tr>
-<td>Iterator</td>
-<td style="text-align:left">Iterator</td>
-<td style="text-align:left">entrySet</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">Iterator it = map.entrySet().iterator();</td>
-</tr>
-<tr>
-<td>Iterator</td>
-<td style="text-align:left">Iterator</td>
-<td style="text-align:left">keySet</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">Iterator it = map.keySet().iterator();</td>
-</tr>
-<tr>
-<td>Iterator</td>
-<td style="text-align:left">hasNext</td>
-<td style="text-align:left">有无下一个元素</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">while(it.hasNext())</td>
-</tr>
-<tr>
-<td>Iterator</td>
-<td style="text-align:left">next</td>
-<td style="text-align:left">下一个元素</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">Map.Entry pair = (Map.Entry)it.next()</td>
-</tr>
-<tr>
-<td>Map.Entry</td>
-<td style="text-align:left">getValue, getKey</td>
-<td style="text-align:left">得到key, Value</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">pair.getValue(), pair.getKey()</td>
-</tr>
-<tr>
-<td>HashSet</td>
-<td style="text-align:left">new HashSet</td>
-<td style="text-align:left">新建哈希集</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">Set</td>
-<td style="text-align:left">Set<Character> m = new HashSet&lt;&gt;()</td>
-</tr>
-<tr>
-<td>HashSet</td>
-<td style="text-align:left">add</td>
-<td style="text-align:left">加入</td>
-<td style="text-align:left">T</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">m.add(‘a’)</td>
-</tr>
-<tr>
-<td>HashSet</td>
-<td style="text-align:left">remove</td>
-<td style="text-align:left">删除</td>
-<td style="text-align:left">T</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">m.remove(‘a’)</td>
-</tr>
-<tr>
-<td>HashSet</td>
-<td style="text-align:left">contains</td>
-<td style="text-align:left">是否含有某个元素</td>
-<td style="text-align:left">T</td>
-<td style="text-align:left">boolean</td>
-<td style="text-align:left">m.contains(‘a’)</td>
-</tr>
-<tr>
-<td>PriorityQueue</td>
-<td style="text-align:left">offer,poll,peek</td>
-<td style="text-align:left">与Queue相同</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">N/A</td>
-</tr>
-<tr>
-<td>PriorityQueue</td>
-<td style="text-align:left">Comparator</td>
-<td style="text-align:left">k大小的heap</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">N/A</td>
-<td style="text-align:left">见下</td>
-</tr>
-</tbody>
-</table>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">PriorityQueue&lt;Node&gt; minHeap = <span class="keyword">new</span> <span class="title class_">PriorityQueue</span>&lt;Node&gt;(k,</span><br><span class="line">				<span class="keyword">new</span> <span class="title class_">Comparator</span>&lt;Node&gt;() &#123;</span><br><span class="line">					<span class="meta">@Override</span></span><br><span class="line">					<span class="keyword">public</span> <span class="type">int</span> <span class="title function_">compare</span><span class="params">(Node o1, Node o2)</span> &#123;</span><br><span class="line">						<span class="keyword">return</span> o1.value - o2.value;</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;</span><br><span class="line">		);</span><br></pre></td></tr></table></figure>
-<p>Arrays的二分法： 若找不到，返回比tgt大的数的下标数组长度的负值-1。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span>[] lis = <span class="keyword">new</span> <span class="title class_">int</span>[len];</span><br><span class="line"><span class="type">int</span> <span class="variable">index</span> <span class="operator">=</span> Arrays.binarySearch(lis, <span class="number">0</span>, len, tgt);</span><br><span class="line"><span class="keyword">if</span>(index &lt; <span class="number">0</span>) &#123;</span><br><span class="line">	index = -index - <span class="number">1</span>;</span><br><span class="line">	lis[index] = tgt;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">	lis[index] = tgt;</span><br></pre></td></tr></table></figure></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1283,14 +815,14 @@ Y   I   R
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">368</span>
+          <span class="site-state-item-count">370</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-count">59</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
